@@ -1,0 +1,57 @@
+##' Join the df of all the processed tasks
+##'
+##' .. content for \details{} ..
+##'
+##' @title prepare_joined
+##' @param df_SBS
+##' @param df_CRT7
+##' @return
+##' @author gorkang
+##' @export
+prepare_joined <- function(...) {
+  
+  # DEBUG
+  # arguments = c("df_SBS", "df_CRT7")
+  
+  # Load targets objects used in tests --------------------------------------
+
+  argnames <- sys.call()
+  arguments = lapply(argnames[-1], as.character) %>% unlist()
+  
+  # Make sure the targets we will load exist
+  existing_targets = list.files(path = "_targets/objects/", pattern="df_.*", full.names = FALSE, ignore.case = FALSE)
+  final_prepared_files = arguments[arguments %in% existing_targets]
+  
+  # Warning if any of the files do no exist
+  if (length(final_prepared_files) != length(arguments)) cat(crayon::red(paste0("- WARNING: Can't find ", paste(arguments[!arguments %in% existing_targets], collapse = ", "), " in the '_targets/objects' folder")))
+
+  
+
+  # Loads and gets all the targets in a single list -------------------------
+
+  # Loads all the prepared targets
+  targets::tar_load(!!final_prepared_files, envir = .GlobalEnv)
+  
+  # List with all the input DF's
+  input_list <- map(final_prepared_files, get)
+  
+  # Name lists
+  names(input_list) <- final_prepared_files
+  
+
+  # Join all files ----------------------------------------------------------
+
+  # Join all by ID in a single DF
+  df_joined = 
+    input_list %>% 
+    reduce(full_join, by = "id")
+  
+    
+  # Save files --------------------------------------------------------------
+  
+  write_csv(df_joined, "output/data/df_joined.csv")
+  write_rds(df_joined, "output/data/df_joined.rds")
+  
+  return(df_joined)
+
+}

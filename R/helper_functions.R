@@ -1,6 +1,6 @@
-##' .. content for \description{} (no empty lines) ..
+##' Checks if the NAs of the RAW calculation are the same as the ones from the PROC calculation
 ##'
-##' .. content for \details{} ..
+##' Important to catch errors when transforming data from RAW to PROCESSED
 ##'
 ##' @title check_NAs
 ##' @param DF
@@ -26,6 +26,5 @@ check_NAs <- function(DF) {
     cat(crayon::blue("\n  - Can't perform NA check, DF does not have RAW_NA and PROC_NA columns\n"))
     
   }
-  
   
 }

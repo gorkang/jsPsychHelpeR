@@ -1,0 +1,73 @@
+testthat::test_that('Check all input files have the same columns', {
+
+  # Name of test (should reflect the name of the file) ----------------------
+  
+  name_of_test = "input_files"
+  
+  
+  # Test --------------------------------------------------------------------
+  
+  # Funcion para almacenar los nombres de columna de todos los archivos
+  read_check <- function(file_name) {
+    
+    # library(tidyverse)  
+    DF = read_csv(here::here(file_name),  col_types = cols(.default = col_character()))
+    
+    names(DF) %>% as_tibble() %>% mutate(name_file = file_name)
+    
+  }
+  
+  # Construimos DF global
+  DF_final = map_df(input_files, read_check)
+  
+  # Numero de archivos
+  number_of_files = length(input_files)
+  
+  # DF_final %>% write_csv("columns_files.csv")
+  
+  # Todos los campos deberian aparecer length(files) veces
+  DF_columns_files = DF_final %>% count(value)
+  
+  names_missing_columns = DF_columns_files %>% 
+    filter(n != number_of_files) %>% pull(value)
+  
+  
+  # Buscamos en que archivos NO aparecen determinadas columnas
+  
+  wich_files_missing_columns <- function(name_missing_column, DF_final) {
+    
+    # cat(crayon::green("\n - Missing column: "), name_missing_column)
+    DF_final %>% 
+      group_by(name_file) %>% 
+      # filter(!"responses" %in% value) %>%
+      filter(!name_missing_column %in% value) %>%
+      
+      ungroup() %>% 
+      distinct(name_file) %>% 
+      pull(name_file)
+    
+  }
+  
+  check_input_files_DF = 1:length(names_missing_columns) %>% 
+    map_df(~ wich_files_missing_columns(name_missing_column = names_missing_columns[.x], DF_final) %>% as_tibble() %>% mutate(column_missing = names_missing_columns[.x]) %>% rename(file = value))
+  
+  
+  # Warning and log ---------------------------------------------------------
+  
+  if (length(names_missing_columns) > 0) {
+    
+    write_csv(check_input_files_DF, here::here("output/tests_outputs/test-input_files.csv"))
+    
+    cat(crayon::red("\nERROR in", paste0("test-", name_of_test), "\n"),
+        crayon::red("  - Some of the columns are not in all input_files:"), names_missing_columns, "\n",
+        crayon::green("  - # of Issues: "), crayon::red(nrow(check_input_files_DF)), "\n",
+        crayon::silver("  - DF with details stored in:", paste0("'output/tests_outputs/test-", name_of_test, ".csv'"), "\n\n"))
+    
+  }
+  
+  
+  # Actual expectation -------------------------------------------------------------
+  
+  testthat::expect_length(names_missing_columns, 0)
+
+})

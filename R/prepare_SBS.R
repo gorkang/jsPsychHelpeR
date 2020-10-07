@@ -1,4 +1,4 @@
-##' .. content for \description{} (no empty lines) ..
+##' Prepare Supernatural Belief Scale
 ##'
 ##' .. content for \details{} ..
 ##'
@@ -16,6 +16,7 @@ prepare_SBS <- function(DF) {
     DF %>% 
     filter(experimento == name_scale) %>% 
     select(id, experimento, rt, trialid, question_text, response) %>% 
+    mutate(response = as.numeric(response)) %>% 
     drop_na(trialid)
   
   
@@ -24,22 +25,22 @@ prepare_SBS <- function(DF) {
   
   df_SBS_wide_direct =
     df_SBS_RAW %>% 
-    select(id, experimento, trialid, response) %>% 
+    select(id, trialid, response) %>% 
     mutate(trialid = paste0(trialid, "_RAW")) %>% 
     pivot_wider(names_from = trialid, values_from = response) %>% 
-    mutate(SBS_RAW = rowSums(select(., matches(short_name_scale)), na.rm = TRUE),
-           SBS_RAW_NA = rowSums(is.na(select(., matches(short_name_scale)))))
+    mutate(SBS_RAW_NA = rowSums(is.na(select(., matches(short_name_scale)))))
   
-  df_SBS_wide_direct
+  # df_SBS_wide_direct
   
   
   
   # Wide: processed responses --------------------------------------------------
   
+  # [REMEMBER] : THIS IS BULLSHIT NOW!!!!! JUST AN EXAMPLE TO HAVE A REASONABLE TEMPLATE
+  
   df_SBS_wide_processed =
     df_SBS_RAW %>% 
     select(id, trialid, response) %>% 
-    mutate(trialid = paste0(trialid, "_PROC")) %>%
     
     # Process data
     mutate(response = 
@@ -47,7 +48,8 @@ prepare_SBS <- function(DF) {
                response < 0 ~ response^2,
                response > 0 ~ response^3,
                TRUE ~ response)) %>% 
-    
+
+    mutate(trialid = paste0(trialid, "_PROC")) %>%
     pivot_wider(names_from = trialid, values_from = response) %>% 
     mutate(SBS_PROC = rowSums(select(., matches(short_name_scale)), na.rm = TRUE),
            SBS_PROC_NA = rowSums(is.na(select(., matches(short_name_scale)))))
