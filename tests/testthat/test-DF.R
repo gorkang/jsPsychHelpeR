@@ -27,7 +27,7 @@ testthat::test_that('Check if any of the items appear more or less than the othe
   
   if (length(offender_tests) > 0) {
     
-    write_csv(checks_DF, here::here("output/tests_outputs/test-DF.csv"))
+    write_csv(checks_DF, here::here(paste0("output/tests_outputs/test-", name_of_test, ".csv")))
     
     cat(crayon::red("\nERROR in", paste0("test-", name_of_test), "\n"),
         crayon::red("  - Some of the items appear more than others in the same tests:"), offender_tests, "\n",

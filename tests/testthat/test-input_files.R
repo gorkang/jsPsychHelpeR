@@ -56,7 +56,7 @@ testthat::test_that('Check all input files have the same columns', {
   
   if (length(names_missing_columns) > 0) {
     
-    write_csv(check_input_files_DF, here::here("output/tests_outputs/test-input_files.csv"))
+    write_csv(check_input_files_DF, here::here(paste0("output/tests_outputs/test-", name_of_test, ".csv")))
     
     cat(crayon::red("\nERROR in", paste0("test-", name_of_test), "\n"),
         crayon::red("  - Some of the columns are not in all input_files:"), names_missing_columns, "\n",
