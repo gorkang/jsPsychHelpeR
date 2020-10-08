@@ -15,7 +15,9 @@ prepare_CRT7 <- function(DF) {
   short_name_scale_str = "CRT_7"
   
 
-    
+  # Standardized names ------------------------------------------------------
+  standardized_names(short_name_scale = short_name_scale_str)
+  
   # Create long -------------------------------------------------------------
   DF_long = create_raw_long(DF, name_scale = name_scale_str, numeric_responses = FALSE)
   
@@ -43,10 +45,17 @@ prepare_CRT7 <- function(DF) {
                trialid == "CRT_7_7" & response == "Ha perdido dinero" ~ 1,
                TRUE ~ 0)) %>% 
     
-    mutate(trialid = paste0(trialid, "_PROC")) %>%    
+  # [USE STANDARD NAMES FOR Scales and dimensions] ***************************
+  # Check with: standardized_names(short_name_scale = short_name_scale_str,help_names = TRUE)
+    
+  # Use Standardized names for the dimensions and scale variables, etc.
+  mutate(trialid = paste0(trialid, sufix_DIR)) %>%
     pivot_wider(names_from = trialid, values_from = response) %>% 
-    mutate(CRT7_PROC = rowSums(select(., matches(short_name_scale_str)), na.rm = TRUE),
-           CRT7_PROC_NA = rowSums(is.na(select(., matches(short_name_scale_str)))))
+    
+    mutate(!!name_DIRt := rowSums(select(., matches(short_name_scale_str)), na.rm = TRUE),
+           !!name_DIRt_NA := rowSums(is.na(select(., matches(short_name_scale_str)))))
+  
+  # **************************************************************************
   
 
   

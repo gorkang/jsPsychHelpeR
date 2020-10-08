@@ -1,3 +1,83 @@
+##' Standardized names for Direct scores, dimensions and scales
+##'
+##' 
+##'
+##' @title standardized_names
+##' @param DF
+##' @return
+##' @author gorkang
+##' @export
+standardized_names <- function(short_name_scale, dimensions = "", help_names = FALSE) {
+  
+  if (help_names == TRUE) cat(crayon::red(crayon::underline("REMEMBER:\n\n")))
+  
+  # Global sufix for direct scores
+  .GlobalEnv$sufix_DIR = "_DIR"
+  
+  
+  # Dimensions names
+    # For each of the values in 'dimensions' will create a name_DIRd[n] and name_STDd[n]
+  if (dimensions[1] != "") {
+    
+    # DEBUG
+    # short_name_scale = "XXX"
+    # dimensions = c("dimension1", "dimension2")
+    
+    # Build strings for DIR
+    names_dimensions_DIR = paste0(short_name_scale, "_", dimensions, "_DIRd")
+    names_variables_DIR = paste0("name_DIRd", 1:length(names_dimensions_DIR))
+    
+    # Build strings for STD
+    names_dimensions_STD = paste0(short_name_scale, "_", dimensions, "_STDd")
+    names_variables_STD = paste0("name_STDd", 1:length(names_dimensions_STD))
+    
+    # Creates variables in Global Environment
+    map2(names_dimensions_DIR, names_variables_DIR, assign, envir = .GlobalEnv)
+    map2(names_dimensions_STD, names_variables_STD, assign, envir = .GlobalEnv)
+
+    # Message with details ----------------------------------------------------
+    if (help_names == TRUE) cat("", 
+        crayon::magenta(crayon::underline("Dimensions\n")),
+    crayon::green(
+
+      paste0("- For the DIRect scores of the dimension '", paste0(names_dimensions_DIR), "'", 
+             " use the name '", names_variables_DIR, ",",
+             crayon::silver(paste0(" FOR EXAMPLE: !!", names_variables_DIR, " := rowSums(...)'\n"))), 
+      
+      paste0("- For the STDard scores of the dimension '", paste0(names_dimensions_STD), "'", 
+             " use the name '", names_variables_STD, ",",
+             crayon::silver(paste0(" FOR EXAMPLE: !!", names_variables_STD, " := rowSums(...)'\n"))),
+      "\n"
+    ))
+  }
+  
+  # Direct scores totals
+  .GlobalEnv$name_DIRt_NA = paste0(short_name_scale, "_DIRt_NA")
+  .GlobalEnv$name_DIRt = paste0(short_name_scale, "_DIRt")
+  
+  # Standardized scores totals
+  .GlobalEnv$name_STDt_NA = paste0(short_name_scale, "_STDt_NA")
+  .GlobalEnv$name_STDt = paste0(short_name_scale, "_STDt")
+
+  
+  
+  # Message with details ----------------------------------------------------
+  if (help_names == TRUE) cat("", crayon::green(
+    
+    crayon::magenta(crayon::underline("Total scores\n")),
+    
+    paste0("- For the DIRect total score of '",.GlobalEnv$name_DIRt, "'", 
+           " use the name 'name_DIRt'",
+           crayon::silver(paste0(" FOR EXAMPLE: !!name_DIRt := rowSums(...)'\n"))),
+    
+    paste0("- For the STDardized total score of '",.GlobalEnv$name_STDt, "'", 
+           " use the name 'name_STDt'",
+           crayon::silver(paste0(" FOR EXAMPLE: !!name_STDt := rowSums(...)'\n")))
+  ), "\n")
+
+}
+
+
 ##' Checks if the NAs of the RAW calculation are the same as the ones from the PROC calculation
 ##'
 ##' Important to catch errors when transforming data from RAW to PROCESSED

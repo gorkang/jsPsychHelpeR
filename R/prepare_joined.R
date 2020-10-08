@@ -46,11 +46,14 @@ prepare_joined <- function(...) {
     input_list %>% 
     reduce(full_join, by = "id")
   
-    
-  # Save files --------------------------------------------------------------
   
-  write_csv(df_joined, "output/data/df_joined.csv")
-  write_rds(df_joined, "output/data/df_joined.rds")
+  # Save files --------------------------------------------------------------
+  save_files(df_joined, short_name_scale = "joined")
+  
+  # # Save files --------------------------------------------------------------
+  # 
+  # write_csv(df_joined, "output/data/df_joined.csv")
+  # write_rds(df_joined, "output/data/df_joined.rds")
   
   return(df_joined)
 
