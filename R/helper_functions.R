@@ -177,6 +177,65 @@ create_raw_wide <- function(DF_long, short_name_scale) {
 }
 
 
+
+
+#' debug_function
+#' 
+#' Loads the parameters used in the functions present in _targets.R to make debugging easier
+#'
+#' @param name_function 
+#'
+#' @return
+#' @export
+#'
+#' @examples
+debug_function <- function(name_function) {
+
+  # DEBUG
+  # name_function = "prepare_CRT7"
+  
+  # Function to tar_load or assign the parameters
+  load_parameters <- function(parameters_function_separated, NUM) {
+    if (length(parameters_function_separated[[NUM]]) == 1) {
+      targets::tar_load(parameters_function_separated[[NUM]], envir = .GlobalEnv)
+    } else if (length(parameters_function_separated[[NUM]]) == 2) {
+      assign(parameters_function_separated[[NUM]][1], parameters_function_separated[[NUM]][2], envir = .GlobalEnv)
+    }
+  }
+  
+
+  # Makes possible to use prepare_TASK or "prepare_TASK"
+  if (substitute(name_function) != "name_function") name_function = substitute(name_function) #if (!interactive()) is so substitute do not overwrite name_function when in interactive mode
+  
+  # Parses _targets.R
+  code <- parse("_targets.R")
+  
+  # Finds the chunk where name_function is, and cleans the "\"
+  text_targets = grep(name_function, code, value = TRUE) %>% gsub("[^A-Za-z0-9\\(\\),_= ]", "", .)
+  
+  # Gets and separates then parameters of the function
+  parameters_function_raw = gsub(paste0(".*", name_function, "\\((.*?)).*"), "\\1", text_targets) %>% gsub(" ", "", .)
+  
+  if (length(parameters_function_raw) > 0) {
+    parameters_function_separated = strsplit(parameters_function_raw, ",") %>% unlist() %>% strsplit(., "=")
+    
+    # For each of the parameters, applies the load_parameters() function
+    TEMP = seq_along(parameters_function_separated) %>% map(~ load_parameters(parameters_function_separated, NUM = .x))
+    cat(crayon::green("Loaded: "), gsub(",", ", ", parameters_function_raw))
+    
+  } else {
+    cat(crayon::red(paste0("'", name_function, "'", "not found in _targets.R")))
+  }
+  
+
+}
+
+
+
+
+
+
+
 ##' Save files
 ##'
 ##' 
