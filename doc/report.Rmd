@@ -1,0 +1,100 @@
+---
+title: "Codebook"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+
+knitr::opts_chunk$set(echo = TRUE)
+targets::tar_load(DF)
+
+```
+
+## Summary
+
+```{r summary, include=FALSE}
+
+number_participants = DF %>% distinct(id) %>% nrow()
+
+number_tasks = DF %>% distinct(experimento) %>% nrow()
+
+```
+
+A total of `r number_participants` people completed `r number_tasks` tasks.  
+
+
+```{r summary-table, echo=FALSE}
+
+summary_table = 
+  DF %>% 
+    group_by(id) %>% 
+    summarise(
+      n_tasks = n_distinct(experimento),
+      time_elapsed = max(time_elapsed) / 1000,
+      rt = sum(rt) / 1000,
+      time_elapsed_min = max(time_elapsed) / 60,
+      rt_min = sum(rt) / 60, 
+      .groups = "keep"
+      )
+
+knitr::kable(summary_table)
+```
+
+
+## Details of tasks
+
+```{r echo=FALSE}
+
+# Alternative trialid for each scale
+trialid_table = DF %>% 
+  filter(trial_type != "fullscreen") %>% 
+  select(experimento, trial_type, trialid, responses) %>% 
+  # filter(trial_type %in% c("survey-multi-choice-vertical", "survey-multi-choice-horizontal", "likert", "html-slider-response")) %>% 
+  group_by(experimento) %>% 
+  distinct(trialid) %>% 
+  count(experimento, name = "number_items")
+
+
+DT::datatable(trialid_table, filter = 'top', options = list(dom = 'tip'))
+
+```
+
+
+## Details of tasks  
+
+Trialid's and questions for each of the items:  
+
+```{r echo=FALSE}
+
+# trialid and question_text for each experiment
+trialid_detail_table = DF %>% 
+  select(experimento, trialid, question_text) %>% 
+  group_by(experimento) %>% 
+  distinct(trialid, question_text) 
+
+
+DT::datatable(trialid_detail_table, filter = 'top', options = list(dom = 'tip'))
+```
+
+
+## Details Responses
+
+### Only showing multi-choice, slider and liker scales
+
+```{r echo=FALSE}
+
+# Alternatives responses for each scale
+responses_table = DF %>% 
+  # distinct(trial_type)
+  select(experimento, trial_type, trialid, responses) %>% 
+  filter(trial_type %in% c("survey-multi-choice-vertical", "survey-multi-choice-horizontal", "likert", "html-slider-response")) %>% 
+  group_by(experimento) %>% 
+  distinct(trialid, responses) 
+
+
+DT::datatable(responses_table, filter = 'top', options = list(dom = 'tip'))
+
+```
+
