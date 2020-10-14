@@ -8,7 +8,7 @@
 ##' @return
 ##' @author gorkang
 ##' @export
-prepare_joined <- function(...) {
+create_joined <- function(...) {
   
   # DEBUG
   # arguments = c("df_SBS", "df_CRT7")
@@ -42,19 +42,16 @@ prepare_joined <- function(...) {
   # Join all files ----------------------------------------------------------
 
   # Join all by ID in a single DF
-  df_joined = 
+  DF_joined = 
     input_list %>% 
     reduce(full_join, by = "id")
   
   
   # Save files --------------------------------------------------------------
-  save_files(df_joined, short_name_scale = "joined")
+  save_files(DF_joined, short_name_scale = "joined", is_scale = FALSE)
+
   
-  # # Save files --------------------------------------------------------------
-  # 
-  # write_csv(df_joined, "output/data/df_joined.csv")
-  # write_rds(df_joined, "output/data/df_joined.rds")
-  
-  return(df_joined)
+  # Output of function ---------------------------------------------------------
+  return(DF_joined)
 
 }

@@ -7,19 +7,17 @@
 ##' @return
 ##' @author gorkang
 ##' @export
-prepare_SBS <- function(DF) {
-
-  # Parameters --------------------------------------------------------------
+prepare_SBS <- function(DF_clean, name_scale_str, short_name_scale_str) {
   
-  name_scale_str = "Supernatural_Belief_Scale"
-  short_name_scale_str = "Supernatural"
+  # DEBUG
+  # debug_function(prepare_SBS)
   
-
+  
   # Standardized names ------------------------------------------------------
   standardized_names(short_name_scale = short_name_scale_str)
     
   # Create long -------------------------------------------------------------
-  DF_long = create_raw_long(DF, name_scale = name_scale_str, numeric_responses = TRUE)
+  DF_long = create_raw_long(DF_clean, name_scale = name_scale_str, numeric_responses = TRUE)
   
   # Create wide -------------------------------------------------------------
   DF_wide = create_raw_wide(DF_long, short_name_scale = short_name_scale_str)
@@ -43,7 +41,7 @@ prepare_SBS <- function(DF) {
                TRUE ~ response)) %>% 
 
     # [USE STANDARD NAMES FOR Scales and dimensions] ***************************
-     # Check with: standardized_names(short_name_scale = short_name_scale_str,help_names = TRUE)
+     # Check with: standardized_names(short_name_scale = short_name_scale_str, help_names = TRUE)
 
     # Use Standardized names for the dimensions and scale variables, etc.
     mutate(trialid = paste0(trialid, sufix_DIR)) %>%
@@ -56,6 +54,7 @@ prepare_SBS <- function(DF) {
   # **************************************************************************
 
   
+  
   # Join all ------------------------------------------------------------------------------------
   DF_joined = DF_wide %>% left_join(DF_wide_processed, by = c("id"))
   
@@ -65,7 +64,7 @@ prepare_SBS <- function(DF) {
   # Save files --------------------------------------------------------------
   save_files(DF_joined, short_name_scale = short_name_scale_str)
   
-  # Output function ---------------------------------------------------------
+  # Output of function ---------------------------------------------------------
   return(DF_joined)
   
 }

@@ -1,24 +1,21 @@
-##' Prepare CRT7
+##' Prepare TEMPLATE
 ##'
-##' .. content for \details{} ..
+##' Template for the functions to prepare specific tasks. Most of this file should not be changed
+##' Things to change: prepare_TEMPLATE -> prepare_[NAME_OF TEST] 
 ##'
-##' @title prepare_CRT7
-##'
-##' @param name_scale_str 
-##' @param short_name_scale_str 
+##' @title prepare_TEMPLATE
 ##' @param DF
-##'
 ##' @return
 ##' @author gorkang
 ##' @export
-prepare_CRT7 <- function(DF_clean, name_scale_str, short_name_scale_str) {
+prepare_TEMPLATE <- function(DF_clean, name_scale_str, short_name_scale_str) {
 
   # DEBUG
-  # debug_function(prepare_CRT7)
+  # debug_function(prepare_TEMPLATE)
   
-  
+
   # Standardized names ------------------------------------------------------
-  standardized_names(short_name_scale = short_name_scale_str)
+  standardized_names(short_name_scale = short_name_scale_str, help_names = TRUE) # help_names = FALSE once the script is ready
   
   # Create long -------------------------------------------------------------
   DF_long = create_raw_long(DF_clean, name_scale = name_scale_str, numeric_responses = FALSE)
@@ -68,7 +65,7 @@ prepare_CRT7 <- function(DF_clean, name_scale_str, short_name_scale_str) {
   check_NAs(DF_joined)
   
   # Save files --------------------------------------------------------------
-  save_files(DF_joined, short_name_scale = short_name_scale_str)
+  save_files(DF_joined, short_name_scale = short_name_scale_str, is_scale = TRUE)
   
   # Output of function ---------------------------------------------------------
   return(DF_joined) 

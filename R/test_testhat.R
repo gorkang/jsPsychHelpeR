@@ -31,6 +31,7 @@ test_testhat <- function(...) {
 
 # Creating automatic CHECKS
   # library(tidyverse)
-  # GorkaFunctions::createtest_df_snapshot(DF, n_char_variables_to_test = 10, n_num_variables_to_test = 3)
+  # GorkaFunctions::createtest_df_snapshot(DF_clean, n_char_variables_to_test = 10, n_num_variables_to_test = 3)
   # GorkaFunctions::createtest_df_snapshot(df_SBS, n_char_variables_to_test = 1, n_num_variables_to_test = 10)
   # GorkaFunctions::createtest_df_snapshot(df_CRT7, n_char_variables_to_test = 1, n_num_variables_to_test = 10)
+  # GorkaFunctions::createtest_df_snapshot(df_MagicalIdeation, n_char_variables_to_test = 1, n_num_variables_to_test = 10)

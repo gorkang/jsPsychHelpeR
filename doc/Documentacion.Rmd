@@ -1,43 +1,6 @@
 ---
-title: "Documentacion"
+title: "Documentation"
 output: html_document
 ---
 
-
-Utilizamos el paquete {targets} (https://wlandau.github.io/targets-manual/) para establecer un workflow de preparacion de datos estandarizado.
-
-Los datos de entrada vienen del sistema basado en JsPsych.
-
-
-## Como usar este sistema
-
-Si se tiene un protocolo experimental creado a partir de JsPsych, se deberian poder crear un proyecto de R que cree las bases limpias y corregidas automaticamente.  
-
-Con el tiempo, tendremos un archivo llamado `prepare_NAMEOFTEST.R` para cada una de las tareas. Estos scripts leeran los datos crudos y prepararan bases estandarizadas con las dimensiones de las pruebas calculadas, etc.  
-
-Es importante comprobar que no hay errores en el protocolo ANTES de correr el experimento definitivo (ver apartado Tests).  
-
-
-
-
-## Tests
-
-Usamos {testthat} y otros tests caseros. Tenemos dos tipos de tests:
-
-- Tests de sanidad de los archivos de entrada y de las bases iniciales  
-  + El output de estos se deberia usar para hacer correcciones en el protocolo ANTES de correrlo  
-  + Podriamos usar https://rich-iannone.github.io/pointblank/ para validar DFs (e.g. crear checks especificos para cada una de las pruebas: rango de respuestas entre 1 y 5, etc.)  
-  
-- Tests automaticos creados para "congelar" el estado de una base o analisis  
-  + El output se deberia usar para asegurarnos que no cambian los resultados y/o las bases finales al hacer cambios en scripts.
-  
-```{r automagic_checks, eval=FALSE, include=TRUE}
-
-# Creating automatic CHECKS
-  GorkaFunctions::createtest_df(DF, n_char_variables_to_test = 10, n_num_variables_to_test = 3)
-  GorkaFunctions::createtest_df(df_SBS, n_char_variables_to_test = 1, n_num_variables_to_test = 10)
-  
-```
-  
-  
-
+DOCUMENTATION IN: jsPsychHelpeR-manual/_book/index.html

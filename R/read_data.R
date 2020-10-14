@@ -30,19 +30,7 @@ read_data <- function(input_files) {
                            )
                          )
   
-  DF =
-    DF_raw %>% 
-    mutate(
-      # [REVIEW]: experimento and ID should be in the DF_raw?
-      # [REVIEW]: response_X will not be needed when input is fixed
-      experimento = gsub("(.*)_[0-9].csv", "\\1", filename), # Extrae nombre de experimento
-           ID = gsub(".*_([0-9]).csv", "\\1", filename), # Extrae nombre de participante
-           response_X = gsub('\\{"Q0":"|"\\}', '', responses) # Limpia respuestas [REMEMBER: Ahora solo funciona con una respuesta por pantalla]
-           ) %>%
-    # [REVIEW]: Screen_WM se usa ahora para las instruccinoes. En el futuro deberia ser [instrucciones_NOMBRETEST]
-    filter(!trialid %in% c("Screen_WM")) %>% # Elimina instrucciones [TODO: usar regexp para limpiar instrucciones_NOMBRETEST]
-    janitor::clean_names()  
-
-  return(DF)
+  # Output of function ---------------------------------------------------------
+  return(DF_raw)
   
 }

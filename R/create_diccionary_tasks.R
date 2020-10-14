@@ -1,4 +1,4 @@
-##' .. content for \description{} (no empty lines) ..
+##' Create DICCIONARY with long and short names for the tasks in the protocol
 ##'
 ##' .. content for \details{} ..
 ##'
@@ -7,14 +7,14 @@
 ##' @return
 ##' @author gorkang
 ##' @export
-prepare_list_tasks <- function(DF) {
+create_diccionary_tasks <- function(DF_clean) {
 
-  DF_list_tasks = DF %>% 
+  DICCIONARY_tasks = DF_clean %>% 
     mutate(`short_name: from trialid` = gsub("(.*)_[0-9]{1,3}", "\\1", trialid)) %>% 
     # select(trialid, short_name)
     distinct(experimento, `short_name: from trialid`) %>% 
     drop_na()
   
-  write_csv(DF_list_tasks, "output/data/DF_list_tasks.csv")
+  write_csv(DICCIONARY_tasks, "output/data/DICCIONARY_tasks.csv")
 
 }
