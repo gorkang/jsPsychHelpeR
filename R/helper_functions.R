@@ -2,18 +2,39 @@
 ##'
 ##' 
 ##'
+##' @param short_name_scale short name of scale
+##' @param dimensions c("DIMENSION1", "DIMENSION2"): list of names for the dimensions
+##' @param help_names TRUE prints a message with the instructions
+##'
 ##' @title standardized_names
-##' @param DF
 ##' @return
 ##' @author gorkang
 ##' @export
 standardized_names <- function(short_name_scale, dimensions = "", help_names = FALSE) {
   
-  if (help_names == TRUE) cat(crayon::red(crayon::underline("REMEMBER:\n\n")))
-  
   # Global sufix for direct scores
   .GlobalEnv$sufix_DIR = "_DIR"
-  
+
+
+  # CHECKS ------------------------------------------------------------------
+
+  # Character vector
+  if (!(is.vector(dimensions) & is.character(dimensions[1]))) {
+    cat(
+      crayon::red("ERROR: `dimensions` needs to be a character vector. e.g. c('name1', 'name2')\n"),
+      "       Right now: `dimensions` = ",   paste0(dimensions), "\n")
+    stop()
+    
+  # Spaces and other forbiden characters
+  } else if (any(grepl(" |_", dimensions))) {
+    cat(
+      crayon::red("ERROR: `dimensions` can't have spaces and '_'.\n",
+                  "       WRONG: c('name dimension', 'name_dimension2')\n",
+                  "       RIGHT: c('namedimension', 'NameDimension2')\n"),
+                  "       Right now: `dimensions` = ",   paste0(dimensions), "\n")
+    stop()
+    }
+
   
   # Dimensions names
     # For each of the values in 'dimensions' will create a name_DIRd[n] and name_STDd[n]
@@ -36,6 +57,7 @@ standardized_names <- function(short_name_scale, dimensions = "", help_names = F
     map2(names_dimensions_STD, names_variables_STD, assign, envir = .GlobalEnv)
 
     # Message with details ----------------------------------------------------
+    if (help_names == TRUE) cat(crayon::red(crayon::underline("REMEMBER:\n\n")))
     if (help_names == TRUE) cat("", 
         crayon::magenta(crayon::underline("Dimensions\n")),
     crayon::green(
@@ -217,14 +239,15 @@ debug_function <- function(name_function) {
   parameters_function_raw = gsub(paste0(".*", name_function, "\\((.*?)).*"), "\\1", text_targets) %>% gsub(" ", "", .)
   
   if (length(parameters_function_raw) > 0) {
+    
     parameters_function_separated = strsplit(parameters_function_raw, ",") %>% unlist() %>% strsplit(., "=")
     
     # For each of the parameters, applies the load_parameters() function
     TEMP = seq_along(parameters_function_separated) %>% map(~ load_parameters(parameters_function_separated, NUM = .x))
-    cat(crayon::green("Loaded: "), gsub(",", ", ", parameters_function_raw))
+    cat(crayon::green("Loaded: "), gsub(",", ", ", parameters_function_raw), "\n")
     
   } else {
-    cat(crayon::red(paste0("'", name_function, "'", "not found in _targets.R")))
+    cat(crayon::red(paste0("'", name_function, "'", "not found in _targets.R")), "\n")
   }
   
 
@@ -245,9 +268,19 @@ debug_function <- function(name_function) {
 ##' @return
 ##' @author gorkang
 ##' @export
-save_files <- function(DF, short_name_scale) {
+save_files <- function(DF, short_name_scale, is_scale = TRUE) {
   
-  write_csv(DF, here::here(paste0("output/data/df_", short_name_scale , ".csv")))
-  write_rds(DF, here::here(paste0("output/data/df_", short_name_scale , ".rds")))
+  # Use "df_" if it's a scale otherwise use "DF_"
+  if (is_scale == TRUE) {
+    
+    write_csv(DF, here::here(paste0("output/data/df_", short_name_scale , ".csv")))
+    write_rds(DF, here::here(paste0("output/data/df_", short_name_scale , ".rds")))
+    
+  } else {
+    
+    write_csv(DF, here::here(paste0("output/data/DF_", short_name_scale , ".csv")))
+    write_rds(DF, here::here(paste0("output/data/DF_", short_name_scale , ".rds")))
+    
+  }
   
 }
