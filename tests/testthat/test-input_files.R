@@ -68,6 +68,7 @@ testthat::test_that('Check all input files have the same columns', {
   
   # Actual expectation -------------------------------------------------------------
   
+  testthat::expect_gt(nrow(DF_columns_files), 1) # Checks that we have some rows in the DF
   testthat::expect_length(names_missing_columns, 0)
 
 })

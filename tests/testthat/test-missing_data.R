@@ -7,10 +7,13 @@ testthat::test_that('Tests if the participant is missing test results', {
   
   # Test --------------------------------------------------------------------
   
-  all_scales = grep("^((?!_[0-9]{1,2}_).)*_PROC$", names(df_joined), value = TRUE, perl = TRUE)
+  # Selects all STDt, STDd, DIRt and DIRd scales
+  # all_scales also used in "R/prepare_df_analysis.R"
+  all_scales = grep(".*_DIRt$|.*_STDt$|.*_DIRd$|.*STDd$", names(DF_joined), value = TRUE, perl = TRUE)
   
-  missing_DF = df_joined %>% 
-    select(id, all_scales) %>% 
+  
+  missing_DF = DF_joined %>% 
+    select(id, all_of(all_scales)) %>% 
     mutate(NAs_id = rowSums(is.na(select(., matches(all_scales))))) %>% 
     select(id, NAs_id, everything())
   
@@ -33,8 +36,9 @@ testthat::test_that('Tests if the participant is missing test results', {
     
   }
   
-  # Actual expectation -------------------------------------------------------------
+  # Actual expectations -------------------------------------------------------------
   
-  testthat::expect_length(missing_ids, 0)
+  testthat::expect_gt(ncol(missing_DF), 2) # Checks that we have some columns in the DF
+  testthat::expect_length(missing_ids, 0) # Check that there are no id's with missing data
 
 })

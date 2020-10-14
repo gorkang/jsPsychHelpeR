@@ -7,8 +7,8 @@ testthat::test_that('Check if the trialid question_text are unique', {
 
   # Test --------------------------------------------------------------------
   
-  non_unique_trialid = 
-    DF %>% 
+  DF_trialid = 
+    DF_clean %>% 
     mutate(question_text = 
              case_when(
                is.na(question_text) ~ stimulus,
@@ -19,7 +19,10 @@ testthat::test_that('Check if the trialid question_text are unique', {
     count(trialid, question_text) %>% 
     group_by(trialid, question_text) %>% 
     count() %>% 
-    drop_na(trialid) %>% 
+    drop_na(trialid) 
+  
+  non_unique_trialid = 
+    DF_trialid %>% 
     filter(n > 1) %>%  
     pull(trialid)
   
@@ -39,6 +42,7 @@ testthat::test_that('Check if the trialid question_text are unique', {
 
   # Actual expectation -------------------------------------------------------------
   
+  testthat::expect_gt(nrow(DF_trialid), 2) # Checks that we have some rows in the DF
   testthat::expect_length(non_unique_trialid, 0)
 
 })
