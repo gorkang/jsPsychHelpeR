@@ -2,22 +2,24 @@ testthat::test_that('Check if any of the items appear more or less than the othe
 
   # Name of test (should reflect the name of the file) ----------------------
   
-  name_of_test = "DF"
+  name_of_test = "DF_clean"
   
   
   # Test --------------------------------------------------------------------
   
-  offender_tests =
-    DF %>% 
+  DF_temp = 
+    DF_clean %>% 
     group_by(experimento) %>% 
     count(trialid, name = "times_item_shown") %>% 
     count(times_item_shown) %>% 
-    count() %>% # How many times an experiment appears?
+    count() # How many times an experiment appears?
+    
+  offender_tests =
+    DF_temp %>% 
     filter(n > 1) %>% 
     pull(experimento)
   
-  
-  checks_DF = DF %>% 
+  checks_DF = DF_clean %>% 
     group_by(experimento) %>% 
     count(trialid) %>% 
     filter(experimento %in% offender_tests)
@@ -38,6 +40,7 @@ testthat::test_that('Check if any of the items appear more or less than the othe
   
   # Actual expectation -------------------------------------------------------------
   
+  testthat::expect_gt(nrow(DF_temp), 1) # Checks that we have some rows in the DF
   testthat::expect_length(offender_tests, 0)
-
+  
 })
