@@ -1,4 +1,4 @@
-# FONDECYT 2020 Huepe project working with {targets}
+# jsPsychHelpeR with {targets}
 
 # Parameters --------------------------------------------------------------
 
@@ -17,11 +17,13 @@
   lapply(list.files("./R", full.names = TRUE, pattern = ".R"), source)
   
   # Packages to load
-  main_packages = c("crayon", "dplyr", "forcats", "gt", "gtsummary", "janitor", "patchwork", "purrr", "readr", "report", "shrtcts", "stringr", "renv", "tarchetypes", "targets", "testthat", "tidyr")
-  data_analysis_dependencies = c("broom", "broom.mixed", "emmeans", "gmodels", "irr", "lme4", "parameters", "performance", "psych", "sjPlot")
-  data_visualization_dependencies = c("ggalluvial", "ggridges")
+  main_packages = c("cli", "crayon", "patchwork", "renv", "tarchetypes", "targets", "testthat")
+  data_preparation_packages = c("dplyr", "forcats", "janitor", "purrr", "readr", "safer", "stringr", "tidyr")
+  data_analysis_packages = c("broom", "broom.mixed", "emmeans", "gmodels", "gt", "gtsummary", "irr", "lme4", "parameters", "performance", "psych", "report", "sjPlot")
+  data_visualization_packages = c("ggalluvial", "ggridges")
   non_declared_dependencies = c("qs", "visNetwork", "webshot", "performance")
-  packages_to_load = c(main_packages, data_analysis_dependencies, data_visualization_dependencies, non_declared_dependencies)
+  extra_packages = c("shrtcts")
+  packages_to_load = c(main_packages, data_preparation_packages, data_analysis_packages, data_visualization_packages, non_declared_dependencies, extra_packages)
   
   # target options (packages, errors...)
   tar_option_set(packages = packages_to_load, # Load packages for all targets
@@ -64,15 +66,16 @@ targets <- list(
     tar_target(DICCIONARY_tasks, create_diccionary_tasks(DF_clean)),
 
 
-  # _Process tasks -----------------------------------------------------------
+  # _Prepare tasks -----------------------------------------------------------
   
     # Use R/prepare_template.R to create new preparation_scripts
   
     # [TODO]: Each of the individual tasks should have specific hardcoded TESTS!
-    tar_target(df_SBS, prepare_SBS(DF_clean,  name_scale_str = "Supernatural_Belief_Scale", short_name_scale_str = "Supernatural")),
-    tar_target(df_CRT7, prepare_CRT7(DF_clean, name_scale_str = "CRT_7", short_name_scale_str = "CRT_7")),
-    tar_target(df_Goldberg, prepare_Goldberg(DF_clean, name_scale_str = "Goldberg_Questionnaire", short_name_scale_str = "Goldberg")),
-    tar_target(df_MagicalIdeation, prepare_Magical_Ideation(DF_clean, name_scale_str = "Magical_Ideation", short_name_scale_str = "Magical_Ideation")),
+    # [REMEMBER]: the target name needs to be ==  df_[short_name_scale_str]
+    tar_target(df_CRT7, prepare_CRT7(DF_clean, short_name_scale_str = "CRT_7")),
+    tar_target(df_GHQ12, prepare_GHQ12(DF_clean, short_name_scale_str = "Goldberg")),
+    tar_target(df_MIS, prepare_MIS(DF_clean, short_name_scale_str = "Magical_Ideation")),
+    tar_target(df_bRCOPE, prepare_bRCOPE(DF_clean, short_name_scale_str = "Religious_Coping")),
   
 
   # _Join tasks --------------------------------------------------------------
@@ -80,51 +83,55 @@ targets <- list(
     # [REMEMBER]: Have to manually put every test we prepare here
       # rlang::sym("s") para convertir en simbolos caracteres. 
       # Si usamos estandar para el output de prepared_TASKS() (por ejemplo, df_XXX, vs DF_XXX), podemos hacer que se joineen aqui automaticamente!!!
-    tar_target(DF_joined, create_joined(df_SBS,
-                                        df_CRT7,
-                                        df_MagicalIdeation)),
+    tar_target(DF_joined, create_joined(df_CRT7,
+                                        df_MIS,
+                                        df_bRCOPE)),
     
   
   # _Analysis ----------------------------------------------------------------- 
   
     # Prepare a DF ready for the analysis
     tar_target(DF_analysis, create_DF_analysis(DF_joined)),
-
+  
   
     # [TODO] Descriptive Table 1
-    # tar_target(table_descriptive, analysis_descriptive(df_analysis)),
-    # Importante: Comparar los datos de df_analysis con los datos finalmente usados en el modelo? Al menos reportar numero de missings y similares
+    # Important: Should we compare DF_analysis with the final data used in each model? 
+    tar_render(descriptives_table1, "doc/descriptives_table1.Rmd"),
+  
     
     # Models
     tar_target(model_XXX, analysis_model_XXX(DF_analysis)),
 
 
-    # Tables
-    tar_target(table1_model_XXX, analysis_model_XXX_table(model_XXX)),
-
-
-    # Plots
-    tar_target(plot1_model_XXX, analysis_model_XXX_plot(model_XXX)),
+    # Tables and plots use the model (e.g. model_XXX) as input.  
+    # Most model objects in R include the data used to fit the model
   
+      # Tables
+      tar_target(table1_model_XXX, analysis_model_XXX_table(model_XXX)),
+  
+  
+      # Plots
+      tar_target(plot1_model_XXX, analysis_model_XXX_plot(model_XXX)),
+    
   
   # _Tests -------------------------------------------------------------------
   
-    # [REMEMBER]: Have to manually put every target we have a test for here
-    # rlang::sym("s") para convertir en simbolos caracteres. 
-    # Si usamos estandar para el output de prepared_TASKS() (por ejemplo, df_XXX, vs DF_XXX), podemos hacer que se joineen aqui automaticamente!!!
-    tar_target(TESTS, test_testhat(input_files,
+    # [REMEMBER]: Have to manually put every target we have a test for here (except the automatic tests: 'input_files_automatic_tests_str' takes care of that)
+    tar_target(input_files_automatic_tests_str, list.files(path = "_targets/objects/", pattern="df_*", full.names = FALSE, ignore.case = FALSE)),
+  
+    tar_target(TESTS, test_testhat(input_files_automatic_tests_str = input_files_automatic_tests_str,
+                                   input_files,
                                    DF_clean, 
-                                   DF_joined,
-                                   df_SBS,
-                                   df_CRT7
-                                   # df_MagicalIdeation,
-                                   )),
+                                   DICCIONARY_tasks,
+                                   DF_joined
+                                   )
+               ),
   
 
   # Report ------------------------------------------------------------------
 
      # Automatic report
-    tar_render(report, "doc/report.Rmd")
+    tar_render(report_DF_clean, "doc/report_DF_clean.Rmd")
   
 
 )
