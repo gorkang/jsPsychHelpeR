@@ -8,7 +8,8 @@ editor_options:
 ```{r setup, include=FALSE}
 
 knitr::opts_chunk$set(echo = TRUE)
-targets::tar_load(DF)
+targets::tar_load(DF_clean)
+DF = DF_clean
 
 ```
 
