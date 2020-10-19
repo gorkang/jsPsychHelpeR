@@ -3,6 +3,7 @@ testthat::test_that('Check all input files have the same columns', {
   # Name of test (should reflect the name of the file) ----------------------
   
   name_of_test = "input_files"
+  cat(crayon::underline(crayon::yellow(paste0("\n\nRunning: ", crayon::silver(name_of_test, paste(rep(" ", 40), collapse = " ")),"\n\n"))))
   
   
   # Test --------------------------------------------------------------------

@@ -3,8 +3,9 @@ testthat::test_that('Check if the trialid question_text are unique', {
   # Name of test (should reflect the name of the file) ----------------------
   
   name_of_test = "trialid_question"
+  cat(crayon::underline(crayon::yellow(paste0("\n\nRunning: ", crayon::silver(name_of_test, paste(rep(" ", 40), collapse = " ")),"\n\n"))))
 
-
+  
   # Test --------------------------------------------------------------------
   
   DF_trialid = 

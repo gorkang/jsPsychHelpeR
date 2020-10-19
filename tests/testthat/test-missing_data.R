@@ -3,6 +3,7 @@ testthat::test_that('Tests if the participant is missing test results', {
   # Name of test (should reflect the name of the file) ----------------------
   
   name_of_test = "missing_data"
+  cat(crayon::underline(crayon::yellow(paste0("\n\nRunning: ", crayon::silver(name_of_test, paste(rep(" ", 40), collapse = " ")),"\n\n"))))
   
   
   # Test --------------------------------------------------------------------
