@@ -13,6 +13,7 @@ create_joined <- function(...) {
   # DEBUG
   # arguments = c("df_SBS", "df_CRT7")
   
+  
   # Load targets objects used in tests --------------------------------------
 
   argnames <- sys.call()
@@ -22,11 +23,14 @@ create_joined <- function(...) {
   existing_targets = list.files(path = "_targets/objects/", pattern="df_.*", full.names = FALSE, ignore.case = FALSE)
   final_prepared_files = arguments[arguments %in% existing_targets]
   
+  # Check if we are not loading all targets
+  not_loaded = existing_targets[!existing_targets %in% arguments]
+  if (length(not_loaded > 0)) cat(crayon::yellow(paste0("\n[WARNING]: Not joining some of the df: '", paste(not_loaded, collapse = ", "), "'. Did you forgot to include them in the create_joined() target?\n\n")))
+  
   # Warning if any of the files do no exist
-  if (length(final_prepared_files) != length(arguments)) cat(crayon::red(paste0("- WARNING: Can't find ", paste(arguments[!arguments %in% existing_targets], collapse = ", "), " in the '_targets/objects' folder")))
+  if (length(final_prepared_files) != length(arguments)) cat(crayon::yellow(paste0("\n[WARNING]: Can't find ", paste(arguments[!arguments %in% existing_targets], collapse = ", "), " in the '_targets/objects' folder\n\n")))
 
   
-
   # Loads and gets all the targets in a single list -------------------------
 
   # Loads all the prepared targets
