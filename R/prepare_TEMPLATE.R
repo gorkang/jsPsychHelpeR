@@ -1,73 +1,99 @@
 ##' Prepare TEMPLATE
 ##'
 ##' Template for the functions to prepare specific tasks. Most of this file should not be changed
-##' Things to change: prepare_TEMPLATE -> prepare_[NAME_OF TEST] 
+##' Things to change: 
+##'   - Name of function: prepare_TEMPLATE -> prepare_[value of short_name_scale_str] 
+##'   - dimensions parameter in standardized_names()
+##'   - 2 [ADAPT] chunks
 ##'
 ##' @title prepare_TEMPLATE
-##' @param DF
+##'
+##' @param short_name_scale_str 
+##' @param DF_clean
+##'
 ##' @return
 ##' @author gorkang
 ##' @export
-prepare_TEMPLATE <- function(DF_clean, name_scale_str, short_name_scale_str) {
+prepare_TEMPLATE <- function(DF_clean, short_name_scale_str) {
 
   # DEBUG
   # debug_function(prepare_TEMPLATE)
-  
 
   # Standardized names ------------------------------------------------------
-  standardized_names(short_name_scale = short_name_scale_str, help_names = TRUE) # help_names = FALSE once the script is ready
+  standardized_names(short_name_scale = short_name_scale_str, 
+                     dimensions = c("NameDimension1", "NameDimension2"), # Use names of dimensions, "" or comment out line
+                     help_names = TRUE) # help_names = FALSE once the script is ready
   
   # Create long -------------------------------------------------------------
-  DF_long = create_raw_long(DF_clean, name_scale = name_scale_str, numeric_responses = FALSE)
+  DF_long_RAW = create_raw_long(DF_clean, short_name_scale = short_name_scale_str, numeric_responses = FALSE)
   
-  # Create wide -------------------------------------------------------------
-  DF_wide = create_raw_wide(DF_long, short_name_scale = short_name_scale_str)
-  
-  
+  # Show number of items, responses, etc. [uncomment to help prepare the test] 
+  # prepare_helper(DF_long_RAW, show_trialid_questiontext = TRUE)
   
   
-  # [ADAPT] Wide: processed responses --------------------------------------------------
+  # Create long DIR ------------------------------------------------------------
+  DF_long_DIR = 
+    DF_long_RAW %>% 
+    select(id, trialid, RAW) %>%
+    
+    
+  # [ADAPT]: RAW to DIR for individual items -----------------------------------
+  # ****************************************************************************
   
-  DF_wide_processed =
-    DF_long %>% 
-    select(id, trialid, response) %>% 
+    mutate(
+      DIR =
+        case_when(
+          RAW == "Nunca" ~ 1,
+          RAW == "Siempre" ~ 2,
+          RAW == "Casi\\n Siempre" ~ 3,
+          RAW == "Casi\\n Nunca" ~ 4,
+          RAW == "A veces" ~ 5,
+          TRUE ~ 9999
+        ))
+    
+  # [END ADAPT]: ***************************************************************
+  # ****************************************************************************
+    
 
-    # Process data
-    mutate(response =
-             case_when(
-               trialid == "CRT_7_1" & response == "50" ~ 1,
-               trialid == "CRT_7_2" & response == "5" ~ 1,
-               trialid == "CRT_7_3" & response == "47" ~ 1,
-               trialid == "CRT_7_4" & response == "4" ~ 1,
-               trialid == "CRT_7_5" & response == "29" ~ 1,
-               trialid == "CRT_7_6" & response == "20" ~ 1,
-               trialid == "CRT_7_7" & response == "Ha perdido dinero" ~ 1,
-               TRUE ~ 0)) %>% 
+  # Create DF_wide_RAW_DIR -----------------------------------------------------
+  DF_wide_RAW_DIR =
+    DF_long_DIR %>% 
+    pivot_wider(
+      names_from = trialid, 
+      values_from = c(RAW, DIR),
+      names_glue = "{trialid}_{.value}") %>% 
     
-  # [USE STANDARD NAMES FOR Scales and dimensions] ***************************
-  # Check with: standardized_names(short_name_scale = short_name_scale_str,help_names = TRUE)
+    # NAs for RAW and DIR items
+    mutate(!!name_RAW_NA := rowSums(is.na(select(., matches("_RAW")))),
+           !!name_DIR_NA := rowSums(is.na(select(., matches("_DIR"))))) %>% 
+      
     
-  # Use Standardized names for the dimensions and scale variables, etc.
-  mutate(trialid = paste0(trialid, sufix_DIR)) %>%
-    pivot_wider(names_from = trialid, values_from = response) %>% 
-    
-    mutate(!!name_DIRt := rowSums(select(., matches(short_name_scale_str)), na.rm = TRUE),
-           !!name_DIRt_NA := rowSums(is.na(select(., matches(short_name_scale_str)))))
-  
-  # **************************************************************************
-  
+  # [ADAPT]: Scales and dimensions calculations --------------------------------
+  # ****************************************************************************
+    # [USE STANDARD NAMES FOR Scales and dimensions: name_DIRt, name_DIRd1, etc.] Check with: standardized_names(help_names = TRUE)
 
-  
-  # Join all ------------------------------------------------------------------------------------
-  DF_joined = DF_wide %>% left_join(DF_wide_processed, by = c("id"))
-  
-  # CHECK -------------------------------------------------------------------
-  check_NAs(DF_joined)
+    mutate(
+
+      # Score Dimensions (use 3 digit item numbers)
+      !!name_DIRd1 := rowSums(select(., matches("02|04|05|06|07|10|14") & matches("_DIR")), na.rm = TRUE), # NAME SHOULD BE !!name_DIRd1
+      !!name_DIRd2 := rowSums(select(., matches("01|03|08|09|11|12|13") & matches("_DIR")), na.rm = TRUE), # NAME SHOULD BE !!name_DIRd2
+      
+      # Score Scale
+      !!name_DIRt := rowSums(select(., matches("_DIR")), na.rm = TRUE)
+      
+    )
+    
+  # [END ADAPT]: ***************************************************************
+  # ****************************************************************************
+
+
+  # CHECK NAs -------------------------------------------------------------------
+  check_NAs(DF_wide_RAW_DIR)
   
   # Save files --------------------------------------------------------------
-  save_files(DF_joined, short_name_scale = short_name_scale_str, is_scale = TRUE)
+  save_files(DF_wide_RAW_DIR, short_name_scale = short_name_scale_str, is_scale = TRUE)
   
   # Output of function ---------------------------------------------------------
-  return(DF_joined) 
+  return(DF_wide_RAW_DIR) 
  
 }

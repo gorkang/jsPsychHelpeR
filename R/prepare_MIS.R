@@ -1,4 +1,4 @@
-##' Prepare CRT7
+##' prepare_MIS
 ##'
 ##' Template for the functions to prepare specific tasks. Most of this file should not be changed
 ##' Things to change: 
@@ -14,14 +14,14 @@
 ##' @return
 ##' @author gorkang
 ##' @export
-prepare_CRT7 <- function(DF_clean, short_name_scale_str) {
+prepare_MIS <- function(DF_clean, short_name_scale_str) {
 
   # DEBUG
-  # debug_function(prepare_CRT7)
+  # debug_function(prepare_MIS)
 
   # Standardized names ------------------------------------------------------
   standardized_names(short_name_scale = short_name_scale_str, 
-                     # dimensions = c(""), 
+                     dimensions = c("", ""), 
                      help_names = FALSE) # help_names = FALSE once the script is ready
   
   # Create long -------------------------------------------------------------
@@ -35,7 +35,7 @@ prepare_CRT7 <- function(DF_clean, short_name_scale_str) {
   DF_long_DIR = 
     DF_long_RAW %>% 
     select(id, trialid, RAW) %>%
-    
+  
     
   # [ADAPT]: RAW to DIR for individual items -----------------------------------
   # ****************************************************************************
@@ -43,13 +43,8 @@ prepare_CRT7 <- function(DF_clean, short_name_scale_str) {
     mutate(
       DIR =
         case_when(
-          trialid == "CRT_7_1" & RAW == "50" ~ 1,
-          trialid == "CRT_7_2" & RAW == "5" ~ 1,
-          trialid == "CRT_7_3" & RAW == "47" ~ 1,
-          trialid == "CRT_7_4" & RAW == "4" ~ 1,
-          trialid == "CRT_7_5" & RAW == "29" ~ 1,
-          trialid == "CRT_7_6" & RAW == "20" ~ 1,
-          trialid == "CRT_7_7" & RAW == "Ha perdido dinero" ~ 1,
+          RAW == "Falso" ~ 0,
+          RAW == "Verdadero" ~ 1,
           TRUE ~ 0
         ))
     
@@ -75,10 +70,9 @@ prepare_CRT7 <- function(DF_clean, short_name_scale_str) {
     # [USE STANDARD NAMES FOR Scales and dimensions] Check with: standardized_names()
 
     mutate(
-
+      
       # Score Scale
       !!name_DIRt := rowSums(select(., matches("_DIR")), na.rm = TRUE)
-      
     )
     
   # [END ADAPT]: ***************************************************************
