@@ -53,8 +53,8 @@ standardized_names <- function(short_name_scale, dimensions = "", help_names = F
     names_variables_STD = paste0("name_STDd", 1:length(names_dimensions_STD))
     
     # Creates variables in Global Environment
-    map2(names_dimensions_DIR, names_variables_DIR, assign, envir = .GlobalEnv)
-    map2(names_dimensions_STD, names_variables_STD, assign, envir = .GlobalEnv)
+    map2(names_variables_DIR, names_dimensions_DIR, assign, envir = .GlobalEnv)
+    map2(names_variables_STD, names_dimensions_STD, assign, envir = .GlobalEnv)
 
     # Message with details ----------------------------------------------------
     if (help_names == TRUE) cat(crayon::red(crayon::underline("REMEMBER:\n\n")))
@@ -73,8 +73,12 @@ standardized_names <- function(short_name_scale, dimensions = "", help_names = F
     ))
   }
   
+  
+  # NAs for RAW and DIR items
+  .GlobalEnv$name_RAW_NA = paste0(short_name_scale, "_RAW_NA")
+  .GlobalEnv$name_DIR_NA = paste0(short_name_scale, "_DIR_NA")
+  
   # Direct scores totals
-  .GlobalEnv$name_DIRt_NA = paste0(short_name_scale, "_DIRt_NA")
   .GlobalEnv$name_DIRt = paste0(short_name_scale, "_DIRt")
   
   # Standardized scores totals
@@ -105,13 +109,13 @@ standardized_names <- function(short_name_scale, dimensions = "", help_names = F
 ##' Important to catch errors when transforming data from RAW to PROCESSED
 ##'
 ##' @title check_NAs
-##' @param DF
+##' @param DF_joined
 ##' @return
 ##' @author gorkang
 ##' @export
-check_NAs <- function(DF) {
+check_NAs <- function(DF_joined) {
   
-  DF_CHECK_NA = DF %>% 
+  DF_CHECK_NA = DF_joined %>% 
     select(ends_with("_NA")) 
   
   if (ncol(DF_CHECK_NA) == 2) {
@@ -125,7 +129,7 @@ check_NAs <- function(DF) {
     
   } else {
     
-    cat(crayon::blue("\n  - Can't perform NA check, DF does not have RAW_NA and PROC_NA columns\n"))
+    cat(crayon::blue("\n  - Can't perform NA check, DF does not have RAW_NA and DIR_NA columns\n"))
     
   }
   
@@ -134,23 +138,29 @@ check_NAs <- function(DF) {
 
 
 
-##' Create long DF for a specific task (name_scale)
+##' Create long DF for a specific task (short_name_scale)
 ##'
 ##' 
 ##'
 ##' @title create_raw_long
-##' @param DF
+##'
+##' @param short_name_scale 
+##' @param numeric_responses 
+##' @param DF_clean
+##'
 ##' @return
 ##' @author gorkang
 ##' @export
-create_raw_long <- function(DF, name_scale, numeric_responses = FALSE) {
+create_raw_long <- function(DF_clean, short_name_scale, numeric_responses = FALSE) {
   
   # DEBUG
-  # name_scale = "CRT_7"
+  # short_name_scale = "CRT_7"
   
 
-  DF %>% 
-    filter(experimento == name_scale) %>% 
+  DF_clean %>% 
+    # filter(experimento == name_scale) %>% 
+    filter(grepl(short_name_scale, trialid)) %>% 
+    
     
     # [TODO]: DELETE THIS ONCE input files are OK ---------------------
     mutate(response = 
@@ -168,35 +178,36 @@ create_raw_long <- function(DF, name_scale, numeric_responses = FALSE) {
                 as.character(response) 
               }
            ) %>% 
-    drop_na(trialid)
+    drop_na(trialid) %>% 
+    rename(RAW = response)
 }
 
 
 
 
-##' Create wide DF for a specific task (short_name_scale)
-##'
-##' 
-##'
-##' @title create_raw_wide
-##' @param DF
-##' @return
-##' @author gorkang
-##' @export
-create_raw_wide <- function(DF_long, short_name_scale) {
-
-  # DEBUG  
-  # short_name_scale = "Supernatural"
-  
-  name_RAW_NA = paste0(short_name_scale, "_RAW_NA")
-
-  DF_long %>% 
-    select(id, trialid, response) %>% 
-    mutate(trialid = paste0(trialid, "_RAW")) %>% 
-    pivot_wider(names_from = trialid, values_from = response) %>% 
-    mutate(!!name_RAW_NA := rowSums(is.na(select(., matches(short_name_scale)))))
-  
-}
+# ##' Create wide DF for a specific task (short_name_scale)
+# ##'
+# ##' 
+# ##'
+# ##' @title create_raw_wide
+# ##' @param DF_long
+# ##' @return
+# ##' @author gorkang
+# ##' @export
+# create_raw_wide <- function(DF_long, short_name_scale) {
+# 
+#   # DEBUG  
+#   # short_name_scale = "Supernatural"
+#   
+#   name_RAW_NA = paste0(short_name_scale, "_RAW_NA")
+# 
+#   DF_long %>% 
+#     select(id, trialid, response) %>% 
+#     mutate(trialid = paste0(trialid, "_RAW")) %>% 
+#     pivot_wider(names_from = trialid, values_from = response) %>% 
+#     mutate(!!name_RAW_NA := rowSums(is.na(select(., matches(short_name_scale)))))
+#   
+# }
 
 
 
@@ -281,6 +292,62 @@ save_files <- function(DF, short_name_scale, is_scale = TRUE) {
     write_csv(DF, here::here(paste0("output/data/DF_", short_name_scale , ".csv")))
     write_rds(DF, here::here(paste0("output/data/DF_", short_name_scale , ".rds")))
     
+  }
+  
+}
+
+
+
+#' helper to correct tasks
+#'
+#' @param DF_long_RAW 
+#' @param show_trialid_questiontext [TRUE/FALSE]
+#'
+#' @return
+#' @export
+#'
+#' @examples
+prepare_helper <- function(DF_long_RAW, show_trialid_questiontext = FALSE) {
+  
+  # Items
+  vector_items = DF_long_RAW %>% distinct(trialid) %>% pull(trialid)
+  
+  # Questions
+  DF_question = DF_long_RAW %>% distinct(trialid, question_text) #%>%  print(n = Inf)
+  
+  # Responses
+  vector_responses = DF_long_RAW %>% distinct(RAW) %>% pull(RAW)
+  DF_trialid_alternativeresponses = DF_long_RAW %>% count(trialid, RAW) %>% count(trialid, name = "alternative responses")
+  DF_check_responses = DF_trialid_alternativeresponses %>% count(`alternative responses`, name = "number of items") %>% arrange(desc(`number of items`))
+  DF_responses =
+    DF_long_RAW %>% 
+    count(trialid, RAW) %>% 
+    group_by(trialid) %>% 
+    summarise(N = n(),
+              Responses = paste(RAW, collapse = ", "), 
+              .groups = "drop") %>% 
+    # group_by(N) %>% 
+    # summarise(Responses = unique(Responses),
+    #           trialid = paste(trialid, collapse = ", "),
+    #           .groups = "drop") %>% 
+    # select(-N) %>% 
+  DT::datatable()
+  
+
+  
+  
+  cat(crayon::blue("\n", length(vector_items), "Items: "), crayon::silver(paste("'", vector_items[c(1,length(vector_items))], "'", collapse = " to ")), "\n")
+  cat(crayon::blue("\n", length(vector_responses), "Responses:\n"), crayon::silver(paste(vector_responses, collapse = "\n ")), "\n")
+  
+  if (show_trialid_questiontext == TRUE) {
+    cat("\n", crayon::blue("Showing trialid and question_text for all the items: "), "\n")
+    DF_question %>% print(n = Inf)
+  }
+  
+  if(nrow(DF_check_responses) > 1) {
+    cat("\n", crayon::blue(nrow(DF_check_responses), "Different number of responses per item: \n"))
+    print(DF_check_responses)
+    DF_responses
   }
   
 }
