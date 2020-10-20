@@ -43,20 +43,9 @@ targets <- list(
   
   # _Read files --------------------------------------------------------------
 
-    # RAW data con anonimizacion
-  
-      # These should go in a single function. It runs once and then is commented out
-        # tar_target(input_files, list.files(path = "data", pattern="*.csv", full.names = TRUE), format = "file"),
-        # tar_target(DF_raw_dirty, read_data(input_files)),
-        # tar_target(DF_raw_clean, anonymize_data(DF_raw_dirty)),
-  
-      # This stays uncommented after running anonimization once
-        # tar_target(DF_raw, read_data_anonimized(DF_raw_clean)), 
-  
-  
-    # RAW data sin anonimizacion
-    tar_target(input_files, list.files(path = "data", pattern="*.csv", full.names = TRUE), format = "file"),
-    tar_target(DF_raw, read_data(input_files)),
+    # RAW data
+    tar_target(input_files, list.files(path = "data", pattern="*.csv", full.names = TRUE)), #, format = "file" (IF files in vault/ first run fails)
+    tar_target(DF_raw, read_data(input_files, anonymize = TRUE)),
 
   
     # Cleaned data
