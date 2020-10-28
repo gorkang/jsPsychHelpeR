@@ -3,6 +3,7 @@
 
   # remotes::install_github("wlandau/targets")
   # remotes::install_github("wlandau/tarchetypes")
+  # remotes::install_github("gadenbuie/shrtcts")
 
 
 # Run project --------------------------------------------------------------

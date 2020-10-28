@@ -9,11 +9,10 @@
 ##' @export
 read_data <- function(input_files, anonymize = FALSE) {
   
-  # [TODO]: response_X sera response cuando en input files solo exista responses -----------------------------
-  # [TODO]: HARDCODE vars of input files once Herman fixes the issues -----------------------------
-  
-  # [TODO]: SI ID'S SON RUTS O SIMILAR, ESTO ES UTIL, SI SON NUMEROS CORRELATIVOS NO TANTO 
-  # [TODO]: SHOULD ASK FOR A PASSWORD!!!! BUT ONLY ONCE!!!!  ----------------
+  # [TODO]: Anonymization process NEEDS to be checked
+  # [TODO]: HARDCODE vars of input files once all issues are fixed 
+  # [TODO]: If ID's are NationalIDs, anonymization is useful, otherwise, not so much
+  # [TODO]: SHOULD ASK FOR A PASSWORD, BUT ONLY ONCE
   
 
   # CHECK status ------------------------------------------------------------
@@ -47,10 +46,10 @@ read_data <- function(input_files, anonymize = FALSE) {
       # if(length(dir(path = "_targets/objects/", pattern = "input_files")) == 0)
         
       # set.seed(20200928)
-      # KEY = stringi::stri_rand_strings(1, 40, pattern = "[A-Za-z0-9;!]")
-      # KEY = rstudioapi::askForPassword(prompt = "Enter the secret key to anonymize:\n\n  - This should only be done once\n\n  - Make sure you will remember this secret key\n    (hashed IDs can't be recovered without it)")
       KEY = getPass::getPass(msg = "Enter the secret key to anonymize:\n\n  - This should only be done once\n\n  - Make sure you will remember this secret key\n    (hashed IDs can't be recovered without it)")
+      KEY2 = getPass::getPass(msg = "Please, repeate the secret key to anonymize")
       
+      if (KEY != KEY2) stop("Secret keys do not match, please re run the project")
       
       # Read and encrypt --------------------------------------------------------
       
