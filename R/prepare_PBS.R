@@ -1,12 +1,12 @@
-##' Prepare CRT7
+##' Prepare PBS
 ##'
 ##' Template for the functions to prepare specific tasks. Most of this file should not be changed
 ##' Things to change: 
-##'   - Name of function: prepare_TEMPLATE -> prepare_[value of short_name_scale_str] 
+##'   - Name of function: prepare_PBS -> prepare_[value of short_name_scale_str] 
 ##'   - dimensions parameter in standardized_names()
 ##'   - 2 [ADAPT] chunks
 ##'
-##' @title prepare_TEMPLATE
+##' @title prepare_PBS
 ##'
 ##' @param short_name_scale_str 
 ##' @param DF_clean
@@ -14,14 +14,14 @@
 ##' @return
 ##' @author gorkang
 ##' @export
-prepare_CRT7 <- function(DF_clean, short_name_scale_str) {
+prepare_PBS <- function(DF_clean, short_name_scale_str) {
 
   # DEBUG
-  # debug_function(prepare_CRT7)
+  # debug_function(prepare_PBS)
 
   # Standardized names ------------------------------------------------------
   standardized_names(short_name_scale = short_name_scale_str, 
-                     # dimensions = c(""), 
+                     dimensions = c("CreenciasReligiosasTradicionales", "psi", "brujeria", "supersticion", "espiritismo", "FormasVidaExtraordinaria", "precognicion"), # Use names of dimensions, "" or comment out line
                      help_names = FALSE) # help_names = FALSE once the script is ready
   
   # Create long -------------------------------------------------------------
@@ -40,18 +40,31 @@ prepare_CRT7 <- function(DF_clean, short_name_scale_str) {
   # [ADAPT]: RAW to DIR for individual items -----------------------------------
   # ****************************************************************************
   
+  # [REVIEW]: 1 to 7?
     mutate(
       DIR =
         case_when(
-          trialid == "CRT_7_1" & RAW == "50" ~ 1,
-          trialid == "CRT_7_2" & RAW == "5" ~ 1,
-          trialid == "CRT_7_3" & RAW == "47" ~ 1,
-          trialid == "CRT_7_4" & RAW == "4" ~ 1,
-          trialid == "CRT_7_5" & RAW == "29" ~ 1,
-          trialid == "CRT_7_6" & RAW == "20" ~ 1,
-          trialid == "CRT_7_7" & RAW == "Ha perdido dinero" ~ 1,
-          TRUE ~ 0
-        ))
+          RAW == 'Muy en desacuerdo' ~ 1,
+          RAW == 'Moderadamente en desacuerdo' ~ 2,
+          RAW == 'Un poco en desacuerdo' ~ 3,
+          RAW == 'No sé / No tengo certeza' ~ 4,
+          RAW == 'Un poco de acuerdo' ~ 5,
+          RAW == 'Moderadamente de acuerdo' ~ 6,
+          RAW == 'Muy de acuerdo' ~ 7,
+          TRUE ~ 9999
+        )
+    ) %>% 
+    
+    # Invert items 23
+    # [TODO]: Item id's will be 3 digits: 023
+    mutate(
+      DIR = 
+        case_when(
+          DIR == 9999 ~ DIR,
+          grepl("23", trialid) ~ (8 - DIR), # [REVIEW]: 8?
+          TRUE ~ DIR
+        )
+    )
     
   # [END ADAPT]: ***************************************************************
   # ****************************************************************************
@@ -72,12 +85,23 @@ prepare_CRT7 <- function(DF_clean, short_name_scale_str) {
     
   # [ADAPT]: Scales and dimensions calculations --------------------------------
   # ****************************************************************************
-    # [USE STANDARD NAMES FOR Scales and dimensions] Check with: standardized_names()
-
+    # [USE STANDARD NAMES FOR Scales and dimensions: name_DIRt, name_DIRd1, etc.] Check with: standardized_names(help_names = TRUE)
+  
+  # [REMEMBER]: itemid numbers will have 3 digits: 002|004... 
+  
     mutate(
 
+      # Score Dimensions (use 3 digit item numbers)
+      !!name_DIRd1 := rowMeans(select(., matches("01|08|15|22") & matches("_DIR")), na.rm = TRUE), 
+      !!name_DIRd2 := rowMeans(select(., matches("02|09|16|23") & matches("_DIR")), na.rm = TRUE), 
+      !!name_DIRd3 := rowMeans(select(., matches("03|10|17|24") & matches("_DIR")), na.rm = TRUE), 
+      !!name_DIRd4 := rowMeans(select(., matches("04|11|18") & matches("_DIR")), na.rm = TRUE), 
+      !!name_DIRd5 := rowMeans(select(., matches("05|12|19|25") & matches("_DIR")), na.rm = TRUE), 
+      !!name_DIRd6 := rowMeans(select(., matches("06|13|20") & matches("_DIR")), na.rm = TRUE), 
+      !!name_DIRd7 := rowMeans(select(., matches("07|14|21|26") & matches("_DIR")), na.rm = TRUE), 
+      
       # Score Scale
-      !!name_DIRt := rowSums(select(., matches("_DIR$")), na.rm = TRUE)
+      !!name_DIRt := rowMeans(select(., matches("_DIR$")), na.rm = TRUE)
       
     )
     

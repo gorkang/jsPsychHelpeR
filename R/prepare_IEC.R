@@ -1,12 +1,12 @@
-##' Prepare CRT7
+##' Prepare IEC
 ##'
 ##' Template for the functions to prepare specific tasks. Most of this file should not be changed
 ##' Things to change: 
-##'   - Name of function: prepare_TEMPLATE -> prepare_[value of short_name_scale_str] 
+##'   - Name of function: prepare_IEC -> prepare_[value of short_name_scale_str] 
 ##'   - dimensions parameter in standardized_names()
 ##'   - 2 [ADAPT] chunks
 ##'
-##' @title prepare_TEMPLATE
+##' @title prepare_IEC
 ##'
 ##' @param short_name_scale_str 
 ##' @param DF_clean
@@ -14,14 +14,14 @@
 ##' @return
 ##' @author gorkang
 ##' @export
-prepare_CRT7 <- function(DF_clean, short_name_scale_str) {
+prepare_IEC <- function(DF_clean, short_name_scale_str) {
 
   # DEBUG
-  # debug_function(prepare_CRT7)
+  # debug_function(prepare_IEC)
 
   # Standardized names ------------------------------------------------------
   standardized_names(short_name_scale = short_name_scale_str, 
-                     # dimensions = c(""), 
+                     dimensions = c("Azar", "OtrosPoderosos", "Internalidad"), # Use names of dimensions, "" or comment out line
                      help_names = FALSE) # help_names = FALSE once the script is ready
   
   # Create long -------------------------------------------------------------
@@ -43,15 +43,25 @@ prepare_CRT7 <- function(DF_clean, short_name_scale_str) {
     mutate(
       DIR =
         case_when(
-          trialid == "CRT_7_1" & RAW == "50" ~ 1,
-          trialid == "CRT_7_2" & RAW == "5" ~ 1,
-          trialid == "CRT_7_3" & RAW == "47" ~ 1,
-          trialid == "CRT_7_4" & RAW == "4" ~ 1,
-          trialid == "CRT_7_5" & RAW == "29" ~ 1,
-          trialid == "CRT_7_6" & RAW == "20" ~ 1,
-          trialid == "CRT_7_7" & RAW == "Ha perdido dinero" ~ 1,
-          TRUE ~ 0
-        ))
+          RAW == "Completamente en desacuerdo." ~  1,
+          RAW == "Moderadamente en desacuerdo." ~ 2,
+          RAW == "Ligeramente en desacuerdo." ~ 3,
+          RAW == "Ligeramente de acuerdo." ~ 4,
+          RAW == "Moderadamente de acuerdo." ~ 5,
+          RAW == "Completamente de acuerdo." ~ 6,
+          TRUE ~ 9999
+        )
+    ) %>% 
+    
+    # Invert items
+    mutate(
+      DIR = 
+        case_when(
+          DIR == 9999 ~ DIR, # To keep the missing values unchanged
+          grepl("007|008", trialid) ~ (6 - DIR),
+          TRUE ~ DIR
+        )
+    )
     
   # [END ADAPT]: ***************************************************************
   # ****************************************************************************
@@ -72,12 +82,17 @@ prepare_CRT7 <- function(DF_clean, short_name_scale_str) {
     
   # [ADAPT]: Scales and dimensions calculations --------------------------------
   # ****************************************************************************
-    # [USE STANDARD NAMES FOR Scales and dimensions] Check with: standardized_names()
+    # [USE STANDARD NAMES FOR Scales and dimensions: name_DIRt, name_DIRd1, etc.] Check with: standardized_names(help_names = TRUE)
 
     mutate(
 
+      # Score Dimensions (use 3 digit item numbers)
+      !!name_DIRd1 := rowSums(select(., matches("02|06|07|10|12|14|16|24") & matches("_DIR")), na.rm = TRUE),
+      !!name_DIRd2 := rowSums(select(., matches("03|08|11|13|15|17|20|22") & matches("_DIR")), na.rm = TRUE),
+      !!name_DIRd3 := rowSums(select(., matches("01|04|05|09|18|19|21|23") & matches("_DIR")), na.rm = TRUE),
+      
       # Score Scale
-      !!name_DIRt := rowSums(select(., matches("_DIR$")), na.rm = TRUE)
+      # !!name_DIRt := rowSums(select(., matches("_DIR$")), na.rm = TRUE)
       
     )
     

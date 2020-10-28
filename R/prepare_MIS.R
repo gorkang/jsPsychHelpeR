@@ -40,13 +40,25 @@ prepare_MIS <- function(DF_clean, short_name_scale_str) {
   # [ADAPT]: RAW to DIR for individual items -----------------------------------
   # ****************************************************************************
   
+  # True = 1, False = 0
     mutate(
       DIR =
         case_when(
           RAW == "Falso" ~ 0,
           RAW == "Verdadero" ~ 1,
-          TRUE ~ 0
-        ))
+          TRUE ~ 9999
+        )) %>% 
+    
+  # Invert items 07|12|13|16|18|23|24
+  # [TODO]: Item id's will be 3 digits: 007|012... 
+    mutate(
+      DIR = 
+        case_when(
+          DIR == 9999 ~ DIR,
+          grepl("07|12|13|16|18|23|24", trialid) ~ (1 - DIR),
+          TRUE ~ DIR
+        )
+    )
     
   # [END ADAPT]: ***************************************************************
   # ****************************************************************************
@@ -72,7 +84,7 @@ prepare_MIS <- function(DF_clean, short_name_scale_str) {
     mutate(
       
       # Score Scale
-      !!name_DIRt := rowSums(select(., matches("_DIR")), na.rm = TRUE)
+      !!name_DIRt := rowSums(select(., matches("_DIR$")), na.rm = TRUE)
     )
     
   # [END ADAPT]: ***************************************************************

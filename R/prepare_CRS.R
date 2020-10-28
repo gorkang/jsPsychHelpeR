@@ -1,4 +1,4 @@
-##' Prepare CRT7
+##' Prepare CRS
 ##'
 ##' Template for the functions to prepare specific tasks. Most of this file should not be changed
 ##' Things to change: 
@@ -6,7 +6,7 @@
 ##'   - dimensions parameter in standardized_names()
 ##'   - 2 [ADAPT] chunks
 ##'
-##' @title prepare_TEMPLATE
+##' @title prepare_CRS
 ##'
 ##' @param short_name_scale_str 
 ##' @param DF_clean
@@ -14,14 +14,14 @@
 ##' @return
 ##' @author gorkang
 ##' @export
-prepare_CRT7 <- function(DF_clean, short_name_scale_str) {
-
+prepare_CRS <- function(DF_clean, short_name_scale_str) {
+  
   # DEBUG
-  # debug_function(prepare_CRT7)
+  debug_function(prepare_CRS)
 
   # Standardized names ------------------------------------------------------
   standardized_names(short_name_scale = short_name_scale_str, 
-                     # dimensions = c(""), 
+                     dimensions = c("Intelectual", "Ideologica", "PracticaPublica", "PracticaPrivada", "ExperienciaReligiosa"), # Use names of dimensions, "" or comment out line
                      help_names = FALSE) # help_names = FALSE once the script is ready
   
   # Create long -------------------------------------------------------------
@@ -43,15 +43,20 @@ prepare_CRT7 <- function(DF_clean, short_name_scale_str) {
     mutate(
       DIR =
         case_when(
-          trialid == "CRT_7_1" & RAW == "50" ~ 1,
-          trialid == "CRT_7_2" & RAW == "5" ~ 1,
-          trialid == "CRT_7_3" & RAW == "47" ~ 1,
-          trialid == "CRT_7_4" & RAW == "4" ~ 1,
-          trialid == "CRT_7_5" & RAW == "29" ~ 1,
-          trialid == "CRT_7_6" & RAW == "20" ~ 1,
-          trialid == "CRT_7_7" & RAW == "Ha perdido dinero" ~ 1,
-          TRUE ~ 0
-        ))
+          RAW == "Muy a menudo" ~ 5,
+          RAW == "A menudo" ~ 4,
+          RAW == "Ocasionalmente" ~ 3,
+          RAW == "Rara vez" ~ 2,
+          RAW == "Nunca" ~ 1,
+          
+          RAW == "Demasiado" ~ 5,
+          RAW == "Mucho"~ 4,
+          RAW == "Algo" ~ 3,
+          RAW == "Un poco" ~ 2,
+          RAW == "Nada" ~ 1,
+
+          TRUE ~ 9999
+        )) #%>% filter(DIR == 9999) %>% distinct(RAW)
     
   # [END ADAPT]: ***************************************************************
   # ****************************************************************************
@@ -72,12 +77,19 @@ prepare_CRT7 <- function(DF_clean, short_name_scale_str) {
     
   # [ADAPT]: Scales and dimensions calculations --------------------------------
   # ****************************************************************************
-    # [USE STANDARD NAMES FOR Scales and dimensions] Check with: standardized_names()
-
+    # [USE STANDARD NAMES FOR Scales and dimensions: name_DIRt, name_DIRd1, etc.] Check with: standardized_names(help_names = TRUE)
+  # Cinco dimensiones: (1) Intelectual (itemes 1, 6, 11), (2) Ideológica (itemes 2, 7, 12), (3) Pártica pública (itemes 3, 8, 13),  (4) Práctica privada (itemes 4, 9, 14), (5) Experiencia religiosa (itemes 5, 10, 15).
     mutate(
 
+      # Score Dimensions (use 3 digit item numbers)
+      !!name_DIRd1 := rowMeans(select(., matches("01|06|11") & matches("_DIR")), na.rm = TRUE), # NAME SHOULD BE !!name_DIRd1
+      !!name_DIRd2 := rowMeans(select(., matches("02|07|12") & matches("_DIR")), na.rm = TRUE),
+      !!name_DIRd3 := rowMeans(select(., matches("03|08|13") & matches("_DIR")), na.rm = TRUE),
+      !!name_DIRd4 := rowMeans(select(., matches("04|09|14") & matches("_DIR")), na.rm = TRUE),
+      !!name_DIRd5 := rowMeans(select(., matches("05|10|15") & matches("_DIR")), na.rm = TRUE),
+      
       # Score Scale
-      !!name_DIRt := rowSums(select(., matches("_DIR$")), na.rm = TRUE)
+      !!name_DIRt := rowMeans(select(., matches("_DIR$")), na.rm = TRUE)
       
     )
     

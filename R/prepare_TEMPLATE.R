@@ -40,16 +40,35 @@ prepare_TEMPLATE <- function(DF_clean, short_name_scale_str) {
   # [ADAPT]: RAW to DIR for individual items -----------------------------------
   # ****************************************************************************
   
+    # Ignore the following items
+    mutate(RAW = 
+             case_when(
+               !grepl("01|02", trialid) ~ NA_character_,
+               TRUE ~ RAW)) %>% 
+    
+    # Transformations
     mutate(
       DIR =
         case_when(
           RAW == "Nunca" ~ 1,
-          RAW == "Siempre" ~ 2,
-          RAW == "Casi\\n Siempre" ~ 3,
-          RAW == "Casi\\n Nunca" ~ 4,
-          RAW == "A veces" ~ 5,
+          RAW == "Poco" ~ 2,
+          RAW == "Medianamente" ~ 3,
+          RAW == "Bastante" ~ 4,
+          RAW == "Mucho" ~ 5,
+          is.na(RAW) ~ NA_real_,
           TRUE ~ 9999
-        ))
+        )
+    ) %>% 
+    
+    # Invert items
+    mutate(
+      DIR = 
+        case_when(
+          DIR == 9999 ~ DIR, # To keep the missing values unchanged
+          grepl("007|008", trialid) ~ (6 - DIR),
+          TRUE ~ DIR
+        )
+    )
     
   # [END ADAPT]: ***************************************************************
   # ****************************************************************************
@@ -75,11 +94,11 @@ prepare_TEMPLATE <- function(DF_clean, short_name_scale_str) {
     mutate(
 
       # Score Dimensions (use 3 digit item numbers)
-      !!name_DIRd1 := rowSums(select(., matches("02|04|05|06|07|10|14") & matches("_DIR")), na.rm = TRUE), # NAME SHOULD BE !!name_DIRd1
-      !!name_DIRd2 := rowSums(select(., matches("01|03|08|09|11|12|13") & matches("_DIR")), na.rm = TRUE), # NAME SHOULD BE !!name_DIRd2
+      !!name_DIRd1 := rowSums(select(., matches("02|04|05") & matches("_DIR")), na.rm = TRUE), # NAME SHOULD BE !!name_DIRd1
+      !!name_DIRd2 := rowSums(select(., matches("01|03|08") & matches("_DIR")), na.rm = TRUE), # NAME SHOULD BE !!name_DIRd2
       
       # Score Scale
-      !!name_DIRt := rowSums(select(., matches("_DIR")), na.rm = TRUE)
+      !!name_DIRt := rowSums(select(., matches("_DIR$")), na.rm = TRUE)
       
     )
     

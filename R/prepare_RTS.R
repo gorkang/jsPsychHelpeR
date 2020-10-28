@@ -1,12 +1,12 @@
-##' Prepare CRT7
+##' Prepare RTS
 ##'
 ##' Template for the functions to prepare specific tasks. Most of this file should not be changed
 ##' Things to change: 
-##'   - Name of function: prepare_TEMPLATE -> prepare_[value of short_name_scale_str] 
+##'   - Name of function: prepare_RTS -> prepare_[value of short_name_scale_str] 
 ##'   - dimensions parameter in standardized_names()
 ##'   - 2 [ADAPT] chunks
 ##'
-##' @title prepare_TEMPLATE
+##' @title prepare_RTS
 ##'
 ##' @param short_name_scale_str 
 ##' @param DF_clean
@@ -14,14 +14,14 @@
 ##' @return
 ##' @author gorkang
 ##' @export
-prepare_CRT7 <- function(DF_clean, short_name_scale_str) {
+prepare_RTS <- function(DF_clean, short_name_scale_str) {
 
   # DEBUG
-  # debug_function(prepare_CRT7)
+  # debug_function(prepare_RTS)
 
   # Standardized names ------------------------------------------------------
   standardized_names(short_name_scale = short_name_scale_str, 
-                     # dimensions = c(""), 
+                     # dimensions = c("NameDimension1", "NameDimension2"), # Use names of dimensions, "" or comment out line
                      help_names = FALSE) # help_names = FALSE once the script is ready
   
   # Create long -------------------------------------------------------------
@@ -40,18 +40,21 @@ prepare_CRT7 <- function(DF_clean, short_name_scale_str) {
   # [ADAPT]: RAW to DIR for individual items -----------------------------------
   # ****************************************************************************
   
+  # Ignore the following items
+  mutate(RAW = 
+           case_when(
+             !grepl("02|03|04|05|08|09|12|13|16|18|19|20|21|22|25|26|29", trialid) ~ NA_character_,
+             TRUE ~ RAW)) %>% 
+  
     mutate(
       DIR =
         case_when(
-          trialid == "CRT_7_1" & RAW == "50" ~ 1,
-          trialid == "CRT_7_2" & RAW == "5" ~ 1,
-          trialid == "CRT_7_3" & RAW == "47" ~ 1,
-          trialid == "CRT_7_4" & RAW == "4" ~ 1,
-          trialid == "CRT_7_5" & RAW == "29" ~ 1,
-          trialid == "CRT_7_6" & RAW == "20" ~ 1,
-          trialid == "CRT_7_7" & RAW == "Ha perdido dinero" ~ 1,
-          TRUE ~ 0
-        ))
+          grepl("02|03|04|05|08|09|12|13|16|18|19|20|21|22|25|26|29", trialid) & RAW == "Verdadero" ~ 1,
+          grepl("02|03|04|05|08|09|12|13|16|18|19|20|21|22|25|26|29", trialid) & RAW == "Falso" ~ 0,
+          is.na(RAW) ~ NA_real_,
+          TRUE ~ 9999
+        )
+    ) 
     
   # [END ADAPT]: ***************************************************************
   # ****************************************************************************
@@ -72,14 +75,41 @@ prepare_CRT7 <- function(DF_clean, short_name_scale_str) {
     
   # [ADAPT]: Scales and dimensions calculations --------------------------------
   # ****************************************************************************
-    # [USE STANDARD NAMES FOR Scales and dimensions] Check with: standardized_names()
+    # [USE STANDARD NAMES FOR Scales and dimensions: name_DIRt, name_DIRd1, etc.] Check with: standardized_names(help_names = TRUE)
 
     mutate(
 
-      # Score Scale
-      !!name_DIRt := rowSums(select(., matches("_DIR$")), na.rm = TRUE)
+      # # Score Dimensions (use 3 digit item numbers)
+      # !!name_DIRd1 := rowSums(select(., matches("02|04|05") & matches("_DIR")), na.rm = TRUE), # NAME SHOULD BE !!name_DIRd1
+      # !!name_DIRd2 := rowSums(select(., matches("01|03|08") & matches("_DIR")), na.rm = TRUE), # NAME SHOULD BE !!name_DIRd2
       
-    )
+      # Score Scale
+      !!name_DIRt := rowSums(select(., matches("_DIR$")), na.rm = TRUE),
+      
+      # Rasch scores
+      !!name_STDt :=  
+          case_when(
+            RTS_DIRt == 0 ~ 13.7,
+            RTS_DIRt == 1 ~ 15.9,
+            RTS_DIRt == 2 ~ 18.3,
+            RTS_DIRt == 3 ~ 19.9,
+            RTS_DIRt == 4 ~ 21.1,
+            RTS_DIRt == 5 ~ 22.1,
+            RTS_DIRt == 6 ~ 23.1,
+            RTS_DIRt == 7 ~ 24.0,
+            RTS_DIRt == 8 ~ 24.9,
+            RTS_DIRt == 9 ~ 25.7,
+            RTS_DIRt == 10 ~ 26.6,
+            RTS_DIRt == 11 ~ 27.5,
+            RTS_DIRt == 12 ~ 28.5,
+            RTS_DIRt == 13 ~ 29.6,
+            RTS_DIRt == 14 ~ 30.9,
+            RTS_DIRt == 15 ~ 32.5,
+            RTS_DIRt == 16 ~ 35.0,
+            RTS_DIRt == 17 ~ 37.3,
+            TRUE ~ 9999
+          )
+      )
     
   # [END ADAPT]: ***************************************************************
   # ****************************************************************************

@@ -44,11 +44,11 @@ prepare_bRCOPE <- function(DF_clean, short_name_scale_str) {
       DIR =
         case_when(
           RAW == "Nunca" ~ 1,
-          RAW == "Siempre" ~ 2,
-          RAW == "Casi\\n Siempre" ~ 3,
-          RAW == "Casi\\n Nunca" ~ 4,
-          RAW == "A veces" ~ 5,
-          TRUE ~ 9999
+          RAW == "Casi\\n Nunca" ~ 2,
+          RAW == "A veces" ~ 3,
+          RAW == "Casi\\n Siempre" ~ 4,
+          RAW == "Siempre" ~ 5,
+          TRUE ~ 9999 # EXTREME value so we can detect when we are not catching a response
         ))
     
   # [END ADAPT]: ***************************************************************
@@ -72,6 +72,7 @@ prepare_bRCOPE <- function(DF_clean, short_name_scale_str) {
   # ****************************************************************************
     # [USE STANDARD NAMES FOR Scales and dimensions: name_DIRt, name_DIRd1, etc.] Check with: standardized_names(help_names = TRUE)
 
+    # [REMEMBER]: itemid numbers will have 3 digits: 002|004... 
     mutate(
 
       # Score Dimensions (use 3 digit item numbers)
@@ -79,7 +80,7 @@ prepare_bRCOPE <- function(DF_clean, short_name_scale_str) {
       !!name_DIRd2 := rowSums(select(., matches("01|03|08|09|11|12|13") & matches("_DIR")), na.rm = TRUE), # NAME SHOULD BE !!name_DIRd2
       
       # Score Scale
-      !!name_DIRt := rowSums(select(., matches("_DIR")), na.rm = TRUE)
+      !!name_DIRt := rowSums(select(., matches("_DIR$")), na.rm = TRUE)
       
     )
     
