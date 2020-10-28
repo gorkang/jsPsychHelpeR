@@ -49,9 +49,11 @@ testthat::test_that('Check all input files have the same columns', {
     
   }
   
-  check_input_files_DF = 1:length(names_missing_columns) %>% 
+  if (length(names_missing_columns) > 0) {
+  check_input_files_DF = 
+    1:length(names_missing_columns) %>% 
     map_df(~ wich_files_missing_columns(name_missing_column = names_missing_columns[.x], DF_final) %>% as_tibble() %>% mutate(column_missing = names_missing_columns[.x]) %>% rename(file = value))
-  
+  }
   
   # Warning and log ---------------------------------------------------------
   

@@ -87,9 +87,9 @@ prepare_IEC <- function(DF_clean, short_name_scale_str) {
     mutate(
 
       # Score Dimensions (use 3 digit item numbers)
-      !!name_DIRd1 := rowSums(select(., matches("02|06|07|10|12|14|16|24") & matches("_DIR")), na.rm = TRUE),
-      !!name_DIRd2 := rowSums(select(., matches("03|08|11|13|15|17|20|22") & matches("_DIR")), na.rm = TRUE),
-      !!name_DIRd3 := rowSums(select(., matches("01|04|05|09|18|19|21|23") & matches("_DIR")), na.rm = TRUE),
+      !!name_DIRd1 := rowSums(select(., matches("02|06|07|10|12|14|16|24") & matches("_DIR$")), na.rm = TRUE),
+      !!name_DIRd2 := rowSums(select(., matches("03|08|11|13|15|17|20|22") & matches("_DIR$")), na.rm = TRUE),
+      !!name_DIRd3 := rowSums(select(., matches("01|04|05|09|18|19|21|23") & matches("_DIR$")), na.rm = TRUE),
       
       # Score Scale
       # !!name_DIRt := rowSums(select(., matches("_DIR$")), na.rm = TRUE)

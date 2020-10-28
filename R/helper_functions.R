@@ -154,60 +154,23 @@ check_NAs <- function(DF_joined) {
 create_raw_long <- function(DF_clean, short_name_scale, numeric_responses = FALSE) {
   
   # DEBUG
-  # short_name_scale = "CRT_7"
+  # short_name_scale = "SCSORF"
   
 
   DF_clean %>% 
     # filter(experimento == name_scale) %>% 
     filter(grepl(short_name_scale, trialid)) %>% 
-    
-    
-    # [TODO]: DELETE THIS ONCE input files are OK ---------------------
-    mutate(response = 
-             case_when(
-               is.na(response_x) ~ response,
-               is.na(response) ~ response_x)
-           ) %>% 
-    
-    select(id, experimento, rt, trialid, question_text, response) %>% 
-    
-    mutate(response = 
+    select(id, experimento, rt, trialid, stimulus, responses) %>% 
+    mutate(responses = 
              if(numeric_responses == TRUE) {
-               as.numeric(response) 
+               as.numeric(responses) 
               } else {
-                as.character(response) 
+                as.character(responses) 
               }
            ) %>% 
     drop_na(trialid) %>% 
-    rename(RAW = response)
+    rename(RAW = responses)
 }
-
-
-
-
-# ##' Create wide DF for a specific task (short_name_scale)
-# ##'
-# ##' 
-# ##'
-# ##' @title create_raw_wide
-# ##' @param DF_long
-# ##' @return
-# ##' @author gorkang
-# ##' @export
-# create_raw_wide <- function(DF_long, short_name_scale) {
-# 
-#   # DEBUG  
-#   # short_name_scale = "Supernatural"
-#   
-#   name_RAW_NA = paste0(short_name_scale, "_RAW_NA")
-# 
-#   DF_long %>% 
-#     select(id, trialid, response) %>% 
-#     mutate(trialid = paste0(trialid, "_RAW")) %>% 
-#     pivot_wider(names_from = trialid, values_from = response) %>% 
-#     mutate(!!name_RAW_NA := rowSums(is.na(select(., matches(short_name_scale)))))
-#   
-# }
 
 
 
@@ -225,7 +188,7 @@ create_raw_long <- function(DF_clean, short_name_scale, numeric_responses = FALS
 debug_function <- function(name_function) {
 
   # DEBUG
-  # name_function = "prepare_CRT7"
+  # name_function = "prepare_SRSav"
   
   # Function to tar_load or assign the parameters
   load_parameters <- function(parameters_function_separated, NUM) {
@@ -258,15 +221,11 @@ debug_function <- function(name_function) {
     cat(crayon::green("Loaded: "), gsub(",", ", ", parameters_function_raw), "\n")
     
   } else {
+    
     cat(crayon::red(paste0("'", name_function, "'", "not found in _targets.R")), "\n")
+    
   }
-  
-
 }
-
-
-
-
 
 
 
@@ -313,7 +272,7 @@ prepare_helper <- function(DF_long_RAW, show_trialid_questiontext = FALSE) {
   vector_items = DF_long_RAW %>% distinct(trialid) %>% pull(trialid)
   
   # Questions
-  DF_question = DF_long_RAW %>% distinct(trialid, question_text) #%>%  print(n = Inf)
+  DF_question = DF_long_RAW %>% distinct(trialid, stimulus) #%>%  print(n = Inf)
   
   # Responses
   vector_responses = DF_long_RAW %>% distinct(RAW) %>% pull(RAW)
@@ -326,21 +285,17 @@ prepare_helper <- function(DF_long_RAW, show_trialid_questiontext = FALSE) {
     summarise(N = n(),
               Responses = paste(RAW, collapse = ", "), 
               .groups = "drop") %>% 
-    # group_by(N) %>% 
-    # summarise(Responses = unique(Responses),
-    #           trialid = paste(trialid, collapse = ", "),
-    #           .groups = "drop") %>% 
-    # select(-N) %>% 
-  DT::datatable()
-  
-
-  
+    group_by(Responses) %>% 
+    summarise(N = n(),
+              trialid = paste(trialid, collapse = ", "), 
+              .groups = "drop") %>% 
+    DT::datatable()
   
   cat(crayon::blue("\n", length(vector_items), "Items: "), crayon::silver(paste("'", vector_items[c(1,length(vector_items))], "'", collapse = " to ")), "\n")
   cat(crayon::blue("\n", length(vector_responses), "Responses:\n"), crayon::silver(paste(vector_responses, collapse = "\n ")), "\n")
   
   if (show_trialid_questiontext == TRUE) {
-    cat("\n", crayon::blue("Showing trialid and question_text for all the items: "), "\n")
+    cat("\n", crayon::blue("Showing trialid and stimulus for all the items: "), "\n")
     DF_question %>% print(n = Inf)
   }
   
@@ -350,4 +305,59 @@ prepare_helper <- function(DF_long_RAW, show_trialid_questiontext = FALSE) {
     DF_responses
   }
   
+}
+
+
+
+# Create a new prepare_TASK.R file from prepare_TEMPLATE.R replacing TEMPLATE by the short name of the new task
+create_new_task <- function(short_name_task, old_names = FALSE, overwrite = FALSE) {
+  
+  #DEBUG
+  # short_name_task = "PSS"
+  # old_names = TRUE
+  
+
+  # Create file -------------------------------------------------------------
+  new_task_file = paste0("R/prepare_", short_name_task ,".R")
+  
+  if (!file.exists(new_task_file) | overwrite == TRUE) {
+  cat(crayon::green("\nCreating new file: ", crayon::silver(new_task_file), "\n"))
+  file.copy("R/prepare_TEMPLATE.R", new_task_file, overwrite = overwrite)
+  
+  
+  # Replace lines -----------------------------------------------------------
+  x <- readLines(new_task_file)
+  y <- gsub( "TEMPLATE", short_name_task, x )
+  cat(y, file = new_task_file, sep = "\n")
+  
+  } else {
+    cat(crayon::yellow("\nFile ", crayon::silver(new_task_file), " already exists. Not overwriting\n"))
+  }
+  
+  # Line to add in _targets.R 
+  short_name_old = 
+    
+    if(old_names == TRUE) {
+      read_csv("dev/NAMES SCALES.csv", col_types = cols(.default = col_character())) %>% 
+        drop_na(old_name) %>%
+        filter(is.na(done)) %>% 
+        filter(short_name == short_name_task) %>% 
+        pull(old_name)
+    } else {
+      short_name_task
+      }
+  
+  
+  cat(crayon::green("\nLine for _targets.R: \n"))
+  cat(paste0('tar_target(df_', short_name_task, ', prepare_', short_name_task, '(DF_clean, short_name_scale_str = "', short_name_old, '")),\n'))
+  
+  cat(crayon::green("\nDON'T FORGET TO ADD", crayon::silver(paste0("df_", short_name_task)), "to create_joined() in _targets.R:", crayon::silver("create_joined(..., ", paste0("df_", short_name_task, ")\n\n"))))
+  
+}
+
+
+# Create an OR vector for the grepl() and other functions. From c(1,2) to "1|2"
+create_vector_items <- function(VECTOR) {
+  # VECTOR = c( 5, 9, 14, 16, 18)
+  cat(paste(sprintf("%02d", VECTOR), collapse = "|"))
 }

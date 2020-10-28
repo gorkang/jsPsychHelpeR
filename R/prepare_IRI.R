@@ -77,10 +77,10 @@ prepare_IRI <- function(DF_clean, short_name_scale_str) {
     mutate(
 
       # Score Dimensions (use 3 digit item numbers)
-      !!name_DIRd1 := rowSums(select(., matches("03|08|11|15|21|25|28") & matches("_DIR")), na.rm = TRUE),
-      !!name_DIRd2 := rowSums(select(., matches("01|05|07|12|16|23|26") & matches("_DIR")), na.rm = TRUE),
-      !!name_DIRd3 := rowSums(select(., matches("02|04|09|14|18|20|22") & matches("_DIR")), na.rm = TRUE),
-      !!name_DIRd4 := rowSums(select(., matches("06|10|13|17|19|24|27") & matches("_DIR")), na.rm = TRUE),
+      !!name_DIRd1 := rowSums(select(., matches("03|08|11|15|21|25|28") & matches("_DIR$")), na.rm = TRUE),
+      !!name_DIRd2 := rowSums(select(., matches("01|05|07|12|16|23|26") & matches("_DIR$")), na.rm = TRUE),
+      !!name_DIRd3 := rowSums(select(., matches("02|04|09|14|18|20|22") & matches("_DIR$")), na.rm = TRUE),
+      !!name_DIRd4 := rowSums(select(., matches("06|10|13|17|19|24|27") & matches("_DIR$")), na.rm = TRUE),
       
       # Score Scale
       !!name_DIRt := rowSums(select(., matches("_DIR$")), na.rm = TRUE)

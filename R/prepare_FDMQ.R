@@ -84,10 +84,10 @@ prepare_FDMQ <- function(DF_clean, short_name_scale_str) {
     mutate(
 
       # Score Dimensions (use 3 digit item numbers)
-      !!name_DIRd1 := rowMeans(select(., matches("01|02|03|04|05|06") & matches("_DIR")), na.rm = TRUE),
-      !!name_DIRd2 := rowMeans(select(., matches("07|08|09|10|11") & matches("_DIR")), na.rm = TRUE),
-      !!name_DIRd3 := rowMeans(select(., matches("12|13|14|15|16|17") & matches("_DIR")), na.rm = TRUE),
-      !!name_DIRd4 := rowMeans(select(., matches("18|19|20|21|22") & matches("_DIR")), na.rm = TRUE),
+      !!name_DIRd1 := rowMeans(select(., matches("01|02|03|04|05|06") & matches("_DIR$")), na.rm = TRUE),
+      !!name_DIRd2 := rowMeans(select(., matches("07|08|09|10|11") & matches("_DIR$")), na.rm = TRUE),
+      !!name_DIRd3 := rowMeans(select(., matches("12|13|14|15|16|17") & matches("_DIR$")), na.rm = TRUE),
+      !!name_DIRd4 := rowMeans(select(., matches("18|19|20|21|22") & matches("_DIR$")), na.rm = TRUE),
       
       # Score Scale
       !!name_DIRt := rowSums(select(., matches("_DIR$")), na.rm = TRUE)

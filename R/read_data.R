@@ -19,7 +19,7 @@ read_data <- function(input_files, anonymize = FALSE) {
   # CHECK status ------------------------------------------------------------
 
   # Check vault is empty
-  files_vault = dir(path = "vault/RAW_data", full.names = TRUE)
+  files_vault = dir(path = "vault", full.names = TRUE)
   
   # Check if we already anonymized data
   already_anonymized = length(dir(path = "data", pattern = "raw_data_anonymized.csv")) > 0
@@ -32,7 +32,7 @@ read_data <- function(input_files, anonymize = FALSE) {
     
     if (length(files_vault) == 0) { 
       
-      cat(crayon::red("[WARNING]: The raw sensitive files need to be in 'vault/RAW_data'"))
+      cat(crayon::red("[WARNING]: The raw sensitive files need to be in 'vault/'"))
       
     } else if (already_anonymized == TRUE) {
       
@@ -63,23 +63,28 @@ read_data <- function(input_files, anonymize = FALSE) {
                                    trial_index = col_double(),
                                    time_elapsed = col_double(),
                                    internal_node_id = col_character(),
-                                   # view_history = col_character(),
-                                   rt = col_double()
-                                   # trialid = col_character()
-                                   # `question text` = col_character(),
-                                   # responses = col_character()
-                                 )
-        ) %>% 
-        
-        mutate(
-          # [REVIEW]: experimento and ID should be in the DF_raw?
-          # [REVIEW]: response_X will not be needed when input is fixed
-          experimento = gsub("(.*)_[0-9].csv", "\\1", filename), # Extrae nombre de experimento
-          id = gsub(".*_([0-9]).csv", "\\1", filename), # Extrae nombre de participante
-          response_x = gsub('\\{"Q0":"|"\\}', '', responses), # Limpia respuestas [REMEMBER: Ahora solo funciona con una respuesta por pantalla]
-          responses = gsub('\\{"Q0":"|"\\}', '', responses),
-          `question text` = gsub('\\{"Q0":"|"\\}', '', `question text`)
-        ) %>%  
+                                   view_history = col_character(),
+                                   rt = col_double(),
+                                   trialid = col_character(),
+                                   stimulus = col_character(),
+                                   responses = col_character()
+                                   )) %>% 
+          
+          mutate(
+            # [REVIEW]: experimento and ID should be in the DF_raw?
+            # projectCode_shortName_version_(fecha)_userID.csv
+            id = gsub(".*_([0-9]{1,99}).csv", "\\1", filename), # userID
+            project = gsub("^([0-9]{1,99})_.*.csv", "\\1", filename), # projectCode
+            experimento = gsub("^[0-9]{1,99}_([a-zA-Z0-9]{1,99})_.*.csv", "\\1", filename), # shortname
+            version = gsub("^[0-9]{1,99}_[a-zA-Z0-9]{1,99}_([a-zA-Z0-9]{1,99})_.*.csv", "\\1", filename), # version
+            datetime = gsub("^[0-9]{1,99}_[a-zA-Z0-9]{1,99}_[a-zA-Z0-9]{1,99}_([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2})_.*.csv", "\\1", filename), # fecha
+            
+            # experimento = gsub("(.*)_[0-9]{1,99}.csv", "\\1", filename), # Extrae nombre de experimento
+            # id = gsub(".*_([0-9]{1,99}).csv", "\\1", filename), # Extrae nombre de participante
+            stimulus = gsub('\\{"Q0":"|"\\}', '', stimulus), # Clean stimulus
+            responses = gsub('\\{"Q0":"|"\\}', '', responses), # Clean responses [REMEMBER: Only works with one response per screen]
+            responses = gsub('\u00A0', '', responses) # Remove non-breaking space (tools::showNonASCII(DF_raw$responses))
+            ) %>%  
       
         # Encrypt
         rowwise() %>% 
@@ -110,11 +115,11 @@ read_data <- function(input_files, anonymize = FALSE) {
                              trial_index = col_double(),
                              time_elapsed = col_double(),
                              internal_node_id = col_character(),
-                             # view_history = col_character(),
-                             rt = col_double()
-                             # trialid = col_character()
-                             # `question text` = col_character(),
-                             # responses = col_character()
+                             view_history = col_character(),
+                             rt = col_double(),
+                             trialid = col_character(),
+                             stimulus = col_character(),
+                             responses = col_character()
                            )
   )  
   
@@ -122,21 +127,27 @@ read_data <- function(input_files, anonymize = FALSE) {
   # If not anonymized, need to read important variables from filenames
   if (already_anonymized == FALSE) {
     
-    DF_raw %>% 
+    DF_raw =
+      DF_raw %>% 
       mutate(
         # [REVIEW]: experimento and ID should be in the DF_raw?
-        # [REVIEW]: response_X will not be needed when input is fixed
-        experimento = gsub("(.*)_[0-9].csv", "\\1", filename), # Extrae nombre de experimento
-        id = gsub(".*_([0-9]).csv", "\\1", filename), # Extrae nombre de participante
-        response_x = gsub('\\{"Q0":"|"\\}', '', responses), # Limpia respuestas [REMEMBER: Ahora solo funciona con una respuesta por pantalla]
-        responses = gsub('\\{"Q0":"|"\\}', '', responses),
-        `question text` = gsub('\\{"Q0":"|"\\}', '', `question text`)
+        # projectCode_shortName_version_(fecha)_userID.csv
+        id = gsub(".*_([0-9]{1,99}).csv", "\\1", filename), # userID
+        project = gsub("^([0-9]{1,99})_.*.csv", "\\1", filename), # projectCode
+        experimento = gsub("^[0-9]{1,99}_([a-zA-Z0-9]{1,99})_.*.csv", "\\1", filename), # shortname
+        version = gsub("^[0-9]{1,99}_[a-zA-Z0-9]{1,99}_([a-zA-Z0-9]{1,99})_.*.csv", "\\1", filename), # version
+        datetime = gsub("^[0-9]{1,99}_[a-zA-Z0-9]{1,99}_[a-zA-Z0-9]{1,99}_([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2})_.*.csv", "\\1", filename), # fecha
+        
+        # experimento = gsub("(.*)_[0-9]{1,99}.csv", "\\1", filename), # Extrae nombre de experimento
+        # id = gsub(".*_([0-9]{1,99}).csv", "\\1", filename), # Extrae nombre de participante
+        stimulus = gsub('\\{"Q0":"|"\\}', '', stimulus), # Clean stimulus
+        responses = gsub('\\{"Q0":"|"\\}', '', responses), # Clean responses [REMEMBER: Only works with one response per screen]
+        responses = gsub('\u00A0', '', responses) # Remove non-breaking space (tools::showNonASCII(DF_raw$responses))
       ) 
     
   }
   
  
-
   # CHECK -------------------------------------------------------------------
   DF_duplicates = suppressMessages(DF_raw %>% janitor::get_dupes(-c(filename)))
   input_files_duplicates = DF_duplicates %>% filter(success == TRUE) %>% distinct(filename) %>% pull(filename)

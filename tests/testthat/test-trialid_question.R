@@ -10,15 +10,15 @@ testthat::test_that('Check if the trialid question_text are unique', {
   
   DF_trialid = 
     DF_clean %>% 
-    mutate(question_text = 
-             case_when(
-               is.na(question_text) ~ stimulus,
-               is.na(stimulus) ~ question_text,
-               TRUE ~ NA_character_
-             )) %>% 
+    # mutate(question_text = 
+    #          case_when(
+    #            is.na(question_text) ~ stimulus,
+    #            is.na(stimulus) ~ question_text,
+    #            TRUE ~ NA_character_
+    #          )) %>% 
     group_by(experimento) %>% 
-    count(trialid, question_text) %>% 
-    group_by(trialid, question_text) %>% 
+    count(trialid, stimulus) %>% 
+    group_by(trialid, stimulus) %>% 
     count() %>% 
     drop_na(trialid) 
   

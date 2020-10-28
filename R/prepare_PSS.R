@@ -43,11 +43,11 @@ prepare_PSS <- function(DF_clean, short_name_scale_str) {
     mutate(
       DIR =
         case_when(
-          RAW == "Nunca" ~ 1,
-          RAW == "Casi nunca" ~ 2,
-          RAW == "De vez en cuando" ~ 3,
-          RAW == "A menudo" ~ 4,
-          RAW == "Muy a menudo" ~ 5,
+          RAW == "Nunca" ~ 0,
+          RAW == "Casi nunca" ~ 1,
+          RAW == "De vez en cuando" ~ 2,
+          RAW == "A menudo" ~ 3,
+          RAW == "Muy a menudo" ~ 4,
           TRUE ~ 9999
           )
       ) %>% 
@@ -57,7 +57,7 @@ prepare_PSS <- function(DF_clean, short_name_scale_str) {
       DIR = 
         case_when(
           DIR == 9999 ~ DIR,
-          grepl("04|05|06|07|09|10|13", trialid) ~ (6 - DIR),
+          grepl("04|05|06|07|09|10|13", trialid) ~ (5 - DIR),
           TRUE ~ DIR
         )
     )

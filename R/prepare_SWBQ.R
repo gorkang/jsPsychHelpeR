@@ -69,10 +69,10 @@ prepare_SWBQ <- function(DF_clean, short_name_scale_str) {
     mutate(
 
       # Score Dimensions (use 3 digit item numbers)
-      !!name_DIRd1 := rowSums(select(., matches("05|09|14|16|18") & matches("_DIR")), na.rm = TRUE),
-      !!name_DIRd2 := rowSums(select(., matches("01|08|19|21|26") & matches("_DIR")), na.rm = TRUE),
-      !!name_DIRd3 := rowSums(select(., matches("04|10|20|22|24") & matches("_DIR")), na.rm = TRUE),
-      !!name_DIRd4 := rowSums(select(., matches("02|06|11|13|15") & matches("_DIR")), na.rm = TRUE),
+      !!name_DIRd1 := rowSums(select(., matches("05|09|14|16|18") & matches("_DIR$")), na.rm = TRUE),
+      !!name_DIRd2 := rowSums(select(., matches("01|08|19|21|26") & matches("_DIR$")), na.rm = TRUE),
+      !!name_DIRd3 := rowSums(select(., matches("04|10|20|22|24") & matches("_DIR$")), na.rm = TRUE),
+      !!name_DIRd4 := rowSums(select(., matches("02|06|11|13|15") & matches("_DIR$")), na.rm = TRUE),
       
       
       # Score Scale

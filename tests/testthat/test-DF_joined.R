@@ -1,4 +1,4 @@
-testthat::test_that('Check if all the tests have been joined', {
+testthat::test_that('Check DF_joined', {
 
   # Name of test (should reflect the name of the file) ----------------------
   
@@ -9,7 +9,7 @@ testthat::test_that('Check if all the tests have been joined', {
   # Test --------------------------------------------------------------------
   
   expected_names = grep("^.*_RAW$|^.*_DIR$|^.*_DIRt$|^.*_DIRd$|^.*_STDt$|^.*_STDd|^.*DIR_NA$|^.*RAW_NA$", names(DF_joined %>% select(-id)), ignore.case = FALSE, fixed = FALSE, value = TRUE)
-  non_canonical_names = names(DF_joined %>% select(-id))[!names(DF_joined %>% select(-id))%in% expected_names]
+  non_canonical_names = names(DF_joined %>% select(-id))[!names(DF_joined %>% select(-id)) %in% expected_names]
 
   if (length(non_canonical_names) > 0) cat(crayon::red(paste0("\nERROR: DF_joined contains non-standard columns: ", crayon::silver(paste(non_canonical_names, collapse = ", ")), "\n\n")))
 
@@ -32,8 +32,8 @@ testthat::test_that('Check if all the tests have been joined', {
   
   
   # Tasks in diccionary (DF_clean) not in DF_joined
-    diccionary_joined = tasks_in_diccionary[!tasks_in_diccionary %in% tasks_joined]
-    if (length(diccionary_joined) != 0) cat(crayon::yellow(paste0("\n[WARNING]: Tasks in DF_clean missing from DF_joined: ", crayon::silver(paste(diccionary_joined, collapse = ", ")), "\n\n")))
+    missing_from_DF_joined = tasks_in_diccionary[!tasks_in_diccionary %in% tasks_joined]
+    if (length(missing_from_DF_joined) != 0) cat(crayon::yellow(paste0("\n[WARNING]: Tasks in DF_clean missing from DF_joined: ", crayon::silver(paste(missing_from_DF_joined, collapse = ", ")), "\n\n")))
   
   # Existing targets that have not been joined
     # - Can be because the name is different (SHOULD CORRECT)
@@ -44,13 +44,30 @@ testthat::test_that('Check if all the tests have been joined', {
                                                                                 paste0("For example: 'tar_target(df_", crayon::bgGreen("SBS") ,", prepare_SBS(DF_clean,  name_scale_str = 'Supernatural_Belief_Scale', short_name_scale_str = '", crayon::bgGreen("SBS") ,"'))'\n"),
                                                                                 crayon::silver("  - existing_targets:", paste(existing_targets, collapse = ", "), "\n",
                                                                                                "  - tasks_joined:", paste(tasks_joined, collapse = ", "), "\n\n"))
-    
 
+
+  # TEST 3: Number of 9999 values  ------------------------------------------------------------------
+
+    DF_999 = DF_joined %>% 
+      pivot_longer(2:ncol(.), values_transform = list(value = as.character)) %>% 
+      # filter(value == "9999") %>%
+      filter(grepl("999", value)) %>% # We reverse items after transforming to dir... sometimes the 9999 gets transform to -9993 or others,,,
+      distinct(name, value, .keep_all = FALSE)
+    
+    expect_equal(DF_999 %>% 
+                   nrow(),
+                 0, 
+                 label = paste0("Number of 9999 values (errors from RAW to DIR) [", paste(DF_999 %>% pull(name), collapse = ", "), "] ")
+                 )  
+
+    
+    
+    
   # Warning and log ---------------------------------------------------------
   
-  if (length(diccionary_joined) > 0 | length(targets_joined) > 0) {
+  if (length(missing_from_DF_joined) > 0 | length(targets_joined) > 0) {
     
-    df_missing = diccionary_joined %>% 
+    df_missing = missing_from_DF_joined %>% 
       as_tibble() %>% 
       mutate(what = "In diccionary, missing in join") %>%
       bind_rows(
@@ -62,7 +79,7 @@ testthat::test_that('Check if all the tests have been joined', {
     write_csv(df_missing, here::here(paste0("output/tests_outputs/test-", name_of_test, ".csv")))
     
     cat(crayon::red("\nERROR in", paste0("test-", name_of_test), "\n"),
-        crayon::red("  - Some tasks are not in DF_joined:"), "", "\n",
+        crayon::red("  - Some tasks are in DF_clean but not in DF_joined:"), "", "\n",
         crayon::green("  - # of Issues: "), crayon::red(nrow(df_missing)), "\n",
         crayon::silver("  - DF with details stored in:", paste0("'output/tests_outputs/test-", name_of_test, ".csv'"), "\n\n"))
   }
@@ -71,7 +88,7 @@ testthat::test_that('Check if all the tests have been joined', {
   # Actual expectation -------------------------------------------------------------
   
   testthat::expect_length(non_canonical_names, 0)
-  testthat::expect_length(diccionary_joined, 0)
+  testthat::expect_length(missing_from_DF_joined, 0)
   testthat::expect_length(targets_joined, 0) 
     
 })

@@ -93,9 +93,9 @@ prepare_TEMPLATE <- function(DF_clean, short_name_scale_str) {
 
     mutate(
 
-      # Score Dimensions (use 3 digit item numbers)
-      !!name_DIRd1 := rowSums(select(., matches("02|04|05") & matches("_DIR")), na.rm = TRUE), # NAME SHOULD BE !!name_DIRd1
-      !!name_DIRd2 := rowSums(select(., matches("01|03|08") & matches("_DIR")), na.rm = TRUE), # NAME SHOULD BE !!name_DIRd2
+      # Score Dimensions (see standardized_names(help_names = TRUE) for instructions)
+      !!name_DIRd1 := rowSums(select(., matches("02|04|05") & matches("_DIR$")), na.rm = TRUE), 
+      !!name_DIRd2 := rowSums(select(., matches("01|03|08") & matches("_DIR$")), na.rm = TRUE), 
       
       # Score Scale
       !!name_DIRt := rowSums(select(., matches("_DIR$")), na.rm = TRUE)

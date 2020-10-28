@@ -92,13 +92,13 @@ prepare_PBS <- function(DF_clean, short_name_scale_str) {
     mutate(
 
       # Score Dimensions (use 3 digit item numbers)
-      !!name_DIRd1 := rowMeans(select(., matches("01|08|15|22") & matches("_DIR")), na.rm = TRUE), 
-      !!name_DIRd2 := rowMeans(select(., matches("02|09|16|23") & matches("_DIR")), na.rm = TRUE), 
-      !!name_DIRd3 := rowMeans(select(., matches("03|10|17|24") & matches("_DIR")), na.rm = TRUE), 
-      !!name_DIRd4 := rowMeans(select(., matches("04|11|18") & matches("_DIR")), na.rm = TRUE), 
-      !!name_DIRd5 := rowMeans(select(., matches("05|12|19|25") & matches("_DIR")), na.rm = TRUE), 
-      !!name_DIRd6 := rowMeans(select(., matches("06|13|20") & matches("_DIR")), na.rm = TRUE), 
-      !!name_DIRd7 := rowMeans(select(., matches("07|14|21|26") & matches("_DIR")), na.rm = TRUE), 
+      !!name_DIRd1 := rowMeans(select(., matches("01|08|15|22") & matches("_DIR$")), na.rm = TRUE), 
+      !!name_DIRd2 := rowMeans(select(., matches("02|09|16|23") & matches("_DIR$")), na.rm = TRUE), 
+      !!name_DIRd3 := rowMeans(select(., matches("03|10|17|24") & matches("_DIR$")), na.rm = TRUE), 
+      !!name_DIRd4 := rowMeans(select(., matches("04|11|18") & matches("_DIR$")), na.rm = TRUE), 
+      !!name_DIRd5 := rowMeans(select(., matches("05|12|19|25") & matches("_DIR$")), na.rm = TRUE), 
+      !!name_DIRd6 := rowMeans(select(., matches("06|13|20") & matches("_DIR$")), na.rm = TRUE), 
+      !!name_DIRd7 := rowMeans(select(., matches("07|14|21|26") & matches("_DIR$")), na.rm = TRUE), 
       
       # Score Scale
       !!name_DIRt := rowMeans(select(., matches("_DIR$")), na.rm = TRUE)

@@ -44,8 +44,8 @@ targets <- list(
   # _Read files --------------------------------------------------------------
 
     # RAW data
-    tar_target(input_files, list.files(path = "data", pattern="*.csv", full.names = TRUE)), #, format = "file" (IF files in vault/ first run fails)
-    tar_target(DF_raw, read_data(input_files, anonymize = TRUE)),
+    tar_target(input_files, list.files(path = "data", pattern="*.csv", full.names = TRUE), format = "file"), #, format = "file" (IF files in vault/ first run fails)
+    tar_target(DF_raw, read_data(input_files, anonymize = FALSE)),
 
   
     # Cleaned data
@@ -60,11 +60,36 @@ targets <- list(
     # Use R/prepare_template.R to create new preparation_scripts
   
     # [TODO]: Each of the individual tasks should have specific hardcoded TESTS!
+    # [TODO]: Will change short_name_scale_str for the final names once we have the corrected names!
+  
     # [REMEMBER]: the target name needs to be ==  df_[short_name_scale_str]
-    tar_target(df_CRT7, prepare_CRT7(DF_clean, short_name_scale_str = "CRT_7")),
-    tar_target(df_GHQ12, prepare_GHQ12(DF_clean, short_name_scale_str = "Goldberg")),
-    tar_target(df_MIS, prepare_MIS(DF_clean, short_name_scale_str = "Magical_Ideation")),
-    tar_target(df_bRCOPE, prepare_bRCOPE(DF_clean, short_name_scale_str = "Religious_Coping")),
+    tar_target(df_bRCOPE, prepare_bRCOPE(DF_clean, short_name_scale_str = "bRCOPE")),
+    tar_target(df_CRS, prepare_CRS(DF_clean, short_name_scale_str = "CRS")),
+    tar_target(df_CRT7, prepare_CRT7(DF_clean, short_name_scale_str = "CRT7")),
+    tar_target(df_CRTv, prepare_CRTv(DF_clean, short_name_scale_str = "CRTv")),
+    tar_target(df_ERQ, prepare_ERQ(DF_clean, short_name_scale_str = "ERQ")),
+    tar_target(df_FDMQ, prepare_FDMQ(DF_clean, short_name_scale_str = "FDMQ")),
+  
+    # tar_target(df_GHQ12, prepare_GHQ12(DF_clean, short_name_scale_str = "GHQ12")),
+  
+    tar_target(df_IEC, prepare_IEC(DF_clean, short_name_scale_str = "IEC")),
+  
+    tar_target(df_IRI, prepare_IRI(DF_clean, short_name_scale_str = "IRI")),
+    tar_target(df_IRS, prepare_IRS(DF_clean, short_name_scale_str = "IRS")),
+    tar_target(df_MIS, prepare_MIS(DF_clean, short_name_scale_str = "MIS")),
+    tar_target(df_PBS, prepare_PBS(DF_clean, short_name_scale_str = "PBS")),
+    tar_target(df_PSS, prepare_PSS(DF_clean, short_name_scale_str = "PSS")),
+    tar_target(df_REI40, prepare_REI40(DF_clean, short_name_scale_str = "REI40")),
+    tar_target(df_RSS, prepare_RSS(DF_clean, short_name_scale_str = "RSS")),
+    tar_target(df_RTS, prepare_RTS(DF_clean, short_name_scale_str = "RTS")),
+    tar_target(df_SASS, prepare_SASS(DF_clean, short_name_scale_str = "SASS")),
+    tar_target(df_SCSORF, prepare_SCSORF(DF_clean, short_name_scale_str = "SCSORF")),
+    tar_target(df_SBS, prepare_SBS(DF_clean, short_name_scale_str = "SBS")),
+    tar_target(df_SRSav, prepare_SRSav(DF_clean, short_name_scale_str = "SRSav")),
+    tar_target(df_SWBQ, prepare_SWBQ(DF_clean, short_name_scale_str = "SWBQ")),
+    tar_target(df_WEBEXEC, prepare_WEBEXEC(DF_clean, short_name_scale_str = "WEBEXEC")),
+  
+  
   
 
   # _Join tasks --------------------------------------------------------------
@@ -72,9 +97,27 @@ targets <- list(
     # [REMEMBER]: Have to manually put every test we prepare here
       # rlang::sym("s") para convertir en simbolos caracteres. 
       # Si usamos estandar para el output de prepared_TASKS() (por ejemplo, df_XXX, vs DF_XXX), podemos hacer que se joineen aqui automaticamente!!!
-    tar_target(DF_joined, create_joined(df_CRT7,
+    tar_target(DF_joined, create_joined(df_bRCOPE,
+                                        df_CRS,
+                                        df_CRT7,
+                                        df_CRTv,
+                                        df_ERQ,
+                                        df_FDMQ,
+                                        df_IEC,
+                                        df_IRI,
+                                        df_IRS,
                                         df_MIS,
-                                        df_bRCOPE)),
+                                        df_PBS,
+                                        df_PSS,
+                                        df_REI40,
+                                        df_RSS,
+                                        df_RTS,
+                                        df_SASS,
+                                        df_SCSORF,
+                                        df_SBS,
+                                        df_SRSav,
+                                        df_SWBQ,
+                                        df_WEBEXEC)),
     
   
   # _Analysis ----------------------------------------------------------------- 
@@ -89,18 +132,18 @@ targets <- list(
   
     
     # Models
-    tar_target(model_XXX, analysis_model_XXX(DF_analysis)),
+    tar_target(model_E1, analysis_model_E1(DF_analysis)),
 
 
     # Tables and plots use the model (e.g. model_XXX) as input.  
     # Most model objects in R include the data used to fit the model
   
       # Tables
-      tar_target(table1_model_XXX, analysis_model_XXX_table(model_XXX)),
+      tar_target(table1_model_E1, analysis_model_E1_table(model_E1)),
   
   
       # Plots
-      tar_target(plot1_model_XXX, analysis_model_XXX_plot(model_XXX)),
+      tar_target(plot1_model_E1, analysis_model_E1_plot(model_E1)),
     
   
   # _Tests -------------------------------------------------------------------

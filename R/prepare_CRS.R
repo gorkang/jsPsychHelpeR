@@ -82,11 +82,11 @@ prepare_CRS <- function(DF_clean, short_name_scale_str) {
     mutate(
 
       # Score Dimensions (use 3 digit item numbers)
-      !!name_DIRd1 := rowMeans(select(., matches("01|06|11") & matches("_DIR")), na.rm = TRUE), # NAME SHOULD BE !!name_DIRd1
-      !!name_DIRd2 := rowMeans(select(., matches("02|07|12") & matches("_DIR")), na.rm = TRUE),
-      !!name_DIRd3 := rowMeans(select(., matches("03|08|13") & matches("_DIR")), na.rm = TRUE),
-      !!name_DIRd4 := rowMeans(select(., matches("04|09|14") & matches("_DIR")), na.rm = TRUE),
-      !!name_DIRd5 := rowMeans(select(., matches("05|10|15") & matches("_DIR")), na.rm = TRUE),
+      !!name_DIRd1 := rowMeans(select(., matches("01|06|11") & matches("_DIR$")), na.rm = TRUE), 
+      !!name_DIRd2 := rowMeans(select(., matches("02|07|12") & matches("_DIR$")), na.rm = TRUE),
+      !!name_DIRd3 := rowMeans(select(., matches("03|08|13") & matches("_DIR$")), na.rm = TRUE),
+      !!name_DIRd4 := rowMeans(select(., matches("04|09|14") & matches("_DIR$")), na.rm = TRUE),
+      !!name_DIRd5 := rowMeans(select(., matches("05|10|15") & matches("_DIR$")), na.rm = TRUE),
       
       # Score Scale
       !!name_DIRt := rowMeans(select(., matches("_DIR$")), na.rm = TRUE)

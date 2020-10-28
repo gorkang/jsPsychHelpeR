@@ -71,9 +71,9 @@ Trialid's and questions for each of the items:
 
 # trialid and question_text for each experiment
 trialid_detail_table = DF %>% 
-  select(experimento, trialid, question_text) %>% 
+  select(experimento, trialid, stimulus) %>% 
   group_by(experimento) %>% 
-  distinct(trialid, question_text) 
+  distinct(trialid, stimulus) 
 
 
 DT::datatable(trialid_detail_table, filter = 'top', options = list(dom = 'tip'))
