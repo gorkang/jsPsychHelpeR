@@ -16,12 +16,38 @@ testthat::test_that('Tests if the participant is missing test results', {
   missing_DF = DF_joined %>% 
     select(id, all_of(all_scales)) %>% 
     mutate(NAs_id = rowSums(is.na(select(., matches(all_scales))))) %>% 
-    select(id, NAs_id, everything())
+    mutate(
+      missing_VARS = case_when(
+        NAs_id > 0 ~ paste(colnames(.)[!complete.cases(t(.))],  collapse = ", "),
+        TRUE ~ "")) %>% 
+    select(id, NAs_id, missing_VARS, colnames(.)[!complete.cases(t(.))])
   
   missing_ids = missing_DF %>% 
     filter(NAs_id > 0) %>% 
     arrange(id) %>% 
     pull(id)
+
+  # WORKS WITH MULTIPLE MISSING TESTS?  
+  # missing_DF %>% 
+  #   filter(NAs_id > 0) %>% 
+  #   arrange(id) %>% 
+  #   group_by(missing_VARS) %>% 
+  #   summarise(participants = paste(id, collapse = ", "), .groups = "drop") %>% 
+  #   mutate(MESSAGE = paste0(missing_VARS, ": ", participants)) %>% 
+  #   pull(MESSAGE)
+  
+  # NEEDS TO WORK FOR EACH ROW!
+  # missing_DF = 
+  #   DF_joined %>% 
+  #   # select(id, all_of(all_scales)) %>% 
+  #   mutate(NAs_id = rowSums(is.na(select(., everything())))) %>% 
+  #   rowwise() %>% 
+  #   mutate(
+  #     missing_VARS = 
+  #       case_when(
+  #         NAs_id > 0 ~ paste(colnames(.)[!complete.cases(t(.))],  collapse = ", "),
+  #         TRUE ~ "")) %>% 
+  #   select(id, NAs_id, missing_VARS, colnames(.)[!complete.cases(t(.))])
   
   
   # Warning and log ---------------------------------------------------------

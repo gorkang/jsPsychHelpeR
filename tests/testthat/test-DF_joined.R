@@ -6,7 +6,7 @@ testthat::test_that('Check DF_joined', {
   cat(crayon::underline(crayon::yellow(paste0("\n\nRunning: ", crayon::silver(name_of_test, paste(rep(" ", 40), collapse = " ")),"\n\n"))))
 
 
-  # Test --------------------------------------------------------------------
+  # TEST 1: NON canonical names --------------------------------------------------------------------
   
   expected_names = grep("^.*_RAW$|^.*_DIR$|^.*_DIRt$|^.*_DIRd$|^.*_STDt$|^.*_STDd|^.*DIR_NA$|^.*RAW_NA$", names(DF_joined %>% select(-id)), ignore.case = FALSE, fixed = FALSE, value = TRUE)
   non_canonical_names = names(DF_joined %>% select(-id))[!names(DF_joined %>% select(-id)) %in% expected_names]
@@ -54,13 +54,6 @@ testthat::test_that('Check DF_joined', {
       filter(grepl("999", value)) %>% # We reverse items after transforming to dir... sometimes the 9999 gets transform to -9993 or others,,,
       distinct(name, value, .keep_all = FALSE)
     
-    expect_equal(DF_999 %>% 
-                   nrow(),
-                 0, 
-                 label = paste0("Number of 9999 values (errors from RAW to DIR) [", paste(DF_999 %>% pull(name), collapse = ", "), "] ")
-                 )  
-
-    
     
     
   # Warning and log ---------------------------------------------------------
@@ -89,6 +82,11 @@ testthat::test_that('Check DF_joined', {
   
   testthat::expect_length(non_canonical_names, 0)
   testthat::expect_length(missing_from_DF_joined, 0)
-  testthat::expect_length(targets_joined, 0) 
-    
+  testthat::expect_length(targets_joined, 0)
+
+  testthat::expect_equal(DF_999 %>% nrow(),
+                         0,
+                         label = paste0("Number of 9999 values (errors from RAW to DIR) [", paste(DF_999 %>% pull(name), collapse = ", "), "] ")
+  )
+
 })

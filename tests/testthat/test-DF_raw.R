@@ -1,0 +1,42 @@
+testthat::test_that('Check if DF_raw', {
+  
+  # Name of test (should reflect the name of the file) ----------------------
+  
+  name_of_test = "DF_raw"
+  cat(crayon::underline(crayon::yellow(paste0("\n\nRunning: ", crayon::silver(name_of_test, paste(rep(" ", 40), collapse = " ")),"\n\n"))))
+  
+  # Test --------------------------------------------------------------------
+  
+  DF_problematic_trialids = 
+    DF_raw %>%
+    filter(!grepl("[a-zA-Z0-9]{1,100}_[0-9]{2}|^Instructions", trialid)) %>% 
+    distinct(trialid, experimento) %>% 
+    drop_na(trialid) 
+  
+  
+  offenders =
+    DF_problematic_trialids %>% 
+    distinct(trialid) %>% 
+    pull(trialid)
+  
+  
+  # Warning and log ---------------------------------------------------------
+  
+  if (nrow(DF_problematic_trialids) > 0) {
+    
+    write_csv(DF_problematic_trialids, here::here(paste0("output/tests_outputs/test-", name_of_test, ".csv")))
+    
+    cat(crayon::red("\nERROR in", paste0("test-", name_of_test), "\n"),
+        crayon::red("  - Some of the items have non-supported trialids:"), offenders, "\n",
+        crayon::yellow("  - # of Issues: "), crayon::red(length(offenders)), "\n",
+        crayon::green("  - trialid should be: "), crayon::black("SHORTNAMESCALE_DD or Instructions or Instructions_DD; e.g. CRT7_01, Instructions, Instructions_01"), "\n",
+        crayon::silver("  - DF with details stored in:", paste0("'output/tests_outputs/test-", name_of_test, ".csv'"), "\n\n"))
+    
+  }
+  
+  # Actual expectation -------------------------------------------------------------
+  
+  testthat::expect_gt(nrow(DF_temp), 1) # Checks that we have some rows in the DF
+  testthat::expect_length(DF_clean_offender_tests, 0)
+  
+})

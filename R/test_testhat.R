@@ -14,14 +14,14 @@ test_testhat <- function(input_files_automatic_tests_str, ...) {
   argnames <- sys.call()
   arguments = lapply(argnames[-1], as.character) %>% unlist()
   
-  
+  # browser()
   # Load targets
   targets::tar_load(all_of(input_files_automatic_tests_str), envir = .GlobalEnv)
   targets::tar_load(all_of(arguments), envir = .GlobalEnv)
   
   
   # Print
-  num_tests = list.files("tests/testthat/") %>% length()
+  num_tests = list.files("tests/testthat/", pattern = ".R") %>% length()
   cat(crayon::blue(crayon::underline(crayon::bold(paste0("\n\n[Running ", num_tests, " tests]:", paste(rep(" ", 60), collapse = " ")), " \n"))))
   # cat(crayon::blue(crayon::underline(paste(rep(" ", 48), collapse = " "))), " \n")
 
@@ -36,7 +36,7 @@ test_testhat <- function(input_files_automatic_tests_str, ...) {
 
   # Run all the tests ------------------------------------------------------
 
-  testthat::test_dir(path = here::here("tests/testthat/"), env = .GlobalEnv, stop_on_failure = TRUE, reporter = StopReporter)#ProgressReporter
+  testthat::test_dir(path = here::here("tests/testthat/"), env = .GlobalEnv, stop_on_failure = FALSE, reporter = ProgressReporter)# ProgressReporter StopReporter
   
   cat(crayon::blue(crayon::underline(crayon::bold(paste0("\n\n[END tests]:", paste(rep(" ", 65), collapse = " ")), " \n\n\n"))))
   

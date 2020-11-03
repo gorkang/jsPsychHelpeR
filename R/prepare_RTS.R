@@ -32,6 +32,12 @@ prepare_RTS <- function(DF_clean, short_name_scale_str) {
   
   
   # Create long DIR ------------------------------------------------------------
+  
+  # [ADAPT] -------------------
+  items_to_ignore = c("01|06|07|10|11|14|15|17|23|24|27|28") # Ignore the following items
+  # ***************************
+  
+  
   DF_long_DIR = 
     DF_long_RAW %>% 
     select(id, trialid, RAW) %>%
@@ -40,18 +46,13 @@ prepare_RTS <- function(DF_clean, short_name_scale_str) {
   # [ADAPT]: RAW to DIR for individual items -----------------------------------
   # ****************************************************************************
   
-  # Ignore the following items
-  mutate(RAW = 
-           case_when(
-             !grepl("02|03|04|05|08|09|12|13|16|18|19|20|21|22|25|26|29", trialid) ~ NA_character_,
-             TRUE ~ RAW)) %>% 
-  
     mutate(
       DIR =
         case_when(
           grepl("02|03|04|05|08|09|12|13|16|18|19|20|21|22|25|26|29", trialid) & RAW == "Verdadero" ~ 1,
           grepl("02|03|04|05|08|09|12|13|16|18|19|20|21|22|25|26|29", trialid) & RAW == "Falso" ~ 0,
           is.na(RAW) ~ NA_real_,
+          grepl(items_to_ignore, trialid) ~ NA_real_,
           TRUE ~ 9999
         )
     ) 
@@ -69,8 +70,8 @@ prepare_RTS <- function(DF_clean, short_name_scale_str) {
       names_glue = "{trialid}_{.value}") %>% 
     
     # NAs for RAW and DIR items
-    mutate(!!name_RAW_NA := rowSums(is.na(select(., matches("_RAW")))),
-           !!name_DIR_NA := rowSums(is.na(select(., matches("_DIR"))))) %>% 
+    mutate(!!name_RAW_NA := rowSums(is.na(select(., -matches(items_to_ignore) & matches("_RAW")))),
+           !!name_DIR_NA := rowSums(is.na(select(., -matches(items_to_ignore) & matches("_DIR"))))) %>% 
       
     
   # [ADAPT]: Scales and dimensions calculations --------------------------------

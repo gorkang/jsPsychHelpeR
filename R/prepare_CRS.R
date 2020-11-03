@@ -17,7 +17,7 @@
 prepare_CRS <- function(DF_clean, short_name_scale_str) {
   
   # DEBUG
-  debug_function(prepare_CRS)
+  # debug_function(prepare_CRS)
 
   # Standardized names ------------------------------------------------------
   standardized_names(short_name_scale = short_name_scale_str, 

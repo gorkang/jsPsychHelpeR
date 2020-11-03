@@ -99,3 +99,19 @@ DT::datatable(responses_table, filter = 'top', options = list(dom = 'tip'))
 
 ```
 
+
+```{r}
+  # DF_responses =
+  #   DF_long_RAW %>% 
+  #   count(trialid, RAW) %>% 
+  #   group_by(trialid) %>% 
+  #   summarise(N = n(),
+  #             Responses = paste(RAW, collapse = ", "), 
+  #             .groups = "drop") %>% 
+  #   group_by(Responses) %>% 
+  #   summarise(N = n(),
+  #             trialid = paste(trialid, collapse = ", "), 
+  #             .groups = "drop") %>% 
+  #   DT::datatable()
+```
+

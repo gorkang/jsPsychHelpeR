@@ -85,10 +85,10 @@ prepare_REI40 <- function(DF_clean, short_name_scale_str) {
       
       # Meta-dimensions
       !!name_DIRd5 := rowMeans(select(., matches("01|02|03|04|05|06|07|08|09|10|11|12|13|14|15|16|17|18|19|20") & matches("_DIR$")), na.rm = TRUE),
-      !!name_DIRd6 := rowMeans(select(., matches("21|22|23|24|25|26|27|28|29|30|31|32|33|34|35|36|37|38|39|40") & matches("_DIR$")), na.rm = TRUE),
+      !!name_DIRd6 := rowMeans(select(., matches("21|22|23|24|25|26|27|28|29|30|31|32|33|34|35|36|37|38|39|40") & matches("_DIR$")), na.rm = TRUE)
       
       # Score Scale
-      !!name_DIRt := rowMeans(select(., matches("_DIR$")), na.rm = TRUE)
+      # !!name_DIRt := rowMeans(select(., matches("_DIR$")), na.rm = TRUE)
       
     )
     

@@ -1,12 +1,12 @@
-##' Prepare TEMPLATE
+##' Prepare SDG
 ##'
 ##' Template for the functions to prepare specific tasks. Most of this file should not be changed
 ##' Things to change: 
-##'   - Name of function: prepare_TEMPLATE -> prepare_[value of short_name_scale_str] 
+##'   - Name of function: prepare_SDG -> prepare_[value of short_name_scale_str] 
 ##'   - dimensions parameter in standardized_names()
 ##'   - 2 [ADAPT] chunks
 ##'
-##' @title prepare_TEMPLATE
+##' @title prepare_SDG
 ##'
 ##' @param short_name_scale_str 
 ##' @param DF_clean
@@ -14,10 +14,10 @@
 ##' @return
 ##' @author gorkang
 ##' @export
-prepare_TEMPLATE <- function(DF_clean, short_name_scale_str) {
+prepare_SDG <- function(DF_clean, short_name_scale_str) {
 
   # DEBUG
-  # debug_function(prepare_TEMPLATE)
+  # debug_function(prepare_SDG)
 
   # Standardized names ------------------------------------------------------
   standardized_names(short_name_scale = short_name_scale_str, 

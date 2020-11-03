@@ -1,12 +1,12 @@
-##' Prepare TEMPLATE
+##' Prepare IDQ
 ##'
 ##' Template for the functions to prepare specific tasks. Most of this file should not be changed
 ##' Things to change: 
-##'   - Name of function: prepare_TEMPLATE -> prepare_[value of short_name_scale_str] 
+##'   - Name of function: prepare_IDQ -> prepare_[value of short_name_scale_str] 
 ##'   - dimensions parameter in standardized_names()
 ##'   - 2 [ADAPT] chunks
 ##'
-##' @title prepare_TEMPLATE
+##' @title prepare_IDQ
 ##'
 ##' @param short_name_scale_str 
 ##' @param DF_clean
@@ -14,15 +14,15 @@
 ##' @return
 ##' @author gorkang
 ##' @export
-prepare_TEMPLATE <- function(DF_clean, short_name_scale_str) {
+prepare_IDQ <- function(DF_clean, short_name_scale_str) {
 
   # DEBUG
-  # debug_function(prepare_TEMPLATE)
+  # debug_function(prepare_IDQ)
 
   # Standardized names ------------------------------------------------------
   standardized_names(short_name_scale = short_name_scale_str, 
-                     dimensions = c("NameDimension1", "NameDimension2"), # Use names of dimensions, "" or comment out line
-                     help_names = TRUE) # help_names = FALSE once the script is ready
+                     # dimensions = c("NameDimension1", "NameDimension2"), # Use names of dimensions, "" or comment out line
+                     help_names = FALSE) # help_names = FALSE once the script is ready
   
   # Create long -------------------------------------------------------------
   DF_long_RAW = create_raw_long(DF_clean, short_name_scale = short_name_scale_str, numeric_responses = FALSE)
@@ -55,25 +55,29 @@ prepare_TEMPLATE <- function(DF_clean, short_name_scale_str) {
     mutate(
       DIR =
         case_when(
-          RAW == "Nunca" ~ 1,
-          RAW == "Poco" ~ 2,
-          RAW == "Medianamente" ~ 3,
-          RAW == "Bastante" ~ 4,
-          RAW == "Mucho" ~ 5,
-          is.na(RAW) ~ NA_real_,
-          grepl(items_to_ignore, trialid) ~ NA_real_,
-          TRUE ~ 9999
+          RAW == "Mujer" ~ "0",
+          RAW == "Hombre" ~ "1",
+          RAW == "No binario" ~ "2",
+          
+          RAW == "No" ~ "0",
+          RAW == "Si" ~ "1",
+          
+          trialid %in% c("IDQ_01", "IDQ_02", "IDQ_04", "IDQ_05", "IDQ_06", "IDQ_07", "IDQ_10", "IDQ_12") ~ RAW,
+          
+          is.na(RAW) ~ NA_character_,
+          grepl(items_to_ignore, trialid) ~ NA_character_,
+          TRUE ~ "9999"
         )
-    ) %>% 
+    )  %>% 
     
     # Invert items
     mutate(
-      DIR = 
-        case_when(
-          DIR == 9999 ~ DIR, # To keep the missing values unchanged
-          grepl(items_to_reverse, trialid) ~ (6 - DIR),
-          TRUE ~ DIR
-        )
+    #   DIR = 
+    #     case_when(
+    #       DIR == 9999 ~ DIR, # To keep the missing values unchanged
+    #       grepl(items_to_reverse, trialid) ~ (6 - DIR),
+    #       TRUE ~ DIR
+        # )
     )
     
   # [END ADAPT]: ***************************************************************
@@ -100,11 +104,11 @@ prepare_TEMPLATE <- function(DF_clean, short_name_scale_str) {
     mutate(
 
       # Score Dimensions (see standardized_names(help_names = TRUE) for instructions)
-      !!name_DIRd1 := rowSums(select(., matches("02|04|05") & matches("_DIR$")), na.rm = TRUE), 
-      !!name_DIRd2 := rowSums(select(., matches("01|03|08") & matches("_DIR$")), na.rm = TRUE), 
+      # !!name_DIRd1 := rowSums(select(., matches("02|04|05") & matches("_DIR$")), na.rm = TRUE), 
+      # !!name_DIRd2 := rowSums(select(., matches("01|03|08") & matches("_DIR$")), na.rm = TRUE), 
       
       # Score Scale
-      !!name_DIRt := rowSums(select(., matches("_DIR$")), na.rm = TRUE)
+      # !!name_DIRt := rowSums(select(., matches("_DIR$")), na.rm = TRUE)
       
     )
     

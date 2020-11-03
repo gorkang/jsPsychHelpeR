@@ -28,10 +28,15 @@ prepare_SASS <- function(DF_clean, short_name_scale_str) {
   DF_long_RAW = create_raw_long(DF_clean, short_name_scale = short_name_scale_str, numeric_responses = FALSE)
   
   # Show number of items, responses, etc. [uncomment to help prepare the test] 
-  prepare_helper(DF_long_RAW, show_trialid_questiontext = TRUE)
+  # prepare_helper(DF_long_RAW, show_trialid_questiontext = TRUE)
   
   
   # Create long DIR ------------------------------------------------------------
+  
+  # [ADAPT] -------------------
+  items_to_ignore = c("01") # Ignore the following items: If nothing to ignore, keep "00|00"
+  # ***************************
+  
   DF_long_DIR =
     DF_long_RAW %>% 
     select(id, trialid, RAW) %>%
@@ -39,15 +44,16 @@ prepare_SASS <- function(DF_clean, short_name_scale_str) {
     
   # [ADAPT]: RAW to DIR for individual items -----------------------------------
   # ****************************************************************************
-
     mutate(
       DIR =
         case_when(
           RAW == "Moderadamente" & trialid == "SASS_10" ~ 1, # Moderadamente is the third option except for item SASS_10
           grepl("Nada|Nada de entusiasmo|Insatisfactoria|Insatisfactorio|Nunca|Nadie|Pasivamente|Ningún valor|Para nada", RAW) ~ 0,
           grepl("Poco|Poco entusiasmo|Justa|Justo|Raramente|Pocas personas|Poco valor|Levemente|No mucho|A veces", RAW) ~ 1,
-          grepl("Medianamente|Algo de entusiasmo|Buena|Bueno|Frecuentemente|Algunas personas|Activamente|A menudo|La mayor parte del tiempo|Moderadamente", RAW) ~ 2,
+          grepl("Medianamente|Algo de entusiasmo|Buena|Bueno|Frecuentemente|Algunas personas|Activamente|A menudo|La mayor parte del tiempo|Algún valor|Moderadamente", RAW) ~ 2,
           grepl("Mucho|Mucho entusiasmo|Muy buena|Muy bueno|Muy frecuente|Muchas personas|Muy activamente|Gran valor|Muy a menudo|Siempre|Completamente|Muchísimo", RAW) ~ 3,
+          is.na(RAW) ~ NA_real_,
+          grepl(items_to_ignore, trialid) ~ NA_real_,
           TRUE ~ 9999
         )
     ) %>% 
@@ -75,8 +81,8 @@ prepare_SASS <- function(DF_clean, short_name_scale_str) {
       names_glue = "{trialid}_{.value}") %>% 
     
     # NAs for RAW and DIR items
-    mutate(!!name_RAW_NA := rowSums(is.na(select(., matches("_RAW")))),
-           !!name_DIR_NA := rowSums(is.na(select(., matches("_DIR"))))) %>% 
+    mutate(!!name_RAW_NA := rowSums(is.na(select(., -matches(items_to_ignore) & matches("_RAW")))),
+           !!name_DIR_NA := rowSums(is.na(select(., -matches(items_to_ignore) & matches("_DIR"))))) %>% 
       
     
   # [ADAPT]: Scales and dimensions calculations --------------------------------

@@ -13,7 +13,7 @@
   
 # Visualize targets networks -----------------------------------------------
 
-  targets::tar_visnetwork(targets_only = TRUE) #label = "time"
+  targets::tar_visnetwork(targets_only = TRUE, label = "time") #label = "time"
   # targets::tar_glimpse()
 
 # Destroy cache (_targets folder) -----------------------------------------

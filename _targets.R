@@ -17,7 +17,7 @@
   lapply(list.files("./R", full.names = TRUE, pattern = ".R"), source)
   
   # Packages to load
-  main_packages = c("cli", "crayon", "patchwork", "renv", "tarchetypes", "targets", "testthat")
+  main_packages = c("cli", "crayon", "furrr", "patchwork", "renv", "tarchetypes", "targets", "testthat")
   data_preparation_packages = c("dplyr", "forcats", "janitor", "purrr", "readr", "safer", "stringr", "tidyr")
   data_analysis_packages = c("broom", "broom.mixed", "emmeans", "gmodels", "gt", "gtsummary", "irr", "lme4", "parameters", "performance", "psych", "report", "sjPlot")
   data_visualization_packages = c("ggalluvial", "ggridges")
@@ -63,7 +63,10 @@ targets <- list(
     # [TODO]: Will change short_name_scale_str for the final names once we have the corrected names!
   
     # [REMEMBER]: the target name needs to be ==  df_[short_name_scale_str]
+    tar_target(df_AIM, prepare_AIM(DF_clean, short_name_scale_str = "AIM")),
+  
     tar_target(df_bRCOPE, prepare_bRCOPE(DF_clean, short_name_scale_str = "bRCOPE")),
+    tar_target(df_Cov19Q, prepare_Cov19Q(DF_clean, short_name_scale_str = "Cov19Q")),
     tar_target(df_CRS, prepare_CRS(DF_clean, short_name_scale_str = "CRS")),
     tar_target(df_CRT7, prepare_CRT7(DF_clean, short_name_scale_str = "CRT7")),
     tar_target(df_CRTv, prepare_CRTv(DF_clean, short_name_scale_str = "CRTv")),
@@ -71,9 +74,8 @@ targets <- list(
     tar_target(df_FDMQ, prepare_FDMQ(DF_clean, short_name_scale_str = "FDMQ")),
   
     # tar_target(df_GHQ12, prepare_GHQ12(DF_clean, short_name_scale_str = "GHQ12")),
-  
+    tar_target(df_IDQ, prepare_IDQ(DF_clean, short_name_scale_str = "IDQ")),
     tar_target(df_IEC, prepare_IEC(DF_clean, short_name_scale_str = "IEC")),
-  
     tar_target(df_IRI, prepare_IRI(DF_clean, short_name_scale_str = "IRI")),
     tar_target(df_IRS, prepare_IRS(DF_clean, short_name_scale_str = "IRS")),
     tar_target(df_MIS, prepare_MIS(DF_clean, short_name_scale_str = "MIS")),
@@ -83,8 +85,10 @@ targets <- list(
     tar_target(df_RSS, prepare_RSS(DF_clean, short_name_scale_str = "RSS")),
     tar_target(df_RTS, prepare_RTS(DF_clean, short_name_scale_str = "RTS")),
     tar_target(df_SASS, prepare_SASS(DF_clean, short_name_scale_str = "SASS")),
-    tar_target(df_SCSORF, prepare_SCSORF(DF_clean, short_name_scale_str = "SCSORF")),
     tar_target(df_SBS, prepare_SBS(DF_clean, short_name_scale_str = "SBS")),
+    tar_target(df_SCSORF, prepare_SCSORF(DF_clean, short_name_scale_str = "SCSORF")),
+    # tar_target(df_SDG, prepare_SDG(DF_clean, short_name_scale_str = "SDG")),
+    tar_target(df_SRA, prepare_SRA(DF_clean, short_name_scale_str = "SRA")),
     tar_target(df_SRSav, prepare_SRSav(DF_clean, short_name_scale_str = "SRSav")),
     tar_target(df_SWBQ, prepare_SWBQ(DF_clean, short_name_scale_str = "SWBQ")),
     tar_target(df_WEBEXEC, prepare_WEBEXEC(DF_clean, short_name_scale_str = "WEBEXEC")),
@@ -97,12 +101,16 @@ targets <- list(
     # [REMEMBER]: Have to manually put every test we prepare here
       # rlang::sym("s") para convertir en simbolos caracteres. 
       # Si usamos estandar para el output de prepared_TASKS() (por ejemplo, df_XXX, vs DF_XXX), podemos hacer que se joineen aqui automaticamente!!!
-    tar_target(DF_joined, create_joined(df_bRCOPE,
+    tar_target(DF_joined, create_joined(df_AIM,
+                                        df_bRCOPE,
+                                        df_Cov19Q,
                                         df_CRS,
                                         df_CRT7,
                                         df_CRTv,
                                         df_ERQ,
                                         df_FDMQ,
+                                        # df_GHQ12,
+                                        df_IDQ,
                                         df_IEC,
                                         df_IRI,
                                         df_IRS,
@@ -113,8 +121,10 @@ targets <- list(
                                         df_RSS,
                                         df_RTS,
                                         df_SASS,
-                                        df_SCSORF,
                                         df_SBS,
+                                        df_SCSORF,
+                                        # df_SDG,
+                                        df_SRA,
                                         df_SRSav,
                                         df_SWBQ,
                                         df_WEBEXEC)),
@@ -153,6 +163,7 @@ targets <- list(
   
     tar_target(TESTS, test_testhat(input_files_automatic_tests_str = input_files_automatic_tests_str,
                                    input_files,
+                                   DF_raw,
                                    DF_clean, 
                                    DICCIONARY_tasks,
                                    DF_joined

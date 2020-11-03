@@ -1,12 +1,12 @@
-##' Prepare TEMPLATE
+##' Prepare SRA
 ##'
 ##' Template for the functions to prepare specific tasks. Most of this file should not be changed
 ##' Things to change: 
-##'   - Name of function: prepare_TEMPLATE -> prepare_[value of short_name_scale_str] 
+##'   - Name of function: prepare_SRA -> prepare_[value of short_name_scale_str] 
 ##'   - dimensions parameter in standardized_names()
 ##'   - 2 [ADAPT] chunks
 ##'
-##' @title prepare_TEMPLATE
+##' @title prepare_SRA
 ##'
 ##' @param short_name_scale_str 
 ##' @param DF_clean
@@ -14,15 +14,15 @@
 ##' @return
 ##' @author gorkang
 ##' @export
-prepare_TEMPLATE <- function(DF_clean, short_name_scale_str) {
+prepare_SRA <- function(DF_clean, short_name_scale_str) {
 
   # DEBUG
-  # debug_function(prepare_TEMPLATE)
+  # debug_function(prepare_SRA)
 
   # Standardized names ------------------------------------------------------
   standardized_names(short_name_scale = short_name_scale_str, 
-                     dimensions = c("NameDimension1", "NameDimension2"), # Use names of dimensions, "" or comment out line
-                     help_names = TRUE) # help_names = FALSE once the script is ready
+                     # dimensions = c("NameDimension1", "NameDimension2"), # Use names of dimensions, "" or comment out line
+                     help_names = FALSE) # help_names = FALSE once the script is ready
   
   # Create long -------------------------------------------------------------
   DF_long_RAW = create_raw_long(DF_clean, short_name_scale = short_name_scale_str, numeric_responses = FALSE)
@@ -55,11 +55,11 @@ prepare_TEMPLATE <- function(DF_clean, short_name_scale_str) {
     mutate(
       DIR =
         case_when(
-          RAW == "Nunca" ~ 1,
-          RAW == "Poco" ~ 2,
-          RAW == "Medianamente" ~ 3,
-          RAW == "Bastante" ~ 4,
-          RAW == "Mucho" ~ 5,
+          RAW == "Nunca" ~ 0,
+          RAW == "Una vez" ~ 1,
+          RAW == "Más de una vez" ~ 2,
+          RAW == "A menudo" ~ 3,
+          RAW == "Muy a menudo" ~ 4,
           is.na(RAW) ~ NA_real_,
           grepl(items_to_ignore, trialid) ~ NA_real_,
           TRUE ~ 9999
@@ -91,6 +91,7 @@ prepare_TEMPLATE <- function(DF_clean, short_name_scale_str) {
     # NAs for RAW and DIR items
     mutate(!!name_RAW_NA := rowSums(is.na(select(., -matches(items_to_ignore) & matches("_RAW")))),
            !!name_DIR_NA := rowSums(is.na(select(., -matches(items_to_ignore) & matches("_DIR"))))) %>% 
+    
       
     
   # [ADAPT]: Scales and dimensions calculations --------------------------------
@@ -100,8 +101,8 @@ prepare_TEMPLATE <- function(DF_clean, short_name_scale_str) {
     mutate(
 
       # Score Dimensions (see standardized_names(help_names = TRUE) for instructions)
-      !!name_DIRd1 := rowSums(select(., matches("02|04|05") & matches("_DIR$")), na.rm = TRUE), 
-      !!name_DIRd2 := rowSums(select(., matches("01|03|08") & matches("_DIR$")), na.rm = TRUE), 
+      # !!name_DIRd1 := rowSums(select(., matches("02|04|05") & matches("_DIR$")), na.rm = TRUE), 
+      # !!name_DIRd2 := rowSums(select(., matches("01|03|08") & matches("_DIR$")), na.rm = TRUE), 
       
       # Score Scale
       !!name_DIRt := rowSums(select(., matches("_DIR$")), na.rm = TRUE)

@@ -155,7 +155,6 @@ create_raw_long <- function(DF_clean, short_name_scale, numeric_responses = FALS
   
   # DEBUG
   # short_name_scale = "SCSORF"
-  
 
   DF_clean %>% 
     # filter(experimento == name_scale) %>% 
@@ -169,7 +168,8 @@ create_raw_long <- function(DF_clean, short_name_scale, numeric_responses = FALS
               }
            ) %>% 
     drop_na(trialid) %>% 
-    rename(RAW = responses)
+    rename(RAW = responses) %>% 
+    arrange(trialid, id)
 }
 
 
@@ -269,7 +269,7 @@ save_files <- function(DF, short_name_scale, is_scale = TRUE) {
 prepare_helper <- function(DF_long_RAW, show_trialid_questiontext = FALSE) {
   
   # Items
-  vector_items = DF_long_RAW %>% distinct(trialid) %>% pull(trialid)
+  vector_items = DF_long_RAW %>% distinct(trialid) %>% arrange(trialid) %>% pull(trialid)
   
   # Questions
   DF_question = DF_long_RAW %>% distinct(trialid, stimulus) #%>%  print(n = Inf)
