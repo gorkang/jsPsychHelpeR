@@ -50,8 +50,8 @@ testthat::test_that('Check DF_joined', {
 
     DF_999 = DF_joined %>% 
       pivot_longer(2:ncol(.), values_transform = list(value = as.character)) %>% 
-      # filter(value == "9999") %>%
-      filter(grepl("999", value)) %>% # We reverse items after transforming to dir... sometimes the 9999 gets transform to -9993 or others,,,
+      filter(value == "9999") %>% # Solved the issue below with DIR == 9999 ~ DIR,?
+      # filter(grepl("999", value)) %>% # We reverse items after transforming to dir... sometimes the 9999 gets transform to -9993 or others,,,
       distinct(name, value, .keep_all = FALSE)
     
     

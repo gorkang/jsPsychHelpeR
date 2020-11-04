@@ -36,7 +36,7 @@ testthat::test_that('Check if DF_raw', {
   
   # Actual expectation -------------------------------------------------------------
   
-  testthat::expect_gt(nrow(DF_temp), 1) # Checks that we have some rows in the DF
-  testthat::expect_length(DF_clean_offender_tests, 0)
+  testthat::expect_gt(nrow(DF_raw), 0) # Checks that we have some rows in the DF
+  testthat::expect_length(offenders, 0)
   
 })

@@ -22,6 +22,7 @@ testthat::test_that('Tests if the participant is missing test results', {
         TRUE ~ "")) %>% 
     select(id, NAs_id, missing_VARS, colnames(.)[!complete.cases(t(.))])
   
+  missing_vars = missing_DF %>% filter(missing_VARS != "") %>% distinct(missing_VARS) %>% pull(missing_VARS)
   missing_ids = missing_DF %>% 
     filter(NAs_id > 0) %>% 
     arrange(id) %>% 
@@ -58,6 +59,8 @@ testthat::test_that('Tests if the participant is missing test results', {
     
     cat(crayon::red("\n", crayon::underline("ERROR"), "in", paste0("test-", name_of_test), "\n"),
         crayon::red("  - Some of the participants are", crayon::underline("missing test results:")), missing_ids, "\n",
+        crayon::red("  - In the following vars:"), missing_vars, "\n",
+        
         crayon::green("  - # of Issues: "), crayon::red(length(missing_ids)), "\n",
         crayon::silver("  - DF with details stored in:", paste0("'output/tests_outputs/test-", name_of_test, ".csv'"), "\n\n"))
     
