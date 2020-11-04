@@ -5,7 +5,7 @@
   missing_packages = packages_to_load[!packages_to_load %in% installed.packages()[,1]]
   
   if (length(missing_packages) > 0) {
-    cat(crayon::yellow("The following packages are missing and will be installed: "), packages_to_load[!packages_to_load %in% installed.packages()[,1]])
+    cat("The following packages are missing and will be installed: ", packages_to_load[!packages_to_load %in% installed.packages()[,1]])
     install.packages(packages_to_load[!packages_to_load %in% installed.packages()[,1]])
   } else {
     cat(crayon::green("All the necessary packages are present"))
@@ -27,5 +27,3 @@
     cat(crayon::yellow("Creating necessary folders: "), paste(necessary_folders, collapse = ", "))
     purrr::map(necessary_folders, dir.create, recursive = TRUE, showWarnings = FALSE)
   }
-  
-  
