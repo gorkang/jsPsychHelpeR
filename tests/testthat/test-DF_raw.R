@@ -5,7 +5,7 @@ testthat::test_that('Check if DF_raw', {
   name_of_test = "DF_raw"
   cat(crayon::underline(crayon::yellow(paste0("\n\nRunning: ", crayon::silver(name_of_test, paste(rep(" ", 40), collapse = " ")),"\n\n"))))
   
-  # Test --------------------------------------------------------------------
+  # Test: trialids are correctly build  ----------------------------------------------------------------
   
   DF_problematic_trialids = 
     DF_raw %>%
@@ -13,11 +13,17 @@ testthat::test_that('Check if DF_raw', {
     distinct(trialid, experimento) %>% 
     drop_na(trialid) 
   
-  
   offenders =
     DF_problematic_trialids %>% 
     distinct(trialid) %>% 
     pull(trialid)
+  
+
+  # Test: we have the canonical columns in DF_raw -------------------------------------------------------------------
+
+    canonical_names_columns =  c("filename", "success", "trial_type", "trial_index", "time_elapsed", "internal_node_id", "view_history", "rt", "trialid", "stimulus", "responses", "id", "project", "experimento", "version", "datetime")
+  
+  
   
   
   # Warning and log ---------------------------------------------------------
@@ -36,7 +42,11 @@ testthat::test_that('Check if DF_raw', {
   
   # Actual expectation -------------------------------------------------------------
   
+  # Test1
   testthat::expect_gt(nrow(DF_raw), 0) # Checks that we have some rows in the DF
   testthat::expect_length(offenders, 0)
+  
+  #Test2
+  testthat::expect_equal(canonical_names_columns, names(DF_raw))
   
 })
