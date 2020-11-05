@@ -6,7 +6,7 @@ testthat::test_that('Tests if the participant is missing test results', {
   cat(crayon::underline(crayon::yellow(paste0("\n\nRunning: ", crayon::silver(name_of_test, paste(rep(" ", 40), collapse = " ")),"\n\n"))))
   
   
-  # Test --------------------------------------------------------------------
+  # Test: missing data in standardized vars --------------------------------------------------------------
   
   # Selects all STDt, STDd, DIRt and DIRd scales
   # all_scales also used in "R/prepare_df_analysis.R"
@@ -37,11 +37,34 @@ testthat::test_that('Tests if the participant is missing test results', {
     arrange(id) %>% 
     pull(id)
   
+  
+  
+
+  # Test: missings in any item ----------------------------------------------
+
+  missingall_DF_temp = DF_joined %>% 
+    select(-all_of(all_scales)) %>% 
+    mutate(NAs_id = rowSums(is.na(select(., -matches(all_scales)))))
+  
+  # Get names
+  DF_missingall_vars = missingall_DF_temp %>% 
+    mutate(across(-id, is.na)) %>%  # replace all NA with TRUE and else FALSE
+    pivot_longer(-id, names_to = "var") %>%  # pivot longer
+    filter(value == TRUE) %>% 
+    group_by(id) %>%    # group by the ID
+    summarise(Missing_Variables = toString(var), .groups = "keep")
+  
+  missingall_DF = missingall_DF_temp %>% 
+    left_join(DF_missingall_vars, by = "id") %>% 
+    select(id, NAs_id, Missing_Variables, colnames(.)[!complete.cases(t(.))]) %>% 
+    filter(NAs_id > 0)
+  
   # Warning and log ---------------------------------------------------------
   
   if (length(missing_ids) > 0) {
     
     write_csv(missing_DF, here::here(paste0("output/tests_outputs/test-", name_of_test, ".csv")))
+    write_csv(missingall_DF, here::here(paste0("output/tests_outputs/test-", name_of_test, "_ALL.csv")))
     
     cat(crayon::red("\n", crayon::underline("ERROR"), "in", paste0("test-", name_of_test), "\n"),
         crayon::red("  - Some of the participants are", crayon::underline("missing test results:")), missing_ids, "\n",
