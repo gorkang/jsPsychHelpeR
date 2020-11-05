@@ -13,43 +13,29 @@ testthat::test_that('Tests if the participant is missing test results', {
   all_scales = grep(".*_DIRt$|.*_STDt$|.*_DIRd$|.*STDd$", names(DF_joined), value = TRUE, perl = TRUE)
   
   
-  missing_DF = DF_joined %>% 
+  missing_DF_temp = DF_joined %>% 
     select(id, all_of(all_scales)) %>% 
-    mutate(NAs_id = rowSums(is.na(select(., matches(all_scales))))) %>% 
-    mutate(
-      missing_VARS = case_when(
-        NAs_id > 0 ~ paste(colnames(.)[!complete.cases(t(.))],  collapse = ", "),
-        TRUE ~ "")) %>% 
-    select(id, NAs_id, missing_VARS, colnames(.)[!complete.cases(t(.))])
+    mutate(NAs_id = rowSums(is.na(select(., matches(all_scales)))))
   
-  missing_vars = missing_DF %>% filter(missing_VARS != "") %>% distinct(missing_VARS) %>% pull(missing_VARS)
-  missing_ids = missing_DF %>% 
+  # Get names
+  DF_missing_vars = missing_DF_temp %>% 
+    mutate(across(-id, is.na)) %>%  # replace all NA with TRUE and else FALSE
+    pivot_longer(-id, names_to = "var") %>%  # pivot longer
+    filter(value == TRUE) %>% 
+    group_by(id) %>%    # group by the ID
+    summarise(Missing_Variables = toString(var), .groups = "keep")
+  
+  missing_DF = missing_DF_temp %>% 
+    left_join(DF_missing_vars, by = "id") %>% 
+    select(id, NAs_id, Missing_Variables, colnames(.)[!complete.cases(t(.))]) %>% 
+    filter(NAs_id > 0)
+  
+  missing_vars = missing_DF %>% select(-id, -NAs_id, -Missing_Variables) %>% names(.)
+  
+  missing_ids = missing_DF_temp %>% 
     filter(NAs_id > 0) %>% 
     arrange(id) %>% 
     pull(id)
-
-  # WORKS WITH MULTIPLE MISSING TESTS?  
-  # missing_DF %>% 
-  #   filter(NAs_id > 0) %>% 
-  #   arrange(id) %>% 
-  #   group_by(missing_VARS) %>% 
-  #   summarise(participants = paste(id, collapse = ", "), .groups = "drop") %>% 
-  #   mutate(MESSAGE = paste0(missing_VARS, ": ", participants)) %>% 
-  #   pull(MESSAGE)
-  
-  # NEEDS TO WORK FOR EACH ROW!
-  # missing_DF = 
-  #   DF_joined %>% 
-  #   # select(id, all_of(all_scales)) %>% 
-  #   mutate(NAs_id = rowSums(is.na(select(., everything())))) %>% 
-  #   rowwise() %>% 
-  #   mutate(
-  #     missing_VARS = 
-  #       case_when(
-  #         NAs_id > 0 ~ paste(colnames(.)[!complete.cases(t(.))],  collapse = ", "),
-  #         TRUE ~ "")) %>% 
-  #   select(id, NAs_id, missing_VARS, colnames(.)[!complete.cases(t(.))])
-  
   
   # Warning and log ---------------------------------------------------------
   
