@@ -10,16 +10,14 @@ testthat::test_that('Check all input files have the same columns', {
   
   # Funcion para almacenar los nombres de columna de todos los archivos
   read_check <- function(file_name) {
-    
-    # library(tidyverse)  
     DF = read_csv(here::here(file_name),  col_types = cols(.default = col_character()))
-    
     names(DF) %>% as_tibble() %>% mutate(name_file = file_name)
-    
   }
   
+  plan(multisession, workers = 4)
+  
   # Construimos DF global
-  DF_final = map_df(input_files, read_check)
+  DF_final = furrr::future_map_dfr(input_files, read_check)
   
   # Numero de archivos
   number_of_files = length(input_files)
