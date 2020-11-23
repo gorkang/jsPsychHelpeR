@@ -18,16 +18,16 @@
   
   # Packages to load
   main_packages = c("cli", "crayon", "furrr", "patchwork", "renv", "tarchetypes", "targets", "testthat")
-  data_preparation_packages = c("dplyr", "forcats", "here", "janitor", "purrr", "readr", "stringr", "tidyr") #"safer", 
+  data_preparation_packages = c("dplyr", "forcats", "here", "janitor", "purrr", "readr", "stringr", "tibble", "tidyr") #"safer", 
   data_analysis_packages = c("broom", "broom.mixed", "emmeans", "gmodels", "gt", "gtsummary", "irr", "lme4", "parameters", "performance", "psych", "sjPlot") #"report"
   data_visualization_packages = c("ggalluvial", "ggridges")
   non_declared_dependencies = c("qs", "visNetwork", "webshot", "performance")
-  extra_packages = c("shrtcts")
+  extra_packages = c("shrtcts", "httr")
   packages_to_load = c(main_packages, data_preparation_packages, data_analysis_packages, data_visualization_packages, non_declared_dependencies, extra_packages)
   
   # target options (packages, errors...)
   tar_option_set(packages = packages_to_load, # Load packages for all targets
-                 error = "save") # Needed to load workspace on error to debug
+                 error = "workspace") # Needed to load workspace on error to debug
   
   # Recreates _packages.R with the above packages (so renv founds them). Should be launched after tar_option_set()
   targets::tar_renv(ask = FALSE) # Need to run renv::init() if anything changes
@@ -58,19 +58,16 @@ targets <- list(
   
   # Use R/prepare_template.R to create new preparation_scripts
     # [TODO]: Each of the individual tasks should have specific hardcoded TESTS!
-    # [TODO]: Will change short_name_scale_str for the final names once we have the corrected names!
     # [REMEMBER]: the target name needs to be ==  df_[short_name_scale_str]
+  tar_target(df_SDG, prepare_SDG(DF_clean, short_name_scale_str = "SDG"), priority = 1),
+  tar_target(df_AIM, run_sensitive_data(df_SDG, run_online_FORM = TRUE)), # [REMEMBER]: run_online_FORM = TRUE . Given API limits of googlesheets4, we need to minimize calls
   
-  tar_target(df_AIM, prepare_AIM(DF_clean, short_name_scale_str = "AIM")),
-  tar_target(df_bRCOPE, prepare_bRCOPE(DF_clean, short_name_scale_str = "bRCOPE")),
   tar_target(df_Cov19Q, prepare_Cov19Q(DF_clean, short_name_scale_str = "Cov19Q")),
   tar_target(df_CRS, prepare_CRS(DF_clean, short_name_scale_str = "CRS")),
-  tar_target(df_CRT7, prepare_CRT7(DF_clean, short_name_scale_str = "CRT7")),
-  tar_target(df_CRTv, prepare_CRTv(DF_clean, short_name_scale_str = "CRTv")),
+  tar_target(df_CRTMCQ4, prepare_CRTMCQ4(DF_clean, short_name_scale_str = "CRTMCQ4")),
   tar_target(df_ERQ, prepare_ERQ(DF_clean, short_name_scale_str = "ERQ")),
   tar_target(df_FDMQ, prepare_FDMQ(DF_clean, short_name_scale_str = "FDMQ")),
-  tar_target(df_GHQ12, prepare_GHQ12(DF_clean, short_name_scale_str = "GHDQ12")), #DEBERIA SER GHQ12
-  tar_target(df_IDQ, prepare_IDQ(DF_clean, short_name_scale_str = "IDQ")),
+  tar_target(df_GHQ12, prepare_GHQ12(DF_clean, short_name_scale_str = "GHQ12")),
   tar_target(df_IEC, prepare_IEC(DF_clean, short_name_scale_str = "IEC")),
   tar_target(df_IRI, prepare_IRI(DF_clean, short_name_scale_str = "IRI")),
   tar_target(df_IRS, prepare_IRS(DF_clean, short_name_scale_str = "IRS")),
@@ -84,7 +81,6 @@ targets <- list(
   tar_target(df_SASS, prepare_SASS(DF_clean, short_name_scale_str = "SASS")),
   tar_target(df_SBS, prepare_SBS(DF_clean, short_name_scale_str = "SBS")),
   tar_target(df_SCSORF, prepare_SCSORF(DF_clean, short_name_scale_str = "SCSORF")),
-  # tar_target(df_SDG, prepare_SDG(DF_clean, short_name_scale_str = "SDG")),
   tar_target(df_SRA, prepare_SRA(DF_clean, short_name_scale_str = "SRA")),
   tar_target(df_SRSav, prepare_SRSav(DF_clean, short_name_scale_str = "SRSav")),
   tar_target(df_SWBQ, prepare_SWBQ(DF_clean, short_name_scale_str = "SWBQ")),
@@ -94,18 +90,13 @@ targets <- list(
   # _Join tasks --------------------------------------------------------------
   
     # [REMEMBER]: Have to manually put every test we prepare here
-      # rlang::sym("s") para convertir en simbolos caracteres. 
-      # Si usamos estandar para el output de prepared_TASKS() (por ejemplo, df_XXX, vs DF_XXX), podemos hacer que se joineen aqui automaticamente!!!
-  tar_target(DF_joined, create_joined(df_AIM,
-                                      df_bRCOPE,
+  tar_target(DF_joined, create_joined(df_AIM, # Prepared in .vault
                                       df_Cov19Q,
                                       df_CRS,
-                                      df_CRT7,
-                                      df_CRTv,
+                                      df_CRTMCQ4,
                                       df_ERQ,
                                       df_FDMQ,
                                       df_GHQ12,
-                                      df_IDQ,
                                       df_IEC,
                                       df_IRI,
                                       df_IRS,
@@ -119,12 +110,13 @@ targets <- list(
                                       df_SASS,
                                       df_SBS,
                                       df_SCSORF,
-                                      # df_SDG,
+                                      df_SDG,
                                       df_SRA,
                                       df_SRSav,
                                       df_SWBQ,
                                       df_WEBEXEC)),
   
+
   
   # _Analysis ----------------------------------------------------------------- 
   
@@ -147,6 +139,7 @@ targets <- list(
   tar_target(table1_model_E1, analysis_model_E1_table(model_E1)),
 
   # Plots
+  tar_target(plots_descriptive, analysis_descriptive_plots(DF_joined)),
   tar_target(plot1_model_E1, analysis_model_E1_plot(model_E1)),
   
   
@@ -168,7 +161,6 @@ targets <- list(
 
    # Automatic report
   tar_render(report_DF_clean, "doc/report_DF_clean.Rmd")
-  
 
 )
 
