@@ -21,8 +21,8 @@ testthat::test_that('Check if DF_raw', {
 
   # Test: we have the canonical columns in DF_raw -------------------------------------------------------------------
 
-    canonical_names_columns =  c("filename", "success", "trial_type", "trial_index", "time_elapsed", "internal_node_id", "view_history", "rt", "trialid", "stimulus", "responses", "id", "project", "experimento", "version", "datetime")
-  
+    canonical_names_columns =  c("filename", "trial_type", "trial_index", "time_elapsed", "internal_node_id", "view_history", "rt", "trialid", "stimulus", "responses", "id", "project", "experimento", "version", "datetime")
+    #success
   
   
   
@@ -47,6 +47,9 @@ testthat::test_that('Check if DF_raw', {
   testthat::expect_length(offenders, 0)
   
   #Test2
-  testthat::expect_equal(canonical_names_columns, names(DF_raw))
+  testthat::expect_true(all(names(DF_raw) %in% canonical_names_columns))
+  # testthat::expect_equal(canonical_names_columns, names(DF_raw))
+
+  
   
 })
