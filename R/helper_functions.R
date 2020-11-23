@@ -158,7 +158,7 @@ create_raw_long <- function(DF_clean, short_name_scale, numeric_responses = FALS
 
   DF_clean %>% 
     # filter(experimento == name_scale) %>% 
-    filter(grepl(short_name_scale, trialid)) %>% 
+    filter(grepl(paste0(short_name_scale, "_[0-9]"), trialid)) %>% 
     select(id, experimento, rt, trialid, stimulus, responses) %>% 
     mutate(responses = 
              if(numeric_responses == TRUE) {
@@ -235,21 +235,31 @@ debug_function <- function(name_function) {
 ##'
 ##' @title create_raw_wide
 ##' @param DF
+##' @param short_name_scale
+##' @param is_scale = TRUE
+##' @param is_sensitive = TRUE
 ##' @return
 ##' @author gorkang
 ##' @export
-save_files <- function(DF, short_name_scale, is_scale = TRUE) {
+save_files <- function(DF, short_name_scale, is_scale = TRUE, is_sensitive = FALSE) {
   
-  # Use "df_" if it's a scale otherwise use "DF_"
+  # Select path based on nature of the data
+  if (is_sensitive == TRUE) {
+    data_path = ".vault/data/"
+  } else {
+    data_path = "output/data/"
+  }
+  
+  # Save data. Use "df_" if it's a scale otherwise use "DF_"
   if (is_scale == TRUE) {
     
-    write_csv(DF, here::here(paste0("output/data/df_", short_name_scale , ".csv")))
-    write_rds(DF, here::here(paste0("output/data/df_", short_name_scale , ".rds")))
+    write_csv(DF, here::here(paste0(data_path, "df_", short_name_scale , ".csv")))
+    write_rds(DF, here::here(paste0(data_path, "df_", short_name_scale , ".rds")))
     
   } else {
     
-    write_csv(DF, here::here(paste0("output/data/DF_", short_name_scale , ".csv")))
-    write_rds(DF, here::here(paste0("output/data/DF_", short_name_scale , ".rds")))
+    write_csv(DF, here::here(paste0(data_path, "DF_", short_name_scale , ".csv")))
+    write_rds(DF, here::here(paste0(data_path, "DF_", short_name_scale , ".rds")))
     
   }
   
