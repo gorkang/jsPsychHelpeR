@@ -2,4 +2,6 @@
 .Rhistory
 .RData
 .Ruserdata
-vault/
+.vault/data
+.vault/config/gs4.R
+.vault/doc/report_candidatos.html
