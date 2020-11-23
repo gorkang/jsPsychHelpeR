@@ -57,7 +57,7 @@ prepare_PSS <- function(DF_clean, short_name_scale_str) {
       DIR = 
         case_when(
           DIR == 9999 ~ DIR,
-          grepl("04|05|06|07|09|10|13", trialid) ~ (5 - DIR),
+          grepl("04|05|06|07|09|10|13", trialid) ~ (4 - DIR),
           TRUE ~ DIR
         )
     )
