@@ -1,0 +1,131 @@
+---
+title: "Candidatos"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+## TODO
+- ADD table with mean age by group and sex to be able to check how biased the groups are.
+
+
+```{r setup, include=FALSE}
+
+knitr::opts_chunk$set(echo = TRUE)
+df_FORM_RAW = read_rds(here::here(".vault/data/df_FORM_RAW.rds"))
+df_AIM = read_rds(here::here(".vault/data/df_AIM.rds")) %>% select(RUT, AIM_DIRt)
+```
+
+## Summary
+
+```{r summary, include=FALSE}
+
+# df_FORM_RAW contains everyone that filled the form. Only the ones that completed the experiment have id.
+
+DF = 
+  df_FORM_RAW %>% 
+  left_join(df_AIM, by = "RUT") %>% 
+  select(id, AIM_DIRt, FORM_emaild_DIRd, FORM_name_DIRd, FORM_age_DIRd, FORM_sex_DIRd, FORM_years_education_DIRd, FORM_comuna_DIRd, FORM_telefono_DIRd) %>% 
+  rename(
+    email = FORM_emaild_DIRd, 
+    name = FORM_name_DIRd,
+    edad = FORM_age_DIRd,
+    sexo = FORM_sex_DIRd,
+    years_education = FORM_years_education_DIRd,
+    comuna = FORM_comuna_DIRd,
+    telefono = FORM_telefono_DIRd
+    ) %>% 
+  
+  mutate(grupo = 
+           case_when(
+            AIM_DIRt == "d" | AIM_DIRt == "e" ~ "EXP",
+            AIM_DIRt == "c2" | AIM_DIRt == "c3" ~ "CONc",
+            AIM_DIRt == "c1a" | AIM_DIRt == "c1b" | AIM_DIRt == "ab" ~ "CONa",
+            TRUE ~ NA_character_
+            ),
+
+         edad = 
+           case_when(
+             between(edad, 25, 33) ~ "25-33",
+             between(edad, 34, 42) ~ "34-42",
+             between(edad, 43, 50) ~ "43-50",
+             edad < 25 ~ "demasiado joven",
+             edad > 50 ~ "demasiado viejo",
+           ),
+         
+         completed = 
+           case_when(
+             is.na(id) ~ "CALL",
+             TRUE ~ "OK"
+           )
+         ) %>% 
+  filter(sexo != 2) %>%
+  filter(edad != "demasiado viejo" & edad != "demasiado joven") %>% 
+  select(id, completed, edad, sexo, grupo, edad, telefono, email, name, comuna)
+
+
+
+table_done_temp =
+  DF %>% 
+  count(grupo, completed, edad, sexo) %>% 
+  mutate(grupo = paste0(grupo, "_", completed)) %>% 
+  select(-completed) %>% 
+  pivot_wider(names_from = grupo, values_from = n) #, names_prefix = "n_"
+
+
+# If we don't have certain types of people, create columns
+cols = c(CONc_CALL = 0, CONa_CALL = 0, EXP_CALL = 0, CONc_OK = 0, CONa_OK = 0, EXP_OK = 0)
+table_done_temp = tibble::add_column(table_done_temp, !!!cols[setdiff(names(cols), names(table_done_temp))]) 
+  
+# Vulnerable group: groups d y e 50% of sample
+# Non-vulnerable group: groups c3 y c2 25% of sample
+# Non-vulnerable group: groups ab, c1a y c1b 25% of sample
+  
+table_done = 
+  table_done_temp %>% 
+  complete(edad = c("25-33", "34-42", "43-50"), nesting(sexo)) %>% 
+  replace_na(list(CONc_CALL = 0, CONa_CALL = 0, EXP_CALL = 0, CONc_OK = 0, CONa_OK = 0, EXP_OK = 0)) %>% 
+  mutate(GOAL_CONa = (CONa_OK - 20),
+         GOAL_CONc = (CONc_OK - 20),
+         GOAL_EXP = (EXP_OK - 40)) %>% 
+         # DIFF_CONEXP = EXP_OK - (CONa_OK + CONc_OK)
+         # DIFF_CONaCONc = (CONa_OK - CONc_OK)
+         # MARGEN_EXP = GOAL_EXP + n_EXP_CALL,
+         # MARGEN_CON = GOAL_CON + n_CON_CALL) %>% 
+         # Candidatos = ) 
+  select(edad, sexo, matches("OK"), matches("GOAL"), matches("CALL"))
+
+```
+
+
+### DONE
+
+```{r echo=FALSE}
+knitr::kable(table_done)
+```
+**CON_OK**: Grupo control completados; **EXP_OK**: Grupo experimental completados  
+**CON_CALL**: Grupo control esperando llamada; **EXP_CALL**: Grupo experimental esperando llamada  
+**GOAL_CON**: Cuantos faltan del grupo control; **GOAL_EXP**: Cuantos faltan del grupo experimental    
+
+
+### Candidatos
+
+```{r summary-table, echo=FALSE}
+
+# table_candidatos = 
+#   DF %>% 
+#   filter(completed == 0) %>% 
+#   drop_na(edad) %>% 
+#   count(grupo, edad, sexo)
+#   
+# knitr::kable(table_candidatos)
+
+table_candidatos_long = 
+  DF %>% 
+  filter(completed == "CALL") %>% 
+  drop_na(edad) %>% 
+  select(grupo, edad, sexo, name, telefono, email, comuna)
+
+DT::datatable(table_candidatos_long, filter = 'top', options = list(dom = 'tip'))
+
+```

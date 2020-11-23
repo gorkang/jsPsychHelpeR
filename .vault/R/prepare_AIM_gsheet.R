@@ -1,0 +1,202 @@
+##' Prepare AIM from Google sheets
+##'
+##' Template for the functions to prepare specific tasks. Most of this file should not be changed
+##' Things to change: 
+##'   - Name of function: prepare_AIM -> prepare_[value of short_name_scale_str] 
+##'   - dimensions parameter in standardized_names()
+##'   - 2 [ADAPT] chunks
+##'
+##' @title prepare_AIM
+##'
+##' @param short_name_scale_str 
+##' @param DF_clean
+##'
+##' @return
+##' @author gorkang
+##' @export
+prepare_AIM_gsheet <- function(df_FORM, short_name_scale_str) {
+  
+  
+  # DEBUG
+  # df_FORM = DF_wide_RAW_DIR
+  # debug_function(prepare_AIM)
+  # if(!exists("df_FORM")) df_FORM = read_rds(".vault/data/df_FORM_RAW.rds")
+  # if(!exists("short_name_scale_str")) short_name_scale_str = "AIM"
+  
+
+# OUTSIDE FILES -----------------------------------------------------------
+DF_lookup = read_csv("R/prepare_AIM-lookup.csv",
+                     col_types = 
+                       cols(
+                         AIM_01_DIR = col_double(),
+                         AIM_02_DIR = col_double(),
+                         AIM_TramoIngreso_DIRd = col_double(),
+                         AIM_DIRt = col_character()
+                       ))
+
+
+# Standardized names ------------------------------------------------------
+standardized_names(short_name_scale = short_name_scale_str, 
+                   dimensions = c("TramoIngreso"), # Use names of dimensions, "" or comment out line
+                   help_names = FALSE) # help_names = FALSE once the script is ready
+
+
+
+
+DF_long_RAW =
+  df_FORM %>%
+  select(id, RUT, matches("AIM")) %>% 
+  pivot_longer(AIM_01:AIM_10, names_to = "trialid", values_to = "RAW") %>% 
+  drop_na(RAW) %>% 
+  select(id, RUT, trialid, RAW)
+
+
+  DF_long_DIR =
+    DF_long_RAW %>% 
+  # Transformations
+  mutate(
+    DIR =
+      case_when(
+        RAW == "Sin estudios formales." ~ 1,
+        RAW == "Básica incompleta; primaria o preparatoria incompleta." ~ 2,
+        RAW == "Básica completa; primaria o preparatoria completa." ~ 3,
+        RAW == "Media científico humanista o media técnico profesional incompleta; humanidades incompleta." ~ 4,
+        RAW == "Media científico humanista o media técnico profesional completa; humanidades completas." ~ 5,
+        RAW == "Instituto técnico (CFT) o instituto profesional incompleto (carreras de 1 a 3 años)." ~ 6,
+        RAW == "Instituto técnico (CFT) o instituto profesional completo (carreras de 1 a 3 años); hasta suboficial de FFAA y Carabineros." ~ 7,
+        RAW == "Universitaria incompleta (carreras de 4 o más años)." ~ 8,
+        RAW == "Universitaria completa (carreras de 4 o más años); oficial de FFAA y Carabineros." ~ 9,
+        RAW == "Postgrado (postítulo, master, magíster, doctor)." ~ 10,
+        
+        RAW == "Trabajadores no calificados en ventas y servicios, peones agropecuarios, forestales, construcción, etc." ~ 1,
+        RAW == "Obreros, operarios y artesanos de artes mecánicas y de otros oficios." ~ 2,
+        RAW == "Trabajadores de los servicios y vendedores de comercio y mercados." ~ 3,
+        RAW == "Agricultores y trabajadores calificados agropecuarios y pesqueros." ~ 4,
+        RAW == "Operadores de instalaciones y máquinas y montadores / conductores de vehículos." ~ 5,
+        RAW == "Empleados de oficina públicos y privados." ~ 6,
+        RAW == "Técnicos y profesionales de nivel medio (incluye hasta suboficiales FFAA y Carabineros)." ~ 7,
+        RAW == "Profesionales, científicos e intelectuales." ~ 8,
+        RAW == "Alto ejecutivo (gerente general o gerente de área o sector) de empresa privadas o pública- Director o dueño de grandes empresa- Alto directivo del poder ejecutivo, de los cuerpos legislativos y la administración pública (incluye oficiales de FFAA y Carabineros)." ~ 9,
+        RAW == "Otros grupos no identificados (incluye rentistas, incapacitados, etc.)" ~ 10,
+        
+        trialid == "AIM_03" & as.numeric(RAW) == 0 ~ 1, # ESTA OPCION NO DEBERIA SER POSIBLE
+        trialid == "AIM_03" & as.numeric(RAW) == 1 ~ 1,
+        trialid == "AIM_03" & as.numeric(RAW) == 2 ~ 2,
+        trialid == "AIM_03" & as.numeric(RAW) == 3 ~ 3,
+        trialid == "AIM_03" & as.numeric(RAW) == 4 ~ 4,
+        trialid == "AIM_03" & as.numeric(RAW) == 5 ~ 5,
+        trialid == "AIM_03" & as.numeric(RAW) == 6 ~ 6,
+        trialid == "AIM_03" & as.numeric(RAW) >= 7 ~ 7,
+        
+        RAW == "Menos de 120 mil" ~ 1, 
+        RAW == "120 mil – 207 mil" ~ 2, 
+        RAW == "208 mil – 361 mil" ~ 3, 
+        RAW == "362 mil – 630 mil" ~ 4, 
+        RAW == "631 mil – 1.099.000" ~ 5, 
+        RAW == "1.100.000 – 1.916.000" ~ 6, 
+        RAW == "Más de 1.916.000" ~ 7, 
+        RAW == "NS/NR" ~ 99,
+        
+        RAW == "Menos de 194 mil" ~ 1, 
+        RAW == "194 mil – 336 mil" ~ 2, 
+        RAW == "337 mil – 586 mil" ~ 3, 
+        RAW == "587 mil – 1.023.000" ~ 4, 
+        RAW == "1.024.000 – 1.785.000" ~ 5, 
+        RAW == "1.786.000 – 3.113.000" ~ 6, 
+        RAW == "Más de 3.113.000" ~ 7, 
+        RAW == "NS/NR" ~ 99,
+        
+        RAW == "Menos de 257 mil" ~ 1, 
+        RAW == "257 mil – 446 mil" ~ 2, 
+        RAW == "447 mil – 779 mil" ~ 3, 
+        RAW == "780 mil – 1.359.000" ~ 4, 
+        RAW == "1.360.000 – 2.370.000" ~ 5, 
+        RAW == "2.371.000 – 4.135.000" ~ 6, 
+        RAW == "Más de 4.135.000" ~ 7, 
+        RAW == "NS/NR" ~ 99,
+        
+        RAW == "Menos de 314 mil" ~ 1, 
+        RAW == "314 mil – 546 mil" ~ 2, 
+        RAW == "547 mil – 953 mil" ~ 3, 
+        RAW == "954 mil – 1.662.000" ~ 4, 
+        RAW == "1.663.000 – 2.899.000" ~ 5, 
+        RAW == "2.900.000 – 5.057.000" ~ 6, 
+        RAW == "Más de 5.057.000" ~ 7, 
+        RAW == "NS/NR" ~ 99,
+        
+        RAW == "Menos de 367 mil" ~ 1, 
+        RAW == "367 mil – 638 mil" ~ 2, 
+        RAW == "639 mil – 1.114.000 mil" ~ 3, 
+        RAW == "1.115.000 mil – 1.943.000" ~ 4, 
+        RAW == "1.944.000 – 3.389.000" ~ 5, 
+        RAW == "3.3980.000 – 5.912.000" ~ 6, 
+        RAW == "Más de 5.912.000" ~ 7, 
+        RAW == "NS/NR" ~ 99,
+        
+        RAW == "Menos de 417 mil" ~ 1, 
+        RAW == "417 mil – 725 mil" ~ 2, 
+        RAW == "726 mil – 1.265.000 mil" ~ 3, 
+        RAW == "1.266.000 mil – 2.207.000" ~ 4, 
+        RAW == "2.208.000 – 3.850.000" ~ 5, 
+        RAW == "3.851.000 – 6.717.000" ~ 6, 
+        RAW == "Más de 6.717.000" ~ 7, 
+        RAW == "NS/NR" ~ 99,
+        
+        RAW == "Menos de 464 mil" ~ 1, 
+        RAW == "464 mil – 808 mil" ~ 2, 
+        RAW == "809 mil – 1.409.000 mil" ~ 3, 
+        RAW == "1.410.000 mil – 2.459.000" ~ 4, 
+        RAW == "2.460.000 – 4.289.000" ~ 5, 
+        RAW == "4.290.000 – 7.482.000" ~ 6, 
+        RAW == "Más de 7.482.000" ~ 7, 
+        RAW == "NS/NR" ~ 99,
+        
+        is.na(RAW) ~ NA_real_,
+        TRUE ~ 9999
+      )
+  )
+  
+
+
+DF_wide_RAW_DIR =
+  DF_long_DIR %>%
+  pivot_wider(
+    names_from = trialid, 
+    values_from = c(RAW, DIR),
+    names_glue = "{trialid}_{.value}") %>% 
+  
+  # NAs for RAW and DIR items
+  mutate(!!name_RAW_NA := rowSums(is.na(select(., matches("_RAW")))),
+         !!name_DIR_NA := rowSums(is.na(select(., matches("_DIR"))))) %>%
+
+mutate(
+  
+  # Score Dimensions (see standardized_names(help_names = TRUE) for instructions)
+  AIM_TramoIngreso_DIRd = rowSums(select(., matches("04|05|06|07|08|09|10") & matches("_DIR$")), na.rm = TRUE)
+  
+  # Score Scale
+  # !!name_DIRt := rowSums(select(., matches("_DIR$")), na.rm = TRUE)
+  ) %>% 
+  
+  left_join(DF_lookup, by = c("AIM_01_DIR", "AIM_02_DIR", "AIM_TramoIngreso_DIRd"))
+
+
+
+# CHECK NAs -------------------------------------------------------------------
+check_NAs(DF_wide_RAW_DIR)
+
+
+# Save files --------------------------------------------------------------
+
+# Save sensitive version (with RUT) in .vault
+save_files(DF_wide_RAW_DIR, short_name_scale = short_name_scale_str, is_scale = TRUE, is_sensitive = TRUE)
+# Save clean version (only id's) in outputs/data
+save_files(DF_wide_RAW_DIR %>% select(-RUT) %>% drop_na(id), short_name_scale = short_name_scale_str, is_scale = TRUE)
+
+
+# Output of function ---------------------------------------------------------
+
+# Return non-sensitive AIM
+return(DF_wide_RAW_DIR %>% select(-RUT) %>% drop_na(id)) 
+
+}
