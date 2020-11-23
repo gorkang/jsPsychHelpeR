@@ -64,7 +64,8 @@ prepare_GHQ12 <- function(DF_clean, short_name_scale_str) {
           
           RAW == "Más útil que lo habitual" ~ 0,
           RAW == "Igual que lo habitual" ~ 1,
-          RAW == "menos útil que lo habitual" ~ 2,
+          RAW == "menos útil que lo habitual" ~ 2, #### Eliminar cuando este corregido
+          RAW == "Menos útil que lo habitual" ~ 2, #### TENDRIA QUE CORREGIRSE A "Menos útil que lo habitual"
           RAW == "Mucho menos útil que lo habitual" ~ 3,
           
           # ******************************

@@ -62,7 +62,7 @@ prepare_IDQ <- function(DF_clean, short_name_scale_str) {
           RAW == "No" ~ "0",
           RAW == "Si" ~ "1",
           
-          trialid %in% c("IDQ_01", "IDQ_02", "IDQ_04", "IDQ_05", "IDQ_06", "IDQ_07", "IDQ_10", "IDQ_12") ~ RAW,
+          trialid %in% c("IDQ_01", "IDQ_02", "IDQ_04", "IDQ_05", "IDQ_06", "IDQ_07", "IDQ_09", "IDQ_10", "IDQ_11", "IDQ_12", "IDQ_13") ~ RAW,
           
           is.na(RAW) ~ NA_character_,
           grepl(items_to_ignore, trialid) ~ NA_character_,
