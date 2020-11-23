@@ -26,6 +26,8 @@ number_tasks = DF %>% distinct(experimento) %>% nrow()
 A total of `r number_participants` people completed `r number_tasks` tasks.  
 
 
+### By participant  
+
 ```{r summary-table, echo=FALSE}
 
 summary_table = 
@@ -42,6 +44,47 @@ summary_table =
 
 knitr::kable(summary_table)
 ```
+
+
+### By experiment  
+
+```{r summary-table2, echo=FALSE}
+
+summary_table2 = 
+  DF %>% 
+  group_by(experimento) %>% 
+  summarise(
+    n_participants = n_distinct(id),
+    time_elapsed = max(time_elapsed) / 1000,
+    rt = sum(rt) / 1000,
+    time_elapsed_min = max(time_elapsed) / 60,
+    rt_min = sum(rt) / 60, 
+    .groups = "keep"
+  )
+
+knitr::kable(summary_table2)
+```
+
+### Order of tasks
+
+```{r summary-position, echo=FALSE}
+summary_position = DF %>% 
+  distinct(id, experimento, datetime) %>% 
+  group_by(id) %>% 
+  arrange(id, (datetime)) %>% 
+  mutate(Order = row_number()) %>% 
+  select(-datetime) %>% 
+  group_by(experimento) %>% 
+  summarise(MEAN_Position = mean(Order),
+            SD_Position = sd(Order), 
+            MIN_Position = min(Order), 
+            MAX_Position = max(Order), .groups = "drop") %>% 
+  arrange(MEAN_Position, experimento)
+
+knitr::kable(summary_position)
+
+```
+
 
 
 ## Details of tasks
@@ -100,7 +143,7 @@ DT::datatable(responses_table, filter = 'top', options = list(dom = 'tip'))
 ```
 
 
-```{r}
+```{r echo=FALSE}
   # DF_responses =
   #   DF_long_RAW %>% 
   #   count(trialid, RAW) %>% 
