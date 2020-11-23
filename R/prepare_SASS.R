@@ -35,6 +35,7 @@ prepare_SASS <- function(DF_clean, short_name_scale_str) {
   
   # [ADAPT] -------------------
   items_to_ignore = c("01") # Ignore the following items: If nothing to ignore, keep "00|00"
+  items_to_reverse = c("00|00") # Reverse the following items: If nothing to ignore, keep "00|00"
   # ***************************
   
   DF_long_DIR =
@@ -63,7 +64,8 @@ prepare_SASS <- function(DF_clean, short_name_scale_str) {
       DIR = 
         case_when(
           DIR == 9999 ~ DIR, # To keep the missing values unchanged
-          grepl("007|008", trialid) ~ (1 - DIR),
+          # grepl("007|008", trialid) ~ (1 - DIR),
+          grepl(items_to_reverse, trialid) ~ (1 - DIR),
           TRUE ~ DIR
         )
     )
