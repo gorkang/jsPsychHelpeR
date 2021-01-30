@@ -1,6 +1,13 @@
-# jsPsychHelpeR: Project Template and set of helper scripts for data preparation and analysis of jsPsych experiments
+# jsPsychHelpeR
+
+Project template and set of helper scripts for data preparation and analysis of [jsPsych](https://www.jspsych.org/) experiments created with [jsPsych-maker](https://github.com/gorkang/jsPsych-maker).
 
 Please, address any correspondence to [gorkang\@gmail.com](mailto:gorkang@gmail.com){.email}
+
+
+![](img/jsPsych-trinity.png)
+
+
 
 ## Setup
 
