@@ -33,15 +33,20 @@ read_data <- function(input_files, anonymize = FALSE) {
     
     DF_raw =
       DF_raw %>% 
+      separate(col = filename, 
+               into = c("project", "experimento", "version", "datetime", "id"), 
+               sep = c("_")) %>% 
       mutate(
+        id = gsub("(*.)\\.csv", "\\1", id), # userID
+        
         # [REVIEW]: experimento and ID should be in the DF_raw?
         # projectCode_shortName_version_(fecha)_userID.csv
-        id = gsub(".*_([0-9]{1,99}).csv", "\\1", filename), # userID
-        project = gsub("^([0-9]{1,99})_.*.csv", "\\1", filename), # projectCode
-        experimento = gsub("^[0-9]{1,99}_([a-zA-Z0-9]{1,99})_.*.csv", "\\1", filename), # shortname
-        version = gsub("^[0-9]{1,99}_[a-zA-Z0-9]{1,99}_([a-zA-Z0-9]{1,99})_.*.csv", "\\1", filename), # version
-        datetime = gsub("^[0-9]{1,99}_[a-zA-Z0-9]{1,99}_[a-zA-Z0-9]{1,99}_([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2})_.*.csv", "\\1", filename), # fecha
-        
+        # id = gsub(".*_([0-9]{1,99}).csv", "\\1", filename), # userID
+        # project = gsub("^([0-9]{1,99})_.*.csv", "\\1", filename), # projectCode
+        # experimento = gsub("^[0-9]{1,99}_([a-zA-Z0-9]{1,99})_.*.csv", "\\1", filename), # shortname
+        # version = gsub("^[0-9]{1,99}_[a-zA-Z0-9]{1,99}_([a-zA-Z0-9]{1,99})_.*.csv", "\\1", filename), # version
+        # datetime = gsub("^[0-9]{1,99}_[a-zA-Z0-9]{1,99}_[a-zA-Z0-9]{1,99}_([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2})_.*.csv", "\\1", filename), # fecha
+        # 
         stimulus = gsub('\\{"Q0":"|"\\}', '', stimulus), # Clean stimulus
         responses = gsub('"Q[0-9]"|&nbsp;|\u00A0', '', responses)
         # responses = gsub('\\{"Q0":"|"\\}', '', responses), # Clean responses [REMEMBER: Only works with one response per screen]
@@ -55,22 +60,13 @@ read_data <- function(input_files, anonymize = FALSE) {
     
   # CHECK -------------------------------------------------------------------
   
-    DF_duplicates = suppressMessages(DF_raw %>% janitor::get_dupes(-c(filename)))
-    # suppressMessages(DF_raw %>% janitor::get_dupes(c(id, trialid))) %>% filter(trialid !="Instructions") %>% distinct(id) %>% pull(id)
-    # DF_raw%>% distinct(id) %>% pull(id)
-    # DF_raw %>% 
-    #   filter(trialid == "SDG_00") %>% 
-    #   janitor::get_dupes(c(id, project, experimento)) %>%
-    #   group_by(id) %>% 
-    #   sample_n(1) %>% 
-    #   pull(filename) %>% 
-    #   file.remove(paste0("data/", .))
-    # 
+    DF_duplicates = suppressMessages(DF_raw %>% janitor::get_dupes(c(id, experimento, trialid)))
     
     if (nrow(DF_duplicates) > 0) {
-      input_files_duplicates = DF_duplicates %>% filter(success == TRUE) %>% distinct(filename) %>% pull(filename)
-      stop("[ERROR]: There are duplicates in the '/data' input files: ", paste(input_files_duplicates, collapse = ", "))
+      input_files_duplicates = DF_duplicates %>% distinct(filename) %>% pull(filename)
+      stop("\n[ERROR]: There are duplicates in the '/data' input files: \n\n - ", paste(input_files_duplicates, collapse = "\n - "))
     }
+    
   
   # Output of function ---------------------------------------------------------
     
