@@ -1,0 +1,94 @@
+library(shiny)
+suppressPackageStartupMessages(library(tidyverse))
+DF_analysis = read_csv(here::here("output/data/DF_analysis.csv"),
+                       col_types =
+                         cols(
+                           .default = col_double(),
+                           id = col_integer(),
+                           AIM_DIRt = col_character()
+                         ))
+
+# targets::tar_load(DF_analysis)
+
+names_variables = names(DF_analysis)[-1]
+
+
+# Define UI for random distribution app ----
+ui <- fluidPage(
+  
+  # App title ----
+  titlePanel(""),
+  
+  # Sidebar layout with input and output definitions ----
+  sidebarLayout(
+    
+    # Sidebar panel for inputs ----
+    sidebarPanel(width = 2,
+                 
+                 selectInput(inputId = "variable", 
+                             label = "Name variable:",
+                             choices = names_variables, multiple = TRUE,
+                             size = 20, 
+                             selectize = FALSE,
+                             selected = names_variables[1]),
+                 
+                 textInput(inputId = "bins", label = "Bins histogram", value = "30"),
+                 
+                 
+    ),
+    
+    # Main panel for displaying outputs ----
+    mainPanel(width = 10,
+              
+              # Output: Tabset w/ plot, summary, and table ----
+              tabsetPanel(type = "tabs",
+                          tabPanel("Plot", plotOutput("plot", height = "800px")),
+                          tabPanel("Summary", dataTableOutput("summary")),
+                          tabPanel("Table", dataTableOutput("table"))
+              )
+              
+    )
+  )
+)
+
+server <- function(input, output) {
+  
+  d <- reactive({
+    DF_analysis %>% 
+      select(id, input$variable) %>%
+      pivot_longer(2:ncol(.))
+  })
+  
+  d_table <- reactive({
+    DF_analysis %>% 
+      select(id, input$variable)
+  })
+  
+  output$plot <- renderPlot({
+    d() %>% 
+      
+      ggplot(aes(value, name, fill = name)) + 
+      ggridges::geom_density_ridges(stat = "binline", bins = input$bins, scale = 0.95, draw_baseline = FALSE, show.legend = FALSE) +
+      ggridges::geom_density_ridges(jittered_points = TRUE, position = "raincloud", alpha = 0.7, scale = 0.9, show.legend = FALSE) +
+      theme(legend.position = "none") +
+      theme_minimal()
+    
+    # ggplot(aes_string(input$variable)) + 
+    # geom_histogram(bins = input$bins) +
+    # theme_minimal()
+  })
+  
+  # Generate a summary of the data ----
+  output$summary <- renderDataTable({
+    skimr::skim(d_table() %>% select(-id))
+  })
+  
+  # Generate an HTML table view of the data ----
+  output$table <- renderDataTable({
+    d_table()
+  })
+  
+}
+
+# Create Shiny app ----
+shinyApp(ui, server)
