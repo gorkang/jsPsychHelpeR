@@ -1,69 +1,122 @@
 ---
 title: "Codebook"
-output: html_document
+output: 
+  html_document: 
+    toc: yes
 editor_options: 
   chunk_output_type: console
 ---
 
 ```{r setup, include=FALSE}
+# DEBUG
+source(here::here("_packages.R"))
 
 knitr::opts_chunk$set(echo = TRUE)
-targets::tar_load(DF_clean)
+DF_clean = read_rds(here::here("_targets/objects/DF_clean"))
+DF_raw = read_rds(here::here("_targets/objects/DF_raw"))
 DF = DF_clean
 
 ```
 
-## Summary
+## Summary {.tabset}
 
 ```{r summary, include=FALSE}
 
-number_participants = DF %>% distinct(id) %>% nrow()
+number_participants = DF_raw %>% distinct(id) %>% nrow()
 
-number_tasks = DF %>% distinct(experimento) %>% nrow()
+number_tasks = DF_raw %>% distinct(experimento) %>% nrow()
+
+text_participants = 
+  DF_raw %>% 
+  count(id, experimento) %>% 
+  count(id, name = "tasks") %>% 
+  count(tasks, name = "people") %>% 
+  arrange(desc(tasks))
+
 
 ```
 
-A total of `r number_participants` people completed `r number_tasks` tasks.  
+### Tasks and participants
+We had a total of `r number_participants` participants completing up to `r number_tasks` different tasks.   
 
+```{r summary-table1, echo=FALSE}
+DT::datatable(text_participants,
+              width = "50%",
+              rownames = FALSE,
+              options = list(dom = 't',
+                             pageLength = 20))
+```
+
+---  
 
 ### By participant  
 
 ```{r summary-table, echo=FALSE}
 
-summary_table = 
-  DF %>% 
-    group_by(id) %>% 
-    summarise(
-      n_tasks = n_distinct(experimento),
-      time_elapsed = max(time_elapsed) / 1000,
-      rt = sum(rt) / 1000,
-      time_elapsed_min = max(time_elapsed) / 60,
-      rt_min = sum(rt) / 60, 
-      .groups = "keep"
-      )
+all_tasks = DF_raw %>% distinct(experimento) %>% pull(experimento)
 
-knitr::kable(summary_table)
+summary_table = 
+  DF_raw %>% 
+    select(id, experimento, time_elapsed) %>% 
+    group_by(id, experimento) %>% 
+    summarise(TIME = round(max(time_elapsed)/60000, 2), 
+              N = n(), 
+              .groups = "keep") %>% 
+    group_by(id) %>% 
+    summarise(TIME = sum(TIME), 
+              N = n(), 
+              tasks = paste(experimento, collapse = ", "),
+              .groups = "keep") %>% 
+      mutate(missing = paste(all_tasks[!all_tasks %in% (strsplit(tasks, split = ", ") %>% unlist())], collapse = ", "))
+
+DT::datatable(summary_table, filter = 'top', options = list(dom = 'ltip', pageLength = 10))
+  
 ```
 
 
-### By experiment  
+### By task  
 
 ```{r summary-table2, echo=FALSE}
 
-summary_table2 = 
-  DF %>% 
-  group_by(experimento) %>% 
-  summarise(
-    n_participants = n_distinct(id),
-    time_elapsed = max(time_elapsed) / 1000,
-    rt = sum(rt) / 1000,
-    time_elapsed_min = max(time_elapsed) / 60,
-    rt_min = sum(rt) / 60, 
-    .groups = "keep"
-  )
+summary_table2 =
+  DF_raw %>% 
+    group_by(id, experimento) %>% 
+    summarise(
+      n_participants = n_distinct(id),
+      time = max(time_elapsed) / 60000,
+      .groups = "drop"
+    ) %>% #View
+  
+    group_by(experimento) %>% 
+    summarise(
+      n_participants = n(),
+      mean_time = round(mean(time), 1),
+      time_elapsed_min = round(min(time), 1),
+      time_elapsed_max = round(max(time), 1),
+      .groups = "keep"
+    )
+ 
+DT::datatable(summary_table2, filter = 'top', options = list(dom = 'ltip', pageLength = 10))
 
-knitr::kable(summary_table2)
 ```
+
+
+### By task and participant 
+
+```{r summary-table3, echo=FALSE}
+
+summary_table3 =
+  DF_raw %>% 
+    group_by(id, experimento) %>% 
+    summarise(
+      # n_participants = n_distinct(id),
+      time = round(max(time_elapsed) / 60000, 2),
+      .groups = "drop"
+    ) 
+
+DT::datatable(summary_table3, filter = 'top', options = list(dom = 'ltip', pageLength = 10))
+```
+
 
 ### Order of tasks
 
@@ -75,19 +128,22 @@ summary_position = DF %>%
   mutate(Order = row_number()) %>% 
   select(-datetime) %>% 
   group_by(experimento) %>% 
-  summarise(MEAN_Position = mean(Order),
-            SD_Position = sd(Order), 
+  summarise(MEAN_Position = round(mean(Order), 1),
+            SD_Position = round(sd(Order), 1),
             MIN_Position = min(Order), 
-            MAX_Position = max(Order), .groups = "drop") %>% 
+            MAX_Position = max(Order), 
+            .groups = "drop") %>% 
   arrange(MEAN_Position, experimento)
 
-knitr::kable(summary_position)
+DT::datatable(summary_position, filter = 'top', options = list(dom = 'ltip', pageLength = 10))
 
 ```
 
 
 
-## Details of tasks
+## Details of tasks {.tabset}
+
+### Number of items per task
 
 ```{r echo=FALSE}
 
@@ -95,20 +151,22 @@ knitr::kable(summary_position)
 trialid_table = DF %>% 
   filter(trial_type != "fullscreen") %>% 
   select(experimento, trial_type, trialid, responses) %>% 
-  # filter(trial_type %in% c("survey-multi-choice-vertical", "survey-multi-choice-horizontal", "likert", "html-slider-response")) %>% 
   group_by(experimento) %>% 
   distinct(trialid) %>% 
   count(experimento, name = "number_items")
 
 
-DT::datatable(trialid_table, filter = 'top', options = list(dom = 'tip'))
+DT::datatable(trialid_table, 
+              filter = 'top', 
+              options = list(dom = 'ltip', 
+                             pageLength = 15))
 
 ```
 
 
-## Details of tasks  
+### Trialid's and questions for each of the tasks:  
 
-Trialid's and questions for each of the items:  
+
 
 ```{r echo=FALSE}
 
@@ -119,13 +177,18 @@ trialid_detail_table = DF %>%
   distinct(trialid, stimulus) 
 
 
-DT::datatable(trialid_detail_table, filter = 'top', options = list(dom = 'tip'))
+DT::datatable(trialid_detail_table, 
+              filter = 'top', 
+              options = list(dom = 'ltip', 
+                             pageLength = 15))
+
 ```
 
 
-## Details Responses
+### Responses (numeric and categorical)
 
-### Only showing multi-choice, slider and liker scales
+Only showing multi-choice, slider and liker scales.  
+
 
 ```{r echo=FALSE}
 
@@ -138,23 +201,37 @@ responses_table = DF %>%
   distinct(trialid, responses) 
 
 
-DT::datatable(responses_table, filter = 'top', options = list(dom = 'tip'))
+DT::datatable(responses_table, 
+              filter = 'top', 
+              options = list(dom = 'ltip', 
+                             pageLength = 15))
+
 
 ```
 
 
+<!-- ### All Responses -->
+
+
 ```{r echo=FALSE}
-  # DF_responses =
-  #   DF_long_RAW %>% 
-  #   count(trialid, RAW) %>% 
-  #   group_by(trialid) %>% 
-  #   summarise(N = n(),
-  #             Responses = paste(RAW, collapse = ", "), 
-  #             .groups = "drop") %>% 
-  #   group_by(Responses) %>% 
-  #   summarise(N = n(),
-  #             trialid = paste(trialid, collapse = ", "), 
-  #             .groups = "drop") %>% 
-  #   DT::datatable()
+#   DF_responses =
+#     DF %>%
+#     count(trialid, experimento, responses) %>%
+#     group_by(experimento, trialid) %>%
+#     summarise(N = n(),
+#               Responses = paste(responses, collapse = ", "),
+#               .groups = "drop") %>%
+#     group_by(experimento, Responses) %>%
+#     summarise(N = n(),
+#               trialid = paste(trialid, collapse = ", "),
+#               .groups = "drop") %>% 
+#   select(experimento, trialid, Responses, N)
+# 
+# 
+# DT::datatable(DF_responses, 
+#               filter = 'top', 
+#               options = list(dom = 'ltip', 
+#                              pageLength = 15))
+
 ```
 
