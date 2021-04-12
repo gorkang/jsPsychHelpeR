@@ -19,9 +19,27 @@ prepare_FDMQ <- function(DF_clean, short_name_scale_str) {
   # DEBUG
   # debug_function(prepare_FDMQ)
 
+  
+  # [ADAPT]: Items to ignore, reverse and dimensions ---------------------------------------
+  # ****************************************************************************
+  
+  items_to_ignore = c("00") # Ignore these items: If nothing to ignore, keep items_to_ignore = c("00")
+  items_to_reverse = c("00") # Reverse these items: If nothing to reverse, keep  items_to_reverse = c("00")
+  
+  names_dimensions = c("Vigilancia", "Hipervigilancia", "Transferencia", "Procastinacion") # If no dimensions, keep names_dimensions = c("")
+  
+  items_DIRd1 = c("01", "02", "03", "04", "05", "06")
+  items_DIRd2 = c("07", "08", "09", "10", "11")
+  items_DIRd3 = c("12", "13", "14", "15", "16", "17")
+  items_DIRd4 = c("18", "19", "20", "21", "22")
+  
+  # [END ADAPT]: ***************************************************************
+  # ****************************************************************************
+  
+  
   # Standardized names ------------------------------------------------------
   standardized_names(short_name_scale = short_name_scale_str, 
-                     dimensions = c("Vigilancia", "Hipervigilancia", "Transferencia", "Procastinacion"), # Use names of dimensions, "" or comment out line
+                     dimensions = names_dimensions,
                      help_names = FALSE) # help_names = FALSE once the script is ready
   
   # Create long -------------------------------------------------------------
@@ -55,7 +73,7 @@ prepare_FDMQ <- function(DF_clean, short_name_scale_str) {
       DIR = 
         case_when(
           DIR == 9999 ~ DIR, # To keep the missing values unchanged
-          grepl("007|008", trialid) ~ (6 - DIR),
+          trialid %in% paste0(short_name_scale_str, "_", items_to_reverse) ~ (6 - DIR),
           TRUE ~ DIR
         )
     )
@@ -65,7 +83,7 @@ prepare_FDMQ <- function(DF_clean, short_name_scale_str) {
     
 
   # Create DF_wide_RAW_DIR -----------------------------------------------------
-  DF_wide_RAW_DIR =
+  DF_wide_RAW =
     DF_long_DIR %>% 
     pivot_wider(
       names_from = trialid, 
@@ -73,24 +91,26 @@ prepare_FDMQ <- function(DF_clean, short_name_scale_str) {
       names_glue = "{trialid}_{.value}") %>% 
     
     # NAs for RAW and DIR items
-    mutate(!!name_RAW_NA := rowSums(is.na(select(., matches("_RAW")))),
-           !!name_DIR_NA := rowSums(is.na(select(., matches("_DIR"))))) %>% 
+    mutate(!!name_RAW_NA := rowSums(is.na(select(., -matches(paste0(short_name_scale_str, "_", items_to_ignore, "_RAW")) & matches("_RAW$")))),
+           !!name_DIR_NA := rowSums(is.na(select(., -matches(paste0(short_name_scale_str, "_", items_to_ignore, "_DIR")) & matches("_DIR$")))))
       
     
   # [ADAPT]: Scales and dimensions calculations --------------------------------
   # ****************************************************************************
     # [USE STANDARD NAMES FOR Scales and dimensions: name_DIRt, name_DIRd1, etc.] Check with: standardized_names(help_names = TRUE)
 
+  DF_wide_RAW_DIR =
+    DF_wide_RAW %>% 
     mutate(
 
       # Score Dimensions (use 3 digit item numbers)
-      !!name_DIRd1 := rowMeans(select(., matches("01|02|03|04|05|06") & matches("_DIR$")), na.rm = TRUE),
-      !!name_DIRd2 := rowMeans(select(., matches("07|08|09|10|11") & matches("_DIR$")), na.rm = TRUE),
-      !!name_DIRd3 := rowMeans(select(., matches("12|13|14|15|16|17") & matches("_DIR$")), na.rm = TRUE),
-      !!name_DIRd4 := rowMeans(select(., matches("18|19|20|21|22") & matches("_DIR$")), na.rm = TRUE),
+      !!name_DIRd1 := rowMeans(select(., paste0(short_name_scale_str, "_", items_DIRd1, "_DIR")), na.rm = TRUE), 
+      !!name_DIRd2 := rowMeans(select(., paste0(short_name_scale_str, "_", items_DIRd2, "_DIR")), na.rm = TRUE),
+      !!name_DIRd3 := rowMeans(select(., paste0(short_name_scale_str, "_", items_DIRd3, "_DIR")), na.rm = TRUE), 
+      !!name_DIRd4 := rowMeans(select(., paste0(short_name_scale_str, "_", items_DIRd4, "_DIR")), na.rm = TRUE),
       
       # Score Scale
-      !!name_DIRt := rowSums(select(., matches("_DIR$")), na.rm = TRUE)
+      !!name_DIRt := rowMeans(select(., matches("_DIR$")), na.rm = TRUE)
       
     )
     

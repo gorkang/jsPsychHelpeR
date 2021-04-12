@@ -1,12 +1,12 @@
-##' Prepare CRTMCQ4
+##' Prepare OTRASRELIG
 ##'
 ##' Template for the functions to prepare specific tasks. Most of this file should not be changed
 ##' Things to change: 
-##'   - Name of function: prepare_CRTMCQ4 -> prepare_[value of short_name_scale_str] 
+##'   - Name of function: prepare_OTRASRELIG -> prepare_[value of short_name_scale_str] 
 ##'   - dimensions parameter in standardized_names()
 ##'   - 2 [ADAPT] chunks
 ##'
-##' @title prepare_CRTMCQ4
+##' @title prepare_OTRASRELIG
 ##'
 ##' @param short_name_scale_str 
 ##' @param DF_clean
@@ -14,14 +14,14 @@
 ##' @return
 ##' @author gorkang
 ##' @export
-prepare_CRTMCQ4 <- function(DF_clean, short_name_scale_str) {
+prepare_OTRASRELIG <- function(DF_clean, short_name_scale_str) {
 
   # DEBUG
-  # debug_function(prepare_CRTMCQ4)
-  
+  # debug_function(prepare_OTRASRELIG)
+
   # Standardized names ------------------------------------------------------
   standardized_names(short_name_scale = short_name_scale_str, 
-                     dimensions = c("Reflectiveness", "Intuitiveness"), # Use names of dimensions, "" or comment out line
+                     # dimensions = c("NameDimension1", "NameDimension2"), # Use names of dimensions, "" or comment out line
                      help_names = FALSE) # help_names = FALSE once the script is ready
   
   # Create long -------------------------------------------------------------
@@ -51,36 +51,31 @@ prepare_CRTMCQ4 <- function(DF_clean, short_name_scale_str) {
   # [ADAPT]: RAW to DIR for individual items -----------------------------------
   # ****************************************************************************
   
-  # Reflectiveness score (0 – 7): 1 point for each correct answer: 
-  #   5 pence, 5 minutes, 47 days, 4 days, 29 students, 20 pounds, has lost money, respectively.
-  # Intuitiveness score (0 – 7): 1 point for each intuitive incorrect answer:
-  #   10 pence, 100 minutes, 24 days, 9 days, 30 students, 10 pounds, is ahead of where he began, respectively.
-  
     # Transformations
     mutate(
-      DIR =
-        case_when(
-          trialid == "CRTMCQ4_01" & RAW == "50 pesos" ~ "reflective",
-          trialid == "CRTMCQ4_02" & RAW == "5 minutos" ~ "reflective",
-          trialid == "CRTMCQ4_03" & RAW == "47 días" ~ "reflective",
-          trialid == "CRTMCQ4_04" & RAW == "4 días" ~ "reflective",
-          trialid == "CRTMCQ4_05" & RAW == "29 estudiantes" ~ "reflective",
-          trialid == "CRTMCQ4_06" & RAW == "20000" ~ "reflective",
-          trialid == "CRTMCQ4_07" & RAW == "Ha perdido dinero." ~ "reflective",
-          
-          trialid == "CRTMCQ4_01" & RAW == "100 pesos" ~ "intuitive",
-          trialid == "CRTMCQ4_02" & RAW == "100 minutos" ~ "intuitive",
-          trialid == "CRTMCQ4_03" & RAW == "24 días" ~ "intuitive",
-          trialid == "CRTMCQ4_04" & RAW == "9 días" ~ "intuitive",
-          trialid == "CRTMCQ4_05" & RAW == "30 estudiantes" ~ "intuitive",
-          trialid == "CRTMCQ4_06" & RAW == "10000" ~ "intuitive",
-          trialid == "CRTMCQ4_07" & RAW == "Ha ganado dinero." ~ "intuitive",
-          is.na(RAW) ~ NA_character_,
-          grepl(items_to_ignore, trialid) ~ NA_character_,
-          TRUE ~ ""
-        )
-    ) 
-  
+      DIR = RAW
+        # case_when(
+        #   RAW == "Nunca" ~ 1,
+        #   RAW == "Poco" ~ 2,
+        #   RAW == "Medianamente" ~ 3,
+        #   RAW == "Bastante" ~ 4,
+        #   RAW == "Mucho" ~ 5,
+        #   is.na(RAW) ~ NA_real_,
+        #   grepl(items_to_ignore, trialid) ~ NA_real_,
+        #   TRUE ~ 9999
+        # )
+    ) #%>% 
+    
+    # # Invert items
+    # mutate(
+    #   DIR =
+    #     case_when(
+    #       DIR == 9999 ~ DIR, # To keep the missing values unchanged
+    #       grepl(items_to_reverse, trialid) ~ (6 - DIR),
+    #       TRUE ~ DIR
+    #     )
+    # )
+    
   # [END ADAPT]: ***************************************************************
   # ****************************************************************************
     
@@ -95,7 +90,7 @@ prepare_CRTMCQ4 <- function(DF_clean, short_name_scale_str) {
     
     # NAs for RAW and DIR items
     mutate(!!name_RAW_NA := rowSums(is.na(select(., -matches(items_to_ignore) & matches("_RAW")))),
-           !!name_DIR_NA := rowSums(is.na(select(., -matches(items_to_ignore) & matches("_DIR"))))) %>%
+           !!name_DIR_NA := rowSums(is.na(select(., -matches(items_to_ignore) & matches("_DIR"))))) %>% 
       
     
   # [ADAPT]: Scales and dimensions calculations --------------------------------
@@ -105,8 +100,8 @@ prepare_CRTMCQ4 <- function(DF_clean, short_name_scale_str) {
     mutate(
 
       # Score Dimensions (see standardized_names(help_names = TRUE) for instructions)
-      !!name_DIRd1 := rowSums(select(., matches("01|02|03|04|05|06|07") & matches("_DIR$")) == "reflective", na.rm = TRUE), 
-      !!name_DIRd2 := rowSums(select(., matches("01|02|03|04|05|06|07") & matches("_DIR$")) == "intuitive", na.rm = TRUE)
+      # !!name_DIRd1 := rowSums(select(., matches("02|04|05") & matches("_DIR$")), na.rm = TRUE), 
+      # !!name_DIRd2 := rowSums(select(., matches("01|03|08") & matches("_DIR$")), na.rm = TRUE), 
       
       # Score Scale
       # !!name_DIRt := rowSums(select(., matches("_DIR$")), na.rm = TRUE)

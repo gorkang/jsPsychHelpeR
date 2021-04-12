@@ -1,12 +1,12 @@
-##' Prepare PWb
+##' Prepare Bank
 ##'
 ##' Template for the functions to prepare specific tasks. Most of this file should not be changed
 ##' Things to change: 
-##'   - Name of function: prepare_PWb -> prepare_[value of short_name_scale_str] 
+##'   - Name of function: prepare_Bank -> prepare_[value of short_name_scale_str] 
 ##'   - dimensions parameter in standardized_names()
 ##'   - 2 [ADAPT] chunks
 ##'
-##' @title prepare_PWb
+##' @title prepare_Bank
 ##'
 ##' @param short_name_scale_str 
 ##' @param DF_clean
@@ -14,18 +14,18 @@
 ##' @return
 ##' @author gorkang
 ##' @export
-prepare_PWb <- function(DF_clean, short_name_scale_str) {
+prepare_Bank <- function(DF_clean, short_name_scale_str) {
 
   # DEBUG
-  # debug_function(prepare_PWb)
+  # debug_function(prepare_Bank)
 
   # Standardized names ------------------------------------------------------
   standardized_names(short_name_scale = short_name_scale_str, 
-                     dimensions = c("Autoaceptacion", "RelacionesPositivas", "Autonomia", "DominioEntorno", "CrecimientoPersonal", "PropositoVida"), # Use names of dimensions, "" or comment out line
+                     # dimensions = c("NameDimension1", "NameDimension2"), # Use names of dimensions, "" or comment out line
                      help_names = FALSE) # help_names = FALSE once the script is ready
   
   # Create long -------------------------------------------------------------
-  DF_long_RAW = create_raw_long(DF_clean, short_name_scale = short_name_scale_str, numeric_responses = TRUE)
+  DF_long_RAW = create_raw_long(DF_clean, short_name_scale = short_name_scale_str, numeric_responses = FALSE)
   
   # Show number of items, responses, etc. [uncomment to help prepare the test] 
   # prepare_helper(DF_long_RAW, show_trialid_questiontext = TRUE)
@@ -37,7 +37,7 @@ prepare_PWb <- function(DF_clean, short_name_scale_str) {
   # ****************************************************************************
   
   items_to_ignore = c("00|00") # Ignore the following items: If nothing to ignore, keep "00|00"
-  items_to_reverse = c("04|05|08|09|13|15|20|22|25|26|27|29|30|33|34|36") # Reverse the following items: If nothing to ignore, keep "00|00"
+  items_to_reverse = c("00|00") # Reverse the following items: If nothing to ignore, keep "00|00"
   
   # [END ADAPT]: ***************************************************************
   # ****************************************************************************
@@ -54,18 +54,28 @@ prepare_PWb <- function(DF_clean, short_name_scale_str) {
     # Transformations
     mutate(
       DIR = RAW
-      ) %>% 
+        # case_when(
+        #   RAW == "Nunca" ~ 1,
+        #   RAW == "Poco" ~ 2,
+        #   RAW == "Medianamente" ~ 3,
+        #   RAW == "Bastante" ~ 4,
+        #   RAW == "Mucho" ~ 5,
+        #   is.na(RAW) ~ NA_real_,
+        #   grepl(items_to_ignore, trialid) ~ NA_real_,
+        #   TRUE ~ 9999
+        # )
+    )  
     
-    # Invert items
-    mutate(
-      DIR = 
-        case_when(
-          DIR == 9999 ~ DIR, # To keep the missing values unchanged
-          grepl(items_to_reverse, trialid) ~ (7 - DIR),
-          TRUE ~ DIR
-        )
-    )
-    
+    # # Invert items
+    # mutate(
+    #   DIR = 
+    #     case_when(
+    #       DIR == 9999 ~ DIR, # To keep the missing values unchanged
+    #       grepl(items_to_reverse, trialid) ~ (6 - DIR),
+    #       TRUE ~ DIR
+    #     )
+    # )
+    # 
   # [END ADAPT]: ***************************************************************
   # ****************************************************************************
     
@@ -90,15 +100,11 @@ prepare_PWb <- function(DF_clean, short_name_scale_str) {
     mutate(
 
       # Score Dimensions (see standardized_names(help_names = TRUE) for instructions)
-      !!name_DIRd1 := rowSums(select(., matches("01|07|13|19|25|31") & matches("_DIR$")), na.rm = TRUE), 
-      !!name_DIRd2 := rowSums(select(., matches("02|08|14|20|26|32") & matches("_DIR$")), na.rm = TRUE),
-      !!name_DIRd3 := rowSums(select(., matches("03|04|09|10|15|21|27|33") & matches("_DIR$")), na.rm = TRUE), 
-      !!name_DIRd4 := rowSums(select(., matches("05|11|16|22|28|39") & matches("_DIR$")), na.rm = TRUE), 
-      !!name_DIRd5 := rowSums(select(., matches("24|30|34|35|36|37|38") & matches("_DIR$")), na.rm = TRUE), 
-      !!name_DIRd6 := rowSums(select(., matches("06|12|17|18|23|29") & matches("_DIR$")), na.rm = TRUE), 
+      # !!name_DIRd1 := rowSums(select(., matches("02|04|05") & matches("_DIR$")), na.rm = TRUE), 
+      # !!name_DIRd2 := rowSums(select(., matches("01|03|08") & matches("_DIR$")), na.rm = TRUE), 
       
       # Score Scale
-      !!name_DIRt := rowSums(select(., matches("_DIR$")), na.rm = TRUE)
+      # !!name_DIRt := rowSums(select(., matches("_DIR$")), na.rm = TRUE)
       
     )
     
@@ -110,7 +116,7 @@ prepare_PWb <- function(DF_clean, short_name_scale_str) {
   check_NAs(DF_wide_RAW_DIR)
   
   # Save files --------------------------------------------------------------
-  save_files(DF_wide_RAW_DIR, short_name_scale = short_name_scale_str, is_scale = TRUE)
+  save_files(DF_wide_RAW_DIR, short_name_scale = short_name_scale_str, is_scale = TRUE, is_sensitive = TRUE)
   
   # Output of function ---------------------------------------------------------
   return(DF_wide_RAW_DIR) 

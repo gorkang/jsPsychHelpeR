@@ -1,12 +1,12 @@
-##' prepare_bRCOPE
+##' Prepare EAR
 ##'
 ##' Template for the functions to prepare specific tasks. Most of this file should not be changed
 ##' Things to change: 
-##'   - Name of function: prepare_TEMPLATE -> prepare_[value of short_name_scale_str] 
+##'   - Name of function: prepare_EAR -> prepare_[value of short_name_scale_str] 
 ##'   - dimensions parameter in standardized_names()
 ##'   - 2 [ADAPT] chunks
 ##'
-##' @title prepare_TEMPLATE
+##' @title prepare_EAR
 ##'
 ##' @param short_name_scale_str 
 ##' @param DF_clean
@@ -14,14 +14,14 @@
 ##' @return
 ##' @author gorkang
 ##' @export
-prepare_bRCOPE <- function(DF_clean, short_name_scale_str) {
+prepare_EAR <- function(DF_clean, short_name_scale_str) {
 
   # DEBUG
-  # debug_function(prepare_bRCOPE)
+  # debug_function(prepare_EAR)
 
   # Standardized names ------------------------------------------------------
   standardized_names(short_name_scale = short_name_scale_str, 
-                     dimensions = c("AfrontamientoReligiosoPositivo", "AfrontamientoReligiosoNegativo"), # Use names of dimensions, "" or comment out line
+                     # dimensions = c("NameDimension1", "NameDimension2"), # Use names of dimensions, "" or comment out line
                      help_names = FALSE) # help_names = FALSE once the script is ready
   
   # Create long -------------------------------------------------------------
@@ -32,6 +32,17 @@ prepare_bRCOPE <- function(DF_clean, short_name_scale_str) {
   
   
   # Create long DIR ------------------------------------------------------------
+  
+  # [ADAPT]: Items to ignore and reverse ---------------------------------------
+  # ****************************************************************************
+  
+  items_to_ignore = c("00|00") # Ignore the following items: If nothing to ignore, keep "00|00"
+  items_to_reverse = c("03|05|08|09|10") # Reverse the following items: If nothing to ignore, keep "00|00"
+  
+  # [END ADAPT]: ***************************************************************
+  # ****************************************************************************
+  
+  
   DF_long_DIR = 
     DF_long_RAW %>% 
     select(id, trialid, RAW) %>%
@@ -40,16 +51,29 @@ prepare_bRCOPE <- function(DF_clean, short_name_scale_str) {
   # [ADAPT]: RAW to DIR for individual items -----------------------------------
   # ****************************************************************************
   
+    # Transformations
     mutate(
       DIR =
         case_when(
-          RAW == "Nunca" ~ 1,
-          RAW == "Casi\\n Nunca" ~ 2,
-          RAW == "A veces" ~ 3,
-          RAW == "Casi\\n Siempre" ~ 4,
-          RAW == "Siempre" ~ 5,
-          TRUE ~ 9999 # EXTREME value so we can detect when we are not catching a response
-        ))
+          RAW == "Muy de acuerdo" ~ 4,
+          RAW == "De acuerdo" ~ 3,
+          RAW == "En desacuerdo" ~ 2,
+          RAW == "Muy en desacuerdo" ~ 1,
+          is.na(RAW) ~ NA_real_,
+          grepl(items_to_ignore, trialid) ~ NA_real_,
+          TRUE ~ 9999
+        )
+    ) %>% 
+    
+    # Invert items
+    mutate(
+      DIR = 
+        case_when(
+          DIR == 9999 ~ DIR, # To keep the missing values unchanged
+          grepl(items_to_reverse, trialid) ~ (5 - DIR),
+          TRUE ~ DIR
+        )
+    )
     
   # [END ADAPT]: ***************************************************************
   # ****************************************************************************
@@ -64,20 +88,19 @@ prepare_bRCOPE <- function(DF_clean, short_name_scale_str) {
       names_glue = "{trialid}_{.value}") %>% 
     
     # NAs for RAW and DIR items
-    mutate(!!name_RAW_NA := rowSums(is.na(select(., matches("_RAW")))),
-           !!name_DIR_NA := rowSums(is.na(select(., matches("_DIR"))))) %>% 
+    mutate(!!name_RAW_NA := rowSums(is.na(select(., -matches(items_to_ignore) & matches("_RAW")))),
+           !!name_DIR_NA := rowSums(is.na(select(., -matches(items_to_ignore) & matches("_DIR"))))) %>% 
       
     
   # [ADAPT]: Scales and dimensions calculations --------------------------------
   # ****************************************************************************
     # [USE STANDARD NAMES FOR Scales and dimensions: name_DIRt, name_DIRd1, etc.] Check with: standardized_names(help_names = TRUE)
 
-    # [REMEMBER]: itemid numbers will have 3 digits: 002|004... 
     mutate(
 
-      # Score Dimensions (use 3 digit item numbers)
-      !!name_DIRd1 := rowSums(select(., matches("02|04|05|06|07|10|14") & matches("_DIR$")), na.rm = TRUE), 
-      !!name_DIRd2 := rowSums(select(., matches("01|03|08|09|11|12|13") & matches("_DIR$")), na.rm = TRUE), 
+      # Score Dimensions (see standardized_names(help_names = TRUE) for instructions)
+      # !!name_DIRd1 := rowSums(select(., matches("02|04|05") & matches("_DIR$")), na.rm = TRUE), 
+      # !!name_DIRd2 := rowSums(select(., matches("01|03|08") & matches("_DIR$")), na.rm = TRUE), 
       
       # Score Scale
       !!name_DIRt := rowSums(select(., matches("_DIR$")), na.rm = TRUE)

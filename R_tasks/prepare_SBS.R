@@ -19,9 +19,22 @@ prepare_SBS <- function(DF_clean, short_name_scale_str) {
   # DEBUG
   # debug_function(prepare_SBS)
 
+  
+  # [ADAPT]: Items to ignore, reverse and dimensions ---------------------------------------
+  # ****************************************************************************
+  
+  items_to_ignore = c("00") # Ignore these items: If nothing to ignore, keep items_to_ignore = c("00")
+  items_to_reverse = c("00") # Reverse these items: If nothing to reverse, keep  items_to_reverse = c("00")
+  
+  names_dimensions = c("") # If no dimensions, keep names_dimensions = c("")
+  
+  # [END ADAPT]: ***************************************************************
+  # ****************************************************************************
+  
+  
   # Standardized names ------------------------------------------------------
   standardized_names(short_name_scale = short_name_scale_str, 
-                     # dimensions = c("NameDimension1", "NameDimension2"), # Use names of dimensions, "" or comment out line
+                     dimensions = names_dimensions,
                      help_names = FALSE) # help_names = FALSE once the script is ready
   
   # Create long -------------------------------------------------------------
@@ -49,7 +62,7 @@ prepare_SBS <- function(DF_clean, short_name_scale_str) {
     
 
   # Create DF_wide_RAW_DIR -----------------------------------------------------
-  DF_wide_RAW_DIR =
+  DF_wide_RAW =
     DF_long_DIR %>% 
     pivot_wider(
       names_from = trialid, 
@@ -57,14 +70,15 @@ prepare_SBS <- function(DF_clean, short_name_scale_str) {
       names_glue = "{trialid}_{.value}") %>% 
     
     # NAs for RAW and DIR items
-    mutate(!!name_RAW_NA := rowSums(is.na(select(., matches("_RAW")))),
-           !!name_DIR_NA := rowSums(is.na(select(., matches("_DIR"))))) %>% 
+    mutate(!!name_RAW_NA := rowSums(is.na(select(., -matches(paste0(short_name_scale_str, "_", items_to_ignore, "_RAW")) & matches("_RAW$")))),
+           !!name_DIR_NA := rowSums(is.na(select(., -matches(paste0(short_name_scale_str, "_", items_to_ignore, "_DIR")) & matches("_DIR$")))))
       
     
   # [ADAPT]: Scales and dimensions calculations --------------------------------
   # ****************************************************************************
     # [USE STANDARD NAMES FOR Scales and dimensions: name_DIRt, name_DIRd1, etc.] Check with: standardized_names(help_names = TRUE)
-
+  DF_wide_RAW_DIR = 
+    DF_wide_RAW %>% 
     mutate(
 
       # Score Scale

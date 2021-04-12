@@ -1,12 +1,12 @@
-##' Prepare SWBQ
+##' Prepare SCSORF
 ##'
 ##' Template for the functions to prepare specific tasks. Most of this file should not be changed
 ##' Things to change: 
-##'   - Name of function: prepare_SWBQ -> prepare_[value of short_name_scale_str] 
+##'   - Name of function: prepare_TEMPLATE -> prepare_[value of short_name_scale_str] 
 ##'   - dimensions parameter in standardized_names()
 ##'   - 2 [ADAPT] chunks
 ##'
-##' @title prepare_SWBQ
+##' @title prepare_SCSORF
 ##'
 ##' @param short_name_scale_str 
 ##' @param DF_clean
@@ -14,18 +14,30 @@
 ##' @return
 ##' @author gorkang
 ##' @export
-prepare_SWBQ <- function(DF_clean, short_name_scale_str) {
+prepare_SCSORF <- function(DF_clean, short_name_scale_str) {
 
   # DEBUG
-  # debug_function(prepare_SWBQ)
+  # debug_function(prepare_SCSORF)
 
+  # [ADAPT]: Items to ignore, reverse and dimensions ---------------------------------------
+  # ****************************************************************************
+  
+  items_to_ignore = c("00") # Ignore these items: If nothing to ignore, keep items_to_ignore = c("00")
+  items_to_reverse = c("00") # Reverse these items: If nothing to reverse, keep  items_to_reverse = c("00")
+  
+  names_dimensions = c("") # If no dimensions, keep names_dimensions = c("")
+  
+  # [END ADAPT]: ***************************************************************
+  # ****************************************************************************
+  
+  
   # Standardized names ------------------------------------------------------
   standardized_names(short_name_scale = short_name_scale_str, 
-                     dimensions = c("PersonalEspiritual", "EspiritualComunal", "EspiritualEntorno", "EspiritualTrascendental"), # Use names of dimensions, "" or comment out line
+                     dimensions = names_dimensions,
                      help_names = FALSE) # help_names = FALSE once the script is ready
   
   # Create long -------------------------------------------------------------
-  DF_long_RAW = create_raw_long(DF_clean, short_name_scale = short_name_scale_str, numeric_responses = TRUE)
+  DF_long_RAW = create_raw_long(DF_clean, short_name_scale = short_name_scale_str, numeric_responses = FALSE)
   
   # Show number of items, responses, etc. [uncomment to help prepare the test] 
   # prepare_helper(DF_long_RAW, show_trialid_questiontext = TRUE)
@@ -41,16 +53,21 @@ prepare_SWBQ <- function(DF_clean, short_name_scale_str) {
   # ****************************************************************************
   
     mutate(
-      DIR = RAW
-      ) 
-    
-    
+      DIR =
+        case_when(
+          RAW == "Totalmente en desacuerdo" ~ 1,
+          RAW == "En desacuerdo" ~ 2,
+          RAW == "De acuerdo" ~ 3,
+          RAW == "Totalmente de acuerdo" ~ 4,
+          TRUE ~ 9999 # EXTREME value so we can detect when we are not catching a response
+        ))
+
   # [END ADAPT]: ***************************************************************
   # ****************************************************************************
     
 
   # Create DF_wide_RAW_DIR -----------------------------------------------------
-  DF_wide_RAW_DIR =
+  DF_wide_RAW =
     DF_long_DIR %>% 
     pivot_wider(
       names_from = trialid, 
@@ -58,23 +75,19 @@ prepare_SWBQ <- function(DF_clean, short_name_scale_str) {
       names_glue = "{trialid}_{.value}") %>% 
     
     # NAs for RAW and DIR items
-    mutate(!!name_RAW_NA := rowSums(is.na(select(., matches("_RAW")))),
-           !!name_DIR_NA := rowSums(is.na(select(., matches("_DIR"))))) %>% 
+    mutate(!!name_RAW_NA := rowSums(is.na(select(., -matches(paste0(short_name_scale_str, "_", items_to_ignore, "_RAW")) & matches("_RAW$")))),
+           !!name_DIR_NA := rowSums(is.na(select(., -matches(paste0(short_name_scale_str, "_", items_to_ignore, "_DIR")) & matches("_DIR$")))))
+  
       
     
   # [ADAPT]: Scales and dimensions calculations --------------------------------
   # ****************************************************************************
     # [USE STANDARD NAMES FOR Scales and dimensions: name_DIRt, name_DIRd1, etc.] Check with: standardized_names(help_names = TRUE)
-    # [REMEMBER]: 3 digits!!! 005|009...
+  
+  DF_wide_RAW_DIR = 
+    DF_wide_RAW %>% 
     mutate(
 
-      # Score Dimensions (use 3 digit item numbers)
-      !!name_DIRd1 := rowSums(select(., matches("05|09|14|16|18") & matches("_DIR$")), na.rm = TRUE),
-      !!name_DIRd2 := rowSums(select(., matches("01|08|19|21|26") & matches("_DIR$")), na.rm = TRUE),
-      !!name_DIRd3 := rowSums(select(., matches("04|10|20|22|24") & matches("_DIR$")), na.rm = TRUE),
-      !!name_DIRd4 := rowSums(select(., matches("02|06|11|13|15") & matches("_DIR$")), na.rm = TRUE),
-      
-      
       # Score Scale
       !!name_DIRt := rowSums(select(., matches("_DIR$")), na.rm = TRUE)
       

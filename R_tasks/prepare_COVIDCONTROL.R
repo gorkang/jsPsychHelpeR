@@ -1,12 +1,12 @@
-##' Prepare IRI
+##' Prepare COVIDCONTROL
 ##'
 ##' Template for the functions to prepare specific tasks. Most of this file should not be changed
 ##' Things to change: 
-##'   - Name of function: prepare_IRI -> prepare_[value of short_name_scale_str] 
+##'   - Name of function: prepare_COVIDCONTROL -> prepare_[value of short_name_scale_str] 
 ##'   - dimensions parameter in standardized_names()
 ##'   - 2 [ADAPT] chunks
 ##'
-##' @title prepare_IRI
+##' @title prepare_COVIDCONTROL
 ##'
 ##' @param short_name_scale_str 
 ##' @param DF_clean
@@ -14,24 +14,35 @@
 ##' @return
 ##' @author gorkang
 ##' @export
-prepare_IRI <- function(DF_clean, short_name_scale_str) {
+prepare_COVIDCONTROL <- function(DF_clean, short_name_scale_str) {
 
   # DEBUG
-  # debug_function(prepare_IRI)
+  # debug_function(prepare_COVIDCONTROL)
 
   # Standardized names ------------------------------------------------------
   standardized_names(short_name_scale = short_name_scale_str, 
-                     dimensions = c("TomaPerspectiva", "Fantasia", "PreocupacionEmpatica", "IncomodidadPersonal"), # Use names of dimensions, "" or comment out line
+                     # dimensions = c("NameDimension1", "NameDimension2"), # Use names of dimensions, "" or comment out line
                      help_names = FALSE) # help_names = FALSE once the script is ready
   
   # Create long -------------------------------------------------------------
-  DF_long_RAW = create_raw_long(DF_clean, short_name_scale = short_name_scale_str, numeric_responses = TRUE)
+  DF_long_RAW = create_raw_long(DF_clean, short_name_scale = short_name_scale_str, numeric_responses = FALSE)
   
   # Show number of items, responses, etc. [uncomment to help prepare the test] 
   # prepare_helper(DF_long_RAW, show_trialid_questiontext = TRUE)
   
   
   # Create long DIR ------------------------------------------------------------
+  
+  # [ADAPT]: Items to ignore and reverse ---------------------------------------
+  # ****************************************************************************
+  
+  items_to_ignore = c("00|00") # Ignore the following items: If nothing to ignore, keep "00|00"
+  items_to_reverse = c("00|00") # Reverse the following items: If nothing to ignore, keep "00|00"
+  
+  # [END ADAPT]: ***************************************************************
+  # ****************************************************************************
+  
+  
   DF_long_DIR = 
     DF_long_RAW %>% 
     select(id, trialid, RAW) %>%
@@ -40,18 +51,30 @@ prepare_IRI <- function(DF_clean, short_name_scale_str) {
   # [ADAPT]: RAW to DIR for individual items -----------------------------------
   # ****************************************************************************
   
+    # Transformations
     mutate(
-      DIR = RAW) %>% 
+      DIR = RAW
+        # case_when(
+        #   RAW == "Nunca" ~ 1,
+        #   RAW == "Poco" ~ 2,
+        #   RAW == "Medianamente" ~ 3,
+        #   RAW == "Bastante" ~ 4,
+        #   RAW == "Mucho" ~ 5,
+        #   is.na(RAW) ~ NA_real_,
+        #   grepl(items_to_ignore, trialid) ~ NA_real_,
+        #   TRUE ~ 9999
+        # )
+    ) #%>% 
     
     # Invert items
-    mutate(
-      DIR = 
-        case_when(
-          DIR == 9999 ~ DIR, # To keep the missing values unchanged
-          grepl("03|04|07|12|13|14|15|18|19", trialid) ~ (6 - DIR),
-          TRUE ~ DIR
-        )
-    )
+    # mutate(
+    #   DIR = 
+    #     case_when(
+    #       DIR == 9999 ~ DIR, # To keep the missing values unchanged
+    #       grepl(items_to_reverse, trialid) ~ (6 - DIR),
+    #       TRUE ~ DIR
+    #     )
+    # )
     
   # [END ADAPT]: ***************************************************************
   # ****************************************************************************
@@ -66,8 +89,8 @@ prepare_IRI <- function(DF_clean, short_name_scale_str) {
       names_glue = "{trialid}_{.value}") %>% 
     
     # NAs for RAW and DIR items
-    mutate(!!name_RAW_NA := rowSums(is.na(select(., matches("_RAW")))),
-           !!name_DIR_NA := rowSums(is.na(select(., matches("_DIR"))))) %>% 
+    mutate(!!name_RAW_NA := rowSums(is.na(select(., -matches(items_to_ignore) & matches("_RAW")))),
+           !!name_DIR_NA := rowSums(is.na(select(., -matches(items_to_ignore) & matches("_DIR"))))) %>% 
       
     
   # [ADAPT]: Scales and dimensions calculations --------------------------------
@@ -76,14 +99,12 @@ prepare_IRI <- function(DF_clean, short_name_scale_str) {
 
     mutate(
 
-      # Score Dimensions (use 3 digit item numbers)
-      !!name_DIRd1 := rowSums(select(., matches("03|08|11|15|21|25|28") & matches("_DIR$")), na.rm = TRUE),
-      !!name_DIRd2 := rowSums(select(., matches("01|05|07|12|16|23|26") & matches("_DIR$")), na.rm = TRUE),
-      !!name_DIRd3 := rowSums(select(., matches("02|04|09|14|18|20|22") & matches("_DIR$")), na.rm = TRUE),
-      !!name_DIRd4 := rowSums(select(., matches("06|10|13|17|19|24|27") & matches("_DIR$")), na.rm = TRUE),
+      # Score Dimensions (see standardized_names(help_names = TRUE) for instructions)
+      # !!name_DIRd1 := rowSums(select(., matches("02|04|05") & matches("_DIR$")), na.rm = TRUE), 
+      # !!name_DIRd2 := rowSums(select(., matches("01|03|08") & matches("_DIR$")), na.rm = TRUE), 
       
       # Score Scale
-      !!name_DIRt := rowSums(select(., matches("_DIR$")), na.rm = TRUE)
+      # !!name_DIRt := rowSums(select(., matches("_DIR$")), na.rm = TRUE)
       
     )
     

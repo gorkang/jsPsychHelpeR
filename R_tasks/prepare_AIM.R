@@ -19,8 +19,9 @@ prepare_AIM <- function(DF_clean, short_name_scale_str) {
   # DEBUG
   # debug_function(prepare_AIM)
 
+  
   # OUTSIDE FILES -----------------------------------------------------------
-  DF_lookup = read_csv("R/prepare_AIM-lookup.csv", 
+  DF_lookup = read_csv("R_tasks/prepare_AIM-lookup.csv", 
                        col_types = 
                          cols(
                            AIM_01_DIR = col_double(),
@@ -187,6 +188,16 @@ prepare_AIM <- function(DF_clean, short_name_scale_str) {
     
     left_join(DF_lookup, by = c("AIM_01_DIR", "AIM_02_DIR", "AIM_TramoIngreso_DIRd"))
     
+  
+  
+  ## GET protocol id ---------------
+  # DF_wide_RAW_DIR = 
+  #   DF_wide_RAW_DIR %>% 
+  #   rename(id_form = id) %>% 
+  #   # left_join(DF_DICCIONARY_id, by = "id_form") %>% 
+  #   select(id, RUT, everything())
+  
+  
   # [END ADAPT]: ***************************************************************
   # ****************************************************************************
 
@@ -194,10 +205,19 @@ prepare_AIM <- function(DF_clean, short_name_scale_str) {
   # CHECK NAs -------------------------------------------------------------------
   check_NAs(DF_wide_RAW_DIR)
   
+  
   # Save files --------------------------------------------------------------
+  
+  # Save sensitive version (with RUT) in .vault
+  # save_files(DF_wide_RAW_DIR, short_name_scale = short_name_scale_str, is_scale = TRUE, is_sensitive = TRUE)
+  # DF_wide_RAW_DIR = DF_wide_RAW_DIR %>% select(-RUT, -id_form) %>% drop_na(id)
+  
+  # Save clean version (only id's) in outputs/data
   save_files(DF_wide_RAW_DIR, short_name_scale = short_name_scale_str, is_scale = TRUE)
+
   
   # Output of function ---------------------------------------------------------
   return(DF_wide_RAW_DIR) 
- 
+  # return(DF_wide_RAW_DIR %>% select(-RUT) %>% drop_na(id)) 
+  
 }
