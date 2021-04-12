@@ -7,69 +7,45 @@
 ##' @return
 ##' @author gorkang
 ##' @export
-read_data <- function(input_files, anonymize = FALSE) {
-  
-  plan(multisession, workers = 2)
+read_data <- function(input_files, anonymize = FALSE, save_output = FALSE, workers = 1) {
   
   # Read all files
-    DF_raw = furrr::future_map_dfr(input_files %>% set_names(basename(.)), readr::read_csv, .id = "filename",
-    # DF_raw = purrr::map_dfr(input_files %>% set_names(basename(.)), readr::read_csv, .id = "filename",
-                         col_types = 
-                           cols(
-                             .default = col_character(),
-                             success = col_logical(),
-                             trial_type = col_character(),
-                             trial_index = col_double(),
-                             time_elapsed = col_double(),
-                             internal_node_id = col_character(),
-                             view_history = col_character(),
-                             rt = col_double(),
-                             trialid = col_character(),
-                             stimulus = col_character(),
-                             responses = col_character()
-                           )
-                         )  
+  if (workers > 1) {
+    future::plan(multisession, workers = workers)
+    DF_raw_read = furrr::future_map_dfr(input_files %>% set_names(basename(.)), data.table::fread, .id = "filename") %>% as_tibble()
+    # DF_raw_read = furrr::future_map_dfr(input_files %>% set_names(basename(.)), read_csv, .id = "filename") %>% as_tibble()
+  } else {
+    DF_raw_read = purrr::map_dfr(input_files %>% set_names(basename(.)), data.table::fread, .id = "filename") %>% as_tibble()
+  }
   
-    
-    DF_raw =
-      DF_raw %>% 
-      separate(col = filename, 
-               into = c("project", "experimento", "version", "datetime", "id"), 
-               sep = c("_")) %>% 
-      mutate(
-        id = gsub("(*.)\\.csv", "\\1", id), # userID
-        
-        # [REVIEW]: experimento and ID should be in the DF_raw?
-        # projectCode_shortName_version_(fecha)_userID.csv
-        # id = gsub(".*_([0-9]{1,99}).csv", "\\1", filename), # userID
-        # project = gsub("^([0-9]{1,99})_.*.csv", "\\1", filename), # projectCode
-        # experimento = gsub("^[0-9]{1,99}_([a-zA-Z0-9]{1,99})_.*.csv", "\\1", filename), # shortname
-        # version = gsub("^[0-9]{1,99}_[a-zA-Z0-9]{1,99}_([a-zA-Z0-9]{1,99})_.*.csv", "\\1", filename), # version
-        # datetime = gsub("^[0-9]{1,99}_[a-zA-Z0-9]{1,99}_[a-zA-Z0-9]{1,99}_([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2})_.*.csv", "\\1", filename), # fecha
-        # 
-        stimulus = gsub('\\{"Q0":"|"\\}', '', stimulus), # Clean stimulus
-        responses = gsub('"Q[0-9]"|&nbsp;|\u00A0', '', responses)
-        # responses = gsub('\\{"Q0":"|"\\}', '', responses), # Clean responses [REMEMBER: Only works with one response per screen]
-        # responses = gsub('\u00A0', '', responses) # Remove non-breaking space (tools::showNonASCII(DF_raw$responses))
-      ) %>% 
-      rowwise() %>% 
-      mutate(responses = lapply(regmatches(responses, gregexpr('(\").*?(\")', responses, perl = TRUE)), function(y) gsub("^\"|\"$", "", y)) %>% unlist() %>% paste(., collapse = "; ")) # Should deal with multiple responses (?)
-    
+  DF_raw =
+    DF_raw_read %>% 
+    separate(col = filename, 
+             into = c("project", "experimento", "version", "datetime", "id"), 
+             sep = c("_"), remove = FALSE) %>% 
+    mutate(
+      id = gsub("(*.)\\.csv", "\\1", id), # userID
+      stimulus = gsub('\\{""Q0"":""|""\\}', '', stimulus), # Clean stimulus
+      responses = gsub('\\{""Q0"":""|""\\}', '', responses), # Clean responses [REMEMBER: Only works with one response per screen]
+      responses = gsub('&nbsp;|\u00A0', '', responses), # Remove non-breaking space (tools::showNonASCII(DF_raw$responses))
+      
+      # This takes care of one type of multiple responses:  COVIDCONTROL ["response1", "response2"]
+      responses = gsub('\\{""Q0"":\\[""|""\\]\\}', '', responses), 
+      responses = gsub('("","")', ', ', responses)
+    ) 
+  # THIS plus the rowwise and mutate below for multiple answers. ADDS a lot of time        
+  # responses = gsub('"Q[0-9]"|&nbsp;|\u00A0', '', responses)
+  # ) %>% 
+  # rowwise() %>% 
+  # mutate(responses = lapply(regmatches(responses, gregexpr('(\").*?(\")', responses, perl = TRUE)), function(y) gsub("^\"|\"$", "", y)) %>% unlist() %>% paste(., collapse = "; ")) # Should deal with multiple responses (?)
   
- 
-    
-  # CHECK -------------------------------------------------------------------
   
-    DF_duplicates = suppressMessages(DF_raw %>% janitor::get_dupes(c(id, experimento, trialid)))
-    
-    if (nrow(DF_duplicates) > 0) {
-      input_files_duplicates = DF_duplicates %>% distinct(filename) %>% pull(filename)
-      stop("\n[ERROR]: There are duplicates in the '/data' input files: \n\n - ", paste(input_files_duplicates, collapse = "\n - "))
-    }
-    
+  # Save files --------------------------------------------------------------
+  if (save_output == TRUE) save_files(DF_raw, short_name_scale = "raw", is_scale = FALSE)
+  
   
   # Output of function ---------------------------------------------------------
-    
-    return(DF_raw)
+  
+  return(DF_raw)
   
 }
