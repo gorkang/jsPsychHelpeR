@@ -1,0 +1,28 @@
+﻿view_history,rt,trialid,trial_type,trial_index,time_elapsed,internal_node_id,stimulus,responses,correction
+"[{""page_index"":0,""viewing_time"":4523}]",4524,Instructions,instructions,0,4524,0.0-0.0,,,
+,19563,CRS_01,survey-multi-choice-vertical,1,24089,0.0-1.0,"{""Q0"":""1. ¿Con qué frecuencia piensas en temas religiosos?""}","{""Q0"":"" A menudo""}",4
+,3927,CRS_02,survey-multi-choice-vertical,2,28020,0.0-2.0,"{""Q0"":""2. ¿Hasta qué punto crees que Dios o algo divino existe?""}","{""Q0"":"" Nada""}",1
+,6668,CRS_03,survey-multi-choice-vertical,3,34691,0.0-3.0,"{""Q0"":""3. ¿Con qué frecuencia participas en servicios religiosos?""}","{""Q0"":"" Nunca""}",1
+,8042,CRS_04,survey-multi-choice-vertical,4,42734,0.0-4.0,"{""Q0"":""4. ¿Con qué frecuencia rezas?""}","{""Q0"":"" Rara vez""}",2
+,4633,CRS_05,survey-multi-choice-vertical,5,47371,0.0-5.0,"{""Q0"":""5. ¿Con qué frecuencia meditas?""}","{""Q0"":"" Muy a menudo""}",5
+,15012,CRS_06,survey-multi-choice-vertical,6,62385,0.0-6.0,"{""Q0"":""6. ¿Con qué frecuencia experimenta situaciones en las que tiene la sensación de que Dios o algo divino interviene en su vida?""}","{""Q0"":"" Nunca""}",1
+,104371,CRS_07,survey-multi-choice-vertical,7,166758,0.0-7.0,"{""Q0"":""7. ¿Con qué frecuencia experimenta situaciones en las que tiene la sensación de estar en una con todas?""}","{""Q0"":"" Ocasionalmente""}",3
+,7243,CRS_08,survey-multi-choice-vertical,8,174003,0.0-8.0,"{""Q0"":""8. ¿Qué tan interesado está en aprender más sobre temas religiosos?""}","{""Q0"":"" Mucho""}",4
+,4709,CRS_09,survey-multi-choice-vertical,9,178713,0.0-9.0,"{""Q0"":""9. ¿Hasta qué punto crees en una vida futura? inmortalidad del alma, resurrección de los muertos o reencarnación?""}","{""Q0"":"" Nada""}",1
+,3480,CRS_10,survey-multi-choice-vertical,10,182196,0.0-10.0,"{""Q0"":""10. ¿Qué tan importante es participar en los servicios religiosos?""}","{""Q0"":"" Nada""}",1
+,12520,CRS_11,survey-multi-choice-vertical,11,194719,0.0-11.0,"{""Q0"":""11. ¿Qué tan importante es la oración personal para ti?""}","{""Q0"":"" Algo""}",3
+,3914,CRS_12,survey-multi-choice-vertical,12,198636,0.0-12.0,"{""Q0"":""12. ¿Qué tan importante es la meditación para ti?""}","{""Q0"":"" Demasiado""}",5
+,5907,CRS_13,survey-multi-choice-vertical,13,204545,0.0-13.0,"{""Q0"":""13. ¿Con qué frecuencia experimentas situaciones en las que tienes la sensación de que Dios o algo divino quiere comunicarte o revelarte algo?""}","{""Q0"":"" Nunca""}",1
+,13219,CRS_14,survey-multi-choice-vertical,14,217767,0.0-14.0,"{""Q0"":""14. ¿Con qué frecuencia experimenta situaciones en las que tiene la sensación de ser tocado por un poder divino?""}","{""Q0"":"" Nunca""}",1
+,8711,CRS_15,survey-multi-choice-vertical,15,226480,0.0-15.0,"{""Q0"":""15. ¿Con qué frecuencia se mantiene informado sobre cuestiones religiosas a través de la radio, la televisión, internet, periódicos o libros?""}","{""Q0"":"" Ocasionalmente""}",3
+,5323,CRS_16,survey-multi-choice-vertical,16,231807,0.0-16.0,"{""Q0"":""16. En tu opinión, ¿qué tan probable es que realmente exista un poder superior?""}","{""Q0"":"" Nada""}",1
+,5038,CRS_17,survey-multi-choice-vertical,17,236848,0.0-17.0,"{""Q0"":""17. ¿Qué tan importante es para usted estar conectado a una comunidad religiosa?""}","{""Q0"":"" Nada""}",1
+,6717,CRS_18,survey-multi-choice-vertical,18,243567,0.0-18.0,"{""Q0"":""18. ¿Con qué frecuencia rezas espontáneamente cuando te inspiras en situaciones cotidianas?""}","{""Q0"":"" Rara vez""}",2
+,14164,CRS_19,survey-multi-choice-vertical,19,257732,0.0-19.0,"{""Q0"":""19. ¿Con qué frecuencia intentas conectarte a lo divino espontáneamente cuando te inspiras en situaciones cotidianas?""}","{""Q0"":"" Nunca""}",1
+,8786,CRS_20,survey-multi-choice-vertical,20,266519,0.0-20.0,"{""Q0"":""20. ¿Con qué frecuencia experimenta situaciones en las que tiene la sensación de que Dios o algo divino está presente?""}","{""Q0"":"" Nunca""}",1
+,,CRS_Intelectual_DIRd,,,,,,,3.666666667
+,,CRS_Ideologica_DIRd,,,,,,,1
+,,CRS_PracticaPublica_DIRd,,,,,,,1
+,,CRS_PracticaPrivada_DIRd,,,,,,,3
+,,CRS_ExperienciaReligiosa_DIRd,,,,,,,1.4
+,,CRS_DIRt,,,,,,,2.1

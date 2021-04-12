@@ -1,0 +1,24 @@
+view_history,rt,trialid,trial_type,trial_index,time_elapsed,internal_node_id,stimulus,responses,correction
+"[{""page_index"":0,""viewing_time"":2460}]",2460,Instructions,instructions,0,2463,0.0-0.0,,,
+,3011,SASS_01,survey-multi-choice-vertical,1,5482,0.0-1.0,"{""Q0"":""1. ¿Tiene usted algún trabajo?""}","{""Q0"":"" Si""}",0
+,6161,SASS_02,survey-multi-choice-vertical,2,11651,0.0-2.0-0.0,"{""Q0"":""2. ¿Qué tan interesado está en sus actividades laborales?""}","{""Q0"":"" Mucho""}",3
+,4701,SASS_04,survey-multi-choice-vertical,3,16359,0.0-4.0,"{""Q0"":""3. Realiza estas actividades, con: ""}","{""Q0"":"" Algo de gozo""}",2
+,5024,SASS_05,survey-multi-choice-vertical,4,21391,0.0-5.0,"{""Q0"":""4. ¿Está interesado en pasatiempos/ocio?""}","{""Q0"":"" Nada""}",0
+,9532,SASS_06,survey-multi-choice-vertical,5,30929,0.0-6.0,"{""Q0"":""5. La calidad de tu tiempo libre es:""}","{""Q0"":"" Muy buena""}",3
+,4249,SASS_07,survey-multi-choice-vertical,6,35185,0.0-7.0,"{""Q0"":""6. ¿Con qué frecuencia usted busca contacto con los miembros de su familia? (Cónyuges, Hijos, Padres, etc.)""}","{""Q0"":"" Nunca""}",0
+,3395,SASS_08,survey-multi-choice-vertical,7,38586,0.0-8.0,"{""Q0"":""7. El estado de relaciones de su familia es:""}","{""Q0"":"" Insatisfactorio""}",0
+,5207,SASS_09,survey-multi-choice-vertical,8,43799,0.0-9.0,"{""Q0"":""8. Fuera de su familia, tiene relaciones con:""}","{""Q0"":"" Pocas personas""}",1
+,5688,SASS_10,survey-multi-choice-vertical,9,49494,0.0-10.0,"{""Q0"":""9. Intenta formar relaciones con otras personas:""}","{""Q0"":"" Pasivamente""}",0
+,3796,SASS_11,survey-multi-choice-vertical,10,53297,0.0-11.0,"{""Q0"":""10. ¿En general, cómo valora sus relaciones con otras personas?""}","{""Q0"":"" Buena""}",2
+,6152,SASS_12,survey-multi-choice-vertical,11,59455,0.0-12.0,"{""Q0"":""11. ¿Qué valor le otorga a sus relaciones con otras personas?""}","{""Q0"":"" Gran valor""}",3
+,5336,SASS_13,survey-multi-choice-vertical,12,64798,0.0-13.0,"{""Q0"":""12. ¿Qué tan a menudo las personas en su círculo social buscan tomar contacto con usted?""}","{""Q0"":"" Muy a menudo""}",3
+,5226,SASS_14,survey-multi-choice-vertical,13,70031,0.0-14.0,"{""Q0"":""13. ¿Se preocupa de las normas sociales, las buenas maneras, la cortesía, etc.? ""}","{""Q0"":"" Siempre""}",3
+,5648,SASS_15,survey-multi-choice-vertical,14,75686,0.0-15.0,"{""Q0"":""14. ¿Hasta qué punto está usted involucrado en la vida comunitaria? (Club, Junta de vecinos, sede vecinal, iglesia, centro de apoderados, centro comunitario, etc.)""}","{""Q0"":"" Para nada""}",0
+,6101,SASS_16,survey-multi-choice-vertical,15,81793,0.0-16.0,"{""Q0"":""15. ¿Le gusta buscar información acerca de cosas, situaciones, y personas para mejorar su comprensión de ellos?""}","{""Q0"":"" Moderadamente""}",2
+,4361,SASS_17,survey-multi-choice-vertical,16,86160,0.0-17.0,"{""Q0"":""16. ¿Está interesado en información científica, técnica o cultural?""}","{""Q0"":"" Moderadamente""}",2
+,3968,SASS_18,survey-multi-choice-vertical,17,90134,0.0-18.0,"{""Q0"":""17. ¿Con que frecuencia encuentra dificultad para expresar su opinión a las personas?""}","{""Q0"":"" A veces""}",2
+,4644,SASS_19,survey-multi-choice-vertical,18,94784,0.0-19.0,"{""Q0"":""18. ¿ Con qué frecuencia se siente rechazado/a o excluido/a de su círculo?""}","{""Q0"":"" Nunca""}",3
+,4541,SASS_20,survey-multi-choice-vertical,19,99332,0.0-20.0,"{""Q0"":""19. ¿Qué tan importante considera su apariencia física?""}","{""Q0"":"" Moderadamente""}",2
+,8605,SASS_21,survey-multi-choice-vertical,20,107944,0.0-21.0,"{""Q0"":""20. ¿En qué grado tiene dificultades para manejar sus recursos e ingresos económicos?""}","{""Q0"":"" Nunca""}",3
+,4532,SASS_22,survey-multi-choice-vertical,21,112483,0.0-22.0,"{""Q0"":""21. ¿Se siente capaz de organizar su entorno de acuerdo a sus deseos y necesidades?""}","{""Q0"":"" Muchísimo""}",3
+,,SASS_DIRt,,,,,,,37

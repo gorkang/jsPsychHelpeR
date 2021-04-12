@@ -1,0 +1,48 @@
+﻿view_history,rt,trialid,trial_type,trial_index,time_elapsed,internal_node_id,stimulus,responses,correction,inverse
+"[{""page_index"":0,""viewing_time"":52577}]",52579,Instructions,instructions,0,52580,0.0-0.0,,,,
+,15682.87,REI40_17,html-slider-response,1,68268,0.0-1.0,"{""Q0"":""generalmente usar la lógica me sirve para resolver mis problemas.""}","{""Q0"":""2""}",2,4
+,5488.725,REI40_28,html-slider-response,2,73758,0.0-2.0,"{""Q0"":""No me gusta tener que pensar mucho.""}","{""Q0"":""4""}",4,2
+,2990.22,REI40_11,html-slider-response,3,76750,0.0-3.0,"{""Q0"":""Disfruto resolviendo problemas que requieren pensar mucho.""}","{""Q0"":""4""}",4,2
+,2998.075,REI40_37,html-slider-response,4,79749,0.0-4.0,"{""Q0"":""Casi nunca me equivoco cuando escucho mis sentimientos más profundos para encontrar una respuesta.""}","{""Q0"":""2""}",2,4
+,2083.3,REI40_36,html-slider-response,5,81835,0.0-5.0,"{""Q0"":""Pensar mucho y por un tiempo prolongado sobre algo me da poca satisfacción.""}","{""Q0"":""2""}",2,4
+,1886.75,REI40_23,html-slider-response,6,83724,0.0-6.0,"{""Q0"":""No me gustan las situaciones en las cuales tengo que confiar en mi intuición.""}","{""Q0"":""1""}",1,1
+,2747.8,REI40_33,html-slider-response,7,86473,0.0-7.0,"{""Q0"":""Generalmente mis intuiciones me sirven para resolver mis problemas.""}","{""Q0"":""2""}",2,2
+,2141.64,REI40_06,html-slider-response,8,88617,0.0-8.0,"{""Q0"":""Cuando se trata de confiar en la gente, usualmente me baso en mis corazonadas.""}","{""Q0"":""2""}",2,2
+,2223.095,REI40_03,html-slider-response,9,90842,0.0-9.0,"{""Q0"":""Prefiero los problemas complejos antes que los simples.""}","{""Q0"":""2""}",2,4
+,2404.775,REI40_04,html-slider-response,10,93249,0.0-10.0,"{""Q0"":""Generalmente, no dependo de mis sentimientos para tomar decisiones.""}","{""Q0"":""4""}",4,2
+,2287.265,REI40_30,html-slider-response,11,95538,0.0-11.0,"{""Q0"":""No soy muy bueno resolviendo problemas que requieren un análisis lógico minucioso.""}","{""Q0"":""4""}",4,2
+,2310.485,REI40_19,html-slider-response,12,97851,0.0-12.0,"{""Q0"":""Generalmente, puedo sentir cuando una persona está equivocada o no a pesar de no poder explicar cómo lo sé.""}","{""Q0"":""1""}",1,5
+,2435.465,REI40_24,html-slider-response,13,100289,0.0-13.0,"{""Q0"":""Trato de evitar situaciones que requieren pensar en profundidad sobre algo.""}","{""Q0"":""2""}",2,2
+,2841.075,REI40_09,html-slider-response,14,103132,0.0-14.0,"{""Q0"":""No soy una persona que piense de manera muy analítica.""}","{""Q0"":""1""}",1,1
+,2952.26,REI40_22,html-slider-response,15,106086,0.0-15.0,"{""Q0"":""Razonar las cosas cuidadosamente, no es uno de mis puntos fuertes.""}","{""Q0"":""2""}",2,2
+,3766.62,REI40_25,html-slider-response,16,109854,0.0-16.0,"{""Q0"":""Confío en mis sentimientos iniciales sobre la gente.""}","{""Q0"":""2""}",2,2
+,4623.75,REI40_40,html-slider-response,17,114480,0.0-17.0,"{""Q0"":""Me gustaría mucho aprender nuevas formas de pensar.""}","{""Q0"":""2""}",2,2
+,2420.05,REI40_16,html-slider-response,18,116902,0.0-18.0,"{""Q0"":""No quisiera depender de alguien que se describa a sí mismo como intuitivo.""}","{""Q0"":""2""}",2,2
+,2681.72,REI40_01,html-slider-response,19,119585,0.0-19.0,"{""Q0"":""No soy tan bueno/a resolviendo problemas complicados.""}","{""Q0"":""4""}",4,2
+,3783.49,REI40_14,html-slider-response,20,123370,0.0-20.0,"{""Q0"":""Usualmente tengo razones claras y explicables para mis decisiones.""}","{""Q0"":""4""}",4,4
+,2252.27,REI40_27,html-slider-response,21,125625,0.0-21.0,"{""Q0"":""Pienso que no es una buena idea confiar en las propias intuiciones para tomar decisiones importantes.""}","{""Q0"":""2""}",2,2
+,2149.815,REI40_35,html-slider-response,22,127776,0.0-22.0,"{""Q0"":""Tiendo a usar mi corazón como guía para mis acciones.""}","{""Q0"":""2""}",2,2
+,2644.845,REI40_07,html-slider-response,23,130423,0.0-23.0,"{""Q0"":""Pensar no es para mi una actividad agradable.""}","{""Q0"":""4""}",4,4
+,3053.41,REI40_12,html-slider-response,24,133479,0.0-24.0,"{""Q0"":""Creo que es una tontería tomar decisiones basadas en los sentimientos.""}","{""Q0"":""4""}",4,4
+,2864.085,REI40_18,html-slider-response,25,136345,0.0-25.0,"{""Q0"":""Disfruto de los desafíos intelectuales.""}","{""Q0"":""4""}",4,4
+,2470.53,REI40_15,html-slider-response,26,138817,0.0-26.0,"{""Q0"":""Para mí es suficiente conocer la respuesta sin tener que entender el razonamiento detrás.""}","{""Q0"":""4""}",4,2
+,3105.32,REI40_08,html-slider-response,27,141924,0.0-27.0,"{""Q0"":""Me gusta confiar en mis primeras impresiones.""}","{""Q0"":""4""}",4,4
+,2885.955,REI40_21,html-slider-response,28,144812,0.0-28.0,"{""Q0"":""Probablemente, mis juicios apresurados no son tan buenos como los de la mayoría de la gente.""}","{""Q0"":""1""}",1,5
+,5248.285,REI40_02,html-slider-response,29,150062,0.0-29.0,"{""Q0"":""Si me basara en mis corazonadas, me equivocaría seguido.""}","{""Q0"":""2""}",2,4
+,2558.385,REI40_32,html-slider-response,30,152623,0.0-30.0,"{""Q0"":""Disfruto pensando en términos abstractos.""}","{""Q0"":""2""}",2,2
+,3097.38,REI40_39,html-slider-response,31,155722,0.0-31.0,"{""Q0"":""La intuición puede ser una forma útil para resolver problemas.""}","{""Q0"":""2""}",2,2
+,2542.815,REI40_05,html-slider-response,32,158267,0.0-32.0,"{""Q0"":""No tengo problema en pensar las cosas con claridad.""}","{""Q0"":""2""}",2,4
+,2366.56,REI40_13,html-slider-response,33,160634,0.0-33.0,"{""Q0"":""Sospecho que mis corazonadas a veces son inadecuadas y otras veces adecuadas.""}","{""Q0"":""2""}",2,4
+,2463.09,REI40_31,html-slider-response,34,163099,0.0-34.0,"{""Q0"":""Creo que hay veces en que uno debería confiar en su intuición.""}","{""Q0"":""2""}",2,2
+,2210.25,REI40_26,html-slider-response,35,165311,0.0-35.0,"{""Q0"":""Pienso de manera lógica.""}","{""Q0"":""2""}",2,4
+,2783.005,REI40_29,html-slider-response,36,168096,0.0-36.0,"{""Q0"":""No tengo muy buena intuición.""}","{""Q0"":""2""}",2,2
+,2440.495,REI40_10,html-slider-response,37,170538,0.0-37.0,"{""Q0"":""Yo confío en mis corazonadas.""}","{""Q0"":""2""}",2,2
+,2842.155,REI40_38,html-slider-response,38,173382,0.0-38.0,"{""Q0"":""Soy mucho mejor que la mayoría de la gente para resolver las cosas de forma lógica.""}","{""Q0"":""4""}",4,2
+,2317.63,REI40_20,html-slider-response,39,175702,0.0-39.0,"{""Q0"":""Frecuentemente sigo mi instinto cuando decido qué hacer.""}","{""Q0"":""4""}",4,4
+,3519.44,REI40_34,html-slider-response,40,179223,0.0-40.0,"{""Q0"":""No razono bajo presión.""}","{""Q0"":""4""}",4,2
+,,REI40_RationalAbility_DIRd,,,,,,,,2.9
+,,REI40_RationalEngagement_DIRd,,,,,,,,3.5
+,,REI40_ExperientialAbility_DIRd,,,,,,,,2.4
+,,REI40_ExperiencialEngagement_DIRd,,,,,,,,2.4
+,,REI40_Rational_DIRd,,,,,,,,3.2
+,,REI40_Experiential_DIRd,,,,,,,,2.4

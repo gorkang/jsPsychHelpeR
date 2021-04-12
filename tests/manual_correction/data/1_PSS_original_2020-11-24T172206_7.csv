@@ -1,0 +1,17 @@
+﻿view_history,rt,trialid,trial_type,trial_index,time_elapsed,internal_node_id,stimulus,responses,correction,inverse
+"[{""page_index"":0,""viewing_time"":1073}]",1074,Instructions,instructions,0,1077,0.0-0.0,,,,
+,6792,PSS_01,survey-multi-choice-horizontal,1,7880,0.0-1.0,"{""Q0"":""1. En el último mes, ¿con qué frecuencia ha estado afectado por algo que ha ocurrido inesperadamente?""}","{""Q0"":""Muy a menudo""}",4,4
+,5304,PSS_02,survey-multi-choice-horizontal,2,13193,0.0-2.0,"{""Q0"":""2. En el último mes, ¿con qué frecuencia se ha sentido incapaz de controlar las cosas importantes en su vida?""}","{""Q0"":""Casi nunca""}",1,1
+,3746,PSS_03,survey-multi-choice-horizontal,3,16946,0.0-3.0,"{""Q0"":""3. En el último mes, ¿con qué frecuencia se ha sentido nervioso o estresado?""}","{""Q0"":""Muy a menudo""}",4,4
+,8092,PSS_04,survey-multi-choice-horizontal,4,25047,0.0-4.0,"{""Q0"":""4. En el último mes, ¿con qué frecuencia ha manejado con éxito los pequeños problemas irritantes de la vida?""}","{""Q0"":""De vez en cuando""}",2,2
+,4893,PSS_05,survey-multi-choice-horizontal,5,29949,0.0-5.0,"{""Q0"":""5. En el último mes, ¿con qué frecuencia ha sentido que ha afrontado efectivamente los cambios importantes que han estado ocurriendo en su vida?""}","{""Q0"":""Muy a menudo""}",4,0
+,3866,PSS_06,survey-multi-choice-horizontal,6,33822,0.0-6.0,"{""Q0"":""6. En el último mes, ¿con qué frecuencia ha estado seguro sobre su capacidad para manejar sus problemas personales?""}","{""Q0"":""Muy a menudo""}",4,0
+,5176,PSS_07,survey-multi-choice-horizontal,7,39006,0.0-7.0,"{""Q0"":""7. En el último mes, ¿con qué frecuencia ha sentido que las cosas le van bien?""}","{""Q0"":""De vez en cuando""}",2,2
+,6130,PSS_08,survey-multi-choice-horizontal,8,45144,0.0-8.0,"{""Q0"":""8. En el último mes, ¿con qué frecuencia ha sentido que no podía afrontar todas las cosas que tenía que hacer?""}","{""Q0"":""Casi nunca""}",1,1
+,5306,PSS_09,survey-multi-choice-horizontal,9,50458,0.0-9.0,"{""Q0"":""9. En el último mes, ¿con qué frecuencia ha podido controlar las dificultades de su vida?""}","{""Q0"":""A menudo""}",3,1
+,7681,PSS_10,survey-multi-choice-horizontal,10,58147,0.0-10.0,"{""Q0"":""10. En el último mes, ¿con qué frecuencia se ha sentido al control de todo?""}","{""Q0"":""Casi nunca""}",1,3
+,6624,PSS_11,survey-multi-choice-horizontal,11,64779,0.0-11.0,"{""Q0"":""11. En el último mes, ¿con qué frecuencia ha estado enfadado porque las cosas que le han ocurrido estaban fuera de su control?""}","{""Q0"":""Casi nunca""}",1,1
+,5064,PSS_12,survey-multi-choice-horizontal,12,69851,0.0-12.0,"{""Q0"":""12. En el último mes, ¿con qué frecuencia ha pensado sobre las cosas que le quedan por lograr?""}","{""Q0"":""A menudo""}",3,3
+,11587,PSS_13,survey-multi-choice-horizontal,13,81445,0.0-13.0,"{""Q0"":""13. En el último mes, ¿con qué frecuencia ha podido controlar la forma de pasar el tiempo?""}","{""Q0"":""Casi nunca""}",1,3
+,7399,PSS_14,survey-multi-choice-horizontal,14,88852,0.0-14.0,"{""Q0"":""14. En el último mes, ¿con qué frecuencia ha sentido que las dificultades se acumulan tanto que no puede superarlas?""}","{""Q0"":""A menudo""}",3,3
+,,PSS_DIRt,,,,,,,,28

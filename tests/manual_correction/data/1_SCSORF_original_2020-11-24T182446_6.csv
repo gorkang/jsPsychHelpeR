@@ -1,0 +1,13 @@
+﻿view_history,rt,trialid,trial_type,trial_index,time_elapsed,internal_node_id,stimulus,responses,correction
+"[{""page_index"":0,""viewing_time"":1530}]",1531,Instructions,instructions,0,1533,0.0-0.0,,,
+,3005,SCSORF_01,survey-multi-choice-horizontal,1,4545,0.0-1.0,"{""Q0"":""1. Mi fe religiosa es extremadamente importante para mí.""}","{""Q0"":""Totalmente en desacuerdo""}",1
+,3453,SCSORF_02,survey-multi-choice-horizontal,2,8003,0.0-2.0,"{""Q0"":""2. Rezo a diario.""}","{""Q0"":""Totalmente en desacuerdo""}",1
+,4146,SCSORF_03,survey-multi-choice-horizontal,3,12154,0.0-3.0,"{""Q0"":""3. Miro a mi fe como una fuente de inspiración.""}","{""Q0"":""Totalmente en desacuerdo""}",1
+,4000,SCSORF_04,survey-multi-choice-horizontal,4,16158,0.0-4.0,"{""Q0"":""4. Considero que mi fe proporciona significado y propósito en mi vida.""}","{""Q0"":""Totalmente en desacuerdo""}",1
+,8172,SCSORF_05,survey-multi-choice-horizontal,5,24335,0.0-5.0,"{""Q0"":""5. Me considero activo(a) en mi fe o iglesia.""}","{""Q0"":""Totalmente en desacuerdo""}",1
+,5213,SCSORF_06,survey-multi-choice-horizontal,6,29551,0.0-6.0,"{""Q0"":""6. Mi fe es una parte importante de lo que soy como persona.""}","{""Q0"":""Totalmente en desacuerdo""}",1
+,2671,SCSORF_07,survey-multi-choice-horizontal,7,32228,0.0-7.0,"{""Q0"":""7. Mi relación con Dios es extremadamente importante para mí.""}","{""Q0"":""Totalmente en desacuerdo""}",1
+,19780,SCSORF_08,survey-multi-choice-horizontal,8,52012,0.0-8.0,"{""Q0"":""8. Me gusta estar cerca de otros que comparten mi fe.""}","{""Q0"":""Totalmente en desacuerdo""}",1
+,3091,SCSORF_09,survey-multi-choice-horizontal,9,55110,0.0-9.0,"{""Q0"":""9. Veo mi fe como una fuente de consuelo.""}","{""Q0"":""Totalmente en desacuerdo""}",1
+,3249,SCSORF_10,survey-multi-choice-horizontal,10,58364,0.0-10.0,"{""Q0"":""10. Mi fe impacta muchas de mis decisiones.""}","{""Q0"":""Totalmente en desacuerdo""}",1
+,,SCSORF_DIRt,,,,,,,10

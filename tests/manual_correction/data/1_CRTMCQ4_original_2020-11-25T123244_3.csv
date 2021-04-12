@@ -1,0 +1,11 @@
+﻿view_history,rt,trialid,trial_type,trial_index,time_elapsed,internal_node_id,stimulus,responses,reflective,intuitive
+"[{""page_index"":0,""viewing_time"":7724}]",7725,Instructions,instructions,0,7726,0.0-0.0,,,,
+,14391,CRTMCQ4_01,survey-multi-choice-vertical,1,22122,0.0-1.0,"{""Q0"":""Un bate y una pelota cuestan  $1.100 en total. El bate cuesta $1.000 más que la pelota ¿Cuánto cuesta la pelota? ""}","{""Q0"":"" 100 pesos""}",0,1
+,7669,CRTMCQ4_02,survey-multi-choice-vertical,2,29793,0.0-2.0,"{""Q0"":""Si 5 máquinas se demoran 5 minutos en hacer 5 audífonos ¿Cuánto tiempo se demorarían 100 máquinas en hacer 100 audífonos?""}","{""Q0"":"" 5 minutos""}",1,0
+,41580,CRTMCQ4_03,survey-multi-choice-vertical,3,71375,0.0-3.0,"{""Q0"":""Parte de la superficie de un lago está cubierta con hojas de lirio. Esta parte, se dobla en tamaño cada día. Si las hojas de lirio demoran 48 días en cubrir el lago completo ¿Cuántos días tardarían en cubrir la mitad del lago?""}","{""Q0"":"" 12 días""}",0,0
+,50924,CRTMCQ4_04,survey-multi-choice-vertical,4,122302,0.0-4.0,"{""Q0"":""Si José puede tomar un barril de agua en 6 días y María puede tomar un barril de agua en 12 días ¿Cuánto se demorarían ambos en tomar un barril de agua juntos?""}","{""Q0"":"" 9 días""}",0,1
+,7012,CRTMCQ4_05,survey-multi-choice-vertical,5,129316,0.0-5.0,"{""Q0"":""Pedro recibió la quinceava nota más alta y la quinceava nota más baja en su clase ¿Cuántos estudiantes hay en su clase?""}","{""Q0"":"" 29 estudiantes""}",1,0
+,23523,CRTMCQ4_06,survey-multi-choice-vertical,6,152841,0.0-6.0,"{""Q0"":""Un hombre compra un cerdo a $60.000, lo vende a $70.000, lo compra de nuevo por $80.000, y lo vuelve a vender finalmente por $90.000 ¿Cuánta plata ha ganado?""}","{""Q0"":"" $10.000""}",0,1
+,68360,CRTMCQ4_07,survey-multi-choice-vertical,7,221204,0.0-7.0,"{""Q0"":""Simón decide invertir $8.000.000 en el mercado de acciones un día a inicios de 2008. Seis meses después de haber invertido, el 17 de julio, las acciones que había comprado bajaron 50%. Afortunadamente para Simón, desde el 17 de julio hasta el 17 de octubre, las acciones que compró subieron 75%. En este punto, Simón:""}","{""Q0"":"" ha perdido dinero.""}",1,0
+,,CRTMCQ4_Reflectiveness_DIRd,,,,,,,,3
+,,CRTMCQ4_Intuitiveness_DIRd,,,,,,,,3

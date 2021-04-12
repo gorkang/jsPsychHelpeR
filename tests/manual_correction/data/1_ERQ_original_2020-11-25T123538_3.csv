@@ -1,0 +1,15 @@
+﻿view_history,rt,trialid,trial_type,trial_index,time_elapsed,internal_node_id,stimulus,responses,correction
+"[{""page_index"":0,""viewing_time"":10621}]",10622,Instructions,instructions,0,10623,0.0-0.0,,,
+,9539.515,ERQ_01,html-slider-response,1,20165,0.0-1.0,"{""Q0"":""1. Cuando quiero sentir una emoción más positiva (como la alegría o la diversión), cambio lo que estoy pensando.""}","{""Q0"":""6""}",6
+,8224.93,ERQ_02,html-slider-response,2,28391,0.0-2.0,"{""Q0"":""2. Mantengo mis emociones para mí mismo.""}","{""Q0"":""5""}",5
+,13340.37,ERQ_03,html-slider-response,3,41733,0.0-3.0,"{""Q0"":""3. Cuando quiero sentir una emoción menos negativa (como tristeza o enojo), cambio lo que estoy pensando.""}","{""Q0"":""5""}",5
+,8583.615,ERQ_04,html-slider-response,4,50317,0.0-4.0,"{""Q0"":""4. Cuando siento emociones positivas, tengo cuidado de no expresarlas.""}","{""Q0"":""3""}",3
+,44563.39,ERQ_05,html-slider-response,5,94882,0.0-5.0,"{""Q0"":""5. Cuando me enfrento a una situación estresante, me hago pensar en ello de una manera que me ayuda a mantener la calma.""}","{""Q0"":""6""}",6
+,7051.775,ERQ_06,html-slider-response,6,101935,0.0-6.0,"{""Q0"":""6. Controlo mis emociones al no expresarlas.""}","{""Q0"":""4""}",4
+,16361.695,ERQ_07,html-slider-response,7,118298,0.0-7.0,"{""Q0"":""7. Cuando quiero sentir una emoción más positiva, cambio la forma en que estoy pensando en la situación.""}","{""Q0"":""5""}",5
+,9867.665,ERQ_08,html-slider-response,8,128167,0.0-8.0,"{""Q0"":""8. Controlo mis emociones cambiando la forma en que pienso acerca de la situación en la que estoy.""}","{""Q0"":""5""}",5
+,18475.455,ERQ_09,html-slider-response,9,146643,0.0-9.0,"{""Q0"":""9. Cuando estoy sintiendo emociones negativas, me aseguro de no expresarlas.""}","{""Q0"":""5""}",5
+,26199.48,ERQ_10,html-slider-response,10,172845,0.0-10.0,"{""Q0"":""10. Si quiero sentir una emoción menos negativa, cambio la forma en que pienso en la situación.""}","{""Q0"":""5""}",5
+,,ERQ_ReEvaluacionCognitiva_DIRd,,,,,,,32
+,,ERQ_SupresionEmocional_DIRd,,,,,,,17
+,,ERQ_DIRt,,,,,,,49

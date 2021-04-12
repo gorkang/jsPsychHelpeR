@@ -1,0 +1,13 @@
+﻿view_history,rt,trialid,trial_type,trial_index,time_elapsed,internal_node_id,stimulus,responses,correction,inverse
+"[{""page_index"":0,""viewing_time"":1149}]",1149,Instructions,instructions,0,1152,0.0-0.0,,,,
+,3882,RSS_01,survey-multi-choice-horizontal,1,5041,0.0-1.0,"{""Q0"":""1. Siento que soy una persona digna de aprecio, al menos en igual medida que los demás.""}","{""Q0"":""Muy en desacuerdo""}",1,1
+,2342,RSS_02,survey-multi-choice-horizontal,2,7388,0.0-2.0,"{""Q0"":""2. Creo que tengo un buen número de cualidades.""}","{""Q0"":""Muy en desacuerdo""}",1,1
+,2239,RSS_03,survey-multi-choice-horizontal,3,9632,0.0-3.0,"{""Q0"":""3. En general, me inclino a pensar que soy un fracasado/a.""}","{""Q0"":""Muy en desacuerdo""}",1,4
+,2420,RSS_04,survey-multi-choice-horizontal,4,12057,0.0-4.0,"{""Q0"":""4. Soy capaz de hacer las cosas tan bien como la mayoría de la gente.""}","{""Q0"":""Muy en desacuerdo""}",1,1
+,3491,RSS_05,survey-multi-choice-horizontal,5,15553,0.0-5.0,"{""Q0"":""5. Siento que no tengo muchos motivos para sentirme orgulloso/a de mi.""}","{""Q0"":""Muy en desacuerdo""}",1,4
+,2844,RSS_06,survey-multi-choice-horizontal,6,18402,0.0-6.0,"{""Q0"":""6. Tengo una actitud positiva hacia mí mismo/a.""}","{""Q0"":""Muy en desacuerdo""}",1,1
+,2456,RSS_07,survey-multi-choice-horizontal,7,20863,0.0-7.0,"{""Q0"":""7. En general, estoy satisfecho conmigo mismo/a.""}","{""Q0"":""Muy en desacuerdo""}",1,1
+,2635,RSS_08,survey-multi-choice-horizontal,8,23501,0.0-8.0,"{""Q0"":""8. Desearía valorarme más a mi mismo/a.""}","{""Q0"":""Muy en desacuerdo""}",1,4
+,2363,RSS_09,survey-multi-choice-horizontal,9,25869,0.0-9.0,"{""Q0"":""9. A veces me siento verdaderamente inútil.""}","{""Q0"":""Muy en desacuerdo""}",1,4
+,2473,RSS_10,survey-multi-choice-horizontal,10,28346,0.0-10.0,"{""Q0"":""10. A veces pienso que no soy bueno/a para nada.""}","{""Q0"":""Muy en desacuerdo""}",1,4
+,,RSS_DIRt,,,,,,,,25

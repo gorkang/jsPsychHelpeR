@@ -1,0 +1,23 @@
+﻿view_history,rt,trialid,trial_type,trial_index,time_elapsed,internal_node_id,stimulus,responses,correction
+"[{""page_index"":0,""viewing_time"":1919}]",1921,Instructions,instructions,0,1924,0.0-0.0,,,
+,5302,SRA_01,survey-multi-choice-vertical,1,7237,0.0-1.0,"{""Q0"":""1. He ayudado a sacar el coche de un extraño de la nieve.""}","{""Q0"":"" Nunca""}",0
+,5454,SRA_02,survey-multi-choice-vertical,2,12699,0.0-2.0,"{""Q0"":""2. Le he dado instrucciones a un extraño.""}","{""Q0"":"" Más de una vez""}",2
+,3153,SRA_03,survey-multi-choice-vertical,3,15859,0.0-3.0,"{""Q0"":""3. He hecho cambios por un extraño.""}","{""Q0"":"" Nunca""}",0
+,3736,SRA_04,survey-multi-choice-vertical,4,19602,0.0-4.0,"{""Q0"":""4. He dado dinero a una organización benéfica.""}","{""Q0"":"" Más de una vez""}",2
+,4922,SRA_05,survey-multi-choice-vertical,5,24532,0.0-5.0,"{""Q0"":""5. Le di dinero a un extraño que lo necesitaba (o me lo pidió).""}","{""Q0"":"" Nunca""}",0
+,4662,SRA_06,survey-multi-choice-vertical,6,29200,0.0-6.0,"{""Q0"":""6. He donado artículos o ropa a una organización benéfica.""}","{""Q0"":"" Más de una vez""}",2
+,6381,SRA_07,survey-multi-choice-vertical,7,35590,0.0-7.0,"{""Q0"":""7. He realizado trabajo voluntario para una organización benéfica.""}","{""Q0"":"" Una vez""}",1
+,4399,SRA_08,survey-multi-choice-vertical,8,39997,0.0-8.0,"{""Q0"":""8. He donado sangre.""}","{""Q0"":"" Nunca""}",0
+,5045,SRA_09,survey-multi-choice-vertical,9,45048,0.0-9.0,"{""Q0"":""9. He ayudado a llevar las pertenencias de un extraño (libros, paquetes, etc.).""}","{""Q0"":"" Nunca""}",0
+,4279,SRA_10,survey-multi-choice-vertical,10,49335,0.0-10.0,"{""Q0"":""10. He retrasado un ascensor y mantuve la puerta abierta para un extraño.""}","{""Q0"":"" A menudo""}",3
+,6319,SRA_11,survey-multi-choice-vertical,11,55663,0.0-11.0,"{""Q0"":""11. Permití que alguien se adelantara a mí en una fila (por ejemplo: en un banco, en el supermercado, etc).""}","{""Q0"":"" Más de una vez""}",2
+,4519,SRA_12,survey-multi-choice-vertical,12,60191,0.0-12.0,"{""Q0"":""12. He dado a un extraño un aventón en mi coche.""}","{""Q0"":"" Nunca""}",0
+,8204,SRA_13,survey-multi-choice-vertical,13,68401,0.0-13.0,"{""Q0"":""13. He señalado el error de un empleado (por ejemplo: en un banco, en el supermercado, etc) al cobrar menos por un artículo.""}","{""Q0"":"" Nunca""}",0
+,10930,SRA_14,survey-multi-choice-vertical,14,79339,0.0-14.0,"{""Q0"":""14. Dejé que un vecino a quien no conocía demasiado bien, tomara prestado un artículo de algún valor para mí (por ejemplo: un plato, herramientas, etc).""}","{""Q0"":"" Nunca""}",0
+,7287,SRA_15,survey-multi-choice-vertical,15,86633,0.0-15.0,"{""Q0"":""15. He comprado tarjetas de Navidad \""benéficas\"" deliberadamente porque sabía que era una buena causa.""}","{""Q0"":"" Nunca""}",0
+,7478,SRA_16,survey-multi-choice-vertical,16,94120,0.0-16.0,"{""Q0"":""16. He ayudado a un compañero de clase que no conocía muy bien con una tarea cuando mi conocimiento era mayor que el de él o ella.""}","{""Q0"":"" Nunca""}",0
+,7730,SRA_17,survey-multi-choice-vertical,17,101856,0.0-17.0,"{""Q0"":""17. Antes de que me pidieran, he cuidado voluntariamente las mascotas o los niños de un vecino sin ser pagado por ello.""}","{""Q0"":"" Más de una vez""}",2
+,7489,SRA_18,survey-multi-choice-vertical,18,109354,0.0-18.0,"{""Q0"":""18. Me he ofrecido a ayudar a un extraño discapacitado o anciano a cruzar la calle.""}","{""Q0"":"" Más de una vez""}",2
+,4781,SRA_19,survey-multi-choice-vertical,19,114143,0.0-19.0,"{""Q0"":""19. Le ofrecí mi asiento en un autobús o tren a un extraño que estaba parado.""}","{""Q0"":"" Muy a menudo""}",4
+,5496,SRA_20,survey-multi-choice-vertical,20,119647,0.0-20.0,"{""Q0"":""20. He ayudado a un conocido a mudarse de hogar.""}","{""Q0"":"" Nunca""}",0
+,,SRA_DIRt,,,,,,,20

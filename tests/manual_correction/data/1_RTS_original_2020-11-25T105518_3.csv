@@ -1,0 +1,33 @@
+﻿view_history,rt,trialid,trial_type,trial_index,time_elapsed,internal_node_id,stimulus,responses,correction
+"[{""page_index"":0,""viewing_time"":77483}]",77484,Instructions,instructions,0,77484,0.0-0.0,,,
+,7726,RTS_01,survey-multi-choice-vertical,1,85213,0.0-1.0,"{""Q0"":""1. Los horóscopos tienen razón con demasiada frecuencia para que sea una coincidencia.""}","{""Q0"":"" Falso""}",0
+,9689,RTS_02,survey-multi-choice-vertical,2,94904,0.0-2.0,"{""Q0"":""2. A veces realizo ciertos pequeños rituales para alejarme de las influencias negativas.""}","{""Q0"":"" Verdadero""}",1
+,6046,RTS_03,survey-multi-choice-vertical,3,100952,0.0-3.0,"{""Q0"":""3. He experimentado un estado alterado de conciencia en el que sentí que me volví cósmicamente iluminado.""}","{""Q0"":"" Falso""}",0
+,9251,RTS_04,survey-multi-choice-vertical,4,110205,0.0-4.0,"{""Q0"":""4. En la actualidad, soy muy bueno imaginando y haciendo cosas.""}","{""Q0"":"" Verdadero""}",1
+,7765,RTS_05,survey-multi-choice-vertical,5,117973,0.0-5.0,"{""Q0"":""5. He sentido que había recibido una sabiduría especial, para ser comunicada al resto de la humanidad.""}","{""Q0"":"" Falso""}",0
+,12825,RTS_06,survey-multi-choice-vertical,6,130800,0.0-6.0,"{""Q0"":""6. A veces me he comportado de una manera mucho más impulsiva y/o desinhibida que de costumbre.""}","{""Q0"":"" Falso""}",0
+,30911,RTS_07,survey-multi-choice-vertical,7,161713,0.0-7.0,"{""Q0"":""7. Me fascinan las nuevas ideas, tengan o no un valor práctico.""}","{""Q0"":"" Verdadero""}",1
+,6019,RTS_08,survey-multi-choice-vertical,8,167735,0.0-8.0,"{""Q0"":""8. A veces he sentido una presencia maligna a mi alrededor, aunque no pude verla.""}","{""Q0"":"" Falso""}",0
+,19259,RTS_09,survey-multi-choice-vertical,9,186996,0.0-9.0,"{""Q0"":""9. Mis pensamientos a veces han llegado tan rápido que no podía escribirlos todos lo suficientemente rápido.""}","{""Q0"":"" Falso""}",0
+,8170,RTS_10,survey-multi-choice-vertical,10,195171,0.0-10.0,"{""Q0"":""10. Si ya no pudiera fingir, no sería yo, no sería la misma persona.""}","{""Q0"":"" Falso""}",0
+,11284,RTS_11,survey-multi-choice-vertical,11,206456,0.0-11.0,"{""Q0"":""11. A veces experimento cosas como si fueran doblemente reales.""}","{""Q0"":"" Falso""}",0
+,328129,RTS_12,survey-multi-choice-vertical,12,534587,0.0-12.0,"{""Q0"":""12. A veces es posible para mí estar completamente inmerso en la naturaleza o en el arte y sentir como si todo mi estado de conciencia se hubiera alterado temporalmente de alguna manera.""}","{""Q0"":"" Verdadero""}",1
+,11455,RTS_13,survey-multi-choice-vertical,13,546045,0.0-13.0,"{""Q0"":""13. A menudo tengo un día en que las luces en espacios interiores parecen tan brillantes que me molestan los ojos.""}","{""Q0"":"" Falso""}",0
+,388651,RTS_14,survey-multi-choice-vertical,14,934699,0.0-14.0,"{""Q0"":""14. Estoy convencido de que he tenido al menos una experiencia de telepatía entre otra persona y yo.""}","{""Q0"":"" Falso""}",0
+,132873,RTS_15,survey-multi-choice-vertical,15,1067574,0.0-15.0,"{""Q0"":""15. Estoy convencido de que soy psíquico.""}","{""Q0"":"" Falso""}",0
+,7634,RTS_16,survey-multi-choice-vertical,16,1075210,0.0-16.0,"{""Q0"":""16. He experimentado un estado alterado de conciencia que creo que transformó por completo (de manera positiva) la forma en que me miraba a mí mismo.""}","{""Q0"":"" Falso""}",0
+,18415,RTS_17,survey-multi-choice-vertical,17,1093626,0.0-17.0,"{""Q0"":""17. Estoy convencido de que he tenido un presentimiento sobre el futuro que se hizo realidad y que (creo) no fue solo una coincidencia.""}","{""Q0"":"" Falso""}",0
+,8933,RTS_18,survey-multi-choice-vertical,18,1102562,0.0-18.0,"{""Q0"":""18. Creo que realmente sé lo que algunas personas quieren decir cuando hablan de experiencias místicas.""}","{""Q0"":"" Falso""}",0
+,4756,RTS_19,survey-multi-choice-vertical,19,1107320,0.0-19.0,"{""Q0"":""19. He pasado por momentos en los que los olores parecían más fuertes y abrumadores de lo habitual.""}","{""Q0"":"" Falso""}",0
+,22031,RTS_20,survey-multi-choice-vertical,20,1129353,0.0-20.0,"{""Q0"":""20. Puedo sentir claramente de nuevo (revivir) en mi imaginación cosas tales como: la sensación de una suave brisa, arena cálida bajo los pies descalzos, la suavidad del pelaje, la hierba fresca, el calor del sol y el olor a hierba recién cortada.""}","{""Q0"":"" Falso""}",0
+,6868,RTS_21,survey-multi-choice-vertical,21,1136223,0.0-21.0,"{""Q0"":""21. Una persona debe tratar de comprender sus sueños y dejarse guiar por ellos o recibir advertencias de ellos.""}","{""Q0"":"" Verdadero""}",1
+,32233,RTS_22,survey-multi-choice-vertical,22,1168457,0.0-22.0,"{""Q0"":""22. Mientras escucho mi música favorita, además de sentirme tranquilo, relajado, feliz, etc., a menudo tengo un sentimiento de unidad con la música, o de estar en otro lugar o tiempo, o de recordar vívidamente el pasado. ""}","{""Q0"":"" Verdadero""}",1
+,32413,RTS_23,survey-multi-choice-vertical,23,1200873,0.0-23.0,"{""Q0"":""23. A veces siento de alguna manera la presencia de alguien que no está físicamente allí.""}","{""Q0"":"" Verdadero""}",1
+,11364,RTS_24,survey-multi-choice-vertical,24,1212239,0.0-24.0,"{""Q0"":""24. Estoy convencido de que es posible obtener información sobre los pensamientos, sentimientos o circunstancias de otra persona, de una manera que no depende de la predicción racional o de los canales sensoriales normales.""}","{""Q0"":"" Falso""}",0
+,35726,RTS_25,survey-multi-choice-vertical,25,1247966,0.0-25.0,"{""Q0"":""25. Durante varios días seguidos he tenido una conciencia tan elevada de las imágenes y los sonidos que no puedo ignorarlos.""}","{""Q0"":"" Falso""}",0
+,6967,RTS_26,survey-multi-choice-vertical,26,1254935,0.0-26.0,"{""Q0"":""26. A veces tengo la sensación de ganar o perder energía cuando ciertas personas me miran o me tocan.""}","{""Q0"":"" Falso""}",0
+,8390,RTS_27,survey-multi-choice-vertical,27,1263327,0.0-27.0,"{""Q0"":""27. Ahora que soy mayor, todavía creo de alguna manera en seres como elfos, brujas, duendes, hadas, etc.""}","{""Q0"":"" Verdadero""}",1
+,6847,RTS_28,survey-multi-choice-vertical,28,1270176,0.0-28.0,"{""Q0"":""28. A veces la gente piensa que soy un poco raro porque mis ideas son muy novedosas.""}","{""Q0"":"" Falso""}",0
+,41642,RTS_29,survey-multi-choice-vertical,29,1311820,0.0-29.0,"{""Q0"":""29. Cuando escucho música de órgano u otra música potente, a veces siento como si me elevaran en el aire.""}","{""Q0"":"" Verdadero""}",1
+,,RTS_DIRt,,,,,,,6
+,,RTS_STDt,,,,,,,23.1

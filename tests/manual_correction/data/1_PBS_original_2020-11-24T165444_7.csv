@@ -1,0 +1,36 @@
+view_history,rt,trialid,trial_type,trial_index,time_elapsed,internal_node_id,stimulus,responses,correction,inverse
+"[{""page_index"":0,""viewing_time"":1604}]",1605,Instructions,instructions,0,1608,0.0-0.0,,,,
+,11437,PBS_01,survey-multi-choice-vertical,1,13058,0.0-1.0,"{""Q0"":""1. El alma sigue existiendo aunque el cuerpo pueda morir.""}","{""Q0"":"" No sé / No tengo certeza""}",4,4
+,6558,PBS_02,survey-multi-choice-vertical,2,19628,0.0-2.0,"{""Q0"":""2. Algunos individuos pueden levitar (levantar) objetos a través de fuerzas mentales.""}","{""Q0"":"" Muy en desacuerdo""}",1,1
+,5020,PBS_03,survey-multi-choice-vertical,3,24660,0.0-3.0,"{""Q0"":""3. La magia negra realmente existe.""}","{""Q0"":"" Muy de acuerdo""}",7,7
+,9174,PBS_04,survey-multi-choice-vertical,4,33846,0.0-4.0,"{""Q0"":""4. Los gatos negros traen mala suerte.""}","{""Q0"":"" Moderadamente de acuerdo""}",6,6
+,5574,PBS_05,survey-multi-choice-vertical,5,39430,0.0-5.0,"{""Q0"":""5. Tu mente o alma puede salir del cuerpo y viajar (proyección astral).""}","{""Q0"":"" Muy en desacuerdo""}",1,1
+,7012,PBS_06,survey-multi-choice-vertical,6,46453,0.0-6.0,"{""Q0"":""6. El abominable hombre de las nieves, o pie grande del Tíbet, existe.""}","{""Q0"":"" Muy en desacuerdo""}",1,1
+,3752,PBS_07,survey-multi-choice-vertical,7,50216,0.0-7.0,"{""Q0"":""7. La astrología es una forma precisa de predecir el futuro.""}","{""Q0"":"" Muy en desacuerdo""}",1,1
+,2747,PBS_08,survey-multi-choice-vertical,8,52973,0.0-8.0,"{""Q0"":""8. Existe el diablo.""}","{""Q0"":"" Muy de acuerdo""}",7,7
+,3995,PBS_09,survey-multi-choice-vertical,9,56977,0.0-9.0,"{""Q0"":""9. La telekinesis, mover objetos a través de poderes psíquicos, existe.""}","{""Q0"":"" Muy en desacuerdo""}",1,1
+,2435,PBS_10,survey-multi-choice-vertical,10,59423,0.0-10.0,"{""Q0"":""10. Las brujas existen.""}","{""Q0"":"" Muy de acuerdo""}",7,7
+,2334,PBS_11,survey-multi-choice-vertical,11,61767,0.0-11.0,"{""Q0"":""11. Si quiebras un espejo, tendrás mala suerte.""}","{""Q0"":"" Muy de acuerdo""}",7,7
+,5574,PBS_12,survey-multi-choice-vertical,12,67352,0.0-12.0,"{""Q0"":""12. Durante estados alterados, como el sueño o los trances, el espíritu puede salir del cuerpo.""}","{""Q0"":"" Muy en desacuerdo""}",1,1
+,3551,PBS_13,survey-multi-choice-vertical,13,70913,0.0-13.0,"{""Q0"":""13. El monstruo del lago Ness en Escocia, existe.""}","{""Q0"":"" Muy en desacuerdo""}",1,1
+,3370,PBS_14,survey-multi-choice-vertical,14,74294,0.0-14.0,"{""Q0"":""14. El horóscopo dice el futuro de las personas de forma precisa.""}","{""Q0"":"" Muy en desacuerdo""}",1,1
+,6941,PBS_15,survey-multi-choice-vertical,15,81247,0.0-15.0,"{""Q0"":""15. Creo en Dios""}","{""Q0"":"" Moderadamente de acuerdo""}",6,6
+,5081,PBS_16,survey-multi-choice-vertical,16,86338,0.0-16.0,"{""Q0"":""16. Los pensamientos de una persona pueden influir en el movimiento de un objeto físico.""}","{""Q0"":"" Muy en desacuerdo""}",1,1
+,4195,PBS_17,survey-multi-choice-vertical,17,90544,0.0-17.0,"{""Q0"":""17. A través del uso de pócimas y conjuros, es posible lanzar hechizos sobre las personas.""}","{""Q0"":"" Muy en desacuerdo""}",1,1
+,3953,PBS_18,survey-multi-choice-vertical,18,94508,0.0-18.0,"{""Q0"":""18. El número “13” es de mala suerte.""}","{""Q0"":"" Muy de acuerdo""}",7,7
+,3682,PBS_19,survey-multi-choice-vertical,19,98201,0.0-19.0,"{""Q0"":""19. La reencarnación existe.""}","{""Q0"":"" No sé / No tengo certeza""}",4,4
+,5936,PBS_20,survey-multi-choice-vertical,20,104147,0.0-20.0,"{""Q0"":""20. Hay vida en otros planetas.""}","{""Q0"":"" No sé / No tengo certeza""}",4,4
+,4274,PBS_21,survey-multi-choice-vertical,21,108434,0.0-21.0,"{""Q0"":""21. Algunos psíquicos pueden predecir el futuro de forma precisa.""}","{""Q0"":"" Muy en desacuerdo""}",1,1
+,4184,PBS_22,survey-multi-choice-vertical,22,112630,0.0-22.0,"{""Q0"":""22. Existe un Cielo y un Infierno.""}","{""Q0"":"" Muy de acuerdo""}",7,7
+,4406,PBS_23,survey-multi-choice-vertical,23,117047,0.0-23.0,"{""Q0"":""23. Leer la mente no es posible""}","{""Q0"":"" Muy de acuerdo""}",7,1
+,2555,PBS_24,survey-multi-choice-vertical,24,119612,0.0-24.0,"{""Q0"":""24. Hay casos reales de brujería""}","{""Q0"":"" Muy de acuerdo""}",7,7
+,4710,PBS_25,survey-multi-choice-vertical,25,124332,0.0-25.0,"{""Q0"":""25. Es posible comunicarse con los muertos""}","{""Q0"":"" Moderadamente de acuerdo""}",6,6
+,4780,PBS_26,survey-multi-choice-vertical,26,129122,0.0-26.0,"{""Q0"":""26. Algunas personas tienen la inexplicable habilidad de predecir el futuro.""}","{""Q0"":"" Muy en desacuerdo""}",1,1
+,,PBS_CreenciasReligiosasTradicionales_DIRd,,,,,,,,6
+,,PBS_psi_DIRd,,,,,,,,1
+,,PBS_brujeria_DIRd,,,,,,,,5.5
+,,PBS_supersticion_DIRd,,,,,,,,6.666666667
+,,PBS_espiritismo_DIRd,,,,,,,,3
+,,PBS_FormasVidaExtraordinaria_DIRd,,,,,,,,2
+,,PBS_precognicion_DIRd,,,,,,,,1
+,,PBS_DIRt,,,,,,,,3.538461538

@@ -1,0 +1,29 @@
+﻿view_history,rt,trialid,trial_type,trial_index,time_elapsed,internal_node_id,stimulus,responses,correction
+"[{""page_index"":0,""viewing_time"":1288}]",1289,Instructions,instructions,0,1293,0.0-0.0,,,
+,9007,FDMQ_01,survey-multi-choice-vertical,1,10309,0.0-1.0,"{""Q0"":""1. Me gusta considerar todas las alternativas.""}","{""Q0"":"" A veces es verdad""}",1
+,4534,FDMQ_02,survey-multi-choice-vertical,2,14848,0.0-2.0,"{""Q0"":""2. Intento encontrar las desventajas de cada alternativa.""}","{""Q0"":"" A veces es verdad""}",1
+,6594,FDMQ_03,survey-multi-choice-vertical,3,21451,0.0-3.0,"{""Q0"":""3. Tomo en consideración cuál sería la mejor manera de llevar adelante una decisión.""}","{""Q0"":"" Es verdad para mi""}",2
+,4094,FDMQ_04,survey-multi-choice-vertical,4,25554,0.0-4.0,"{""Q0"":""4. Cuando tomo decisiones me gusta reunir mucha información.""}","{""Q0"":"" Es verdad para mi""}",2
+,3990,FDMQ_05,survey-multi-choice-vertical,5,29550,0.0-5.0,"{""Q0"":""5. Intento ser claro en mis objetivos antes de elegir.""}","{""Q0"":"" Es verdad para mi""}",2
+,3052,FDMQ_06,survey-multi-choice-vertical,6,32608,0.0-6.0,"{""Q0"":""6. Tomo muchas precauciones antes de elegir.""}","{""Q0"":"" Es verdad para mi""}",2
+,7040,FDMQ_07,survey-multi-choice-vertical,7,39653,0.0-7.0,"{""Q0"":""7. Siempre que afronto una decisión difícil, me siento pesimista respecto a poder encontrar una buena solución.""}","{""Q0"":"" Es verdad para mi""}",2
+,5086,FDMQ_08,survey-multi-choice-vertical,8,44745,0.0-8.0,"{""Q0"":""8. Me siento como si estuviera bajo una tremenda presión de tiempo cuando tomo decisiones.""}","{""Q0"":"" Es verdad para mi""}",2
+,33749,FDMQ_09,survey-multi-choice-vertical,9,78500,0.0-9.0,"{""Q0"":""9. La posibilidad de que alguna cosa de poca importancia pudiera salir mal hace que cambie abruptamente mi preferencia.""}","{""Q0"":"" A veces es verdad""}",1
+,5119,FDMQ_10,survey-multi-choice-vertical,10,83624,0.0-10.0,"{""Q0"":""10. No puedo pensar correctamente si tengo que tomar decisiones apresuradas.""}","{""Q0"":"" No es verdad para mi""}",0
+,5611,FDMQ_11,survey-multi-choice-vertical,11,89241,0.0-11.0,"{""Q0"":""11. Después de tomar una decisión, gasto cantidad de tiempo convenciéndome a mí mismo de que era correcta.""}","{""Q0"":"" Es verdad para mi""}",2
+,2653,FDMQ_12,survey-multi-choice-vertical,12,91898,0.0-12.0,"{""Q0"":""12. Evito tomar decisiones.""}","{""Q0"":"" No es verdad para mi""}",0
+,3981,FDMQ_13,survey-multi-choice-vertical,13,95884,0.0-13.0,"{""Q0"":""13. No tomo decisiones a menos que no tenga más remedio.""}","{""Q0"":"" No es verdad para mi""}",0
+,4152,FDMQ_14,survey-multi-choice-vertical,14,100041,0.0-14.0,"{""Q0"":""14. Prefiero dejarles a otros tomar las decisiones.""}","{""Q0"":"" No es verdad para mi""}",0
+,3447,FDMQ_15,survey-multi-choice-vertical,15,103494,0.0-15.0,"{""Q0"":""15. No me gusta asumir la responsabilidad de tomar decisiones.""}","{""Q0"":"" No es verdad para mi""}",0
+,3790,FDMQ_16,survey-multi-choice-vertical,16,107288,0.0-16.0,"{""Q0"":""16. Si una decisión puede ser tomada por otra persona o por mi, dejo que la otra persona la tome.""}","{""Q0"":"" No es verdad para mi""}",0
+,4856,FDMQ_17,survey-multi-choice-vertical,17,112149,0.0-17.0,"{""Q0"":""17. Prefiero que las personas que están mejor informadas decidan por mí.""}","{""Q0"":"" No es verdad para mi""}",0
+,5823,FDMQ_18,survey-multi-choice-vertical,18,117977,0.0-18.0,"{""Q0"":""18. Pierdo cantidad de tiempo en cuestiones triviales de menor importancia antes de llegar a la decisión final.""}","{""Q0"":"" No es verdad para mi""}",0
+,4032,FDMQ_19,survey-multi-choice-vertical,19,122014,0.0-19.0,"{""Q0"":""19. Incluso después de haber tomado una decisión, retraso ponerla en práctica.""}","{""Q0"":"" No es verdad para mi""}",0
+,9062,FDMQ_20,survey-multi-choice-vertical,20,131081,0.0-20.0,"{""Q0"":""20. Cuando tengo que tomar una decisión, espero mucho tiempo antes de empezar a pensar en ello.""}","{""Q0"":"" No es verdad para mi""}",0
+,3921,FDMQ_21,survey-multi-choice-vertical,21,135006,0.0-21.0,"{""Q0"":""21. Retraso tomar decisiones hasta que es demasiado tarde.""}","{""Q0"":"" No es verdad para mi""}",0
+,2964,FDMQ_22,survey-multi-choice-vertical,22,137975,0.0-22.0,"{""Q0"":""22. Aplazo tomar decisiones.""}","{""Q0"":"" No es verdad para mi""}",0
+,,FDMQ_Vigilancia_DIRd,,,,,,,1.666666667
+,,FDMQ_Hipervigilancia_DIRd,,,,,,,1.4
+,,FDMQ_Transferencia_DIRd,,,,,,,0
+,,FDMQ_Procastinacion_DIRd,,,,,,,0
+,,FDMQ_DIRt,,,,,,,0.772727273

@@ -1,0 +1,29 @@
+﻿view_history,rt,trialid,trial_type,trial_index,time_elapsed,internal_node_id,stimulus,responses,correction
+"[{""page_index"":0,""viewing_time"":8200}]",8201,Instructions,instructions,0,8203,0.0-0.0,,,
+,50697,IEC_01,survey-multi-choice-vertical,1,58908,0.0-1.0,"{""Q0"":""1. El que yo llegue a ser un líder depende principalmente de mis habilidades.""}","{""Q0"":"" Ligeramente de acuerdo.""}",4
+,33525,IEC_02,survey-multi-choice-vertical,2,92442,0.0-2.0,"{""Q0"":""2. Mi vida ha sido influenciada en gran medida por eventos inesperados.""}","{""Q0"":"" Ligeramente de acuerdo.""}",4
+,13231,IEC_03,survey-multi-choice-vertical,3,105676,0.0-3.0,"{""Q0"":""3. Yo siento que lo que pasa en mi vida está muy determinado por la gente que tiene poder (padres, jefes, políticos)""}","{""Q0"":"" Ligeramente en desacuerdo.""}",3
+,11083,IEC_04,survey-multi-choice-vertical,4,116762,0.0-4.0,"{""Q0"":""4. El hecho de tener un accidente cuando voy manejando, depende principalmente de mi mismo.""}","{""Q0"":"" Ligeramente en desacuerdo.""}",3
+,8816,IEC_05,survey-multi-choice-vertical,5,125582,0.0-5.0,"{""Q0"":""5. Cuando hago planes, estoy casi seguro de que lo llevaré a cabo.""}","{""Q0"":"" Moderadamente de acuerdo.""}",5
+,114269,IEC_06,survey-multi-choice-vertical,6,239855,0.0-6.0,"{""Q0"":""6. Ciertamente, a veces no puedo evitar tener mala suerte con mis asuntos personales.""}","{""Q0"":"" Ligeramente en desacuerdo.""}",3
+,9842,IEC_07,survey-multi-choice-vertical,7,249701,0.0-7.0,"{""Q0"":""7. Como yo tengo buena suerte, siempre las cosas me salen bien.""}","{""Q0"":"" Ligeramente en desacuerdo.""}",3
+,9429,IEC_08,survey-multi-choice-vertical,8,259134,0.0-8.0,"{""Q0"":""8. A pesar de estar bien capacitado, no conseguiré un buen empleo a menos que alguien influyente me ayude.""}","{""Q0"":"" Ligeramente en desacuerdo.""}",3
+,27362,IEC_09,survey-multi-choice-vertical,9,286502,0.0-9.0,"{""Q0"":""9. La cantidad de amigos que tengo está determinada por mi propia simpatía.""}","{""Q0"":"" Ligeramente de acuerdo.""}",4
+,14656,IEC_10,survey-multi-choice-vertical,10,301162,0.0-10.0,"{""Q0"":""10. He descubierto que si algo va a suceder, ello sucederá independientemente de lo que yo haga.""}","{""Q0"":"" Ligeramente de acuerdo.""}",4
+,12003,IEC_11,survey-multi-choice-vertical,11,313169,0.0-11.0,"{""Q0"":""11. Yo creo que los ricos y políticos controlan mi vida de muchas maneras diferentes.""}","{""Q0"":"" Ligeramente de acuerdo.""}",4
+,22766,IEC_12,survey-multi-choice-vertical,12,335938,0.0-12.0,"{""Q0"":""12. Si tengo un accidente automovilístico ello se debe a mi mala suerte.""}","{""Q0"":"" Moderadamente en desacuerdo.""}",2
+,17809,IEC_13,survey-multi-choice-vertical,13,353751,0.0-13.0,"{""Q0"":""13. La gente como yo tiene muy poca oportunidad de defender sus intereses personales cuando esos intereses entran en conflicto con los grupos poderosos (ricos, políticos).""}","{""Q0"":"" Moderadamente en desacuerdo.""}",2
+,19009,IEC_14,survey-multi-choice-vertical,14,372764,0.0-14.0,"{""Q0"":""14. No siempre es apropiado para mí planear muy por adelantado porque de todas maneras muchas cosas resultan ser asunto de buena o mala suerte.""}","{""Q0"":"" Completamente en desacuerdo.""}",1
+,15468,IEC_15,survey-multi-choice-vertical,15,388236,0.0-15.0,"{""Q0"":""15. En este país, para uno lograr lo que quiere necesariamente tiene que halagar a alguien.""}","{""Q0"":"" Moderadamente en desacuerdo.""}",2
+,8344,IEC_16,survey-multi-choice-vertical,16,396584,0.0-16.0,"{""Q0"":""16. El que yo llegue a ser un líder dependerá de la suerte que yo tenga.""}","{""Q0"":"" Completamente en desacuerdo.""}",1
+,42243,IEC_17,survey-multi-choice-vertical,17,438830,0.0-17.0,"{""Q0"":""17. Yo siento que la gente que tiene algún poder sobre mí (padres, familiares, jefes), trata de decidir lo que sucederá en mi vida.""}","{""Q0"":"" Ligeramente en desacuerdo.""}",3
+,8912,IEC_18,survey-multi-choice-vertical,18,447746,0.0-18.0,"{""Q0"":""18. En la mayoría de los casos yo puedo decidir lo que sucederá en mi vida.""}","{""Q0"":"" Moderadamente de acuerdo.""}",5
+,5892,IEC_19,survey-multi-choice-vertical,19,453642,0.0-19.0,"{""Q0"":""19. Normalmente soy capaz de defender mis intereses personales.""}","{""Q0"":"" Moderadamente de acuerdo.""}",5
+,6325,IEC_20,survey-multi-choice-vertical,20,459970,0.0-20.0,"{""Q0"":""20. Si tengo un accidente cuando voy manejando, toda la culpa es del otro conductor.""}","{""Q0"":"" Completamente en desacuerdo.""}",1
+,28697,IEC_21,survey-multi-choice-vertical,21,488670,0.0-21.0,"{""Q0"":""21. Cuando logro lo que quiero es porque he trabajado mucho en ello.""}","{""Q0"":"" Moderadamente de acuerdo.""}",5
+,46917,IEC_22,survey-multi-choice-vertical,22,535590,0.0-22.0,"{""Q0"":""22. Cuando quiero que mis planes me salgan bien, los preparo de manera que le den en el gusto a la gente que tiene influencia sobre mi (padres, jefes, etc.).""}","{""Q0"":"" Ligeramente en desacuerdo.""}",3
+,24834,IEC_23,survey-multi-choice-vertical,23,560428,0.0-23.0,"{""Q0"":""23. Mi vida está determinada por mis propias acciones.""}","{""Q0"":"" Moderadamente de acuerdo.""}",5
+,8434,IEC_24,survey-multi-choice-vertical,24,568865,0.0-24.0,"{""Q0"":""24. Tener pocos o muchos amigos depende del destino de cada uno.""}","{""Q0"":"" Moderadamente en desacuerdo.""}",2
+,,IEC_Azar_DIRd,,,,,,,20
+,,IEC_OtrosPoderosos_DIRd,,,,,,,21
+,,IEC_Internalidad_DIRd,,,,,,,36

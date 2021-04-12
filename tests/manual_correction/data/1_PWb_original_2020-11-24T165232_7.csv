@@ -1,0 +1,48 @@
+﻿view_history,rt,trialid,trial_type,trial_index,time_elapsed,internal_node_id,stimulus,responses,correction,inverse
+"[{""page_index"":0,""viewing_time"":2104}]",2105,Instructions,instructions,0,2121,0.0-0.0,,,,
+,16517.425,PWb_01,html-slider-response,1,18644,0.0-1.0,"{""Q0"":""1.- Cuando repaso la historia de mi vida estoy contento/a con cómo han resultado las cosas.""}","{""Q0"":""3""}",3,3
+,5959.345,PWb_02,html-slider-response,2,24607,0.0-2.0,"{""Q0"":""2.- A menudo me siento solo/a porque tengo pocos amigos íntimos con quien compartir mis preocupaciones.""}","{""Q0"":""6""}",6,6
+,11536.61,PWb_03,html-slider-response,3,36148,0.0-3.0,"{""Q0"":""3.- No tengo miedo de expresar mis opiniones, incluso cuando son opuestas a las opiniones de la mayoría de la gente.""}","{""Q0"":""6""}",6,6
+,22514.195,PWb_04,html-slider-response,4,58665,0.0-4.0,"{""Q0"":""4.- Me preocupa cómo otra gente evalúa las elecciones que he hecho en mi vida.""}","{""Q0"":""2""}",2,5
+,15999.81,PWb_05,html-slider-response,5,74669,0.0-5.0,"{""Q0"":""5.- Me resulta difícil dirigir mi vida hacia un camino que me satisfaga.""}","{""Q0"":""1""}",1,6
+,5411.225,PWb_06,html-slider-response,6,80085,0.0-6.0,"{""Q0"":""6.- Disfruto haciendo planes para el futuro y trabajar para hacerlos realidad.""}","{""Q0"":""6""}",6,6
+,6114.53,PWb_07,html-slider-response,7,86202,0.0-7.0,"{""Q0"":""7.- En general, me siento seguro/a y positivo/a conmigo mismo/a.""}","{""Q0"":""2""}",2,2
+,5380.92,PWb_08,html-slider-response,8,91586,0.0-8.0,"{""Q0"":""8.- No tengo muchas personas que quieran escucharme cuando necesito hablar.""}","{""Q0"":""6""}",6,1
+,5379.675,PWb_09,html-slider-response,9,96968,0.0-9.0,"{""Q0"":""9.- Tiendo a preocuparme sobre lo que otra gente piensa de mí.""}","{""Q0"":""1""}",1,6
+,7351.075,PWb_10,html-slider-response,10,104322,0.0-10.0,"{""Q0"":""10.- Me juzgo por lo que yo creo que es importante, no por los valores que otros piensan que son importantes.""}","{""Q0"":""4""}",4,4
+,5319.43,PWb_11,html-slider-response,11,109646,0.0-11.0,"{""Q0"":""11.- He sido capaz de construir un hogar y un modo de vida a mi gusto.""}","{""Q0"":""6""}",6,6
+,4987.415,PWb_12,html-slider-response,12,114637,0.0-12.0,"{""Q0"":""12.- Soy una persona activa al realizar los proyectos que propuse para mí mismo/a.""}","{""Q0"":""6""}",6,6
+,6033.665,PWb_13,html-slider-response,13,120673,0.0-13.0,"{""Q0"":""13.- Si tuviera oportunidad, hay muchas cosas de mi mismo/a que cambiaría.""}","{""Q0"":""3""}",3,4
+,4162.265,PWb_14,html-slider-response,14,124838,0.0-14.0,"{""Q0"":""14.- Siento que mis amistades me aportan muchas cosas.""}","{""Q0"":""6""}",6,6
+,6536.405,PWb_15,html-slider-response,15,131377,0.0-15.0,"{""Q0"":""15.- Tiendo a estar influenciado/a por la gente con fuertes convicciones.""}","{""Q0"":""1""}",1,6
+,6608.72,PWb_16,html-slider-response,16,137989,0.0-16.0,"{""Q0"":""16.- En general, siento que soy responsable de la situación en la que vivo.""}","{""Q0"":""4""}",4,4
+,6264.84,PWb_17,html-slider-response,17,144256,0.0-17.0,"{""Q0"":""17.- Me siento bien cuando pienso en lo que he hecho en el pasado y lo que espero hacer en el futuro.""}","{""Q0"":""2""}",2,2
+,10701.485,PWb_18,html-slider-response,18,154960,0.0-18.0,"{""Q0"":""18.- Mis objetivos en la vida han sido más una fuente de satisfacción que de frustración para mí.""}","{""Q0"":""6""}",6,6
+,4173.52,PWb_19,html-slider-response,19,159136,0.0-19.0,"{""Q0"":""19.- Me gusta la mayor parte de los aspectos de mi personalidad.""}","{""Q0"":""4""}",4,4
+,3820.975,PWb_20,html-slider-response,20,162959,0.0-20.0,"{""Q0"":""20.- Me parece que la mayoría de las personas tienen más amigos que yo.""}","{""Q0"":""6""}",6,1
+,9345.295,PWb_21,html-slider-response,21,172307,0.0-21.0,"{""Q0"":""21.- Tengo confianza en mis opiniones incluso si son contrarias al consenso general.""}","{""Q0"":""5""}",5,5
+,5639.845,PWb_22,html-slider-response,22,177951,0.0-22.0,"{""Q0"":""22.- Las demandas de la vida diaria a menudo me deprimen.""}","{""Q0"":""6""}",6,1
+,3901.515,PWb_23,html-slider-response,23,181855,0.0-23.0,"{""Q0"":""23.- Tengo clara la dirección y el objetivo de mi vida.""}","{""Q0"":""6""}",6,6
+,4031.815,PWb_24,html-slider-response,24,185890,0.0-24.0,"{""Q0"":""24.- En general, con el tiempo siento que sigo aprendiendo más sobre mí mismo/a.""}","{""Q0"":""6""}",6,6
+,4925.505,PWb_25,html-slider-response,25,190818,0.0-25.0,"{""Q0"":""25.- En muchos aspectos, me siento decepcionado/a de mis logros en la vida.""}","{""Q0"":""1""}",1,6
+,4957.705,PWb_26,html-slider-response,26,195778,0.0-26.0,"{""Q0"":""26.- No he experimentado muchas relaciones cercanas y de confianza.""}","{""Q0"":""6""}",6,1
+,5580.35,PWb_27,html-slider-response,27,201361,0.0-27.0,"{""Q0"":""27.- Es difícil para mí expresar mis propias opiniones en asuntos polémicos.""}","{""Q0"":""1""}",1,6
+,4384.15,PWb_28,html-slider-response,28,205748,0.0-28.0,"{""Q0"":""28.- Soy bastante bueno/a manejando muchas de mis responsabilidades en la vida diaria.""}","{""Q0"":""6""}",6,6
+,13534.405,PWb_29,html-slider-response,29,219286,0.0-29.0,"{""Q0"":""29.- No tengo claro qué es lo que intento conseguir en la vida.""}","{""Q0"":""1""}",1,6
+,5955.17,PWb_30,html-slider-response,30,225244,0.0-30.0,"{""Q0"":""30.- Hace mucho tiempo que dejé de intentar hacer grandes mejoras o cambios en mi vida.""}","{""Q0"":""1""}",1,6
+,4623.55,PWb_31,html-slider-response,31,229870,0.0-31.0,"{""Q0"":""31.- En su mayor parte, me siento orgulloso/a de quien soy y la vida que llevo.""}","{""Q0"":""4""}",4,4
+,2863.26,PWb_32,html-slider-response,32,232738,0.0-32.0,"{""Q0"":""32.- Sé que puedo confiar en mis amigos, y ellos saben que pueden confiar en mí.""}","{""Q0"":""6""}",6,6
+,5531.38,PWb_33,html-slider-response,33,238272,0.0-33.0,"{""Q0"":""33.- A menudo cambio mis decisiones si mis amigos o mi familia están en desacuerdo.""}","{""Q0"":""1""}",1,6
+,6958.645,PWb_34,html-slider-response,34,245233,0.0-34.0,"{""Q0"":""34.- No quiero intentar nuevas formas de hacer las cosas; mi vida está bien como está.""}","{""Q0"":""3""}",3,4
+,5029.06,PWb_35,html-slider-response,35,250265,0.0-35.0,"{""Q0"":""35.- Pienso que es importante tener nuevas experiencias que desafíen lo que uno piensa sobre si mismo/a y sobre el mundo.""}","{""Q0"":""3""}",3,3
+,7169.89,PWb_36,html-slider-response,36,257439,0.0-36.0,"{""Q0"":""36.- Cuando pienso en ello, realmente con los años no he mejorado mucho como persona.""}","{""Q0"":""2""}",2,5
+,5227.625,PWb_37,html-slider-response,37,262670,0.0-37.0,"{""Q0"":""37.- Tengo la sensación de que con el tiempo me he desarrollado mucho como persona.""}","{""Q0"":""5""}",5,5
+,4155.43,PWb_38,html-slider-response,38,266829,0.0-38.0,"{""Q0"":""38.- Para mí, la vida ha sido un proceso continuo de estudio, cambio y crecimiento.""}","{""Q0"":""6""}",6,6
+,7721.935,PWb_39,html-slider-response,39,274553,0.0-39.0,"{""Q0"":""39.- Si me sintiera infeliz con mi situación de vida daría los pasos más eficaces para cambiarla""}","{""Q0"":""4""}",4,4
+,,PWb_Autoaceptacion_DIRd,,,,,,,,23
+,,PWb_RelacionesPositivas_DIRd,,,,,,,,21
+,,PWb_Autonomia_DIRd,,,,,,,,44
+,,PWb_DominioEntorno_DIRd,,,,,,,,27
+,,PWb_CrecimientoPersonal_DIRd,,,,,,,,35
+,,PWb_PropositoVida_DIRd,,,,,,,,32
+,,PWb_DIRt,,,,,,,,182

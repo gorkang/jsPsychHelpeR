@@ -1,0 +1,33 @@
+﻿view_history,rt,trialid,trial_type,trial_index,time_elapsed,internal_node_id,stimulus,responses,correction,inverse
+"[{""page_index"":0,""viewing_time"":1819}]",1819,Instructions,instructions,0,1819,0.0-0.0,,,,
+,10098,MIS_01,survey-multi-choice-vertical,1,11920,0.0-1.0,"{""Q0"":""1. Algunas personas pueden hacerme consciente de ellos simplemente pensando en mí.""}","{""Q0"":""Falso""}",0,0
+,5089,MIS_02,survey-multi-choice-vertical,2,17012,0.0-2.0,"{""Q0"":""2. He tenido la sensación momentánea de que tal vez no soy humano.""}","{""Q0"":""Falso""}",0,0
+,9694,MIS_03,survey-multi-choice-vertical,3,26707,0.0-3.0,"{""Q0"":""3. A veces he tenido miedo de pisar las grietas en la acera.""}","{""Q0"":""Verdadero""}",1,1
+,4321,MIS_04,survey-multi-choice-vertical,4,31030,0.0-4.0,"{""Q0"":""4. Creo que podría aprender a leer las mentes de otros si yo quisiera.""}","{""Q0"":""Falso""}",0,0
+,68456,MIS_05,survey-multi-choice-vertical,5,99487,0.0-5.0,"{""Q0"":""5. Los horóscopos son correctos con demasiada frecuencia para que sea una coincidencia.""}","{""Q0"":""Falso""}",0,0
+,6806,MIS_06,survey-multi-choice-vertical,6,106295,0.0-6.0,"{""Q0"":""6. Las cosas a veces parecen estar en diferentes lugares cuando llego a casa, a pesar de que nadie ha estado allí.""}","{""Q0"":""Falso""}",0,0
+,5619,MIS_07,survey-multi-choice-vertical,7,111915,0.0-7.0,"{""Q0"":""7. Los números como 13 y 7 no tienen poderes especiales.""}","{""Q0"":""Verdadero""}",1,0
+,7345,MIS_08,survey-multi-choice-vertical,8,119262,0.0-8.0,"{""Q0"":""8. Ocasionalmente tuve la tonta sensación de que alguien en la estación de televisión o la emisora ​​de radio sabía que lo estaba escuchando.""}","{""Q0"":""Falso""}",0,0
+,7736,MIS_09,survey-multi-choice-vertical,9,127000,0.0-9.0,"{""Q0"":""9. Me preocupa que las personas en otros planetas puedan influir en lo que sucede en la tierra""}","{""Q0"":""Verdadero""}",1,1
+,3890,MIS_10,survey-multi-choice-vertical,10,130891,0.0-10.0,"{""Q0"":""10. El gobierno se niega a decirnos la verdad sobre platillos voladores.""}","{""Q0"":""Falso""}",0,0
+,5093,MIS_11,survey-multi-choice-vertical,11,135987,0.0-11.0,"{""Q0"":""11. He sentido que había mensajes para mí en cómo se organizaron las cosas en una vitrina.""}","{""Q0"":""Falso""}",0,0
+,4915,MIS_12,survey-multi-choice-vertical,12,140903,0.0-12.0,"{""Q0"":""12. Nunca he dudado de que mis sueños son los productos de mi propia mente.""}","{""Q0"":""Verdadero""}",1,0
+,3765,MIS_13,survey-multi-choice-vertical,13,144671,0.0-13.0,"{""Q0"":""13. Los amuletos de buena suerte no funcionan.""}","{""Q0"":""Verdadero""}",1,0
+,6314,MIS_14,survey-multi-choice-vertical,14,150986,0.0-14.0,"{""Q0"":""14. He notado sonidos en mis grabaciones o discos que no están allí en otros momentos.""}","{""Q0"":""Falso""}",0,0
+,8722,MIS_15,survey-multi-choice-vertical,15,159709,0.0-15.0,"{""Q0"":""15. Los movimientos de las manos que los extraños hacen parecen influir en mí a veces.""}","{""Q0"":""Falso""}",0,0
+,6650,MIS_16,survey-multi-choice-vertical,16,166363,0.0-16.0,"{""Q0"":""16. Casi nunca sueño con cosas antes de que sucedan.""}","{""Q0"":""Verdadero""}",1,0
+,8325,MIS_17,survey-multi-choice-vertical,17,174691,0.0-17.0,"{""Q0"":""17. He tenido la sensación momentánea de que el lugar de una persona ha sido ocupado por alguien parecido a ella.""}","{""Q0"":""Falso""}",0,0
+,5537,MIS_18,survey-multi-choice-vertical,18,180230,0.0-18.0,"{""Q0"":""18. No es posible dañar a otros simplemente teniendo malos pensamientos sobre ellos.""}","{""Q0"":""Verdadero""}",1,0
+,3833,MIS_19,survey-multi-choice-vertical,19,184063,0.0-19.0,"{""Q0"":""19. A veces he sentido una presencia maligna a mi alrededor, aunque no podía verla.""}","{""Q0"":""Falso""}",0,0
+,80247,MIS_20,survey-multi-choice-vertical,20,264312,0.0-20.0,"{""Q0"":""20. A veces tengo la sensación de ganar o perder energía cuando ciertas personas me miran o me tocan.""}","{""Q0"":""Falso""}",0,0
+,4355,MIS_21,survey-multi-choice-vertical,21,268668,0.0-21.0,"{""Q0"":""21. A veces he tenido el pensamiento pasajero de que los extraños están enamorados de mí.""}","{""Q0"":""Falso""}",0,0
+,14777,MIS_22,survey-multi-choice-vertical,22,283447,0.0-22.0,"{""Q0"":""22. Nunca tuve la sensación de que ciertos pensamientos míos pertenecían (eran) realmente de otra persona.""}","{""Q0"":""Falso""}",0,0
+,7987,MIS_23,survey-multi-choice-vertical,23,291436,0.0-23.0,"{""Q0"":""23. Cuando me presentan a extraños, rara vez me pregunto si los he conocido antes.""}","{""Q0"":""Verdadero""}",1,0
+,5102,MIS_24,survey-multi-choice-vertical,24,296539,0.0-24.0,"{""Q0"":""24. Si la reencarnación fuera cierta, explicaría algunas experiencias inusuales que he tenido.""}","{""Q0"":""Falso""}",0,1
+,5708,MIS_25,survey-multi-choice-vertical,25,302248,0.0-25.0,"{""Q0"":""25. Las personas a menudo se comportan de manera tan extraña que uno se pregunta si son parte de un experimento.""}","{""Q0"":""Falso""}",0,0
+,66823,MIS_26,survey-multi-choice-vertical,26,369074,0.0-26.0,"{""Q0"":""26. A veces realizo ciertos pequeños rituales para alejar las influencias negativas.""}","{""Q0"":""Verdadero""}",1,1
+,5617,MIS_27,survey-multi-choice-vertical,27,374694,0.0-27.0,"{""Q0"":""27. He sentido que podría causar que algo suceda, simplemente pensando demasiado en ello.""}","{""Q0"":""Falso""}",0,0
+,4512,MIS_28,survey-multi-choice-vertical,28,379208,0.0-28.0,"{""Q0"":""28. Me he preguntado si los espíritus de los muertos pueden influir en los vivos.""}","{""Q0"":""Falso""}",0,0
+,4920,MIS_29,survey-multi-choice-vertical,29,384129,0.0-29.0,"{""Q0"":""29. A veces he sentido que la conferencia de un profesor (charla de experto) estaba destinada especialmente para mí.""}","{""Q0"":""Falso""}",0,0
+,3315,MIS_30,survey-multi-choice-vertical,30,387447,0.0-30.0,"{""Q0"":""30. A veces he sentido que extraños leían mi mente.""}","{""Q0"":""Falso""}",0,0
+,,MIS_DIRt,,,,,,,,4

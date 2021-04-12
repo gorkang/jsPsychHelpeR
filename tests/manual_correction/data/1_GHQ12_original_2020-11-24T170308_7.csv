@@ -1,0 +1,15 @@
+﻿view_history,rt,trialid,trial_type,trial_index,time_elapsed,internal_node_id,stimulus,responses,correction
+"[{""page_index"":0,""viewing_time"":7279}]",7280,Instructions,instructions,0,7283,0.0-0.0,,,
+,5474,GHQ12_01,survey-multi-choice-vertical,1,12766,0.0-1.0,"{""Q0"":"" Últimamente, ¿Ha podido concentrarse bien en lo que hacía?""}","{""Q0"":"" Mucho menos que lo habitual""}",3
+,4671,GHQ12_02,survey-multi-choice-vertical,2,17445,0.0-2.0,"{""Q0"":"" Últimamente, ¿Sus preocupaciones le han hecho perder mucho sueño?""}","{""Q0"":"" Algo más que lo habitual""}",2
+,5477,GHQ12_03,survey-multi-choice-vertical,3,22928,0.0-3.0,"{""Q0"":"" Últimamente, ¿Ha sentido que está desempeñando un papel útil en la vida?""}","{""Q0"":"" Más útil que lo habitual""}",0
+,3859,GHQ12_04,survey-multi-choice-vertical,4,26794,0.0-4.0,"{""Q0"":"" Últimamente, ¿Se ha sentido capaz de tomar decisiones?""}","{""Q0"":"" Más que lo habitual""}",0
+,3183,GHQ12_05,survey-multi-choice-vertical,5,29982,0.0-5.0,"{""Q0"":"" Últimamente, ¿Se ha notado constantemente agobiado y en tensión?""}","{""Q0"":"" Mucho más que lo habitual""}",3
+,3626,GHQ12_06,survey-multi-choice-vertical,6,33615,0.0-6.0,"{""Q0"":"" Últimamente, ¿Ha tenido la sensación de que no puede superar sus dificultades?""}","{""Q0"":"" Mucho más que lo habitual""}",3
+,7521,GHQ12_07,survey-multi-choice-vertical,7,41141,0.0-7.0,"{""Q0"":"" Últimamente, ¿Ha sido capaz de disfrutar de sus actividades normales de cada día?""}","{""Q0"":"" Mucho menos que lo habitual""}",3
+,9583,GHQ12_08,survey-multi-choice-vertical,8,50731,0.0-8.0,"{""Q0"":"" Últimamente, ¿Ha sido capaz de hacer frente adecuadamente a sus problemas?""}","{""Q0"":"" Más que lo habitual""}",0
+,4128,GHQ12_09,survey-multi-choice-vertical,9,54866,0.0-9.0,"{""Q0"":"" Últimamente, ¿Se ha sentido poco feliz o deprimido?""}","{""Q0"":"" Algo más que lo habitual""}",2
+,2871,GHQ12_10,survey-multi-choice-vertical,10,57744,0.0-10.0,"{""Q0"":"" Últimamente, ¿Ha perdido confianza en sí mismo?""}","{""Q0"":"" Algo más que lo habitual""}",2
+,3877,GHQ12_11,survey-multi-choice-vertical,11,61628,0.0-11.0,"{""Q0"":"" Últimamente, ¿Ha pensado que usted es una persona que no vale para nada?""}","{""Q0"":"" No, en absoluto""}",0
+,6594,GHQ12_12,survey-multi-choice-vertical,12,68229,0.0-12.0,"{""Q0"":"" Últimamente, ¿Se siente razonablemente feliz considerando todas las circunstancias?""}","{""Q0"":"" Mucho menos que lo habitual""}",3
+,,GHQ12_DIRt,,,,,,,21

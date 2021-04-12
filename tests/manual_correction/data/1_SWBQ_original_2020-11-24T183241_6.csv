@@ -1,0 +1,33 @@
+﻿view_history,rt,trialid,trial_type,trial_index,time_elapsed,internal_node_id,stimulus,responses,correction
+"[{""page_index"":0,""viewing_time"":1388}]",1389,Instructions,instructions,0,1390,0.0-0.0,,,
+,3326.99,SWBQ_01,html-slider-response,1,4722,0.0-1.0,"{""Q0"":""1. Siento amor por otras personas.""}","{""Q0"":""2""}",2
+,3227.86,SWBQ_02,html-slider-response,2,7952,0.0-2.0,"{""Q0"":""2. Siento una relación personal con lo Divino / Dios.""}","{""Q0"":""2""}",2
+,2245.33,SWBQ_03,html-slider-response,3,10199,0.0-3.0,"{""Q0"":""3. Siento lástima hacia los demás.""}","{""Q0"":""1""}",1
+,2796.31,SWBQ_04,html-slider-response,4,12997,0.0-4.0,"{""Q0"":""4. Siento una conexión con la naturaleza.""}","{""Q0"":""5""}",5
+,2812.17,SWBQ_05,html-slider-response,5,15812,0.0-5.0,"{""Q0"":""5. Tengo un sentido de identidad.""}","{""Q0"":""5""}",5
+,2630.14,SWBQ_06,html-slider-response,6,18444,0.0-6.0,"{""Q0"":""6. Adoro al Divino / Creador.""}","{""Q0"":""1""}",1
+,2396.21,SWBQ_07,html-slider-response,7,20843,0.0-7.0,"{""Q0"":""7. Siento asombro por una vista impresionante.""}","{""Q0"":""1""}",1
+,2244.17,SWBQ_08,html-slider-response,8,23089,0.0-8.0,"{""Q0"":""8. Me siento confiado entre las personas.""}","{""Q0"":""1""}",1
+,2462.47,SWBQ_09,html-slider-response,9,25553,0.0-9.0,"{""Q0"":""9. Siento autoconciencia.""}","{""Q0"":""1""}",1
+,2790.66,SWBQ_10,html-slider-response,10,28346,0.0-10.0,"{""Q0"":""10. Siento unidad con la naturaleza.""}","{""Q0"":""1""}",1
+,2178.54,SWBQ_11,html-slider-response,11,30526,0.0-11.0,"{""Q0"":""11. Siento unidad con lo Divino / Dios.""}","{""Q0"":""1""}",1
+,1995.11,SWBQ_12,html-slider-response,12,32524,0.0-12.0,"{""Q0"":""12. Siento armonía con el medio ambiente.""}","{""Q0"":""1""}",1
+,1901.92,SWBQ_13,html-slider-response,13,34427,0.0-13.0,"{""Q0"":""13. Siento paz con lo Divino / Dios.""}","{""Q0"":""1""}",1
+,2067.62,SWBQ_14,html-slider-response,14,36497,0.0-14.0,"{""Q0"":""14. Siento alegría en la vida.""}","{""Q0"":""1""}",1
+,3330.835,SWBQ_15,html-slider-response,15,39830,0.0-15.0,"{""Q0"":""15. Siento que la oración enriquece mi vida.""}","{""Q0"":""5""}",5
+,2564.82,SWBQ_16,html-slider-response,16,42397,0.0-16.0,"{""Q0"":""16. Siento paz interior.""}","{""Q0"":""5""}",5
+,2579.515,SWBQ_17,html-slider-response,17,44978,0.0-17.0,"{""Q0"":""17. Siento respeto por los demás.""}","{""Q0"":""5""}",5
+,4117.425,SWBQ_18,html-slider-response,18,49098,0.0-18.0,"{""Q0"":""18. Siento que la vida tiene sentido.""}","{""Q0"":""1""}",1
+,2783.46,SWBQ_19,html-slider-response,19,51883,0.0-19.0,"{""Q0"":""19. Siento amabilidad hacia otras personas.""}","{""Q0"":""4""}",4
+,2403.025,SWBQ_20,html-slider-response,20,54288,0.0-20.0,"{""Q0"":""20. Siento 'magia' en el medio ambiente.""}","{""Q0"":""4""}",4
+,2426.79,SWBQ_21,html-slider-response,21,56717,0.0-21.0,"{""Q0"":""21. Siento una conexión entre mí y los demás.""}","{""Q0"":""5""}",5
+,2819.43,SWBQ_22,html-slider-response,22,59538,0.0-22.0,"{""Q0"":""22. Siento asombro hacia naturaleza.""}","{""Q0"":""5""}",5
+,2440.68,SWBQ_23,html-slider-response,23,61980,0.0-23.0,"{""Q0"":""23. Siento que vivo en armonía con los demás.""}","{""Q0"":""5""}",5
+,2375.67,SWBQ_24,html-slider-response,24,64358,0.0-24.0,"{""Q0"":""24. Me siento en armonía con la naturaleza.""}","{""Q0"":""5""}",5
+,2271.98,SWBQ_25,html-slider-response,25,66632,0.0-25.0,"{""Q0"":""25. Siento fuerza interior.""}","{""Q0"":""1""}",1
+,2609.805,SWBQ_26,html-slider-response,26,69244,0.0-26.0,"{""Q0"":""26. Siento que confío en las personas.""}","{""Q0"":""5""}",5
+,,SWBQ_PersonalEspiritual_DIRd,,,,,,,13
+,,SWBQ_EspiritualComunal_DIRd,,,,,,,17
+,,SWBQ_EspiritualEntorno_DIRd,,,,,,,20
+,,SWBQ_EspiritualTrascendental_DIRd,,,,,,,10
+,,SWBQ_DIRt,,,,,,,74

@@ -1,0 +1,22 @@
+﻿view_history,rt,trialid,trial_type,trial_index,time_elapsed,internal_node_id,stimulus,responses,correction,inverse
+"[{""page_index"":0,""viewing_time"":2461}]",2461,Instructions_01,instructions,0,2462,0.0-0.0,,,,
+,4430,SRSav_01,survey-multi-choice-vertical,1,6897,0.0-1.0,"{""Q0"":""1. ¿Con qué frecuencia asiste a los servicios de la iglesia?""}","{""Q0"":""Nunca""}",6,1
+,6964,SRSav_02,survey-multi-choice-vertical,2,13865,0.0-2.0,"{""Q0"":""2. ¿Con qué frecuencia participas en otras actividades religiosas? (actividades grupales, es decir, clases de escuela dominical para adultos, grupos de estudio bíblico, grupos de oración, etc.)""}","{""Q0"":""Nunca""}",6,1
+"[{""page_index"":0,""viewing_time"":1816}]",1816,Instructions_02,instructions,3,15681,0.0-3.0,,,,
+,5436,SRSav_03,survey-multi-choice-vertical,4,21121,0.0-4.0,"{""Q0"":""3. ¿Con qué frecuencia rezas en privado?""}","{""Q0"":""Nunca""}",1,1
+,6020,SRSav_04,survey-multi-choice-vertical,5,27144,0.0-5.0,"{""Q0"":""4. ¿Con qué frecuencia lees la Biblia u otros religiosos? literatura (revistas, periódicos, libros) en casa?""}","{""Q0"":""Para nada""}",6,1
+,4712,SRSav_05,survey-multi-choice-vertical,6,31859,0.0-6.0,"{""Q0"":""5. ¿Con qué frecuencia escuchas o ves programas religiosos en radio o televisión?""}","{""Q0"":""Nunca""}",1,1
+"[{""page_index"":0,""viewing_time"":2400}]",2401,Instructions_03,instructions,7,34261,0.0-7.0,,,,
+,6350,SRSav_06,survey-multi-choice-vertical,8,40614,0.0-8.0,"{""Q0"":""6. Mi fe involucra toda mi vida.""}","{""Q0"":""Definitivamente no es cierto para mí""}",1,1
+,6976,SRSav_07,survey-multi-choice-vertical,9,47593,0.0-9.0,"{""Q0"":""7. En mi vida, experimento la presencia de lo divino (es decir, de Dios).""}","{""Q0"":""Definitivamente no es cierto para mí""}",1,1
+,42448,SRSav_08,survey-multi-choice-vertical,10,90043,0.0-10.0,"{""Q0"":""8. Aunque soy una persona religiosa, me niego a dejar que consideraciones religiosas influyan en mis asuntos cotidianos.""}","{""Q0"":""Tiende a no ser cierto""}",2,4
+,7792,SRSav_09,survey-multi-choice-vertical,11,97836,0.0-11.0,"{""Q0"":""9. Nada es tan importante para mí como servir a Dios como mejor se hacerlo.""}","{""Q0"":""Definitivamente cierto de mí""}",5,5
+,6357,SRSav_10,survey-multi-choice-vertical,12,104194,0.0-12.0,"{""Q0"":""10. Mi fe a veces restringe mis acciones.""}","{""Q0"":""Definitivamente no es cierto para mí""}",1,1
+,5256,SRSav_11,survey-multi-choice-vertical,13,109453,0.0-13.0,"{""Q0"":""11. Mis creencias religiosas son lo que realmente se encuentra detrás de todo mi enfoque de vida.""}","{""Q0"":""Definitivamente no es cierto para mí""}",1,1
+,7079,SRSav_12,survey-multi-choice-vertical,14,116536,0.0-14.0,"{""Q0"":""12. Me esfuerzo por llevar mi religión a todos los demás aspectos de mi vida.""}","{""Q0"":""Definitivamente no es cierto para mí""}",1,1
+,4237,SRSav_13,survey-multi-choice-vertical,15,120775,0.0-15.0,"{""Q0"":""13. Uno debe buscar la guía de Dios al tomar decisiones importantes.""}","{""Q0"":""Definitivamente en desacuerdo""}",1,1
+,19859,SRSav_14,survey-multi-choice-vertical,16,140638,0.0-16.0,"{""Q0"":""14. Aunque creo en la religión, siento que hay muchas cosas más importantes en la vida.""}","{""Q0"":""Tiende a estar de acuerdo""}",4,2
+,10851,SRSav_15,survey-multi-choice-vertical,17,151491,0.0-17.0,"{""Q0"":""15. No importa tanto lo que yo crea siempre y cuando lleve una vida moral.""}","{""Q0"":""Definitivamente de acuerdo""}",5,1
+,,SRSav_ORA_DIRd,,,,,,,,2
+,,SRSav_NORA_DIRd,,,,,,,,3
+,,SRSav_IR_DIRd,,,,,,,,18

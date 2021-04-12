@@ -1,0 +1,13 @@
+﻿view_history,rt,trialid,trial_type,trial_index,time_elapsed,internal_node_id,stimulus,responses,correction
+"[{""page_index"":0,""viewing_time"":1495}]",1496,Instructions,instructions,0,1498,0.0-0.0,,,
+,25692.265,SBS_01,html-slider-response,1,27197,0.0-1.0,"{""Q0"":""1. Existe un Dios todopoderoso, omnisciente y amoroso.""}","{""Q0"":""2""}",2
+,8667.23,SBS_02,html-slider-response,2,35867,0.0-2.0,"{""Q0"":""2. Existe un ser espiritual espiritual maligno, a quien podríamos llamar el Diablo.""}","{""Q0"":""4""}",4
+,6397.805,SBS_03,html-slider-response,3,42268,0.0-3.0,"{""Q0"":""3. Existen buenos seres espirituales personales, a quienes podríamos llamar ángeles.""}","{""Q0"":""4""}",4
+,4747.355,SBS_04,html-slider-response,4,47018,0.0-4.0,"{""Q0"":""4. Existen seres espirituales personales malvados, a quienes podríamos llamar demonios.""}","{""Q0"":""4""}",4
+,9799.145,SBS_05,html-slider-response,5,56820,0.0-5.0,"{""Q0"":""5. Los seres humanos tienen almas inmateriales e inmortales.""}","{""Q0"":""-4""}",-4
+,8723.495,SBS_06,html-slider-response,6,65547,0.0-6.0,"{""Q0"":""6. Hay un reino espiritual además del físico.""}","{""Q0"":""3""}",3
+,4071.12,SBS_07,html-slider-response,7,69621,0.0-7.0,"{""Q0"":""7. Algunas personas irán al cielo cuando mueran.""}","{""Q0"":""3""}",3
+,3167.28,SBS_08,html-slider-response,8,72791,0.0-8.0,"{""Q0"":""8. Algunas personas irán al infierno cuando mueran.""}","{""Q0"":""3""}",3
+,5281.185,SBS_09,html-slider-response,9,78074,0.0-9.0,"{""Q0"":""9. Los milagros, eventos divinamente causados que no tienen una explicación natural, pueden suceder y lo hacen.""}","{""Q0"":""4""}",4
+,5009.77,SBS_10,html-slider-response,10,83086,0.0-10.0,"{""Q0"":""10. Hay individuos que son mensajeros de Dios y / o pueden prever el futuro.""}","{""Q0"":""-4""}",-4
+,,SBS_DIRt,,,,,,,19
