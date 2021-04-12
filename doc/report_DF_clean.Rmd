@@ -9,13 +9,37 @@ editor_options:
 
 ```{r setup, include=FALSE}
 # DEBUG
-source(here::here("_packages.R"))
+# source(here::here("_packages.R"))
+# DF_clean = read_rds(here::here("_targets/objects/DF_clean"))
+# DF_raw = read_rds(here::here("_targets/objects/DF_raw"))
 
 knitr::opts_chunk$set(echo = TRUE)
-DF_clean = read_rds(here::here("_targets/objects/DF_clean"))
-DF_raw = read_rds(here::here("_targets/objects/DF_raw"))
+targets::tar_load(DF_clean)
+targets::tar_load(DF_raw)
 DF = DF_clean
 
+  plot_form3 =
+    DF_clean %>% 
+    filter(experimento == "COVIDCONTROL") %>%
+    distinct(id, .keep_all = TRUE) %>% 
+    distinct(filename, datetime) %>% 
+    mutate(fecha_registro = as.Date(datetime)) %>% 
+    count(fecha_registro, name = "numero_registros") %>% 
+    ungroup() %>% 
+    mutate(suma_total = cumsum(numero_registros)) %>% 
+    ggplot(aes(fecha_registro, suma_total)) +
+    geom_line() +
+    geom_bar(aes(fecha_registro, numero_registros), stat = "identity", alpha = .5) +
+    geom_point() +
+    theme_minimal() +
+    scale_x_date(date_breaks = "1 day", guide = guide_axis(angle = 90)) +
+    scale_y_continuous(n.breaks = 10) +
+    labs(title = "Protocolo 3 completado",
+         subtitle = paste0("Ultimo dato: ", as.Date(max(DF_clean$datetime))))
+  
+  
+  ggsave(here::here("output/plots/plot_form3.png"), plot_form3, width = 15, height = 9)
+  
 ```
 
 ## Summary {.tabset}

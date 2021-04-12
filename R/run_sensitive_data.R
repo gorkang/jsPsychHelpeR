@@ -6,8 +6,6 @@ run_sensitive_data <- function(df_SDG, run_online_FORM = FALSE) {
 
 
   # DEBUG
-  # lapply(list.files("./R", full.names = TRUE, pattern = ".R"), source)
-  # source("_packages.R")
   # if (!exists("run_online_FORM")) run_online_FORM = TRUE
 
 

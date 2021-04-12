@@ -7,10 +7,13 @@
 ##' @return
 ##' @author gorkang
 ##' @export
-analysis_descriptive_plots <- function(DF_joined) {
-
+analysis_descriptive_plots <- function(DF_joined, DF_raw) {
+  
   # DF_joined
   all_scales = grep(".*_DIRt$|.*_STDt$|.*_DIRd$|.*STDd$", names(DF_joined), value = TRUE, perl = TRUE)
+  
+  
+  # Puntajes ----------------------------------------------------------------
   
   DF_plot = DF_joined %>% 
     select(id, all_of(all_scales))
@@ -42,24 +45,48 @@ analysis_descriptive_plots <- function(DF_joined) {
   
   # If we only have id, do not create plot
   if(length(unique(d2$name)) != 1) {
-  # Plot character variables
-  plot2 = d2 %>% 
-    ggplot(aes(value)) + 
-    facet_wrap(~ name, scales = "free") + 
-    geom_bar() +
-    coord_flip() +
-    theme_minimal()
-  
-  ggsave("output/plots/plot_descriptive_categorical.png", plot2, dpi = 300, height = 12, width = 20)
+    # Plot character variables
+    plot2 = d2 %>% 
+      ggplot(aes(value)) + 
+      facet_wrap(~ name, scales = "free") + 
+      geom_bar() +
+      coord_flip() +
+      theme_minimal()
+    
+    ggsave("output/plots/plot_descriptive_categorical.png", plot2, dpi = 300, height = 12, width = 20)
   } else {
     plot2 = NULL
   }
   
   
   
+  # Tiempos -----------------------------------------------------------------
+  
+  options(scipen = 999)
+  
+  plot_tiempos = DF_raw %>% 
+    select(id, experimento, time_elapsed) %>% 
+    group_by(id, experimento) %>% 
+    summarise(TIME = round(max(time_elapsed)/60000, 2), 
+              N = n(), 
+              .groups = "keep") %>% 
+    ggplot(aes(TIME)) +
+    geom_histogram() +
+    facet_wrap(~experimento, scales = "free", ncol = 7) + 
+    theme_minimal() +
+    scale_x_log10(n.breaks = 10)
+  
+  ggsave("output/plots/plot_tiempos.png", plot_tiempos, dpi = 300, height = 12, width = 20)
+  
+  
+  
+  
+  
+  
   plots_descriptive = list(plot_descriptive_numeric = plot1, 
-                           plot_descriptive_categorical = plot2)
+                           plot_descriptive_categorical = plot2,
+                           plot_tiempos = plot_tiempos)
   
   return(plots_descriptive)
-
+  
 }

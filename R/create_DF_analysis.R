@@ -17,6 +17,10 @@ create_DF_analysis <- function(DF_joined) {
     DF_joined %>% 
     select(id, all_of(all_scales))
   
+  # Save files --------------------------------------------------------------
+  save_files(DF_analysis, short_name_scale = "analysis", is_scale = FALSE)
+  
+  
   # Output of function ---------------------------------------------------------
   return(DF_analysis)
 
