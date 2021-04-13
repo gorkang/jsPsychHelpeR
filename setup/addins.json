@@ -1,0 +1,10 @@
+{
+    "targets::tar_make": "Ctrl+M",
+    "targets::rstudio_addin_tar_progress": "Ctrl+,",
+    "targets::rstudio_addin_tar_load": "Ctrl+L",
+    "targets::rstudio_addin_tar_visnetwork": "Ctrl+G",
+    "fnmate::rs_fnmate": "Ctrl+Alt+F",
+    "shrtcts::shortcut_01": "Ctrl+P",
+    "shrtcts::shortcut_02": "Ctrl+Shift+O",
+    "shrtcts::shortcut_03": "Ctrl+T"
+}
