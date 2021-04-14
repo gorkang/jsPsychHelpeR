@@ -6,7 +6,7 @@ targets <- list(
   # RAW data
   # tar_files(input_files, list.files(path = "data", pattern = "csv", full.names = TRUE)),
   tar_target(input_files, list.files(path = "data", pattern = "csv", full.names = TRUE)),
-  tar_target(DF_raw, read_data(input_files, anonymize = FALSE, workers = 4)),
+  tar_target(DF_raw, read_data(input_files, anonymize = FALSE, save_output = TRUE, workers = 4)),
   tar_target(tests_DFraw, tests_DF_raw(DF_raw), priority = 1),
   
   # Cleaned data
