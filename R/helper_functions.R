@@ -14,10 +14,10 @@ standardized_names <- function(short_name_scale, dimensions = "", help_names = F
   
   # Global sufix for direct scores
   .GlobalEnv$sufix_DIR = "_DIR"
-
-
+  
+  
   # CHECKS ------------------------------------------------------------------
-
+  
   # Character vector
   if (!(is.vector(dimensions) & is.character(dimensions[1]))) {
     cat(
@@ -25,19 +25,19 @@ standardized_names <- function(short_name_scale, dimensions = "", help_names = F
       "       Right now: `dimensions` = ",   paste0(dimensions), "\n")
     stop()
     
-  # Spaces and other forbiden characters
+    # Spaces and other forbiden characters
   } else if (any(grepl(" |_", dimensions))) {
     cat(
       crayon::red("ERROR: `dimensions` can't have spaces and '_'.\n",
                   "       WRONG: c('name dimension', 'name_dimension2')\n",
                   "       RIGHT: c('namedimension', 'NameDimension2')\n"),
-                  "       Right now: `dimensions` = ",   paste0(dimensions), "\n")
+      "       Right now: `dimensions` = ",   paste0(dimensions), "\n")
     stop()
-    }
-
+  }
+  
   
   # Dimensions names
-    # For each of the values in 'dimensions' will create a name_DIRd[n] and name_STDd[n]
+  # For each of the values in 'dimensions' will create a name_DIRd[n] and name_STDd[n]
   if (dimensions[1] != "") {
     
     # DEBUG
@@ -61,26 +61,26 @@ standardized_names <- function(short_name_scale, dimensions = "", help_names = F
     map2(names_variables_DIR, names_dimensions_DIR, assign, envir = .GlobalEnv)
     map2(names_variables_REL, names_dimensions_REL, assign, envir = .GlobalEnv)
     map2(names_variables_STD, names_dimensions_STD, assign, envir = .GlobalEnv)
-
+    
     # Message with details ----------------------------------------------------
     if (help_names == TRUE) cat(crayon::red(crayon::underline("REMEMBER:\n\n")))
     if (help_names == TRUE) cat("", 
-        crayon::magenta(crayon::underline("Dimensions\n")),
-    crayon::green(
-
-      paste0("- For the DIRect scores of the dimension '", paste0(names_dimensions_DIR), "'", 
-             " use the name '", names_variables_DIR, ",",
-             crayon::silver(paste0(" FOR EXAMPLE: !!", names_variables_DIR, " := rowSums(...)'\n"))), 
-
-      paste0("- For the STDard scores of the dimension '", paste0(names_dimensions_STD), "'",
-             " use the name '", names_variables_STD, ",",
-             crayon::silver(paste0(" FOR EXAMPLE: !!", names_variables_STD, " := rowSums(...)'\n"))),
-
-      paste0("- For the RELiability scores of the dimension'", paste0(names_dimensions_STD), "'", 
-             " use the name '", names_variables_REL, ",",
-             crayon::silver(paste0(" FOR EXAMPLE: !!", names_variables_REL, " := rowSums(...)'\n"))),
-      "\n"
-    ))
+                                crayon::magenta(crayon::underline("Dimensions\n")),
+                                crayon::green(
+                                  
+                                  paste0("- For the DIRect scores of the dimension '", paste0(names_dimensions_DIR), "'", 
+                                         " use the name '", names_variables_DIR, ",",
+                                         crayon::silver(paste0(" FOR EXAMPLE: !!", names_variables_DIR, " := rowSums(...)'\n"))), 
+                                  
+                                  paste0("- For the STDard scores of the dimension '", paste0(names_dimensions_STD), "'",
+                                         " use the name '", names_variables_STD, ",",
+                                         crayon::silver(paste0(" FOR EXAMPLE: !!", names_variables_STD, " := rowSums(...)'\n"))),
+                                  
+                                  paste0("- For the RELiability scores of the dimension'", paste0(names_dimensions_STD), "'", 
+                                         " use the name '", names_variables_REL, ",",
+                                         crayon::silver(paste0(" FOR EXAMPLE: !!", names_variables_REL, " := rowSums(...)'\n"))),
+                                  "\n"
+                                ))
   }
   
   
@@ -97,7 +97,7 @@ standardized_names <- function(short_name_scale, dimensions = "", help_names = F
   # Standardized scores totals
   .GlobalEnv$name_STDt_NA = paste0(short_name_scale, "_STDt_NA")
   .GlobalEnv$name_STDt = paste0(short_name_scale, "_STDt")
-
+  
   
   
   # Message with details ----------------------------------------------------
@@ -117,7 +117,7 @@ standardized_names <- function(short_name_scale, dimensions = "", help_names = F
            " use the name 'name_STDt'",
            crayon::silver(paste0(" FOR EXAMPLE: !!name_STDt := rowSums(...)'\n")))
   ), "\n")
-
+  
 }
 
 
@@ -136,7 +136,7 @@ check_NAs <- function(DF_joined) {
     select(ends_with("_NA")) 
   
   if (ncol(DF_CHECK_NA) == 2) {
-  
+    
     # Check we have the same number of NAs in RAW and PROC DFs
     if (!identical(DF_CHECK_NA[[1]], DF_CHECK_NA[[2]])) stop("Missing data when processing RAW responses")
     
@@ -172,7 +172,7 @@ create_raw_long <- function(DF_clean, short_name_scale, numeric_responses = FALS
   
   # DEBUG
   # short_name_scale = "SCSORF"
-
+  
   DF_clean %>% 
     # filter(experimento == name_scale) %>% 
     filter(grepl(paste0(short_name_scale, "_[0-9]"), trialid)) %>% 
@@ -180,10 +180,10 @@ create_raw_long <- function(DF_clean, short_name_scale, numeric_responses = FALS
     mutate(responses = 
              if (numeric_responses == TRUE) {
                as.numeric(responses) 
-              } else {
-                as.character(responses) 
-              }
-           ) %>% 
+             } else {
+               as.character(responses) 
+             }
+    ) %>% 
     drop_na(trialid) %>% 
     rename(RAW = responses) %>% 
     arrange(trialid, id)
@@ -203,7 +203,7 @@ create_raw_long <- function(DF_clean, short_name_scale, numeric_responses = FALS
 #'
 #' @examples
 debug_function <- function(name_function) {
-
+  
   # DEBUG
   # name_function = "prepare_CRS"
   
@@ -216,12 +216,13 @@ debug_function <- function(name_function) {
     }
   }
   
-
+  
   # Makes possible to use prepare_TASK or "prepare_TASK"
   if (substitute(name_function) != "name_function") name_function = substitute(name_function) #if (!interactive()) is so substitute do not overwrite name_function when in interactive mode
   
   # Parses _targets.R
-  code <- parse("targets/targets_main.R")
+  code <- parse("_targets.R")
+  if (file.exists("targets/targets_main.R")) code <- c(code, parse("targets/targets_main.R"))
   # code <- parse("_targets.R")
   
   # Finds the chunk where name_function is, and cleans the "\"
@@ -344,20 +345,20 @@ create_new_task <- function(short_name_task, overwrite = FALSE) {
   # short_name_task = "PSS"
   # old_names = TRUE
   
-
+  
   # Create file -------------------------------------------------------------
   new_task_file = paste0("R/prepare_", short_name_task ,".R")
   
   if (!file.exists(new_task_file) | overwrite == TRUE) {
-  cat(crayon::green("\nCreating new file: ", crayon::silver(new_task_file), "\n"))
-  file.copy("R/prepare_TEMPLATE.R", new_task_file, overwrite = overwrite)
-  
-  
-  # Replace lines -----------------------------------------------------------
-  x <- readLines(new_task_file)
-  y <- gsub( "TEMPLATE", short_name_task, x )
-  cat(y, file = new_task_file, sep = "\n")
-  
+    cat(crayon::green("\nCreating new file: ", crayon::silver(new_task_file), "\n"))
+    file.copy("R/prepare_TEMPLATE.R", new_task_file, overwrite = overwrite)
+    
+    
+    # Replace lines -----------------------------------------------------------
+    x <- readLines(new_task_file)
+    y <- gsub( "TEMPLATE", short_name_task, x )
+    cat(y, file = new_task_file, sep = "\n")
+    
   } else {
     cat(crayon::yellow("\nFile ", crayon::silver(new_task_file), " already exists. Not overwriting\n"))
   }
@@ -452,7 +453,7 @@ auto_reliability = function(DF, short_name_scale = short_name_scale_str, items =
   
   # deleted_items_NAs
   deleted_items_NAs = paste(names(temp_clean_RAW)[!names(temp_clean_RAW) %in% names(temp_clean)])
-  if (length(deleted_items_NAs) > 0) cat(crayon::red("\nDELETED VARS (have NA's)", paste(deleted_items_NAs, collapse = ", "), "\n"))
+  if (length(deleted_items_NAs) > 0) cat(crayon::red("\nDELETED VARS (have NA's)", paste(deleted_items_NAs, collapse = ", "), ""))
   
   # Filter items where r.drop < min_rdrop
   delete_items_raw = quiet_alpha_table(temp_clean)
@@ -467,10 +468,10 @@ auto_reliability = function(DF, short_name_scale = short_name_scale_str, items =
     delete_items = NULL
     keep_items = names(temp_clean)
     
-    cat(crayon::green("\nNo items with r.drop <= ", min_rdrop), "|| alpha: ", alpha_initial, "\n")
+    cat(crayon::green("\nNo items with r.drop <= ", min_rdrop), "|| alpha: ", alpha_initial, "")
     
   } else {
-  
+    
     # Select items that won't be deleted
     keep_items = names(temp_clean[,!(names(temp_clean) %in% delete_items)])
     
@@ -481,7 +482,7 @@ auto_reliability = function(DF, short_name_scale = short_name_scale_str, items =
     alpha_initial = round(quiet_alpha_raw(temp_clean)$result, 3)
     alpha_final = round(quiet_alpha_raw(temp_seleccionados)$result, 3)
     
-    cat(crayon::yellow("\nFiltered", paste0(length(delete_items), "/", ncol(temp_clean_RAW)), "items with r.drop <= ", min_rdrop), "|| alpha: ", alpha_initial , "->", alpha_final, "\n")
+    cat(crayon::yellow("\nFiltered", paste0(length(delete_items), "/", ncol(temp_clean_RAW)), "items with r.drop <= ", min_rdrop), "|| alpha: ", alpha_initial , "->", alpha_final, "")
     
     
   }
