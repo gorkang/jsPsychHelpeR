@@ -18,7 +18,7 @@ system(paste0('rsync -av --rsh=ssh user-cscn@138.197.236.86:', server_folder, ''
 # Destroy cache (_targets folder) -----------------------------------------
 
   # Destroys cache to force a clean run
-  # targets::tar_destroy()
+  targets::tar_destroy()
   
   # Invalidates input_files to force data preparation
   targets::tar_invalidate(matches("input_files"))
@@ -38,7 +38,7 @@ system(paste0('rsync -av --rsh=ssh user-cscn@138.197.236.86:', server_folder, ''
   # targets::tar_glimpse()
   
   # Global time and time per process
-  targets::tar_meta() %>% summarise(sum(seconds, na.rm = TRUE))
+  sum(targets::tar_meta(fields = seconds)$seconds, na.rm = TRUE)
   targets::tar_meta() %>% select(name, seconds) %>% arrange(desc(seconds))
 
 
@@ -52,5 +52,8 @@ system(paste0('rsync -av --rsh=ssh user-cscn@138.197.236.86:', server_folder, ''
   targets::tar_workspace(TESTS)
   targets::tar_undebug() # Delete all the debugging stuff
   
+  # WARNINGS
+  targets::tar_meta(fields = warnings) %>% drop_na
+  
   # Data frame of targets info
-    targets::tar_manifest(fields = "command")
+  targets::tar_manifest(fields = "command")
