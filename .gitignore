@@ -2,6 +2,16 @@
 .Rhistory
 .RData
 .Ruserdata
-.vault/data
-.vault/config/gs4.R
-.vault/doc/report_candidatos.html
+dev/
+_targets/
+
+# Do not upload data
+data/
+.vault/data_vault_5/
+.vault/data_vault_6/
+
+ # Do not upload output files
+.vault/output/
+output/
+*.html
+*.zip
