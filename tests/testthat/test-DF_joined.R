@@ -1,5 +1,8 @@
 testthat::test_that('Check DF_joined', {
 
+  # DEBUG
+  # targets::tar_load(c(DF_joined, DICCIONARY_tasks))
+  
   # Name of test (should reflect the name of the file) ----------------------
   
   name_of_test = "DF_joined"
@@ -8,21 +11,28 @@ testthat::test_that('Check DF_joined', {
 
   # TEST 1: NON canonical names --------------------------------------------------------------------
   
-  expected_names = grep("^.*_RAW$|^.*_DIR$|^.*_DIRt$|^.*_DIRd$|^.*_STDt$|^.*_STDd|^.*DIR_NA$|^.*RAW_NA$", names(DF_joined %>% select(-id)), ignore.case = FALSE, fixed = FALSE, value = TRUE)
+  expected_names = grep("^.*_RAW$|^.*_DIR$|^.*_DIRt$|^.*_DIRd$|^.*_RELt$|^.*_RELd$|^.*_STDt$|^.*_STDd|^.*DIR_NA$|^.*RAW_NA$", names(DF_joined %>% select(-id)), ignore.case = FALSE, fixed = FALSE, value = TRUE)
   non_canonical_names = names(DF_joined %>% select(-id))[!names(DF_joined %>% select(-id)) %in% expected_names]
 
   if (length(non_canonical_names) > 0) cat(crayon::red(paste0("\nERROR: DF_joined contains non-standard columns: ", crayon::silver(paste(non_canonical_names, collapse = ", ")), "\n\n")))
 
   
+  
   # TEST 2: missing tests ---------------------------------------------------
 
+  # Tasks in DF_clean that don't pass to DF_joined
+  white_list = c("Consent", "Bank")
   
   # Targets
-  existing_targets_raw = list.files(path = here::here("_targets/objects/"), pattern="df_.*", full.names = FALSE, ignore.case = FALSE)
+  existing_targets_raw = list.files(path = here::here("_targets/objects/"), pattern = "df_.*", full.names = FALSE, ignore.case = FALSE)
   existing_targets = gsub("df_", "", existing_targets_raw)
   
   # Diccionary
-  tasks_in_diccionary = DICCIONARY_tasks %>% distinct(`short_name: from trialid`) %>% pull()
+  tasks_in_diccionary = 
+    DICCIONARY_tasks %>% 
+    distinct(names = `short_name: from trialid`) %>% 
+    filter(!names %in% white_list) %>% 
+    pull()
   
   # DF_joined
   tasks_joined = names(DF_joined) %>% as_tibble() %>%

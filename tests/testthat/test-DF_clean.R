@@ -1,8 +1,14 @@
 testthat::test_that('Check if any of the items appear more or less than the other items for each given test', {
 
+  # DEBUG
+  # targets::tar_load(c(DF_clean))
+  
+  # testthat::local_edition(3)
+  
   # Name of test (should reflect the name of the file) ----------------------
   
   name_of_test = "DF_clean"
+  white_list = c("SASS_02", "SASS_03", "SDG_05", "SDG_07", "SDG_08") # Items where there is a conditional controlling if the question is shown
   cat(crayon::underline(crayon::yellow(paste0("\n\nRunning: ", crayon::silver(name_of_test, paste(rep(" ", 40), collapse = " ")),"\n\n"))))
   
   # Test --------------------------------------------------------------------
@@ -11,6 +17,7 @@ testthat::test_that('Check if any of the items appear more or less than the othe
     DF_clean %>% 
     group_by(experimento) %>% 
     count(trialid, name = "times_item_shown") %>% 
+    filter(!trialid %in% white_list) %>% 
     count(times_item_shown) %>% 
     count() # How many times an experiment appears?
     
@@ -19,7 +26,8 @@ testthat::test_that('Check if any of the items appear more or less than the othe
     filter(n > 1) %>% 
     pull(experimento)
   
-  checks_DF = DF_clean %>% 
+  checks_DF = 
+    DF_clean %>% 
     group_by(experimento) %>% 
     count(trialid) %>% 
     filter(experimento %in% DF_clean_offender_tests)

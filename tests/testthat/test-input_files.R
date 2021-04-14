@@ -1,26 +1,37 @@
 testthat::test_that('Check all input files have the same columns', {
 
+  # DEBUG
+  # targets::tar_load(c(input_files))
+  
+  
   # Name of test (should reflect the name of the file) ----------------------
   
   name_of_test = "input_files"
+  workers = 1
   cat(crayon::underline(crayon::yellow(paste0("\n\nRunning: ", crayon::silver(name_of_test, paste(rep(" ", 40), collapse = " ")),"\n\n"))))
   
   
   # Test --------------------------------------------------------------------
   
   # Funcion para almacenar los nombres de columna de todos los archivos
-  read_check <- function(file_name) {
-    DF = read_csv(here::here(file_name),  col_types = cols(.default = col_character()))
+  read_check <- function(file_name, workers) {
+    DF = data.table::fread(here::here(file_name), encoding = 'UTF-8', nThread = workers)
     names(DF) %>% as_tibble() %>% mutate(name_file = file_name)
   }
   
-  plan(multisession, workers = 4)
+  # We read ONE file for each task. Otherwise, with big protocols it takes ages
+  one_of_each_file = 
+    input_files %>% as_tibble() %>% 
+    separate(value, sep = "_", into = c("c1", "c2", "c3", "c4", "c5"), remove = FALSE) %>% 
+    group_by(c2) %>% 
+    sample_n(1) %>% 
+    pull(value)
   
   # Construimos DF global
-  DF_final = furrr::future_map_dfr(input_files, read_check)
+  DF_final = purrr::map_dfr(one_of_each_file, read_check, workers = workers)
   
   # Numero de archivos
-  number_of_files = length(input_files)
+  number_of_files = length(one_of_each_file)
   
   # DF_final %>% write_csv("columns_files.csv")
   

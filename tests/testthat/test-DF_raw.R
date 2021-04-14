@@ -1,5 +1,8 @@
 testthat::test_that('Check if DF_raw', {
   
+  # DEBUG
+  # targets::tar_load(c(DF_raw))
+  
   # Name of test (should reflect the name of the file) ----------------------
   
   name_of_test = "DF_raw"
@@ -15,10 +18,16 @@ testthat::test_that('Check if DF_raw', {
   
   offenders =
     DF_problematic_trialids %>% 
-    distinct(trialid) %>% 
-    pull(trialid)
+    distinct(trialid, .keep_all = TRUE) %>% 
+    mutate(message = 
+             case_when(
+               is.na(trialid) ~ paste0(experimento, ": NA"),
+               trialid == "" ~ paste0(experimento, ": empty"),
+               TRUE ~ paste0(experimento, ": ", trialid))) %>% 
+    pull(message)
   
 
+  
   # Test: we have the canonical columns in DF_raw -------------------------------------------------------------------
 
     canonical_names_columns =  c("filename", "trial_type", "trial_index", "time_elapsed", "internal_node_id", "view_history", "rt", "trialid", "stimulus", "responses", "id", "project", "experimento", "version", "datetime")

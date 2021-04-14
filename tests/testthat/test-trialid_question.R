@@ -1,5 +1,8 @@
 testthat::test_that('Check if the trialid question_text are unique', {
-
+  
+  # DEBUG
+  # targets::tar_load(c(DF_clean))
+  
   # Name of test (should reflect the name of the file) ----------------------
   
   name_of_test = "trialid_question"
