@@ -9,15 +9,14 @@
 ##' @export
 read_data <- function(input_files, anonymize = FALSE, save_output = FALSE, workers = 1) {
   
-  # Read all files
-  if (workers > 1) {
-    future::plan(multisession, workers = workers)
-    DF_raw_read = furrr::future_map_dfr(input_files %>% set_names(basename(.)), data.table::fread, .id = "filename") %>% as_tibble()
-    # DF_raw_read = furrr::future_map_dfr(input_files %>% set_names(basename(.)), read_csv, .id = "filename") %>% as_tibble()
-  } else {
-    DF_raw_read = purrr::map_dfr(input_files %>% set_names(basename(.)), data.table::fread, .id = "filename") %>% as_tibble()
-  }
+  # DEBUG
+  # debug_function(read_data)
   
+  # Read all files
+  DF_raw_read = purrr::map_dfr(input_files %>% set_names(basename(.)), data.table::fread, .id = "filename", encoding = 'UTF-8', nThread = as.numeric(workers)) %>% as_tibble()
+  
+  
+  # Extract information from filename
   DF_raw =
     DF_raw_read %>% 
     separate(col = filename, 
@@ -45,7 +44,6 @@ read_data <- function(input_files, anonymize = FALSE, save_output = FALSE, worke
   
   
   # Output of function ---------------------------------------------------------
-  
   return(DF_raw)
   
 }
