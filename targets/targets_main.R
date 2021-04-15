@@ -49,6 +49,7 @@ targets <- list(
   tar_target(df_SASS, prepare_SASS(DF_clean, short_name_scale_str = "SASS")),
   tar_target(df_SBS, prepare_SBS(DF_clean, short_name_scale_str = "SBS")),
   tar_target(df_SCSORF, prepare_SCSORF(DF_clean, short_name_scale_str = "SCSORF")),
+  tar_target(df_SDG, prepare_SDG(DF_clean, short_name_scale_str = "SDG")),
   tar_target(df_SRA, prepare_SRA(DF_clean, short_name_scale_str = "SRA")),
   tar_target(df_SRSav, prepare_SRSav(DF_clean, short_name_scale_str = "SRSav")),
   tar_target(df_SWBQ, prepare_SWBQ(DF_clean, short_name_scale_str = "SWBQ")),
