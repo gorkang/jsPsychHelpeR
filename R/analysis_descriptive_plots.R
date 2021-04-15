@@ -10,7 +10,7 @@
 analysis_descriptive_plots <- function(DF_joined, DF_raw) {
   
   # DF_joined
-  all_scales = grep(".*_DIRt$|.*_STDt$|.*_DIRd$|.*STDd$", names(DF_joined), value = TRUE, perl = TRUE)
+  all_scales = grep(".*_DIRt$|.*_STDt$|.*_RELt$|.*_REdt$|.*_DIRd$|.*STDd$", names(DF_joined), value = TRUE, perl = TRUE)
   
   
   # Puntajes ----------------------------------------------------------------
@@ -32,7 +32,7 @@ analysis_descriptive_plots <- function(DF_joined, DF_raw) {
     geom_histogram(bins = 15) +
     theme_minimal()
   
-  ggsave("output/plots/plot_descriptive_numeric.png", plot1, dpi = 300, height = 12, width = 20)
+  ggsave("output/plots/plot_descriptive_numeric.png", plot1, dpi = 150, height = 12, width = 20)
   
   
   d2 <- 
@@ -53,7 +53,7 @@ analysis_descriptive_plots <- function(DF_joined, DF_raw) {
       coord_flip() +
       theme_minimal()
     
-    ggsave("output/plots/plot_descriptive_categorical.png", plot2, dpi = 300, height = 12, width = 20)
+    ggsave("output/plots/plot_descriptive_categorical.png", plot2, dpi = 150, height = 12, width = 20)
   } else {
     plot2 = NULL
   }
@@ -71,12 +71,12 @@ analysis_descriptive_plots <- function(DF_joined, DF_raw) {
               N = n(), 
               .groups = "keep") %>% 
     ggplot(aes(TIME)) +
-    geom_histogram() +
+    geom_histogram(bins = 30) +
     facet_wrap(~experimento, scales = "free", ncol = 7) + 
     theme_minimal() +
     scale_x_log10(n.breaks = 10)
   
-  ggsave("output/plots/plot_tiempos.png", plot_tiempos, dpi = 300, height = 12, width = 20)
+  ggsave("output/plots/plot_tiempos.png", plot_tiempos, dpi = 150, height = 12, width = 20)
   
   
   
