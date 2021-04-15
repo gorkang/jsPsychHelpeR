@@ -26,6 +26,6 @@ targets <- list(
   # Report ------------------------------------------------------------------
   
   # Automatic report
-  tar_render(report_DF_clean, "doc/report_DF_clean.Rmd")
+  tar_render(report_DF_clean, "doc/report_DF_clean.Rmd", params = list(last_task = "Goodbye"))
   
 )
