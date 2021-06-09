@@ -38,9 +38,9 @@ prepare_FORM6 <- function(files_status, DF_DICCIONARY_id, short_name_scale_str) 
     DF_clean_status %>% 
     # filter(experimento == name_scale) %>% 
     filter(grepl(paste0(short_name_scale_str, "_[0-9]"), trialid)) %>% 
-    select(id, datetime, trialid,responses) %>% 
+    select(id, datetime, trialid,response) %>% 
     drop_na(trialid) %>% 
-    rename(RAW = responses) %>% 
+    rename(RAW = response) %>% 
     arrange(trialid, id)
   
   

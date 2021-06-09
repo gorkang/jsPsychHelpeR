@@ -99,7 +99,11 @@ prepare_SASS <- function(DF_clean, short_name_scale_str) {
   # Reliability -------------------------------------------------------------
   
   RELt = auto_reliability(DF_wide_RAW, short_name_scale = short_name_scale_str)
-  items_RELt = c("02", "03", RELt$item_selection_string)
+  
+  # With only a couple participants, it can happen that we only have one of the two
+  included_key_items = c("SASS_02_DIR", "SASS_03_DIR")[c("SASS_02_DIR", "SASS_03_DIR") %in% names(DF_wide_RAW)]
+  # items_RELt = c("02", "03", RELt$item_selection_string)
+  items_RELt = RELt$item_selection_string
   # REVIEW: EN ESTE CASO, los items 02 y 03 NO ENTRAN EN alphadrop_me() pq tienen NA's, pero SI los incluimos aqui (???) ------
   
   
@@ -117,7 +121,7 @@ prepare_SASS <- function(DF_clean, short_name_scale_str) {
       !!name_DIRt := rowSums(select(., matches("_DIR$")), na.rm = TRUE),
       
       # Reliability Scale 
-      !!name_RELt := rowSums(select(., paste0(short_name_scale_str, "_", items_RELt, "_DIR")), na.rm = TRUE)
+      !!name_RELt := rowSums(select(., all_of(included_key_items), paste0(short_name_scale_str, "_", items_RELt, "_DIR")), na.rm = TRUE)
 
     )
     
