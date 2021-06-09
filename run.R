@@ -31,7 +31,12 @@ system(paste0('rsync -av --rsh=ssh user-cscn@138.197.236.86:', server_folder, ''
 
   targets::tar_make()
 
-  
+  # IF running megatron
+  # TODO : create a test with this? Or maybe just the "manual" test will be enough
+  targets::tar_load(DF_joined)
+  number_items_tasks(DF_joined)
+
+    
 # Visualize targets networks -----------------------------------------------
 
   targets::tar_visnetwork(targets_only = TRUE, label = "time") #label = "time"

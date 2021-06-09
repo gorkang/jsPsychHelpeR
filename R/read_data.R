@@ -1,9 +1,13 @@
 ##' Read raw data and prepare a global DF
 ##'
-##' 
 ##'
-##' @title
-##' @param input_files
+##' @title read_data()
+##'
+##' @param anonymize TODO
+##' @param save_output should save output?
+##' @param workers number of threads for data.table::fread
+##' @param input_files files to read
+##'
 ##' @return
 ##' @author gorkang
 ##' @export
@@ -11,9 +15,14 @@ read_data <- function(input_files, anonymize = FALSE, save_output = FALSE, worke
   
   # DEBUG
   # debug_function(read_data)
+  # workers = 1
+  
   
   # Read all files
-  DF_raw_read = purrr::map_dfr(input_files %>% set_names(basename(.)), data.table::fread, .id = "filename", encoding = 'UTF-8', nThread = as.numeric(workers)) %>% as_tibble()
+  DF_raw_read = purrr::map_dfr(input_files %>% set_names(basename(.)), data.table::fread, .id = "filename", colClasses = 'character', encoding = 'UTF-8', nThread = as.numeric(workers)) %>% as_tibble()
+  # colClasses = c(response = "character")
+  
+  if (!"response" %in% names(DF_raw_read)) DF_raw_read = DF_raw_read %>% rename(response = responses)
   
   
   # Extract information from filename
@@ -22,21 +31,7 @@ read_data <- function(input_files, anonymize = FALSE, save_output = FALSE, worke
     separate(col = filename, 
              into = c("project", "experimento", "version", "datetime", "id"), 
              sep = c("_"), remove = FALSE) %>% 
-    mutate(
-      id = gsub("(*.)\\.csv", "\\1", id), # userID
-      stimulus = gsub('\\{""Q0"":""|""\\}', '', stimulus), # Clean stimulus
-      responses = gsub('\\{""Q0"":""|""\\}', '', responses), # Clean responses [REMEMBER: Only works with one response per screen]
-      responses = gsub('&nbsp;|\u00A0', '', responses), # Remove non-breaking space (tools::showNonASCII(DF_raw$responses))
-      
-      # This takes care of one type of multiple responses:  COVIDCONTROL ["response1", "response2"]
-      responses = gsub('\\{""Q0"":\\[""|""\\]\\}', '', responses), 
-      responses = gsub('("","")', ', ', responses)
-    ) 
-  # THIS plus the rowwise and mutate below for multiple answers. ADDS a lot of time        
-  # responses = gsub('"Q[0-9]"|&nbsp;|\u00A0', '', responses)
-  # ) %>% 
-  # rowwise() %>% 
-  # mutate(responses = lapply(regmatches(responses, gregexpr('(\").*?(\")', responses, perl = TRUE)), function(y) gsub("^\"|\"$", "", y)) %>% unlist() %>% paste(., collapse = "; ")) # Should deal with multiple responses (?)
+    mutate(time_elapsed = as.integer(time_elapsed))
   
   
   # Save files --------------------------------------------------------------

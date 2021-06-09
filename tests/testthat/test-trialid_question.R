@@ -35,12 +35,12 @@ testthat::test_that('Check if the trialid question_text are unique', {
   
   if (length(non_unique_trialid) > 0) {
     
-    write_csv(non_unique_trialid %>% as_tibble(), here::here(paste0("output/tests_outputs/test-", name_of_test, ".csv")))
+    write_csv(non_unique_trialid %>% as_tibble(), here::here(paste0("outputs/tests_outputs/test-", name_of_test, ".csv")))
     
     cat(crayon::red("\nERROR in", paste0("test-", name_of_test), "\n"),
         crayon::red("  - Some of the trialid's are not unique:"), non_unique_trialid, "\n",
         crayon::green("  - # of Issues: "), crayon::red(length(non_unique_trialid)), "\n",
-        crayon::silver("  - DF with details stored in:", paste0("'output/tests_outputs/test-", name_of_test, ".csv'"), "\n\n"))
+        crayon::silver("  - DF with details stored in:", paste0("'outputs/tests_outputs/test-", name_of_test, ".csv'"), "\n\n"))
   }
   
 

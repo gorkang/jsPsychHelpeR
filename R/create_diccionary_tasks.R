@@ -15,6 +15,6 @@ create_diccionary_tasks <- function(DF_clean) {
     distinct(experimento, `short_name: from trialid`) %>% 
     drop_na()
   
-  write_csv(DICCIONARY_tasks, "output/data/DICCIONARY_tasks.csv")
+  write_csv(DICCIONARY_tasks, "outputs/data/DICCIONARY_tasks.csv")
 
 }

@@ -1,6 +1,6 @@
 library(shiny)
 suppressPackageStartupMessages(library(tidyverse))
-DF_analysis = read_csv(here::here("output/data/DF_analysis.csv"),
+DF_analysis = read_csv(here::here("outputs/data/DF_analysis.csv"),
                        col_types =
                          cols(
                            .default = col_double(),

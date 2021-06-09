@@ -29,7 +29,7 @@
 
 # Make sure all the necessary folders exist -----------------------------
   
-  necessary_folders = c("data", "output/data", "output/plots", "output/reliability", "output/tables", "output/tests_outputs", ".vault", ".vault/output/data", ".vault/data_vault_5", ".vault/data_vault_6")
+  necessary_folders = c("data", "outputs/data", "outputs/plots", "outputs/reliability", "outputs/reports", "outputs/tables", "outputs/tests_outputs", ".vault", ".vault/outputs/data", ".vault/data_vault_5", ".vault/data_vault_6")
   if (all(necessary_folders %in% dir(recursive = TRUE, include.dirs = TRUE, all.files = TRUE))) {
     cat(crayon::green("All the necessary folders are present\n"))
   } else {

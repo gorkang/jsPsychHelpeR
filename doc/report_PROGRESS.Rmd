@@ -1,0 +1,84 @@
+---
+title: "Progress in data collection"
+output: 
+  html_document: 
+    toc: no
+editor_options: 
+  chunk_output_type: console
+params:
+  input_files_vector: ""
+  pid_PROGRESS: 0
+  last_task: "Goodbye"
+  goal: 100
+---
+  
+
+```{r setup, include=FALSE}
+
+# DEBUG
+# targets::tar_load(input_files_form)
+# params = tibble(
+#   input_files_vector = input_files_form,
+#   pid_PROGRESS = 4,
+#   last_task = "FORM",
+#   goal = 500
+# )
+
+knitr::opts_chunk$set(echo = TRUE)
+
+```
+
+
+## Protocol `r params$pid_PROGRESS` {.tabset}
+
+
+```{r summary, include=FALSE}
+
+DF = show_progress_pid(pid = params$pid_PROGRESS, files_vector = params$input_files_vector, last_task = params$last_task, goal = params$goal)
+DF_progress = DF$DF_progress
+
+number_participants = DF_progress$suma_total %>%  first()
+DIFF_days = DF_progress$days_since_start %>% first()
+rate_per_day = DF_progress$rate %>% first()
+
+```
+
+---  
+
+`r number_participants` participants completed the protocol in `r DIFF_days` days (~`r rate_per_day` per day).   
+
+---  
+
+
+### Summary table  
+
+
+```{r summary-table, echo=FALSE}
+DT::datatable(DF$TABLE,
+              width = "50%",
+              rownames = FALSE,
+              options = list(dom = 't',
+                             pageLength = 50,
+                             lengthMenu = c(50, 100, 1000)))
+```
+
+### Full table  
+
+```{r full-table, echo=FALSE}
+DT::datatable(DF_progress,
+              width = "50%",
+              rownames = FALSE,
+              options = list(dom = 't',
+                             pageLength = 50,
+                             lengthMenu = c(50, 100, 1000)))
+```
+
+### Plot
+
+```{r plot_form_progress, echo=FALSE, fig.height=10, fig.width=16}
+
+DF$PLOT_progress
+
+ggsave(here::here(paste0("outputs/plots/plot_", params$pid_PROGRESS, "_progress.png")), DF$PLOT_progress, width = 16, height = 10)
+  
+```

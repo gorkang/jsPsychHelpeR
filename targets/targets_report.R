@@ -26,6 +26,18 @@ targets <- list(
   # Report ------------------------------------------------------------------
   
   # Automatic report
-  tar_render(report_DF_clean, "doc/report_DF_clean.Rmd", params = list(last_task = "Goodbye"))
+  tar_render(report_DF_clean, "doc/report_DF_clean.Rmd", 
+             params = list(last_task = "Goodbye"),
+             output_file = paste0("../outputs/reports/report_DF_clean.html")),
+  
+  # Progress report
+  tar_render(report_PROGRESS_1, path = "doc/report_PROGRESS.Rmd", 
+             params = list(input_files_vector = input_files, 
+                           pid_PROGRESS = 1, 
+                           last_task = "Goodbye", 
+                           goal = 500),
+             output_file = paste0("../outputs/reports/report_PROGRESS_", 1 , ".html"))
+  
+  
   
 )

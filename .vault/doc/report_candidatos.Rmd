@@ -7,9 +7,9 @@ editor_options:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-df_FORM_RAW = read_rds(here::here(".vault/output/data/df_FORM5.rds"))
-df_Status_RAW = read_rds(here::here(".vault/output/data/df_FORM6.rds"))
-df_AIM = read_rds(here::here(".vault/output/data/df_AIM.rds")) %>% select(RUT, AIM_DIRt)
+df_FORM_RAW = read_rds(here::here(".vault/outputs/data/df_FORM5.rds"))
+df_Status_RAW = read_rds(here::here(".vault/outputs/data/df_FORM6.rds"))
+df_AIM = read_rds(here::here(".vault/outputs/data/df_AIM.rds")) %>% select(RUT, AIM_DIRt)
 
 # df_FORM_RAW; df_Status_RAW; df_AIM
 ```

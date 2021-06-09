@@ -30,7 +30,7 @@ testthat::test_that('Check if DF_raw', {
   
   # Test: we have the canonical columns in DF_raw -------------------------------------------------------------------
 
-    canonical_names_columns =  c("filename", "trial_type", "trial_index", "time_elapsed", "internal_node_id", "view_history", "rt", "trialid", "stimulus", "responses", "id", "project", "experimento", "version", "datetime")
+    canonical_names_columns =  c("filename", "trial_type", "trial_index", "time_elapsed", "internal_node_id", "view_history", "rt", "trialid", "stimulus", "response", "id", "project", "experimento", "version", "datetime")
     #success
   
   
@@ -39,13 +39,13 @@ testthat::test_that('Check if DF_raw', {
   
   if (nrow(DF_problematic_trialids) > 0) {
     
-    write_csv(DF_problematic_trialids, here::here(paste0("output/tests_outputs/test-", name_of_test, ".csv")))
+    write_csv(DF_problematic_trialids, here::here(paste0("outputs/tests_outputs/test-", name_of_test, ".csv")))
     
     cat(crayon::red("\nERROR in", paste0("test-", name_of_test), "\n"),
         crayon::red("  - Some of the items have non-supported trialids:"), offenders, "\n",
         crayon::yellow("  - # of Issues: "), crayon::red(length(offenders)), "\n",
         crayon::green("  - trialid should be: "), crayon::black("SHORTNAMESCALE_DD or Instructions or Instructions_DD; e.g. CRT7_01, Instructions, Instructions_01"), "\n",
-        crayon::silver("  - DF with details stored in:", paste0("'output/tests_outputs/test-", name_of_test, ".csv'"), "\n\n"))
+        crayon::silver("  - DF with details stored in:", paste0("'outputs/tests_outputs/test-", name_of_test, ".csv'"), "\n\n"))
     
   }
   

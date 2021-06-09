@@ -102,7 +102,7 @@ En la consola deberia aparecer mucho texto. La última linea deberia decir:
 
 ---  
 
-<span style="color:orange">Creating necessary folders</span>:  data, output/data, output/plots, output/tables, output/tests_outputs, .vault, .vault/output/data, .vault/data_vault_5, .vault/data_vault_6 
+<span style="color:orange">Creating necessary folders</span>:  data, outputs/data, outputs/plots, outputs/tables, outputs/tests_outputs, .vault, .vault/outputs/data, .vault/data_vault_5, .vault/data_vault_6 
 
 ---  
 

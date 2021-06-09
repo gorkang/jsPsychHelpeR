@@ -79,12 +79,12 @@ testthat::test_that('Check DF_joined', {
           mutate(what = "In targets, missing in join")
         )
     
-    write_csv(df_missing, here::here(paste0("output/tests_outputs/test-", name_of_test, ".csv")))
+    write_csv(df_missing, here::here(paste0("outputs/tests_outputs/test-", name_of_test, ".csv")))
     
     cat(crayon::red("\nERROR in", paste0("test-", name_of_test), "\n"),
         crayon::red("  - Some tasks are in DF_clean but not in DF_joined:"), "", "\n",
         crayon::green("  - # of Issues: "), crayon::red(nrow(df_missing)), "\n",
-        crayon::silver("  - DF with details stored in:", paste0("'output/tests_outputs/test-", name_of_test, ".csv'"), "\n\n"))
+        crayon::silver("  - DF with details stored in:", paste0("'outputs/tests_outputs/test-", name_of_test, ".csv'"), "\n\n"))
   }
   
 

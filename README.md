@@ -36,6 +36,6 @@ To see more detail about any specific step, you can:
 
 -   **Raw data** (anonymized) are in `data/raw_data_anonymized.csv`
 
--   **Plots** and **tables** are in `output/plots` and `output/tables` respectively.
+-   **Plots** and **tables** are in `outputs/plots` and `outputs/tables` respectively.
 
--   **Dataframes** for different stages of data processing can be seen in `output/data`
+-   **Dataframes** for different stages of data processing can be seen in `outputs/data`

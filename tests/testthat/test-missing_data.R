@@ -82,15 +82,15 @@ testthat::test_that('Tests if participants that completed the protocol are missi
   
   if (length(missing_ids) > 0) {
     
-    write_csv(missing_DF, here::here(paste0("output/tests_outputs/test-", name_of_test, ".csv")))
-    write_csv(missingall_DF, here::here(paste0("output/tests_outputs/test-", name_of_test, "_ALL.csv")))
+    write_csv(missing_DF, here::here(paste0("outputs/tests_outputs/test-", name_of_test, ".csv")))
+    write_csv(missingall_DF, here::here(paste0("outputs/tests_outputs/test-", name_of_test, "_ALL.csv")))
     
     cat(crayon::red("\n", crayon::underline("ERROR"), "in", paste0("test-", name_of_test), "\n"),
         crayon::red("  - Some of the participants are", crayon::underline("missing test results:")), missing_ids, "\n",
         crayon::red("  - In the following vars:"), missing_vars, "\n",
         
         crayon::green("  - # of Issues: "), crayon::red(length(missing_ids)), "\n",
-        crayon::silver("  - DF with details stored in:", paste0("'output/tests_outputs/test-", name_of_test, ".csv'"), "\n\n"))
+        crayon::silver("  - DF with details stored in:", paste0("'outputs/tests_outputs/test-", name_of_test, ".csv'"), "\n\n"))
     
   }
   

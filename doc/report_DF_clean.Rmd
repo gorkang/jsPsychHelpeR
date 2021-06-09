@@ -25,27 +25,29 @@ DF = DF_clean
 
 ```{r plot_form_progress, include=FALSE}
   
-plot_form_progress =
-  DF_raw %>% 
-  filter(experimento == params$last_task) %>%#"COVIDCONTROL"
-  distinct(id, .keep_all = TRUE) %>% 
-  distinct(filename, datetime) %>% 
-  mutate(fecha_registro = as.Date(datetime)) %>% 
-  count(fecha_registro, name = "numero_registros") %>% 
-  ungroup() %>% 
-  mutate(suma_total = cumsum(numero_registros)) %>% 
-  ggplot(aes(fecha_registro, suma_total)) +
-  geom_line() +
-  geom_bar(aes(fecha_registro, numero_registros), stat = "identity", alpha = .5) +
-  geom_point() +
-  theme_minimal() +
-  scale_x_date(date_breaks = "1 day", guide = guide_axis(angle = 90)) +
-  scale_y_continuous(n.breaks = 10) +
-  labs(title = "Protocolo completado",
-       subtitle = paste0("Ultimo dato: ", as.Date(max(DF_clean$datetime))),
-       caption = paste0("Last test used: ", params$last_task))
+plot_form_progress = show_progress_pid(pid = 3, files_vector = DF_clean$filename, last_task = "Goodbye", goal = 500)$PLOT_progress
+
+# plot_form_progress =
+#   DF_raw %>% 
+#   filter(experimento == params$last_task) %>%#"COVIDCONTROL"
+#   distinct(id, .keep_all = TRUE) %>% 
+#   distinct(filename, datetime) %>% 
+#   mutate(fecha_registro = as.Date(datetime)) %>% 
+#   count(fecha_registro, name = "numero_registros") %>% 
+#   ungroup() %>% 
+#   mutate(suma_total = cumsum(numero_registros)) %>% 
+#   ggplot(aes(fecha_registro, suma_total)) +
+#   geom_line() +
+#   geom_bar(aes(fecha_registro, numero_registros), stat = "identity", alpha = .5) +
+#   geom_point() +
+#   theme_minimal() +
+#   scale_x_date(date_breaks = "1 day", guide = guide_axis(angle = 90)) +
+#   scale_y_continuous(n.breaks = 10) +
+#   labs(title = "Protocolo completado",
+#        subtitle = paste0("Ultimo dato: ", as.Date(max(DF_clean$datetime))),
+#        caption = paste0("Last test used: ", params$last_task))
   
-ggsave(here::here("output/plots/plot_form_progress.png"), plot_form_progress, width = 15, height = 9)
+ggsave(here::here("outputs/plots/plot_form_progress.png"), plot_form_progress, width = 15, height = 9)
   
 ```
 
@@ -182,7 +184,7 @@ DT::datatable(summary_position, filter = 'top', options = list(dom = 'ltip', pag
 # Alternative trialid for each scale
 trialid_table = DF %>% 
   filter(trial_type != "fullscreen") %>% 
-  select(experimento, trial_type, trialid, responses) %>% 
+  select(experimento, trial_type, trialid, response) %>% 
   group_by(experimento) %>% 
   distinct(trialid) %>% 
   count(experimento, name = "number_items")
@@ -227,10 +229,10 @@ Only showing multi-choice, slider and liker scales.
 # Alternatives responses for each scale
 responses_table = DF %>% 
   # distinct(trial_type)
-  select(experimento, trial_type, trialid, responses) %>% 
+  select(experimento, trial_type, trialid, response) %>% 
   filter(trial_type %in% c("survey-multi-choice-vertical", "survey-multi-choice-horizontal", "likert", "html-slider-response")) %>% 
   group_by(experimento) %>% 
-  distinct(trialid, responses) 
+  distinct(trialid, response) 
 
 
 DT::datatable(responses_table, 
