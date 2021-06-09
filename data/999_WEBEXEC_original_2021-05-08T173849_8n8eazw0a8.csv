@@ -1,0 +1,8 @@
+"view_history","rt","trialid","procedure","trial_type","trial_index","time_elapsed","internal_node_id","stimulus","response"
+"[{""page_index"":0,""viewing_time"":265}]","265","Instructions","WEBEXEC","instructions","772","356246","0.0-734.0","",""
+"","662","WEBEXEC_01","WEBEXEC","survey-multi-choice-vertical","773","356915","0.0-735.0","{""Q0"":""1. ¿Tienes dificultades para mantener tu atención en una tarea?""}","{""Q0"":"" No he tenido problemas""}"
+"","562","WEBEXEC_02","WEBEXEC","survey-multi-choice-vertical","774","357482","0.0-736.0","{""Q0"":""2. ¿Tienes problemas para concentrarte en una tarea?""}","{""Q0"":"" He tenido muchos problemas""}"
+"","556","WEBEXEC_03","WEBEXEC","survey-multi-choice-vertical","775","358041","0.0-737.0","{""Q0"":""3. ¿Tienes problemas para hacer más de una tarea al mismo tiempo?""}","{""Q0"":"" He tenido algunos problemas""}"
+"","564","WEBEXEC_04","WEBEXEC","survey-multi-choice-vertical","776","358609","0.0-738.0","{""Q0"":""4. ¿Tiendes a perder tu cadena de pensamientos?""}","{""Q0"":"" He tenido algunos problemas""}"
+"","535","WEBEXEC_05","WEBEXEC","survey-multi-choice-vertical","777","359148","0.0-739.0","{""Q0"":""5. ¿Tienes problemas para continuar las cosas que has empezado?""}","{""Q0"":"" He tenido bastantes problemas""}"
+"","545","WEBEXEC_06","WEBEXEC","survey-multi-choice-vertical","778","359699","0.0-740.0","{""Q0"":""6. ¿Actúas por impulso?""}","{""Q0"":"" He tenido bastantes problemas""}"

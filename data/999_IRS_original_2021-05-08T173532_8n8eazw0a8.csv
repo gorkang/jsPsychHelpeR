@@ -1,0 +1,8 @@
+"view_history","rt","trialid","procedure","trial_type","trial_index","time_elapsed","internal_node_id","stimulus","slider_start","response"
+"[{""page_index"":0,""viewing_time"":250}]","250","Instructions","IRS","instructions","366","160193","0.0-317.0","","",""
+"","386.1050000000687","IRS_01","IRS","html-slider-response","367","160580","0.0-318.0","<div class='justified'>1. Es importante para mí personalmente ser escéptico sobre las afirmaciones que no están respaldadas por evidencia.</div></br>","50","1"
+"","368.60499999966123","IRS_02","IRS","html-slider-response","368","160950","0.0-319.0","<div class='justified'>2. Es importante para mí personalmente ser racional y sensato incluso en discusiones acaloradas.</div></br>","50","1"
+"","350.78999999994994","IRS_03","IRS","html-slider-response","369","161302","0.0-320.0","<div class='justified'>3. Para mí es importante examinar personalmente las creencias tradicionales utilizando la lógica y la evidencia.</div></br>","50","1"
+"","349.04000000003725","IRS_04","IRS","html-slider-response","370","161653","0.0-321.0","<div class='justified'>4. Es importante para mí personalmente que pueda justificar mis creencias utilizando argumentos y pruebas racionales.</div></br>","50","1"
+"","355.9199999999546","IRS_05","IRS","html-slider-response","371","162010","0.0-322.0","<div class='justified'>5. Es importante para mí personalmente examinar críticamente mis creencias arraigadas.</div></br>","50","1"
+"","361.69999999995343","IRS_06","IRS","html-slider-response","372","162373","0.0-323.0","<div class='justified'>6. Para mí es importante ser una persona racional.</div></br>","50","1"

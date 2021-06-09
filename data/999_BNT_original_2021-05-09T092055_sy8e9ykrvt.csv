@@ -1,0 +1,4 @@
+"view_history","rt","trialid","procedure","trial_type","trial_index","time_elapsed","internal_node_id","stimulus","response"
+"[{""page_index"":0,""viewing_time"":315}]","315","Instructions","BNT","instructions","8","7415","0.0-14.0","",""
+"","407","BNT_01","BNT","survey-text","9","7823","0.0-15.0","{""Q0"":""De las 1.000 personas que viven en un pequeño pueblo, 500 son miembros de un coro. De esos 500 miembros del coro, 100 son hombres. De los 500 habitantes que no pertenecen a un coro, 300 son hombres. ¿Cuál es la probabilidad de que un hombre seleccionado al azar sea miembro de un coro? Por favor, indique la probabilidad en porcentaje:""}","{""Q0"":""3""}"
+"","407","BNT_02","BNT","survey-text","10","8232","0.0-16.0-0.0","{""Q0"":""Imagina que tiramos un dado de cinco caras 50 veces. En promedio, de estas 50 tiradas, ¿cuántas veces crees que saldría un número impar (1, 3, o 5) en este dado de cinco caras? ______ de 50 tiradas.""}","{""Q0"":""42""}"
