@@ -1,19 +1,22 @@
 
 # Install packages ---------------------------------------------------------
 
-# targets::tar_renv()  
+# Run the fist time or when you have an error
 
-# Descomentar y correr la primera vez o cuando hay errores
-# source("setup/setup.R")
+  # targets::tar_renv()
+  # source("setup/setup.R")
 
 
 # Sync data from server ---------------------------------------------------
 
-id_protocol = 1
-server_folder = "/"
-local_folder = "/"
-system(paste0('rsync -av --rsh=ssh user-cscn@138.197.236.86:', server_folder, '', id_protocol, '/.data/ ', local_folder))
-
+  # EDIT ONLY THE id_protocol variable value
+  id_protocol = 999
+  
+  # If you do not have the .credentials file: rstudioapi::navigateToFile("setup/setup_server_credentials.R")
+  list_credentials = source(".vault/.credentials")
+  if (!dir.exists(paste0(getwd(), '/data/' , id_protocol, '/'))) dir.create(paste0(getwd(), '/data/' , id_protocol, '/'))
+  system(paste0('sshpass -p ', list_credentials$value$password, ' rsync -av --rsh=ssh ', list_credentials$value$user, "@", list_credentials$value$IP, ":", list_credentials$value$main_FOLDER, id_protocol, '/.data/ ', getwd(), '/data/' , id_protocol, '/'))
+  
 
 # Destroy cache (_targets folder) -----------------------------------------
 
@@ -25,9 +28,6 @@ system(paste0('rsync -av --rsh=ssh user-cscn@138.197.236.86:', server_folder, ''
 
   
 # Run project --------------------------------------------------------------
-
-  # Recreates _packages.R with the above packages (so renv founds them)
-  # targets::tar_renv() # Need to run renv::init() if anything changes
 
   targets::tar_make()
 

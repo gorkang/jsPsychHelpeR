@@ -536,6 +536,38 @@ auto_reliability = function(DF, short_name_scale = short_name_scale_str, items =
 }
 
 
+#' check_progress_pid
+#' 
+#' Get list of files for a project
+#'
+#' @param pid 
+#'
+#' @return
+#' @export
+#'
+#' @examples
+check_progress_pid <- function(pid = 3) {
+
+  # remotes::install_github("skgrange/threadr")
+  # sudo apt install sshpass
+
+  # Get filenames data from server ---
+  
+  # CHECK .credentials file exists
+  if (!file.exists(".vault/.credentials")) cat(crayon::red("The .vault/.credentials file does not exist. RUN: \n"), crayon::silver("rstudioapi::navigateToFile('setup/setup_server_credentials.R')\n"))
+  
+  list_credentials = source(".vault/.credentials")
+  files_server = threadr::list_files_scp(host = list_credentials$value$IP,
+                                directory_remote = paste0(list_credentials$value$main_FOLDER, pid, "/.data"), 
+                                user = list_credentials$value$user,
+                                password = list_credentials$value$password)
+  
+  files_csv = grep("csv", basename(files_server), value = TRUE)
+  
+  return(files_csv)
+  
+}
+
 
 #' show_progress_pid
 #'

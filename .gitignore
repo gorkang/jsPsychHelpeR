@@ -3,15 +3,19 @@
 .RData
 .Ruserdata
 dev/
-_targets/
 
-# Do not upload data
-data/
-.vault/data_vault_5/
-.vault/data_vault_6/
+# Do not upload _targets meta
+_targets/meta/
 
- # Do not upload output files
-.vault/output/
-output/
+# Do not upload sensitive data
+.vault/.credentials
+.vault/*/
+
+# Do not upload output files
+outputs/
 *.html
 *.zip
+
+# Uncomment if don't want to upload data and targets cache
+# data/
+# _targets/objects/ ## SHOULD UPLOAD 

@@ -37,6 +37,19 @@
     invisible(purrr::map(necessary_folders, dir.create, recursive = TRUE, showWarnings = FALSE))
   }
 
+
+# Server credentials ------------------------------------------------------
+
+  # FOLLOW 1-2-3 here:
+    # rstudioapi::navigateToFile("setup/setup_server_credentials.R")
+  
+  # Will need to install this one time
+  # remotes::install_github("skgrange/threadr")
+  
+  # On Ubuntu linux, install sshpass via Terminal
+  # sudo apt install sshpass
+  
+  
   
 # Configure shourcuts ---------------------------------------------------
   

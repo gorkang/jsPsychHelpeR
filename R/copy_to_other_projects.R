@@ -27,4 +27,4 @@ copy_to_other_projects <- function(file_name, overwrite_str = FALSE, check = TRU
   
 }
 
-# copy_to_other_projects(file_name = "^delete_duplicates.R$", overwrite_str = TRUE, check = FALSE, folder_to_search = "~/gorkang@gmail.com/RESEARCH")
+# copy_to_other_projects(file_name = "^delete_duplicates.R$", overwrite_str = TRUE, check = TRUE, folder_to_search = "~/gorkang@gmail.com/RESEARCH")

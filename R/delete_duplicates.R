@@ -96,6 +96,37 @@ delete_duplicates <- function(folder, check = TRUE) {
       # Get names of empty entries
       LIST_differences_equal = names(DF_differences_all)[!names(DF_differences_all) %in% names(LIST_differences_diff)]
       
+
+      # Duplicates that are SAFE to delete because they are == 
+      SAFE_DELETE = 
+        DUPLICATES %>% mutate(index = paste0(id, "_", experimento)) %>% 
+        filter(index %in% LIST_differences_equal) %>% 
+        filter(filename %in% DELETE) %>% pull(filename)
+      
+      
+      
+      # # LOCAL
+      # 1:length(SAFE_DELETE) %>% 
+      #   walk(~ {
+      #     
+      #     message("Delete: ", paste0('rm ', getwd(), '/data/3/', SAFE_DELETE[.x]))
+      #     system(paste0('rm ', getwd(), '/data/3/', SAFE_DELETE[.x]))
+      #   })
+      # 
+      #
+      # # SERVER
+      # CHECK .credentials file exists
+      # if (!file.exists(".vault/.credentials")) cat(crayon::red("The .vault/.credentials file does not exist. RUN: \n"), crayon::silver("rstudioapi::navigateToFile('setup/setup_server_credentials.R')\n"))
+      # list_credentials = source(".vault/.credentials")
+      # 1:length(SAFE_DELETE) %>% 
+      #   walk(~ {
+      #     
+      #     message("Delete: ", paste0('ssh ', list_credentials$value$user, '@', list_credentials$value$IP, ' rm ', list_credentials$value$main_FOLDER, id_protocol, '/.data/', SAFE_DELETE[.x]))
+      #     # system(paste0('rm ', getwd(), '/data/3/', SAFE_DELETE[.x]))
+      #     system(paste0('sshpass -p ', list_credentials$value$password, ' ssh ', list_credentials$value$user, '@', list_credentials$value$IP, ' rm ', list_credentials$value$main_FOLDER, id_protocol, '/.data/', SAFE_DELETE[.x]))
+      #   })
+      
+      
     }
     
   } else {
