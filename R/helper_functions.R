@@ -668,6 +668,7 @@ show_progress_pid <- function(pid = 3, files_vector, last_task = "Goodbye", goal
   }
   
   OUTPUT = list(TABLE = TABLE, 
+                DF_files = DF_files,
                 DF_progress = DF_progress,
                 PLOT_progress = PLOT_progress)
   
@@ -789,5 +790,33 @@ number_items_tasks <- function(DF_joined) {
          items_n = items_n)
   
   return(items_info)
+  
+}
+
+
+
+#' update_data
+#' Update data/id_protocol folder using rsync
+#'
+#' @param id_protocol 
+#'
+#' @return
+#' @export
+#'
+#' @examples
+update_data <- function(id_protocol) {
+  
+  # DEBUG
+  # id_protocol = 999
+  
+  if (!file.exists(".vault/.credentials")) {
+    # If you do not have the .credentials file: rstudioapi::navigateToFile("setup/setup_server_credentials.R")
+    cat(crayon::red("The file .vault/.credentials does NOT exist. Follow the steps in: "), "\n", crayon::yellow('rstudioapi::navigateToFile("setup/setup_server_credentials.R")\n'))
+    stop("CAN'T find .vault/.credentials")
+  }
+  
+  list_credentials = source(".vault/.credentials")
+  if (!dir.exists(paste0(getwd(), '/data/' , id_protocol, '/'))) dir.create(paste0(getwd(), '/data/' , id_protocol, '/'))
+  system(paste0('sshpass -p ', list_credentials$value$password, ' rsync -av --rsh=ssh ', list_credentials$value$user, "@", list_credentials$value$IP, ":", list_credentials$value$main_FOLDER, id_protocol, '/.data/ ', getwd(), '/data/' , id_protocol, '/'))
   
 }
