@@ -1,23 +1,27 @@
 
-# Install packages ---------------------------------------------------------
+# Initial setup -----------------------------------------------------------
 
-# Run the fist time or when you have an error
-
+  # Run the fist time or when you have an error
   # targets::tar_renv()
   # source("setup/setup.R")
 
 
+# Load libraries ---------------------------------------------------------
+
+  lapply(list.files("./R", full.names = TRUE, pattern = ".R$"), source)
+
+
 # Sync data from server ---------------------------------------------------
 
-  # EDIT ONLY THE id_protocol variable value
-  id_protocol = 999
+  pid_target = 999
   
-  # If you do not have the .credentials file: rstudioapi::navigateToFile("setup/setup_server_credentials.R")
-  list_credentials = source(".vault/.credentials")
-  if (!dir.exists(paste0(getwd(), '/data/' , id_protocol, '/'))) dir.create(paste0(getwd(), '/data/' , id_protocol, '/'))
-  system(paste0('sshpass -p ', list_credentials$value$password, ' rsync -av --rsh=ssh ', list_credentials$value$user, "@", list_credentials$value$IP, ":", list_credentials$value$main_FOLDER, id_protocol, '/.data/ ', getwd(), '/data/' , id_protocol, '/'))
+  update_data(id_protocol = pid_target)
   
+  # Delete duplicates 
+  CHECK_duplicates = delete_duplicates(folder = paste0("data/", pid_target, "/"), check = TRUE); CHECK_duplicates
+  delete_duplicates(folder = paste0("data/", pid_target, "/"), check = FALSE)
 
+  
 # Destroy cache (_targets folder) -----------------------------------------
 
   # Destroys cache to force a clean run
