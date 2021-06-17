@@ -7,7 +7,7 @@ editor_options:
   chunk_output_type: console
 params:
   input_files_vector: ""
-  pid_PROGRESS: 0
+  pid_report: 0
   last_task: "Goodbye"
   goal: 100
 ---
@@ -16,11 +16,11 @@ params:
 ```{r setup, include=FALSE}
 
 # DEBUG
-# targets::tar_load(input_files_form)
-# params = tibble(
-#   input_files_vector = input_files_form,
-#   pid_PROGRESS = 4,
-#   last_task = "FORM",
+# targets::tar_load(input_files)
+# params = list(
+#   input_files_vector = input_files,
+#   pid_report = 999,
+#   last_task = "Goodbye",
 #   goal = 500
 # )
 
@@ -29,17 +29,16 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 
-## Protocol `r params$pid_PROGRESS` {.tabset}
+## Protocol `r params$pid_report` {.tabset}
 
 
 ```{r summary, include=FALSE}
 
-DF = show_progress_pid(pid = params$pid_PROGRESS, files_vector = params$input_files_vector, last_task = params$last_task, goal = params$goal)
-DF_progress = DF$DF_progress
+DF = show_progress_pid(pid = params$pid_report, files_vector = params$input_files_vector, last_task = params$last_task, goal = params$goal)
 
-number_participants = DF_progress$suma_total %>%  first()
-DIFF_days = DF_progress$days_since_start %>% first()
-rate_per_day = DF_progress$rate %>% first()
+number_participants = DF$DF_progress$suma_total %>%  first()
+DIFF_days = DF$DF_progress$days_since_start %>% first()
+rate_per_day = DF$DF_progress$rate %>% first()
 
 ```
 
@@ -65,7 +64,7 @@ DT::datatable(DF$TABLE,
 ### Full table  
 
 ```{r full-table, echo=FALSE}
-DT::datatable(DF_progress,
+DT::datatable(DF$DF_progress,
               width = "50%",
               rownames = FALSE,
               options = list(dom = 't',
@@ -79,6 +78,18 @@ DT::datatable(DF_progress,
 
 DF$PLOT_progress
 
-ggsave(here::here(paste0("outputs/plots/plot_", params$pid_PROGRESS, "_progress.png")), DF$PLOT_progress, width = 16, height = 10)
+ggsave(here::here(paste0("outputs/plots/plot_", params$pid_report, "_progress.png")), DF$PLOT_progress, width = 16, height = 10)
   
 ```
+
+### All tasks
+
+```{r all-tasks, echo=FALSE}
+DT::datatable(DF$DF_files %>% count(experimento) %>% arrange(desc(n)),
+              width = "50%",
+              rownames = FALSE,
+              options = list(dom = 't',
+                             pageLength = 50,
+                             lengthMenu = c(50, 100, 1000)))
+```
+

@@ -7,6 +7,8 @@ editor_options:
   chunk_output_type: console
 params:
   last_task: ""
+  pid_report: 0
+
 ---
 
 ```{r setup, include=FALSE}
@@ -14,7 +16,10 @@ params:
 # source(here::here("_packages.R"))
 # DF_clean = read_rds(here::here("_targets/objects/DF_clean"))
 # DF_raw = read_rds(here::here("_targets/objects/DF_raw"))
-# params = data.frame(last_task = "Goodbye")
+# params = list(
+#   pid_report = 0,
+#   last_task = "Goodbye"
+# )
 
 knitr::opts_chunk$set(echo = TRUE)
 targets::tar_load(DF_clean)
@@ -25,28 +30,8 @@ DF = DF_clean
 
 ```{r plot_form_progress, include=FALSE}
   
-plot_form_progress = show_progress_pid(pid = 3, files_vector = DF_clean$filename, last_task = "Goodbye", goal = 500)$PLOT_progress
+plot_form_progress = show_progress_pid(pid = params$pid_report, files_vector = DF_clean$filename, last_task = "Goodbye", goal = 500)$PLOT_progress
 
-# plot_form_progress =
-#   DF_raw %>% 
-#   filter(experimento == params$last_task) %>%#"COVIDCONTROL"
-#   distinct(id, .keep_all = TRUE) %>% 
-#   distinct(filename, datetime) %>% 
-#   mutate(fecha_registro = as.Date(datetime)) %>% 
-#   count(fecha_registro, name = "numero_registros") %>% 
-#   ungroup() %>% 
-#   mutate(suma_total = cumsum(numero_registros)) %>% 
-#   ggplot(aes(fecha_registro, suma_total)) +
-#   geom_line() +
-#   geom_bar(aes(fecha_registro, numero_registros), stat = "identity", alpha = .5) +
-#   geom_point() +
-#   theme_minimal() +
-#   scale_x_date(date_breaks = "1 day", guide = guide_axis(angle = 90)) +
-#   scale_y_continuous(n.breaks = 10) +
-#   labs(title = "Protocolo completado",
-#        subtitle = paste0("Ultimo dato: ", as.Date(max(DF_clean$datetime))),
-#        caption = paste0("Last test used: ", params$last_task))
-  
 ggsave(here::here("outputs/plots/plot_form_progress.png"), plot_form_progress, width = 15, height = 9)
   
 ```
@@ -155,7 +140,7 @@ DT::datatable(summary_table3, filter = 'top', options = list(dom = 'ltip', pageL
 ### Order of tasks
 
 ```{r summary-position, echo=FALSE}
-summary_position = DF %>% 
+summary_position = DF_raw %>% 
   distinct(id, experimento, datetime) %>% 
   group_by(id) %>% 
   arrange(id, (datetime)) %>% 
