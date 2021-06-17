@@ -58,5 +58,5 @@
   # Control+P: load all packages and functions
   # Control+M: targets::tar_make()
   # Control+L: targets::rstudio_addin_tar_load()
-  source("R/setup_shortcuts.R"); setup_shortcuts()
+  source("setup/setup_shortcuts.R"); setup_shortcuts()
   

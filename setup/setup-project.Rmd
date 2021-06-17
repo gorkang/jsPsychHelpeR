@@ -1,5 +1,5 @@
 ---
-title: "Setup para proyecto jsPsychHelpeR-David"
+title: "Project setup - SPANISH"
 # author: "Gorka Navarrete"
 date: "12/28/2020"
 output: 
@@ -7,13 +7,15 @@ output:
     toc: yes
 ---
 
+# THIS INSTRUCTIONS ARE OUTDATED! SEE img/ etc
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ---  
 
-Instrucciones para descargar, configurar y correr el script de preparación de datos del proyecto **jsPsychHelpeR-David**
+Instrucciones para descargar, configurar y correr el script de preparación de datos del proyecto **jsPsychHelpeR**
 
 ---  
 
@@ -36,7 +38,7 @@ Deberían estar instalados los siguientes programas:
 ---  
 
 
-1. Ve a https://github.com/gorkang/jsPsychHelpeR-David, haz click en ![](img/setup-code.png) 
+1. Ve a https://github.com/gorkang/jsPsychHelpeR, haz click en ![](img/setup-code.png) 
 
 ---  
 
@@ -102,7 +104,7 @@ En la consola deberia aparecer mucho texto. La última linea deberia decir:
 
 ---  
 
-<span style="color:orange">Creating necessary folders</span>:  data, outputs/data, outputs/plots, outputs/tables, outputs/tests_outputs, .vault, .vault/outputs/data, .vault/data_vault_5, .vault/data_vault_6 
+<span style="color:orange">Creating necessary folders</span>:  data, outputs/data, outputs/plots, outputs/tables, outputs/tests_outputs, .vault, .vault/outputs/data, ...
 
 ---  
 
