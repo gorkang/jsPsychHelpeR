@@ -56,7 +56,7 @@ targets <- list(
   
   ## Prepare tasks -----------------------------------------------------------
   
-  # Use R/prepare_template.R to create new preparation_scripts
+  # Use create_new_task("NAME_OF_TASK") create new preparation_scripts
 
    tar_target(df_AIM, prepare_AIM(DF_clean, short_name_scale_str = 'AIM')),
    tar_target(df_BNT, prepare_BNT(DF_clean, short_name_scale_str = 'BNT')),
@@ -68,14 +68,14 @@ targets <- list(
    tar_target(df_CRT7, prepare_CRT7(DF_clean, short_name_scale_str = 'CRT7')),
    tar_target(df_CRTMCQ4, prepare_CRTMCQ4(DF_clean, short_name_scale_str = 'CRTMCQ4')),
    tar_target(df_CRTv, prepare_CRTv(DF_clean, short_name_scale_str = 'CRTv')),
-   # tar_target(df_DEBRIEF, prepare_DEBRIEF(DF_clean, short_name_scale_str = 'DEBRIEF')),
+   tar_target(df_DEBRIEF, prepare_DEBRIEF(DF_clean, short_name_scale_str = 'DEBRIEF')),
    tar_target(df_DEMOGR, prepare_DEMOGR(DF_clean, short_name_scale_str = 'DEMOGR')),
    # tar_target(df_DEMOGR3, prepare_DEMOGR3(DF_clean, short_name_scale_str = 'DEMOGR3')),
    tar_target(df_EAR, prepare_EAR(DF_clean, short_name_scale_str = 'EAR')),
    tar_target(df_ERQ, prepare_ERQ(DF_clean, short_name_scale_str = 'ERQ')),
    tar_target(df_FDMQ, prepare_FDMQ(DF_clean, short_name_scale_str = 'FDMQ')),
    tar_target(df_GHQ12, prepare_GHQ12(DF_clean, short_name_scale_str = 'GHQ12')),
-   # tar_target(df_Goodbye, prepare_Goodbye(DF_clean, short_name_scale_str = 'Goodbye')),
+   tar_target(df_Goodbye, prepare_Goodbye(DF_clean, short_name_scale_str = 'Goodbye')),
    tar_target(df_HRPVB, prepare_HRPVB(DF_clean, short_name_scale_str = 'HRPVB')),
    tar_target(df_HRPVBpost, prepare_HRPVBpost(DF_clean, short_name_scale_str = 'HRPVBpost')),
    tar_target(df_IDQ, prepare_IDQ(DF_clean, short_name_scale_str = 'IDQ')),
@@ -121,14 +121,14 @@ targets <- list(
 							 df_CRT7,
 							 df_CRTMCQ4,
 							 df_CRTv,
-							 # df_DEBRIEF,
+							 df_DEBRIEF,
 							 df_DEMOGR,
 							 # df_DEMOGR3,
 							 df_EAR,
 							 df_ERQ,
 							 df_FDMQ,
 							 df_GHQ12,
-							 # df_Goodbye,
+							 df_Goodbye,
 							 df_HRPVB,
 							 df_HRPVBpost,
 							 df_IDQ,
@@ -190,9 +190,9 @@ targets <- list(
   ## Tests -------------------------------------------------------------------
   
   # [REMEMBER]: Have to manually put every target we have a test for here (except the automatic tests: 'input_files_automatic_tests_str' takes care of that)
-  tar_target(input_files_automatic_tests_str, list.files(path = "_targets/objects/", pattern="df_*", full.names = FALSE, ignore.case = FALSE)),
+  # tar_target(input_files_automatic_tests_str, list.files(path = "_targets/objects/", pattern="df_*", full.names = FALSE, ignore.case = FALSE)),
 
-  tar_target(TESTS, test_testhat(input_files_automatic_tests_str = input_files_automatic_tests_str,
+  tar_target(TESTS, test_testhat(#input_files_automatic_tests_str = input_files_automatic_tests_str,
                                  input_files,
                                  DF_raw,
                                  DF_clean,

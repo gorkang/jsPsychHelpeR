@@ -29,12 +29,15 @@
 
 # Make sure all the necessary folders exist -----------------------------
   
-  necessary_folders = c("data", "outputs/data", "outputs/plots", "outputs/reliability", "outputs/reports", "outputs/tables", "outputs/tests_outputs", ".vault", ".vault/outputs/data", ".vault/data_vault_5", ".vault/data_vault_6")
+  necessary_folders = c("data", "outputs/data", "outputs/plots", "outputs/reliability", "outputs/reports", "outputs/tables", "outputs/tests_outputs", 
+                        ".vault", ".vault/docs", ".vault/outputs/data", ".vault/outputs/reports")
   if (all(necessary_folders %in% dir(recursive = TRUE, include.dirs = TRUE, all.files = TRUE))) {
     cat(crayon::green("All the necessary folders are present\n"))
   } else {
     cat(crayon::yellow("Creating necessary folders: "), paste(necessary_folders, collapse = ", "), "\n")
     invisible(purrr::map(necessary_folders, dir.create, recursive = TRUE, showWarnings = FALSE))
+    system("chmod 700 -R .vault/")
+    
   }
 
 

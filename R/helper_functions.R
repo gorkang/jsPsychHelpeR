@@ -173,20 +173,24 @@ create_raw_long <- function(DF_clean, short_name_scale, numeric_responses = FALS
   # DEBUG
   # short_name_scale = "SCSORF"
 
-  DF_clean %>%
-    # filter(experimento == name_scale) %>%
-    filter(grepl(paste0(short_name_scale, "_[0-9]"), trialid)) %>%
-    select(id, experimento, rt, trialid, stimulus, response) %>%
-    mutate(response =
-             if (numeric_responses == TRUE) {
-               as.numeric(response)
-             } else {
-               as.character(response)
-             }
-    ) %>%
-    drop_na(trialid) %>%
-    rename(RAW = response) %>%
-    arrange(trialid, id)
+  DF_output = 
+    DF_clean %>%
+      # filter(experimento == name_scale) %>%
+      filter(grepl(paste0(short_name_scale, "_[0-9]"), trialid)) %>%
+      select(id, experimento, rt, trialid, stimulus, response) %>%
+      mutate(response =
+               if (numeric_responses == TRUE) {
+                 as.numeric(response)
+               } else {
+                 as.character(response)
+               }
+      ) %>%
+      drop_na(trialid) %>%
+      rename(RAW = response) %>%
+      arrange(trialid, id)
+  
+  if (nrow(DF_output) == 0) stop("No trialid's matching '", short_name_scale, "_[0-9]' found in DF_clean")
+  return(DF_output)
 }
 
 
@@ -351,17 +355,16 @@ prepare_helper <- function(DF_long_RAW, show_trialid_questiontext = FALSE) {
 #' @examples
 create_new_task <- function(short_name_task, overwrite = FALSE) {
 
-  #DEBUG
+  # DEBUG
   # short_name_task = "PSS"
-  # old_names = TRUE
-
+  # overwrite = FALSE
 
   # Create file ---
-  new_task_file = paste0("R/prepare_", short_name_task ,".R")
+  new_task_file = paste0("R_tasks/prepare_", short_name_task ,".R")
 
   if (!file.exists(new_task_file) | overwrite == TRUE) {
     cat(crayon::green("\nCreating new file: ", crayon::silver(new_task_file), "\n"))
-    file.copy("R/prepare_TEMPLATE.R", new_task_file, overwrite = overwrite)
+    file.copy("R_tasks/prepare_TEMPLATE.R", new_task_file, overwrite = overwrite)
 
 
     # Replace lines ---
@@ -400,21 +403,49 @@ create_vector_items <- function(VECTOR) {
 #' @export
 #'
 #' @examples
-create_targets_file <- function(folder) {
+create_targets_file <- function(folder_data = NULL, folder_tasks = NULL) {
 
-  # folder = "/home/emrys/Downloads/tests/megatron/tasks"
+  # DEBUG
+  # folder_tasks = "/home/emrys/Downloads/COURSE/gorkang-jsPsychMaker-d94788a/canonical_protocol/tasks/"
+  # folder_data = "data/"
+  # TODO: should move not used prepare_XXX() to subfolder? Or delete.
+  
+  library(dplyr)
+  
+  # If both parameters have info, choose folder_data
+  if (!is.null(folder_data) & !is.null(folder_tasks)) {
+    cat(crayon::yellow("Both 'folder_data' and 'folder_tasks' have information. Using 'folder_data'\n"))
+    folder_tasks = NULL
+  } 
+  
+  # List js files or parse data files
+  if (is.null(folder_data) & !is.null(folder_tasks)) {
+    files = gsub(".js", "", basename(list.files(folder_tasks, recursive = FALSE, pattern = ".js")))
+  } else if (!is.null(folder_data) & is.null(folder_tasks)) {
+    files = 
+      list.files(folder_data, recursive = TRUE) %>% 
+      as_tibble() %>% 
+      tidyr::separate(col = value, into = c("project", "experimento", "version", "datetime", "id"), sep = c("_"), remove = TRUE) %>% 
+      distinct(experimento) %>% 
+      pull(experimento)
+  }
+  
+  
+  # Read template
   template = readLines("targets/_targets_TEMPLATE.R")
-  files = gsub(".js", "", basename(list.files(folder, recursive = FALSE, pattern = ".js")))
+  
+  # Prepare targets section and joins section
   targets = paste0("   tar_target(df_", files, ", prepare_", files, "(DF_clean, short_name_scale_str = '", files,"')),\n") %>% paste(., collapse = "")
   joins = paste0("\t\t\t\t\t\t\t df_", files, ",\n") %>% paste(., collapse = "") %>% gsub(",\n$", "", .)
 
+  # Replace  
   final_targets = gsub("TARGETS_HERE", targets, template)
   final_joins = gsub("JOINS_HERE", joins, final_targets)
   # cat(final_joins, sep = "\n")
 
-  cat(final_joins, file = "_targets_file.R", sep = "\n")
+  cat(final_joins, file = "_targets_automatic_file.R", sep = "\n")
   
-  cat(crayon::green("_targets_file.R created."), crayon::yellow("Manually rename it as _targets.R"))
+  cat(crayon::green("\n_targets_automatic_file.R created."), crayon::yellow("Manually rename it as _targets.R\n"))
 
 }
 
@@ -804,10 +835,13 @@ number_items_tasks <- function(DF_joined) {
 #' @export
 #'
 #' @examples
-update_data <- function(id_protocol) {
+update_data <- function(id_protocol, sensitive_tasks = c("")) {
   
   # DEBUG
-  # id_protocol = 999
+  # id_protocol = 3
+  # sensitive_tasks = c("DEMOGR")
+  
+  cat(crayon::yellow(paste0("Synching files from pid ", id_protocol, "\n")))
   
   if (!file.exists(".vault/.credentials")) {
     # If you do not have the .credentials file: rstudioapi::navigateToFile("setup/setup_server_credentials.R")
@@ -818,5 +852,18 @@ update_data <- function(id_protocol) {
   list_credentials = source(".vault/.credentials")
   if (!dir.exists(paste0(getwd(), '/data/' , id_protocol, '/'))) dir.create(paste0(getwd(), '/data/' , id_protocol, '/'))
   system(paste0('sshpass -p ', list_credentials$value$password, ' rsync -av --rsh=ssh ', list_credentials$value$user, "@", list_credentials$value$IP, ":", list_credentials$value$main_FOLDER, id_protocol, '/.data/ ', getwd(), '/data/' , id_protocol, '/'))
+  
+  
+  if (sensitive_tasks != "") {
+    # MOVE sensitive data to .vault
+    data_folder = paste0("data/", id_protocol)
+    sensitive_files = list.files(data_folder, pattern = paste(sensitive_tasks, collapse = "|"), full.names = TRUE)
+    
+    destination_folder = paste0(".vault/data")
+    destination_names = gsub(data_folder, destination_folder, sensitive_files)
+    file.rename(from = sensitive_files, to = destination_names)
+    
+    cat(crayon::green(paste0("Moved ", length(destination_names), " files matching '", paste(sensitive_tasks, collapse = "|"), "' to ", destination_folder, "\n")))
+  }
   
 }

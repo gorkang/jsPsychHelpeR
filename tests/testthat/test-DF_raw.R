@@ -13,6 +13,7 @@ testthat::test_that('Check if DF_raw', {
   DF_problematic_trialids = 
     DF_raw %>%
     filter(!grepl("[a-zA-Z0-9]{1,100}_[0-9]{2}|^Instructions", trialid)) %>% 
+    filter(trial_type != "fullscreen") %>% 
     distinct(trialid, experimento) %>% 
     drop_na(trialid) 
   

@@ -31,7 +31,8 @@ read_data <- function(input_files, anonymize = FALSE, save_output = FALSE, worke
     separate(col = filename, 
              into = c("project", "experimento", "version", "datetime", "id"), 
              sep = c("_"), remove = FALSE) %>% 
-    mutate(time_elapsed = as.integer(time_elapsed))
+    mutate(time_elapsed = as.integer(time_elapsed),
+           id = gsub("(*.)\\.csv", "\\1", id)) # userID
   
   
   # Save files --------------------------------------------------------------

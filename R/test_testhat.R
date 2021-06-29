@@ -7,7 +7,7 @@
 ##' @return
 ##' @author gorkang
 ##' @export
-test_testhat <- function(input_files_automatic_tests_str, ...) {
+test_testhat <- function(...) { # input_files_automatic_tests_str
 
   # Load targets objects used in tests --------------------------------------
   
@@ -16,7 +16,7 @@ test_testhat <- function(input_files_automatic_tests_str, ...) {
   
   # browser()
   # Load targets
-  targets::tar_load(all_of(input_files_automatic_tests_str), envir = .GlobalEnv)
+  # targets::tar_load(all_of(input_files_automatic_tests_str), envir = .GlobalEnv)
   targets::tar_load(all_of(arguments), envir = .GlobalEnv)
   
   
@@ -27,11 +27,11 @@ test_testhat <- function(input_files_automatic_tests_str, ...) {
 
   
   # Check we have automatic tests for all tasks (each task should have a df_[SHORT_NAME_OF_TASK]) in _targets/outputs
-  automatic_tests_raw = list.files(path = "tests/testthat/", pattern="df_.*snapshot", full.names = FALSE, ignore.case = FALSE)
-  automatic_tests = gsub("test-(.*)_snapshot.R", "\\1", automatic_tests_raw)
-  missing_tests = input_files_automatic_tests_str[!input_files_automatic_tests_str %in% automatic_tests]
-  if (length(missing_tests) > 0)  cat(crayon::red(paste0("\n\n[WARNING]: Missing snapshot tests: ")), paste(missing_tests, collapse = ","), "\n")
-  
+  # automatic_tests_raw = list.files(path = "tests/testthat/", pattern="df_.*snapshot", full.names = FALSE, ignore.case = FALSE)
+  # automatic_tests = gsub("test-(.*)_snapshot.R", "\\1", automatic_tests_raw)
+  # missing_tests = input_files_automatic_tests_str[!input_files_automatic_tests_str %in% automatic_tests]
+  # if (length(missing_tests) > 0)  cat(crayon::red(paste0("\n\n[WARNING]: Missing snapshot tests: ")), paste(missing_tests, collapse = ","), "\n")
+  # 
   
 
   # Run all the tests ------------------------------------------------------
