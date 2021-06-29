@@ -3,14 +3,15 @@
 # Initial setup -----------------------------------------------------------
 
   # Run the fist time or when you have an error
-    # targets::tar_renv()
-    # source("setup/setup.R")
+    targets::tar_renv()
+    source("setup/setup.R")
 
 
 # Automatically creating _targets from data folder ------------------------
 
   # Run once if you want to create a _targets.R file using the data folder
-    # create_targets_file(folder_data = "data/")
+    lapply(list.files("./R", full.names = TRUE, pattern = ".R$"), source)
+    create_targets_file(folder_data = "data/")
    
   # Afterwards manually: 
   # 1) DELETE _targets.R
