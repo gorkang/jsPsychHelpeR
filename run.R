@@ -14,9 +14,12 @@
     create_targets_file(folder_data = "data/")
    
   # Afterwards manually: 
-  # 1) DELETE _targets.R
-  # 2) RENAME _targets_automatic_file.R as _targets.R
-
+    # 1) DELETE _targets.R
+      # file.remove("_targets.R")
+    # 2) RENAME _targets_automatic_file.R as _targets.R
+      # file.rename(from = "_targets_automatic_file.R", to = "_targets.R")
+    
+    
 
 
 # RUN ---------------------------------------------------------------------

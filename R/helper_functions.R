@@ -403,7 +403,7 @@ create_vector_items <- function(VECTOR) {
 #' @export
 #'
 #' @examples
-create_targets_file <- function(folder_data = NULL, folder_tasks = NULL) {
+create_targets_file <- function(pid_protocol = 0, folder_data = NULL, folder_tasks = NULL) {
 
   # DEBUG
   # folder_tasks = "/home/emrys/Downloads/COURSE/gorkang-jsPsychMaker-d94788a/canonical_protocol/tasks/"
@@ -441,6 +441,7 @@ create_targets_file <- function(folder_data = NULL, folder_tasks = NULL) {
   # Replace  
   final_targets = gsub("TARGETS_HERE", targets, template)
   final_joins = gsub("JOINS_HERE", joins, final_targets)
+  final_file = gsub("pid_target = 999", paste0("pid_target = ", pid_protocol), final_joins)
   # cat(final_joins, sep = "\n")
 
   cat(final_joins, file = "_targets_automatic_file.R", sep = "\n")

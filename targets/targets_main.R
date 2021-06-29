@@ -134,16 +134,18 @@ targets <- list(
   
   # Automatic report
   tar_render(report_DF_clean, "doc/report_DF_clean.Rmd", 
-             params = list(last_task = "Goodbye"),
+             params = list(last_task = "Goodbye",
+                           pid_report = pid_target),
              output_file = paste0("../outputs/reports/report_DF_clean.html")),
   
   # Progress report
-  tar_render(report_PROGRESS_1, path = "doc/report_PROGRESS.Rmd", 
+  tar_render(report_PROGRESS, path = "doc/report_PROGRESS.Rmd", 
              params = list(input_files_vector = input_files, 
-                           pid_PROGRESS = 1, 
+                           pid_report = pid_target, 
                            last_task = "Goodbye", 
                            goal = 500),
-             output_file = paste0("../outputs/reports/report_PROGRESS_", 1 , ".html"))
+             output_file = paste0("../outputs/reports/report_PROGRESS_", pid_target , ".html"))
+  
   
   
 )

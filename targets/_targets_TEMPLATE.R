@@ -2,7 +2,7 @@
 
 # Parameters --------------------------------------------------------------
 
-  options(pillar.sigfig = 5)
+  pid_target = 999
 
 
 # Libraries ---------------------------------------------------------------
@@ -16,7 +16,7 @@
   # Source all /R files
   lapply(list.files("./R", full.names = TRUE, pattern = ".R$"), source)
   lapply(list.files("./R_tasks/", full.names = TRUE, pattern = ".R$"), source)
-
+  options(pillar.sigfig = 5)
   
   # Packages to load
   main_packages = c("cli", "crayon", "furrr", "patchwork", "renv", "tarchetypes", "targets", "testthat")
@@ -44,7 +44,7 @@ targets <- list(
   ## Read files --------------------------------------------------------------
   
   # RAW data
-  tar_target(input_files, list.files(path = "data", pattern="*.csv", full.names = TRUE), format = "file"), #, format = "file" (IF files in vault/ first run fails)
+  tar_target(input_files, list.files(path = paste0("data/", pid_target), pattern="*.csv", full.names = TRUE), format = "file"),
   tar_target(DF_raw, read_data(input_files, anonymize = FALSE)),
   
   # Cleaned data
@@ -112,16 +112,18 @@ JOINS_HERE
 
   # Automatic report
   tar_render(report_DF_clean, "doc/report_DF_clean.Rmd", 
-             params = list(last_task = "Goodbye"),
+             params = list(last_task = "Goodbye",
+                           pid_report = pid_target),
              output_file = paste0("../outputs/reports/report_DF_clean.html")),
   
   # Progress report
-  tar_render(report_PROGRESS_1, path = "doc/report_PROGRESS.Rmd", 
+  tar_render(report_PROGRESS, path = "doc/report_PROGRESS.Rmd", 
              params = list(input_files_vector = input_files, 
-                           pid_PROGRESS = 1, 
+                           pid_report = pid_target, 
                            last_task = "Goodbye", 
                            goal = 500),
-             output_file = paste0("../outputs/reports/report_PROGRESS_", 1 , ".html"))
+             output_file = paste0("../outputs/reports/report_PROGRESS_", pid_target , ".html"))
+
 
 )
 
