@@ -9,11 +9,16 @@
 
 # Automatically creating _targets from data folder ------------------------
 
+  # Make sure you create a folder called "0" in "data/": data/0/
+    if (!dir.exists("data/0/")) dir.create("data/0/")
+  
+  # Manually copy .csv files to data/0/
+
   # Run once if you want to create a _targets.R file using the data folder
     lapply(list.files("./R", full.names = TRUE, pattern = ".R$"), source)
-    create_targets_file(folder_data = "data/")
+    create_targets_file(folder_data = "data/0/")
    
-  # Afterwards manually: 
+  # Afterwards: 
     # 1) DELETE _targets.R
       # file.remove("_targets.R")
     # 2) RENAME _targets_automatic_file.R as _targets.R
@@ -33,7 +38,11 @@
   # Run project
   targets::tar_make()
 
+  # List available objects
+  targets::tar_objects()
+  
   # See DF_joined file
-  targets::tar_load(DF_joined)
-  DF_joined
+  targets::tar_load(DF_analysis)
+  DF_analysis
+  
   
