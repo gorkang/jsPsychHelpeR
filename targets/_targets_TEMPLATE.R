@@ -23,7 +23,7 @@
   data_preparation_packages = c("dplyr", "forcats", "here", "janitor", "purrr", "readr", "stringr", "tibble", "tidyr") #"safer", 
   data_analysis_packages = c("broom", "broom.mixed", "emmeans", "gmodels", "gt", "gtsummary", "irr", "lme4", "parameters", "performance", "psych", "sjPlot") #"report"
   data_visualization_packages = c("ggalluvial", "ggridges")
-  non_declared_dependencies = c("qs", "visNetwork", "webshot", "performance")
+  non_declared_dependencies = c("qs", "visNetwork", "webshot", "performance", "shinyWidgets")
   extra_packages = c("shrtcts")
   packages_to_load = c(main_packages, data_preparation_packages, data_analysis_packages, data_visualization_packages, non_declared_dependencies, extra_packages)
   
