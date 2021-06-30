@@ -72,7 +72,9 @@ targets <- list(
    tar_target(df_DEMOGR, prepare_DEMOGR(DF_clean, short_name_scale_str = 'DEMOGR')),
    # tar_target(df_DEMOGR3, prepare_DEMOGR3(DF_clean, short_name_scale_str = 'DEMOGR3')),
    tar_target(df_EAR, prepare_EAR(DF_clean, short_name_scale_str = 'EAR')),
+   tar_target(df_EmpaTom, prepare_EmpaTom(DF_clean, short_name_scale_str = "EmpaTom")),
    tar_target(df_ERQ, prepare_ERQ(DF_clean, short_name_scale_str = 'ERQ')),
+   tar_target(df_ESM, prepare_ESM(DF_clean, short_name_scale_str = "ESM")),
    tar_target(df_FDMQ, prepare_FDMQ(DF_clean, short_name_scale_str = 'FDMQ')),
    tar_target(df_GHQ12, prepare_GHQ12(DF_clean, short_name_scale_str = 'GHQ12')),
    tar_target(df_Goodbye, prepare_Goodbye(DF_clean, short_name_scale_str = 'Goodbye')),
@@ -125,7 +127,9 @@ targets <- list(
 							 df_DEMOGR,
 							 # df_DEMOGR3,
 							 df_EAR,
+							 df_EmpaTom,
 							 df_ERQ,
+							 df_ESM,
 							 df_FDMQ,
 							 df_GHQ12,
 							 df_Goodbye,
@@ -171,6 +175,10 @@ targets <- list(
   # Important: Should we compare DF_analysis with the final data used in each model? 
   tar_render(descriptives_table1, "doc/descriptives_table1.Rmd", deployment = "main"),
 
+  # Analisys report
+  tar_render(report_analysis, "doc/report_analysis.Rmd",
+             output_file = paste0("../outputs/reports/report_analysis.html")),
+  
   
   # Models
   # tar_target(model_E1, analysis_model_E1(DF_analysis)),

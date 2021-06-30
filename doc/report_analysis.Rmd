@@ -8,8 +8,9 @@ editor_options:
 params:
   last_task: ""
   pid_report: 0
-
 ---
+
+
 
 ```{r setup, include=FALSE}
 
@@ -21,11 +22,13 @@ targets::tar_load(DF_analysis)
 
 ## Data preparation
 
+Para kljasdkhas dkjah sdkjha sdkjha ksdjh aksdj h
+
 ```{r data-preparation}
 
-# DF = 
-#  DF_analysis %>%
-#   select() %>% 
+DF =
+ DF_analysis %>% 
+  select(id, AIM_DIRt, BNT_DIRt, WEBEXEC_DIRt)
 #   filter() %>% 
 #   drop_na()
 
@@ -35,27 +38,30 @@ targets::tar_load(DF_analysis)
 
 ## Descriptive tables
 
+Tabla1. Datos de aklna klja kla 
 ```{r descriptive-table}
 
-# DF_table1 = 
-#   DF %>% 
-#   group_by() %>% 
-#   summarize()
+DF_table1 =
+  DF %>%
+  group_by(AIM_DIRt) %>%
+  summarize(mean(WEBEXEC_DIRt))
 
-# DF_table1 %>%  
-  # DT::datatable()
+DF_table1 %>%
+DT::datatable()
 
 ```
 
 ## Plots
 
+skldj klsdfj jklsdf sklfj slkdfj lskdfj sdk jfl
+
 ```{r plots}
 
-# plot1 = 
-#   DF %>% 
-#   ggplot2(aes()) %>% 
-#   geom_X()
+plot1 =
+  DF %>%
+  ggplot(aes(BNT_DIRt, WEBEXEC_DIRt)) +
+  geom_jitter()
 
-# plot1
+plot1
 
 ```

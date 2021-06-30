@@ -79,7 +79,7 @@ JOINS_HERE
   tar_render(descriptives_table1, "doc/descriptives_table1.Rmd", deployment = "main"),
 
   # Analisys report
-  # tar_render(report_DF_clean, "doc/report_analysis.Rmd",
+  # tar_render(report_analysis, "doc/report_analysis.Rmd",
   #            output_file = paste0("../outputs/reports/report_analysis.html")),
 
 
