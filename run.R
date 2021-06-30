@@ -24,7 +24,10 @@
     # 2) RENAME _targets_automatic_file.R as _targets.R
       # file.rename(from = "_targets_automatic_file.R", to = "_targets.R")
     
-    
+  # Finally:
+    # Go to _targets.R and change pid_target = 999 for pid_target = 0
+    rstudioapi::navigateToFile("_targets.R")
+
 
 
 # RUN ---------------------------------------------------------------------

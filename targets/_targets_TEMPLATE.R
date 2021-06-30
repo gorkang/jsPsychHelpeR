@@ -78,7 +78,11 @@ JOINS_HERE
   # Important: Should we compare DF_analysis with the final data used in each model? 
   tar_render(descriptives_table1, "doc/descriptives_table1.Rmd", deployment = "main"),
 
-  
+  # Analisys report
+  # tar_render(report_DF_clean, "doc/report_analysis.Rmd",
+  #            output_file = paste0("../outputs/reports/report_analysis.html")),
+
+
   # Models
   # tar_target(model_E1, analysis_model_E1(DF_analysis)),
 
@@ -108,7 +112,7 @@ JOINS_HERE
                                  )
   ),
   
-  # Report ------------------------------------------------------------------
+  # Reports ------------------------------------------------------------------
 
   # Automatic report
   tar_render(report_DF_clean, "doc/report_DF_clean.Rmd", 

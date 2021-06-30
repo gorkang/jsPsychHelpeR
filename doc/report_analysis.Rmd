@@ -1,0 +1,61 @@
+---
+title: "Analysis"
+output: 
+  html_document: 
+    toc: yes
+editor_options: 
+  chunk_output_type: console
+params:
+  last_task: ""
+  pid_report: 0
+
+---
+
+```{r setup, include=FALSE}
+
+knitr::opts_chunk$set(echo = TRUE)
+targets::tar_load(DF_analysis)
+
+```
+
+
+## Data preparation
+
+```{r data-preparation}
+
+# DF = 
+#  DF_analysis %>%
+#   select() %>% 
+#   filter() %>% 
+#   drop_na()
+
+
+```
+
+
+## Descriptive tables
+
+```{r descriptive-table}
+
+# DF_table1 = 
+#   DF %>% 
+#   group_by() %>% 
+#   summarize()
+
+# DF_table1 %>%  
+  # DT::datatable()
+
+```
+
+## Plots
+
+```{r plots}
+
+# plot1 = 
+#   DF %>% 
+#   ggplot2(aes()) %>% 
+#   geom_X()
+
+# plot1
+
+```
