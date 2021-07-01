@@ -4,7 +4,7 @@
 
   pid_target = 999
 
-  
+
 # Libraries ---------------------------------------------------------------
 
   library(targets) 
@@ -56,12 +56,13 @@ targets <- list(
   
   ## Prepare tasks -----------------------------------------------------------
   
-  # Use create_new_task("NAME_OF_TASK") create new preparation_scripts
+  # Use R/prepare_template.R to create new preparation_scripts
 
+   tar_target(df_ESM, prepare_ESM(DF_clean, short_name_scale_str = 'ESM')),
    tar_target(df_AIM, prepare_AIM(DF_clean, short_name_scale_str = 'AIM')),
    tar_target(df_BNT, prepare_BNT(DF_clean, short_name_scale_str = 'BNT')),
    tar_target(df_bRCOPE, prepare_bRCOPE(DF_clean, short_name_scale_str = 'bRCOPE')),
-   # tar_target(df_Consent, prepare_Consent(DF_clean, short_name_scale_str = 'Consent')),
+   tar_target(df_Consent, prepare_Consent(DF_clean, short_name_scale_str = 'Consent')),
    tar_target(df_Cov19Q, prepare_Cov19Q(DF_clean, short_name_scale_str = 'Cov19Q')),
    tar_target(df_COVIDCONTROL, prepare_COVIDCONTROL(DF_clean, short_name_scale_str = 'COVIDCONTROL')),
    tar_target(df_CRS, prepare_CRS(DF_clean, short_name_scale_str = 'CRS')),
@@ -70,11 +71,10 @@ targets <- list(
    tar_target(df_CRTv, prepare_CRTv(DF_clean, short_name_scale_str = 'CRTv')),
    tar_target(df_DEBRIEF, prepare_DEBRIEF(DF_clean, short_name_scale_str = 'DEBRIEF')),
    tar_target(df_DEMOGR, prepare_DEMOGR(DF_clean, short_name_scale_str = 'DEMOGR')),
-   # tar_target(df_DEMOGR3, prepare_DEMOGR3(DF_clean, short_name_scale_str = 'DEMOGR3')),
+   tar_target(df_DEMOGR3, prepare_DEMOGR3(DF_clean, short_name_scale_str = 'DEMOGR3')),
    tar_target(df_EAR, prepare_EAR(DF_clean, short_name_scale_str = 'EAR')),
-   tar_target(df_EmpaTom, prepare_EmpaTom(DF_clean, short_name_scale_str = "EmpaTom")),
+   tar_target(df_EmpaTom, prepare_EmpaTom(DF_clean, short_name_scale_str = 'EmpaTom')),
    tar_target(df_ERQ, prepare_ERQ(DF_clean, short_name_scale_str = 'ERQ')),
-   tar_target(df_ESM, prepare_ESM(DF_clean, short_name_scale_str = "ESM")),
    tar_target(df_FDMQ, prepare_FDMQ(DF_clean, short_name_scale_str = 'FDMQ')),
    tar_target(df_GHQ12, prepare_GHQ12(DF_clean, short_name_scale_str = 'GHQ12')),
    tar_target(df_Goodbye, prepare_Goodbye(DF_clean, short_name_scale_str = 'Goodbye')),
@@ -82,10 +82,10 @@ targets <- list(
    tar_target(df_HRPVBpost, prepare_HRPVBpost(DF_clean, short_name_scale_str = 'HRPVBpost')),
    tar_target(df_IDQ, prepare_IDQ(DF_clean, short_name_scale_str = 'IDQ')),
    tar_target(df_IEC, prepare_IEC(DF_clean, short_name_scale_str = 'IEC')),
-   # tar_target(df_INFCONS, prepare_INFCONS(DF_clean, short_name_scale_str = 'INFCONS')),
+   tar_target(df_INFCONS, prepare_INFCONS(DF_clean, short_name_scale_str = 'INFCONS')),
    tar_target(df_IRI, prepare_IRI(DF_clean, short_name_scale_str = 'IRI')),
    tar_target(df_IRS, prepare_IRS(DF_clean, short_name_scale_str = 'IRS')),
-   # tar_target(df_ITC, prepare_ITC(DF_clean, short_name_scale_str = 'ITC')),
+   tar_target(df_ITC, prepare_ITC(DF_clean, short_name_scale_str = 'ITC')),
    tar_target(df_MIS, prepare_MIS(DF_clean, short_name_scale_str = 'MIS')),
    tar_target(df_OBJNUM, prepare_OBJNUM(DF_clean, short_name_scale_str = 'OBJNUM')),
    tar_target(df_OTRASRELIG, prepare_OTRASRELIG(DF_clean, short_name_scale_str = 'OTRASRELIG')),
@@ -113,10 +113,11 @@ targets <- list(
   
   tar_target(DF_joined, 
              create_joined(
+							 df_ESM,
 							 df_AIM,
 							 df_BNT,
 							 df_bRCOPE,
-							 # df_Consent,
+							 df_Consent,
 							 df_Cov19Q,
 							 df_COVIDCONTROL,
 							 df_CRS,
@@ -125,11 +126,10 @@ targets <- list(
 							 df_CRTv,
 							 df_DEBRIEF,
 							 df_DEMOGR,
-							 # df_DEMOGR3,
+							 df_DEMOGR3,
 							 df_EAR,
 							 df_EmpaTom,
 							 df_ERQ,
-							 df_ESM,
 							 df_FDMQ,
 							 df_GHQ12,
 							 df_Goodbye,
@@ -137,10 +137,10 @@ targets <- list(
 							 df_HRPVBpost,
 							 df_IDQ,
 							 df_IEC,
-							 # df_INFCONS,
+							 df_INFCONS,
 							 df_IRI,
 							 df_IRS,
-							 # df_ITC,
+							 df_ITC,
 							 df_MIS,
 							 df_OBJNUM,
 							 df_OTRASRELIG,
@@ -178,8 +178,8 @@ targets <- list(
   # Analisys report
   tar_render(report_analysis, "doc/report_analysis.Rmd",
              output_file = paste0("../outputs/reports/report_analysis.html")),
-  
-  
+
+
   # Models
   # tar_target(model_E1, analysis_model_E1(DF_analysis)),
 
@@ -209,7 +209,7 @@ targets <- list(
                                  )
   ),
   
-  # Report ------------------------------------------------------------------
+  # Reports ------------------------------------------------------------------
 
   # Automatic report
   tar_render(report_DF_clean, "doc/report_DF_clean.Rmd", 
@@ -224,6 +224,7 @@ targets <- list(
                            last_task = "Goodbye", 
                            goal = 500),
              output_file = paste0("../outputs/reports/report_PROGRESS_", pid_target , ".html"))
+
 
 )
 

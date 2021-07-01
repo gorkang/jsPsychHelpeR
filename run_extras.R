@@ -1,5 +1,7 @@
 # Commonly used commands
 
+  targets::tar_renv()
+
 # Sync data from server ---------------------------------------------------
 
 # CHANGE TO pid of your protocol (if running in CSCN server)

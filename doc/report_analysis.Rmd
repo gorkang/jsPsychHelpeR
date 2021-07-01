@@ -10,8 +10,6 @@ params:
   pid_report: 0
 ---
 
-
-
 ```{r setup, include=FALSE}
 
 knitr::opts_chunk$set(echo = TRUE)
@@ -19,10 +17,9 @@ targets::tar_load(DF_analysis)
 
 ```
 
-
 ## Data preparation
 
-Para kljasdkhas dkjah sdkjha sdkjha ksdjh aksdj h
+Descripción del proceso de preparación de datos.
 
 ```{r data-preparation}
 
@@ -35,10 +32,10 @@ DF =
 
 ```
 
-
 ## Descriptive tables
 
-Tabla1. Datos de aklna klja kla 
+Tabla 1. Descripción de la tabla 1. Tabla 2. ...
+
 ```{r descriptive-table}
 
 DF_table1 =
@@ -53,7 +50,7 @@ DT::datatable()
 
 ## Plots
 
-skldj klsdfj jklsdf sklfj slkdfj lskdfj sdk jfl
+Figura 1. Descripción de la Figura 1. Figura 2. ...
 
 ```{r plots}
 

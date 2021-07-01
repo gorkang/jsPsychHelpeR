@@ -410,7 +410,8 @@ create_targets_file <- function(pid_protocol = 0, folder_data = NULL, folder_tas
   # folder_data = "data/"
   # TODO: should move not used prepare_XXX() to subfolder? Or delete.
   
-  library(dplyr)
+  suppressPackageStartupMessages(library(dplyr))
+  
   
   # If both parameters have info, choose folder_data
   if (!is.null(folder_data) & !is.null(folder_tasks)) {
@@ -444,9 +445,32 @@ create_targets_file <- function(pid_protocol = 0, folder_data = NULL, folder_tas
   final_file = gsub("pid_target = 999", paste0("pid_target = ", pid_protocol), final_joins)
   # cat(final_joins, sep = "\n")
 
-  cat(final_joins, file = "_targets_automatic_file.R", sep = "\n")
+  cat(final_file, file = "_targets_automatic_file.R", sep = "\n")
   
-  cat(crayon::green("\n_targets_automatic_file.R created."), crayon::yellow("Manually rename it as _targets.R\n"))
+  
+  if (file.exists("_targets_automatic_file.R")) {
+    
+    response_prompt = menu(c("Yes", "No"), title = "Overwrite _targets.R?")
+    
+    if (response_prompt == 1) {
+      
+    # Backup file
+    if (file.exists("_targets.R")) file.rename(from = "_targets.R", to = "_targets_old.R")
+    
+    # RENAME _targets_automatic_file.R as _targets.R
+    file.rename(from = "_targets_automatic_file.R", to = "_targets.R")
+    
+    cat(crayon::green("\nNEW _targets.R created.\n"), 
+        crayon::silver("Use the following commands to start the data preparation: \n"),
+        "targets::tar_destroy() # Delete cache\n targets::tar_make() # Start data preparation\n")
+    
+    } else {
+      cat(crayon::yellow("OK, nothing done\n"))
+    }
+    
+  }
+    
+  # cat(crayon::green("\n_targets_automatic_file.R created."), crayon::yellow("Manually rename it as _targets.R\n"))
 
 }
 

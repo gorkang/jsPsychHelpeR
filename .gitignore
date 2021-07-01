@@ -6,6 +6,9 @@
 .Renviron
 dev/
 
+# _targets backup
+_targets_old.R
+
 # Do not upload _targets meta
 _targets/meta/
 
