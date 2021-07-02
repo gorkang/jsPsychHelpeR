@@ -84,7 +84,7 @@ targets <- list(
    tar_target(df_INFCONS, prepare_INFCONS(DF_clean, short_name_scale_str = 'INFCONS')),
    tar_target(df_IRI, prepare_IRI(DF_clean, short_name_scale_str = 'IRI')),
    tar_target(df_IRS, prepare_IRS(DF_clean, short_name_scale_str = 'IRS')),
-   tar_target(df_ITC, prepare_ITC(DF_clean, short_name_scale_str = 'ITC')),
+   # tar_target(df_ITC, prepare_ITC(DF_clean, short_name_scale_str = 'ITC')),
    tar_target(df_MIS, prepare_MIS(DF_clean, short_name_scale_str = 'MIS')),
    tar_target(df_OBJNUM, prepare_OBJNUM(DF_clean, short_name_scale_str = 'OBJNUM')),
    tar_target(df_OTRASRELIG, prepare_OTRASRELIG(DF_clean, short_name_scale_str = 'OTRASRELIG')),
