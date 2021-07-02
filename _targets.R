@@ -71,7 +71,6 @@ targets <- list(
    tar_target(df_CRTv, prepare_CRTv(DF_clean, short_name_scale_str = 'CRTv')),
    tar_target(df_DEBRIEF, prepare_DEBRIEF(DF_clean, short_name_scale_str = 'DEBRIEF')),
    tar_target(df_DEMOGR, prepare_DEMOGR(DF_clean, short_name_scale_str = 'DEMOGR')),
-   tar_target(df_DEMOGR3, prepare_DEMOGR3(DF_clean, short_name_scale_str = 'DEMOGR3')),
    tar_target(df_EAR, prepare_EAR(DF_clean, short_name_scale_str = 'EAR')),
    tar_target(df_EmpaTom, prepare_EmpaTom(DF_clean, short_name_scale_str = 'EmpaTom')),
    tar_target(df_ERQ, prepare_ERQ(DF_clean, short_name_scale_str = 'ERQ')),
