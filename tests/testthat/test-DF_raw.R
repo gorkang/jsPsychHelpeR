@@ -12,7 +12,7 @@ testthat::test_that('Check if DF_raw', {
   
   DF_problematic_trialids = 
     DF_raw %>%
-    filter(!grepl("[a-zA-Z0-9]{1,100}_[0-9]{2}|^Instructions", trialid)) %>% 
+    filter(!grepl("[a-zA-Z0-9]{1,100}_[0-9]{2}|^Instructions|^Fullscreen", trialid)) %>% 
     filter(trial_type != "fullscreen") %>% 
     distinct(trialid, experimento) %>% 
     drop_na(trialid) 
@@ -31,9 +31,10 @@ testthat::test_that('Check if DF_raw', {
   
   # Test: we have the canonical columns in DF_raw -------------------------------------------------------------------
 
-    canonical_names_columns =  c("filename", "trial_type", "trial_index", "time_elapsed", "internal_node_id", "view_history", "rt", "trialid", "stimulus", "response", "id", "project", "experimento", "version", "datetime")
-    #success
-  
+    canonical_names_columns =  c("filename", "trial_type", "trial_index", "time_elapsed", "internal_node_id", "view_history", "rt", "trialid", "stimulus", "response", "id", "project", "experimento", "version", "datetime",
+                                 "procedure", "success", "url")
+
+    non_canonical_names = names(DF_raw)[!names(DF_raw) %in% canonical_names_columns]
   
   
   # Warning and log ---------------------------------------------------------
@@ -47,8 +48,21 @@ testthat::test_that('Check if DF_raw', {
         crayon::yellow("  - # of Issues: "), crayon::red(length(offenders)), "\n",
         crayon::green("  - trialid should be: "), crayon::black("SHORTNAMESCALE_DD or Instructions or Instructions_DD; e.g. CRT7_01, Instructions, Instructions_01"), "\n",
         crayon::silver("  - DF with details stored in:", paste0("'outputs/tests_outputs/test-", name_of_test, ".csv'"), "\n\n"))
+  }
+  
+  if (length(non_canonical_names) > 0) {
+    
+    # write_csv(non_canonical_names, here::here(paste0("outputs/tests_outputs/test-", name_of_test, ".csv")))
+    
+    cat(crayon::red("\nERROR in", paste0("test-", name_of_test), "\n"),
+        crayon::red("  - Some of the items have non-canonical names:"), non_canonical_names, "\n",
+        crayon::yellow("  - # of Issues: "), crayon::red(length(non_canonical_names)), "\n"
+        # crayon::green("  - trialid should be: "), crayon::black("SHORTNAMESCALE_DD or Instructions or Instructions_DD; e.g. CRT7_01, Instructions, Instructions_01"), "\n"
+        # crayon::silver("  - DF with details stored in:", paste0("'outputs/tests_outputs/test-", name_of_test, ".csv'"), "\n\n")
+    )
     
   }
+  
   
   # Actual expectation -------------------------------------------------------------
   
