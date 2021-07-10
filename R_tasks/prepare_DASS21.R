@@ -22,8 +22,8 @@ prepare_DASS21 <- function(DF_clean, short_name_scale_str) {
   # [ADAPT]: Items to ignore and reverse ---------------------------------------
   # ****************************************************************************
   
-  items_to_ignore = c("00") # Ignore these items: If nothing to ignore, keep items_to_ignore = c("00")
-  items_to_reverse = c("00") # Reverse these items: If nothing to reverse, keep  items_to_reverse = c("00")
+  items_to_ignore = c("000") # Ignore these items: If nothing to ignore, keep items_to_ignore = c("00")
+  items_to_reverse = c("000") # Reverse these items: If nothing to reverse, keep  items_to_reverse = c("00")
   
   names_dimensions = c("depresion", "ansiedad", "estres") # If no dimensions, keep names_dimensions = c("")
   
@@ -63,6 +63,7 @@ prepare_DASS21 <- function(DF_clean, short_name_scale_str) {
     DIR =
       case_when(
         RAW == "0 No me aplicó" ~ 0,
+        RAW == "0 (No me aplicó)" ~ 0,
         RAW == "1 Me aplicó un poco, o durante parte del tiempo" ~ 1,
         RAW == "2 Me aplicó bastante, o durante una buena parte del tiempo" ~ 2,
         RAW == "3 Me aplicó mucho, o la mayor parte del tiempo" ~ 3,
@@ -121,14 +122,14 @@ prepare_DASS21 <- function(DF_clean, short_name_scale_str) {
       # Score Dimensions (see standardized_names(help_names = TRUE) for instructions)
       !!name_DIRd1 := rowSums(select(., paste0(short_name_scale_str, "_", items_DIRd1, "_DIR")), na.rm = TRUE) * 2, 
       !!name_DIRd2 := rowSums(select(., paste0(short_name_scale_str, "_", items_DIRd2, "_DIR")), na.rm = TRUE) * 2,
-      !!name_DIRd3 := rowSums(select(., paste0(short_name_scale_str, "_", items_DIRd3, "_DIR")), na.rm = TRUE) * 2,
+      !!name_DIRd3 := rowSums(select(., paste0(short_name_scale_str, "_", items_DIRd3, "_DIR")), na.rm = TRUE) * 2
       
       # Reliability Dimensions (see standardized_names(help_names = TRUE) for instructions)
       # !!name_RELd1 := rowSums(select(., paste0(short_name_scale_str, "_", items_RELd1, "_DIR")), na.rm = TRUE), 
       # !!name_RELd2 := rowSums(select(., paste0(short_name_scale_str, "_", items_RELd2, "_DIR")), na.rm = TRUE),
       
       # Score Scale
-      !!name_DIRt := rowSums(select(., matches("_DIR$")), na.rm = TRUE)
+      # !!name_DIRt := rowSums(select(., matches("_DIR$")), na.rm = TRUE)
       
     )
   

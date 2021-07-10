@@ -23,18 +23,18 @@ prepare_PBS <- function(DF_clean, short_name_scale_str) {
   # [ADAPT]: Items to ignore, reverse and dimensions ---------------------------------------
   # ****************************************************************************
   
-  items_to_ignore = c("00") # Ignore these items: If nothing to ignore, keep items_to_ignore = c("00")
-  items_to_reverse = c("23") # Reverse these items: If nothing to reverse, keep  items_to_reverse = c("00")
+  items_to_ignore = c("000") # Ignore these items: If nothing to ignore, keep items_to_ignore = c("00")
+  items_to_reverse = c("023") # Reverse these items: If nothing to reverse, keep  items_to_reverse = c("00")
   
   names_dimensions = c("CreenciasReligiosasTradicionales", "psi", "brujeria", "supersticion", "espiritismo", "FormasVidaExtraordinaria", "precognicion") # If no dimensions, keep names_dimensions = c("")
   
-  items_DIRd1 = c("01", "08", "15", "22")
-  items_DIRd2 = c("02", "09", "16", "23")
-  items_DIRd3 = c("03", "10", "17", "24")
-  items_DIRd4 = c("04", "11", "18")
-  items_DIRd5 = c("05", "12", "19", "25")
-  items_DIRd6 = c("06", "13", "20")
-  items_DIRd7 = c("07", "14", "21", "26")
+  items_DIRd1 = c("001", "008", "015", "022")
+  items_DIRd2 = c("002", "009", "016", "023")
+  items_DIRd3 = c("003", "010", "017", "024")
+  items_DIRd4 = c("004", "011", "018")
+  items_DIRd5 = c("005", "012", "019", "025")
+  items_DIRd6 = c("006", "013", "020")
+  items_DIRd7 = c("007", "014", "021", "026")
 
   # [END ADAPT]: ***************************************************************
   # ****************************************************************************
@@ -64,13 +64,13 @@ prepare_PBS <- function(DF_clean, short_name_scale_str) {
     mutate(
       DIR =
         case_when(
-          RAW == 'Muy en desacuerdo' ~ 1,
-          RAW == 'Moderadamente en desacuerdo' ~ 2,
-          RAW == 'Un poco en desacuerdo' ~ 3,
-          RAW == 'No sé / No tengo certeza' ~ 4,
-          RAW == 'Un poco de acuerdo' ~ 5,
-          RAW == 'Moderadamente de acuerdo' ~ 6,
-          RAW == 'Muy de acuerdo' ~ 7,
+          RAW == '1 Muy en desacuerdo' ~ 1,
+          RAW == '2 Moderadamente en desacuerdo' ~ 2,
+          RAW == '3 Un poco en desacuerdo' ~ 3,
+          RAW == '4 No sé / No tengo certeza' ~ 4,
+          RAW == '5 Un poco de acuerdo' ~ 5,
+          RAW == '6 Moderadamente de acuerdo' ~ 6,
+          RAW == '7 Muy de acuerdo' ~ 7,
           TRUE ~ 9999
         )
     ) %>% 

@@ -23,8 +23,8 @@ prepare_PSS <- function(DF_clean, short_name_scale_str) {
   # [ADAPT]: Items to ignore, reverse and dimensions ---------------------------------------
   # ****************************************************************************
   
-  items_to_ignore = c("00") # Ignore these items: If nothing to ignore, keep items_to_ignore = c("00")
-  items_to_reverse = c("04", "05", "06", "07", "09", "10", "13") # Reverse these items: If nothing to reverse, keep  items_to_reverse = c("00")
+  items_to_ignore = c("000") # Ignore these items: If nothing to ignore, keep items_to_ignore = c("00")
+  items_to_reverse = c("004", "005", "006", "007", "009", "010", "013") # Reverse these items: If nothing to reverse, keep  items_to_reverse = c("00")
   
   names_dimensions = c("") # If no dimensions, keep names_dimensions = c("")
   
@@ -56,11 +56,11 @@ prepare_PSS <- function(DF_clean, short_name_scale_str) {
     mutate(
       DIR =
         case_when(
-          RAW == "Nunca" ~ 0,
-          RAW == "Casi nunca" ~ 1,
-          RAW == "De vez en cuando" ~ 2,
-          RAW == "A menudo" ~ 3,
-          RAW == "Muy a menudo" ~ 4,
+          RAW == "0 Nunca" ~ 0,
+          RAW == "1 Casi nunca" ~ 1,
+          RAW == "2 De vez en cuando" ~ 2,
+          RAW == "3 A menudo" ~ 3,
+          RAW == "4 Muy a menudo" ~ 4,
           TRUE ~ 9999
           )
       ) %>% 

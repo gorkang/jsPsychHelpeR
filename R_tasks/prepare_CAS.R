@@ -36,8 +36,8 @@ prepare_CAS <- function(DF_clean, short_name_scale_str) {
   # [ADAPT]: Items to ignore and reverse ---------------------------------------
   # ****************************************************************************
   
-  items_to_ignore = c("00|00") # Ignore the following items: If nothing to ignore, keep "00|00"
-  items_to_reverse = c("00|00") # Reverse the following items: If nothing to ignore, keep "00|00"
+  items_to_ignore = c("000") # Ignore the following items: If nothing to ignore, keep "00|00"
+  items_to_reverse = c("000") # Reverse the following items: If nothing to ignore, keep "00|00"
   
   # [END ADAPT]: ***************************************************************
   # ****************************************************************************
@@ -70,7 +70,7 @@ prepare_CAS <- function(DF_clean, short_name_scale_str) {
       DIR = 
         case_when(
           DIR == 9999 ~ DIR, # To keep the missing values unchanged
-          grepl(items_to_reverse, trialid) ~ (6 - DIR),
+          grepl(items_to_reverse, trialid) ~ (4 - DIR),
           TRUE ~ DIR
         )
     )
