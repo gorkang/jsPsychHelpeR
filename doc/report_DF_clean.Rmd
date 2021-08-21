@@ -76,9 +76,10 @@ all_tasks = DF_raw %>% distinct(experimento) %>% pull(experimento)
 
 summary_table = 
   DF_raw %>% 
-    select(id, experimento, time_elapsed) %>% 
+    select(id, experimento, rt) %>% 
+    mutate(rt = as.numeric(rt)) %>% 
     group_by(id, experimento) %>% 
-    summarise(TIME = round(max(time_elapsed)/60000, 2), 
+    summarise(TIME = round(sum(rt, na.rm = TRUE)/60000, 2), # TIME = round(max(time_elapsed)/60000, 2), # time_elapsed is cumulative!
               N = n(), 
               .groups = "keep") %>% 
     group_by(id) %>% 
@@ -162,7 +163,7 @@ DT::datatable(summary_position, filter = 'top', options = list(dom = 'ltip', pag
 
 ## Details of tasks {.tabset}
 
-### Number of items per task
+### Items per task
 
 ```{r echo=FALSE}
 
@@ -183,7 +184,7 @@ DT::datatable(trialid_table,
 ```
 
 
-### Trialid's and questions for each of the tasks:  
+### Trialid's and questions
 
 
 
@@ -197,6 +198,30 @@ trialid_detail_table = DF %>%
 
 
 DT::datatable(trialid_detail_table, 
+              filter = 'top', 
+              options = list(dom = 'ltip', 
+                             pageLength = 15))
+
+```
+
+
+### Dimensions
+
+
+```{r echo=FALSE}
+# All tasks
+tasks = list.files(here::here("R_tasks"), pattern = "\\.R", full.names = TRUE)
+
+# Extract information for dimensions...
+DF_dims = 1:length(tasks) %>%
+  map_df(~
+        {
+          # cat(.x, "\n")
+          create_codebook(tasks, .x)
+        }
+  )
+
+DT::datatable(DF_dims, 
               filter = 'top', 
               options = list(dom = 'ltip', 
                              pageLength = 15))
