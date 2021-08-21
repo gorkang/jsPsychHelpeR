@@ -892,3 +892,88 @@ update_data <- function(id_protocol, sensitive_tasks = c("")) {
   }
   
 }
+
+#' create_codebook
+#' Extracts information from the prepare_TASK.R files to create a codebook
+#'
+#' @param number 
+#'
+#' @return
+#' @export
+#'
+#' @examples
+create_codebook <- function(number) {
+  
+  # TODO -----------------------
+  
+  # - Add reversed items
+  # - Add ignored items
+  # - Add totals
+  
+  
+  # DEBUG
+  # number = 39
+  
+  DF = readLines(tasks[number])
+  
+  DF_clean = DF[!grepl("^[ \t\\#]{1,100}\\#", DF)] # Get rid of comments
+  
+  lines_DIRd = DF_clean[grepl("!!name_DIRd", DF_clean)]
+  
+  # Task
+  name_task = gsub("prepare_|\\.R", "", basename(tasks)[number])
+  
+  # Total
+  function_DIRt = gsub(".*!!name_DIRt := (\\w{1,10}).*", "\\1", DF_clean[grepl("!!name_DIRt", DF_clean)]) %>% head(1) # REVIEW INFCONS
+  
+  # Dimensions
+  names_dimensions = stringr::str_extract_all(DF_clean[grepl("names_dimensions =", DF_clean)], '"[\\w_]{1,50}"') %>% purrr::compact()
+  # num_dimensions = stringr::str_extract_all(DF_clean[grepl("items_DIRd[0-9] =", DF_clean)], "items_DIRd[0-9]{1,2}")
+  items_dimensions = stringr::str_extract_all(DF_clean[grepl("items_DIRd[0-9] =", DF_clean)], "[0-9]{2,3}_[\\w]{1,20}|[0-9]{2,3}") %>% purrr::compact()
+  functions_DIRd = gsub(".*!!name_DIRd[0-9] := (\\w{1,10}).*", "\\1", lines_DIRd)
+  
+  # Dimensions OLD STRUCTURE
+  old_names_dimensions =  stringr::str_extract_all(DF_clean[grepl("dimensions =", DF_clean)], '"[\\w_]{1,50}"') %>% purrr::compact()
+  old_items_dimensions = stringr::str_extract_all(lines_DIRd, "[0-9]{2,3}_[\\w]{1,20}|[0-9]{2,3}") %>% purrr::compact()
+  
+  
+  # CHECK
+  if (length(function_DIRt) == 0) function_DIRt = ""
+  if (length(functions_DIRd) == 0) functions_DIRd = ""
+  if (length(names_dimensions) == 0) names_dimensions = ""
+  if (length(items_dimensions) == 0) items_dimensions = ""
+  if (length(old_names_dimensions) == 0) old_names_dimensions = ""
+  if (length(old_items_dimensions) == 0) old_items_dimensions = ""
+  
+  if (names_dimensions[1] == "") names_dimensions = old_names_dimensions
+  if (items_dimensions[1] == "") items_dimensions = old_items_dimensions
+  
+  # Build tibble
+  DF_output = 
+    tibble::tibble(
+      task = name_task,
+      names_dimensions = unlist(names_dimensions),
+      items_dimensions = items_dimensions,
+      functions = functions_DIRd
+    ) %>%
+    rowwise() %>% 
+    mutate(items_dimensions = paste(items_dimensions, collapse = ", "))
+  
+  if (nrow(DF_output) == 1 & sum(DF_output != "") == 1) {
+    DF_output %>% mutate(names_dimensions = "TOTAL", items_dimensions = "ALL - ignored", functions = function_DIRt)
+  } else {
+    DF_output %>% bind_rows(tibble(task = name_task, names_dimensions = "TOTAL", items_dimensions = "ALL - ignored", functions = function_DIRt))
+  }
+  
+}
+
+# tasks = list.files("R_tasks", pattern = "\\.R", full.names = TRUE)
+# 
+# 
+# 1:length(tasks) %>% 
+#   map(~ 
+#         { 
+#           # cat(.x, "\n")
+#           create_codebook(.x)
+#           }
+#     )
