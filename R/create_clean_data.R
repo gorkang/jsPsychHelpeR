@@ -16,11 +16,13 @@ create_clean_data <- function(DF_raw) {
     filter(!trialid %in% c("Screen_WM", "Instructions")) %>%  # Delete instructions [TODO]: use regexp to clean instrucciones_NOMBRETEST
     filter(!grepl("Instructions", trialid, ignore.case = TRUE)) %>% 
     mutate(response = gsub('&nbsp;|\u00A0', '', response), # HTML space and invisible character
-           response = gsub("\\[|\\]", "", response)) # In multi-select, output is ["response1", "response2"]
+           response = gsub(pattern = '\\[(.*?)"",""(.*?)\\]', replacement = "\\1; \\2", x = response, perl = TRUE), # In multi-select, output is: {\"\"Q0\"\":\"\"response1"",""response2\"\"} -> {\"\"Q0\"\":\"\"response1; response2\"\"}
+           response = gsub("\\[|\\]", "", response)) # Clean up remaining "[]"
   
   # DEBUG
   # DF_clean_raw = DF_clean_raw %>% filter(experimento == "DEMOGR")
   
+  # Creates one line per response for screens with multiple responses (e.g. Q0, Q1)
   DF_clean = separate_responses(DF_clean_raw)  
   
   # Output of function ---------------------------------------------------------
