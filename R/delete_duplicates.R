@@ -88,15 +88,20 @@ delete_duplicates <- function(folder, check = TRUE, keep_which = "older") {
                 if (!DF_dups_clean[[.x]]$experimento[1] %in% c("Consent", "Goodbye")) { 
                   
                   # Reads all files of a set of duplicates (id/experimento) and filters out all the non-duplicates values
-                  map_df(paste0(folder, "/", DF_dups_clean[[.x]]$filename) %>% set_names(basename(.)), data.table::fread, .id = "filename", encoding = 'UTF-8') %>% 
-                    drop_na(trialid) %>% filter(trialid != "") %>% 
-                    select(filename, trialid, response) %>%  replace_na(replace = list(response = "")) %>% 
+                  DF_temp = map_df(paste0(folder, "/", DF_dups_clean[[.x]]$filename) %>% set_names(basename(.)), data.table::fread, .id = "filename", encoding = 'UTF-8') %>% 
+                    drop_na(trialid) %>% filter(trialid != "") 
+                  
+                  # If there is no responses field, rename or create a random one
+                  if (!"responses" %in% names(DF_temp) & "response" %in% names(DF_temp)) DF_temp = DF_temp %>% rename(responses = response)
+                  if (!"responses" %in% names(DF_temp)) DF_temp = DF_temp %>% mutate(responses = paste0("CHECK_ME_", runif(n(), min = 0, max = 10)))
+                  DF_temp %>%  
+                    select(filename, trialid, responses) %>%  replace_na(replace = list(responses = "")) %>% 
                     filter(!trialid %in% c("Instructions", "Instrucciones")) %>% # SHOULD NOT, but sometimes the trialid Instructions repeats itself
-                    pivot_wider(names_from = filename, values_from = response) %>% 
+                    pivot_wider(names_from = filename, values_from = responses) %>% 
                     filter(ifelse(apply(.[ , 2:ncol(.)], MARGIN=1, function(x) length(unique(x))) == 1, FALSE, TRUE))
                 }
               }
-            )
+        )
       
       # Use names of sets of duplicates for the elements of the list
       names(DF_differences_all) <- 1:length(DF_dups_clean) %>% map_chr(~ DF_dups_clean[[.x]] %>% transmute(name_list = paste0(id, "_", experimento)) %>% pull(name_list) %>% unlist() %>% head(1))
