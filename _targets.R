@@ -60,6 +60,7 @@ targets <- list(
 
    tar_target(df_AIM, prepare_AIM(DF_clean, short_name_scale_str = 'AIM')),
    tar_target(df_BNT, prepare_BNT(DF_clean, short_name_scale_str = 'BNT')),
+   tar_target(df_BART, prepare_BART(DF_clean, short_name_scale_str = 'BART')),
    tar_target(df_bRCOPE, prepare_bRCOPE(DF_clean, short_name_scale_str = 'bRCOPE')),
    tar_target(df_CAS, prepare_CAS(DF_clean, short_name_scale_str = 'CAS')),
    tar_target(df_Consent, prepare_Consent(DF_clean, short_name_scale_str = 'Consent')),
@@ -120,6 +121,7 @@ targets <- list(
              create_joined(
 							 df_AIM,
 							 df_BNT,
+							 df_BART,
 							 df_bRCOPE,
 							 df_CAS,
 							 df_Consent,
@@ -179,7 +181,7 @@ targets <- list(
   ## Analysis ----------------------------------------------------------------- 
   
   # Prepare a DF ready for the analysis
-  tar_target(DF_analysis, create_DF_analysis(DF_joined, last_task = "Goodbye_001_DIR", save_output = TRUE)),
+  tar_target(DF_analysis, create_DF_analysis(DF_joined, last_task = "DEBRIEF_esfuerzo_DIRd", save_output = TRUE)),
 
   # [TODO] Descriptive Table 1
   # Important: Should we compare DF_analysis with the final data used in each model? 
