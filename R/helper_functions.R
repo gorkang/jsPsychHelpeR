@@ -752,17 +752,21 @@ separate_responses <- function(DF) {
   
   # How many different N of responses we have
   different_N = DF %>% 
-    mutate(N_responses = str_count(response, '\\"".*?"":""')) %>% 
+    # mutate(N_responses = str_count(response, '\\"".*?"":""')) %>% 
+    mutate(N_responses = str_count(response, '\\"".*?"":')) %>% 
     pull(N_responses) %>% unique()
   
   # Internal function to separate   
   separate_N <- function(N) {
     
+    # N = 4
+    
     # When there is no response recorded (e.g. INFCONS)
     if (is.na(N)) {
       
       DF %>% 
-        mutate(N_responses = str_count(response, '\\"".*?"":""')) %>% 
+        # mutate(N_responses = str_count(response, '\\"".*?"":""')) %>% 
+        mutate(N_responses = str_count(response, '\\"".*?"":')) %>% 
         filter(is.na(N_responses)) %>% 
         mutate(question = "Q0",
                response_raw = response)
@@ -771,7 +775,8 @@ separate_responses <- function(DF) {
     } else if (N == 0) {
       
       DF %>% 
-        mutate(N_responses = str_count(response, '\\"".*?"":""')) %>% 
+        # mutate(N_responses = str_count(response, '\\"".*?"":""')) %>% 
+        mutate(N_responses = str_count(response, '\\"".*?"":')) %>% 
         filter(N_responses == N) %>% 
         mutate(question = "Q0",
                response_raw = response)
@@ -781,12 +786,14 @@ separate_responses <- function(DF) {
     } else {
       
       pattern_names = 1:N %>% map(~ c(paste0("qid", .x), paste0("resp", .x))) %>% unlist()
-      pattern_template_raw = '\\""(.*?)"":\\""(.*?)""'
+      # pattern_template_raw = '\\""(.*?)"":\\""(.*?)""'
+      pattern_template_raw = '\\""(.*?)"":(.*)'
       pattern_template = paste(rep(pattern_template_raw, N), collapse = ",")
       
       DF_temp = 
         DF %>% 
-        mutate(N_responses = str_count(response, '\\"".*?"":""')) %>% 
+        # mutate(N_responses = str_count(response, '\\"".*?"":""')) %>% 
+        mutate(N_responses = str_count(response, '\\"".*?"":')) %>% 
         filter(N_responses == N) %>% 
         tidyr::extract(response, pattern_names, regex = pattern_template, remove = FALSE) %>% 
         rename(response_raw = response) 
@@ -799,7 +806,8 @@ separate_responses <- function(DF) {
         map_df(~ DF_temp %>% pivot_wider(names_from = names_qid[.x], values_from = names_resp[.x])) %>% 
         select(-matches("qid[0-9]{1,3}"), -matches("resp[0-9]{1,3}")) %>% 
         pivot_longer(all_of(values_qid), names_to = "question", values_to = "response") %>%
-        drop_na(response)
+        drop_na(response) %>% 
+        mutate(response = gsub('\\"|}', '', response))
       
       
     }
