@@ -58,10 +58,10 @@ targets <- list(
   
   # Use R/prepare_template.R to create new preparation_scripts
 
-   tar_target(df_ESM, prepare_ESM(DF_clean, short_name_scale_str = 'ESM')),
    tar_target(df_AIM, prepare_AIM(DF_clean, short_name_scale_str = 'AIM')),
    tar_target(df_BNT, prepare_BNT(DF_clean, short_name_scale_str = 'BNT')),
    tar_target(df_bRCOPE, prepare_bRCOPE(DF_clean, short_name_scale_str = 'bRCOPE')),
+   tar_target(df_CAS, prepare_CAS(DF_clean, short_name_scale_str = 'CAS')),
    tar_target(df_Consent, prepare_Consent(DF_clean, short_name_scale_str = 'Consent')),
    tar_target(df_Cov19Q, prepare_Cov19Q(DF_clean, short_name_scale_str = 'Cov19Q')),
    tar_target(df_COVIDCONTROL, prepare_COVIDCONTROL(DF_clean, short_name_scale_str = 'COVIDCONTROL')),
@@ -69,11 +69,14 @@ targets <- list(
    tar_target(df_CRT7, prepare_CRT7(DF_clean, short_name_scale_str = 'CRT7')),
    tar_target(df_CRTMCQ4, prepare_CRTMCQ4(DF_clean, short_name_scale_str = 'CRTMCQ4')),
    tar_target(df_CRTv, prepare_CRTv(DF_clean, short_name_scale_str = 'CRTv')),
+   tar_target(df_DASS21, prepare_DASS21(DF_clean, short_name_scale_str = 'DASS21')),
    tar_target(df_DEBRIEF, prepare_DEBRIEF(DF_clean, short_name_scale_str = 'DEBRIEF')),
    tar_target(df_DEMOGR, prepare_DEMOGR(DF_clean, short_name_scale_str = 'DEMOGR')),
+   # tar_target(df_DEMOGR3, prepare_DEMOGR3(DF_clean, short_name_scale_str = 'DEMOGR3')),
    tar_target(df_EAR, prepare_EAR(DF_clean, short_name_scale_str = 'EAR')),
    tar_target(df_EmpaTom, prepare_EmpaTom(DF_clean, short_name_scale_str = 'EmpaTom')),
    tar_target(df_ERQ, prepare_ERQ(DF_clean, short_name_scale_str = 'ERQ')),
+   tar_target(df_ESM, prepare_ESM(DF_clean, short_name_scale_str = 'ESM')),
    tar_target(df_FDMQ, prepare_FDMQ(DF_clean, short_name_scale_str = 'FDMQ')),
    tar_target(df_GHQ12, prepare_GHQ12(DF_clean, short_name_scale_str = 'GHQ12')),
    tar_target(df_Goodbye, prepare_Goodbye(DF_clean, short_name_scale_str = 'Goodbye')),
@@ -81,7 +84,7 @@ targets <- list(
    tar_target(df_HRPVBpost, prepare_HRPVBpost(DF_clean, short_name_scale_str = 'HRPVBpost')),
    tar_target(df_IDQ, prepare_IDQ(DF_clean, short_name_scale_str = 'IDQ')),
    tar_target(df_IEC, prepare_IEC(DF_clean, short_name_scale_str = 'IEC')),
-   tar_target(df_INFCONS, prepare_INFCONS(DF_clean, short_name_scale_str = 'INFCONS')),
+   # tar_target(df_INFCONS, prepare_INFCONS(DF_clean, short_name_scale_str = 'INFCONS')),
    tar_target(df_IRI, prepare_IRI(DF_clean, short_name_scale_str = 'IRI')),
    tar_target(df_IRS, prepare_IRS(DF_clean, short_name_scale_str = 'IRS')),
    # tar_target(df_ITC, prepare_ITC(DF_clean, short_name_scale_str = 'ITC')),
@@ -94,8 +97,10 @@ targets <- list(
    tar_target(df_PSETPP, prepare_PSETPP(DF_clean, short_name_scale_str = 'PSETPP')),
    tar_target(df_PSPPC, prepare_PSPPC(DF_clean, short_name_scale_str = 'PSPPC')),
    tar_target(df_PSS, prepare_PSS(DF_clean, short_name_scale_str = 'PSS')),
+   tar_target(df_PVC, prepare_PVC(DF_clean, short_name_scale_str = 'PVC')),
    tar_target(df_PWb, prepare_PWb(DF_clean, short_name_scale_str = 'PWb')),
    tar_target(df_REI40, prepare_REI40(DF_clean, short_name_scale_str = 'REI40')),
+   tar_target(df_Report, prepare_Report(DF_clean, short_name_scale_str = 'Report')),
    tar_target(df_RSS, prepare_RSS(DF_clean, short_name_scale_str = 'RSS')),
    tar_target(df_RTS, prepare_RTS(DF_clean, short_name_scale_str = 'RTS')),
    tar_target(df_SASS, prepare_SASS(DF_clean, short_name_scale_str = 'SASS')),
@@ -103,6 +108,7 @@ targets <- list(
    tar_target(df_SCSORF, prepare_SCSORF(DF_clean, short_name_scale_str = 'SCSORF')),
    tar_target(df_SDG, prepare_SDG(DF_clean, short_name_scale_str = 'SDG')),
    tar_target(df_SRA, prepare_SRA(DF_clean, short_name_scale_str = 'SRA')),
+   tar_target(df_SRBQP, prepare_SRBQP(DF_clean, short_name_scale_str = 'SRBQP')),
    tar_target(df_SRSav, prepare_SRSav(DF_clean, short_name_scale_str = 'SRSav')),
    tar_target(df_SWBQ, prepare_SWBQ(DF_clean, short_name_scale_str = 'SWBQ')),
    tar_target(df_WEBEXEC, prepare_WEBEXEC(DF_clean, short_name_scale_str = 'WEBEXEC')),
@@ -112,10 +118,10 @@ targets <- list(
   
   tar_target(DF_joined, 
              create_joined(
-							 df_ESM,
 							 df_AIM,
 							 df_BNT,
 							 df_bRCOPE,
+							 df_CAS,
 							 df_Consent,
 							 df_Cov19Q,
 							 df_COVIDCONTROL,
@@ -123,12 +129,14 @@ targets <- list(
 							 df_CRT7,
 							 df_CRTMCQ4,
 							 df_CRTv,
+							 df_DASS21,
 							 df_DEBRIEF,
 							 df_DEMOGR,
 							 df_DEMOGR3,
 							 df_EAR,
 							 df_EmpaTom,
 							 df_ERQ,
+							 df_ESM,
 							 df_FDMQ,
 							 df_GHQ12,
 							 df_Goodbye,
@@ -149,8 +157,10 @@ targets <- list(
 							 df_PSETPP,
 							 df_PSPPC,
 							 df_PSS,
+							 df_PVC,
 							 df_PWb,
 							 df_REI40,
+							 df_Report,
 							 df_RSS,
 							 df_RTS,
 							 df_SASS,
@@ -158,6 +168,7 @@ targets <- list(
 							 df_SCSORF,
 							 df_SDG,
 							 df_SRA,
+							 df_SRBQP,
 							 df_SRSav,
 							 df_SWBQ,
 							 df_WEBEXEC
@@ -168,8 +179,8 @@ targets <- list(
   ## Analysis ----------------------------------------------------------------- 
   
   # Prepare a DF ready for the analysis
-  tar_target(DF_analysis, create_DF_analysis(DF_joined)),
-  
+  tar_target(DF_analysis, create_DF_analysis(DF_joined, last_task = "Goodbye_001_DIR", save_output = TRUE)),
+
   # [TODO] Descriptive Table 1
   # Important: Should we compare DF_analysis with the final data used in each model? 
   tar_render(descriptives_table1, "doc/descriptives_table1.Rmd", deployment = "main"),

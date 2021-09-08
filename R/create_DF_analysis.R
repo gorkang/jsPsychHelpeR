@@ -7,18 +7,21 @@
 ##' @return
 ##' @author gorkang
 ##' @export
-create_DF_analysis <- function(DF_joined) {
-
+create_DF_analysis <- function(DF_joined, last_task, save_output = TRUE) {
+  
   # Selects all STDt, STDd, DIRt and DIRd scales
   # all_scales also used in "tests/testthat/test-missing_data.R"
   all_scales = grep(".*_DIRt$|.*_STDt$|.*_DIRd$|.*STDd$", names(DF_joined), value = TRUE, perl = TRUE)
     
   DF_analysis = 
     DF_joined %>% 
-    select(id, all_of(all_scales))
+    select(id, all_of(all_scales)) %>% 
+    
+    # Remove people that did not finish protocol
+    drop_na(last_task)
   
   # Save files --------------------------------------------------------------
-  save_files(DF_analysis, short_name_scale = "analysis", is_scale = FALSE)
+  if (save_output == TRUE) save_files(DF_analysis, short_name_scale = "analysis", is_scale = FALSE)
   
   
   # Output of function ---------------------------------------------------------
