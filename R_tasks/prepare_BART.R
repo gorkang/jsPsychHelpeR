@@ -34,7 +34,7 @@ prepare_BART <- function(DF_clean, short_name_scale_str) {
   # Standardized names ------------------------------------------------------
   standardized_names(short_name_scale = short_name_scale_str, 
                      # dimensions = c("InflatesSafe", "InflatesExplode", "TotalIncome", "NumberExplode"), # Use names of dimensions, "" or comment out line
-                     dimensions = c("MeanRoundsSafe", "MeanRoundsExplode", "NumberSafe", "NumberExplode", "TotalMoney"),
+                     dimensions = c("meanRoundsSafe", "meanRoundsExplode", "numberSafe", "numberExplode", "totalMoney"),
                      help_names = FALSE) # help_names = FALSE once the script is ready
   
   # Create long -------------------------------------------------------------
@@ -93,12 +93,13 @@ prepare_BART <- function(DF_clean, short_name_scale_str) {
     DF_long_RAW %>%
     select(id, trialid, RAW) %>%
 
-    mutate(trialid =
-             case_when(
-               grepl("round_money", trialid) ~ gsub("(.*)round_money", "\\1RoundMoney", trialid),
-               grepl("total_money", trialid) ~ gsub("(.*)total_money", "\\1TotalMoney", trialid),
-               grepl("explode_rounds", trialid) ~ gsub("(.*)explode_rounds", "\\1ExplodeRounds", trialid),
-               TRUE ~ trialid)) %>%
+    # Should be fixed
+    # mutate(trialid =
+    #          case_when(
+    #            grepl("round_money", trialid) ~ gsub("(.*)round_money", "\\1RoundMoney", trialid),
+    #            grepl("total_money", trialid) ~ gsub("(.*)total_money", "\\1TotalMoney", trialid),
+    #            grepl("explode_rounds", trialid) ~ gsub("(.*)explode_rounds", "\\1ExplodeRounds", trialid),
+    #            TRUE ~ trialid)) %>%
     separate(trialid, into = c("BART", "trialnum", "variable"), sep = "_") %>%
     pivot_wider(names_from = variable, values_from = RAW) %>% 
     mutate(status = stringr::str_to_sentence(status))
@@ -108,15 +109,15 @@ prepare_BART <- function(DF_clean, short_name_scale_str) {
 
     DF_temp %>%
       group_by(id, status) %>%
-      summarise(BART_MeanRounds = mean(as.numeric(rounds), na.rm = TRUE),
-                BART_Number = n(), 
+      summarise(BART_meanRounds = mean(as.numeric(rounds), na.rm = TRUE),
+                BART_number = n(), 
                 .groups = "drop") %>%
-      pivot_wider(names_from = status, values_from = c(BART_MeanRounds, BART_Number), names_sep = "") %>%
+      pivot_wider(names_from = status, values_from = c(BART_meanRounds, BART_number), names_sep = "") %>%
       left_join(DF_temp %>%
                   group_by(id) %>%
-                  summarise(BART_TotalMoney = max(as.numeric(TotalMoney)), .groups = "drop"), 
+                  summarise(BART_totalMoney = max(as.numeric(totalMoney)), .groups = "drop"), 
                 by = "id"
-      ) %>% rename_with(~paste0(., "_DIRd"), BART_MeanRoundsSafe:BART_TotalMoney)
+      ) %>% rename_with(~paste0(., "_DIRd"), BART_meanRoundsSafe:BART_totalMoney)
 
   
   
