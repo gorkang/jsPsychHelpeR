@@ -13,16 +13,29 @@
 
   if (!require('rmarkdown')) install.packages('rmarkdown'); library('rmarkdown')
   
-  source("_targets.R")
-  missing_packages = packages_to_load[!packages_to_load %in% installed.packages()[,1]]
+  # source("_targets.R")
+  # missing_packages = packages_to_load[!packages_to_load %in% installed.packages()[,1]]
+  # 
+  # if (length(missing_packages) > 0) {
+  #   cat("The following packages are missing and will be installed: ", packages_to_load[!packages_to_load %in% installed.packages()[,1]])
+  #   install.packages(packages_to_load[!packages_to_load %in% installed.packages()[,1]])
+  # } else {
+  #   cat(crayon::green("All the necessary packages are present\n"))
+  # }
+
+  # Create _targets_packages and read all dependencies
+  targets::tar_renv()
+  packages_renv = gsub("library\\(|\\)", "", readLines("_targets_packages.R")[-1])
+  missing_packages = packages_renv[!packages_renv %in% installed.packages()[,1]]
   
   if (length(missing_packages) > 0) {
-    cat("The following packages are missing and will be installed: ", packages_to_load[!packages_to_load %in% installed.packages()[,1]])
-    install.packages(packages_to_load[!packages_to_load %in% installed.packages()[,1]])
+    cat("The following packages are missing and will be installed: ", missing_packages)
+    install.packages(missing_packages)
   } else {
     cat(crayon::green("All the necessary packages are present\n"))
   }
 
+  
   # If you have issues with DT::datables()
   if (!require('webshot')) install.packages('webshot'); library('webshot')
   if (webshot::is_phantomjs_installed() == FALSE) webshot::install_phantomjs()
