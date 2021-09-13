@@ -910,7 +910,7 @@ update_data <- function(id_protocol, sensitive_tasks = c("")) {
 #' @export
 #'
 #' @examples
-create_codebook <- function(number) {
+create_codebook <- function(tasks, number) {
   
   # TODO -----------------------
   
@@ -968,9 +968,9 @@ create_codebook <- function(number) {
     mutate(items_dimensions = paste(items_dimensions, collapse = ", "))
   
   if (nrow(DF_output) == 1 & sum(DF_output != "") == 1) {
-    DF_output %>% mutate(names_dimensions = "TOTAL", items_dimensions = "ALL - ignored", functions = function_DIRt)
+    DF_output %>% mutate(names_dimensions = "TOTAL", items_dimensions = "ALL minus ignored", functions = function_DIRt)
   } else {
-    DF_output %>% bind_rows(tibble(task = name_task, names_dimensions = "TOTAL", items_dimensions = "ALL - ignored", functions = function_DIRt))
+    DF_output %>% bind_rows(tibble(task = name_task, names_dimensions = "TOTAL", items_dimensions = "ALL minus ignored", functions = function_DIRt))
   }
   
 }
