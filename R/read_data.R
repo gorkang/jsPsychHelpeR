@@ -11,7 +11,7 @@
 ##' @return
 ##' @author gorkang
 ##' @export
-read_data <- function(input_files, anonymize = FALSE, save_output = FALSE, workers = 1) {
+read_data <- function(input_files, anonymize = FALSE, save_output = TRUE, workers = 1) {
   
   # DEBUG
   # debug_function(read_data)
