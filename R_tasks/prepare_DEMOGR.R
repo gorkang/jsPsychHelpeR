@@ -161,8 +161,8 @@ prepare_DEMOGR <- function(DF_clean, short_name_scale_str) {
       mutate(!!name_RAW_NA := rowSums(is.na(select(., -matches(items_to_ignore) & matches("_RAW")))),
              !!name_DIR_NA := rowSums(is.na(select(., -matches(items_to_ignore) & matches("_DIR"))))) %>% 
     
-    left_join(DF_lookup, by = c("DEMOGR_06_DIR" = "comuna"))
-    # left_join(DF_lookup, by = c("DEMOGR_06_DIR" = "comuna"))
+    left_join(DF_lookup, by = c("DEMOGR_06_DIR" = "comuna")) %>% 
+    mutate(DEMOGR_comuna_DIRd = ifelse(is.na(DEMOGR_comuna_DIRd), paste0("Not found: ", DEMOGR_06_DIR), DEMOGR_comuna_DIRd))
   
     
     
