@@ -13,7 +13,7 @@ create_diccionary_tasks <- function(DF_clean) {
     DF_clean %>% 
     mutate(`short_name: from trialid` = 
              case_when(
-               grepl("_[0-9]{1,3}_[0-9]{1,3}", trialid) ~ gsub("^(.*)_[0-9]{1,3}_[0-9]{1,3}", "\\1", trialid),
+               grepl("_[0-9]{1,3}_[[:alnum:]]{1,30}", trialid) ~ gsub("^(.*)_[0-9]{1,3}_[[:alnum:]]{1,30}", "\\1", trialid), # NAME_001_ANYTHING [for questions depending on previous key, BART, etc.]
                TRUE ~ gsub("^(.*)_[0-9]{1,3}", "\\1", trialid)
              )
     ) %>% 
