@@ -15,10 +15,10 @@
 ##' @author gorkang
 ##' @export
 prepare_INFCONS <- function(DF_clean, short_name_scale_str) {
-
+  
   # DEBUG
   # debug_function(prepare_INFCONS)
-
+  
   # Standardized names ------------------------------------------------------
   standardized_names(short_name_scale = short_name_scale_str, 
                      # dimensions = c("NameDimension1", "NameDimension2"), # Use names of dimensions, "" or comment out line
@@ -48,22 +48,22 @@ prepare_INFCONS <- function(DF_clean, short_name_scale_str) {
     select(id, trialid, stimulus, RAW) %>%
     
     
-  # [ADAPT]: RAW to DIR for individual items -----------------------------------
+    # [ADAPT]: RAW to DIR for individual items -----------------------------------
   # ****************************************************************************
   
-    # Transformations
-    mutate(
-      RAW = stimulus,
-      DIR = 
-        case_when(
-          grepl("^img", RAW) ~ 2,
-          grepl("Se da en", RAW) ~ 1,
-          !grepl("Se da en", RAW) & !grepl("^img", RAW) ~ 0,
-          is.na(RAW) ~ NA_real_,
-          grepl(items_to_ignore, trialid) ~ NA_real_,
-          TRUE ~ 9999
-        )
-    ) %>% 
+  # Transformations
+  mutate(
+    RAW = stimulus,
+    DIR = 
+      case_when(
+        grepl("^img/", RAW) ~ 2,
+        grepl("Se da en", RAW) ~ 1,
+        !grepl("Se da en", RAW) & !grepl("^img/", RAW) ~ 0,
+        is.na(RAW) ~ NA_real_,
+        grepl(items_to_ignore, trialid) ~ NA_real_,
+        TRUE ~ 9999
+      )
+  ) %>% 
     
     # Invert items
     mutate(
@@ -75,10 +75,10 @@ prepare_INFCONS <- function(DF_clean, short_name_scale_str) {
         )
     ) %>% 
     select(-stimulus)
-    
+  
   # [END ADAPT]: ***************************************************************
   # ****************************************************************************
-    
+  
   # Create DF_wide_RAW_DIR -----------------------------------------------------
   DF_wide_RAW_DIR =
     DF_long_DIR %>% 
@@ -104,8 +104,9 @@ prepare_INFCONS <- function(DF_clean, short_name_scale_str) {
     
     # Score Scale
     !!name_DIRt := rowMeans(select(., matches("_DIR$")), na.rm = TRUE)
-    
   ) %>% 
+    
+    # Check value of the Score Scale column and replace using the apropriate string
     mutate(!!name_DIRt := 
              case_when(
                !!sym(name_DIRt) == 0 ~ "control",
