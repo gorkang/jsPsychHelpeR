@@ -56,9 +56,11 @@ prepare_SCSORF <- function(DF_clean, short_name_scale_str) {
       DIR =
         case_when(
           RAW == "Totalmente en desacuerdo" ~ 1,
+          RAW == "Fuertemente en desacuerdo" ~ 1,
           RAW == "En desacuerdo" ~ 2,
           RAW == "De acuerdo" ~ 3,
           RAW == "Totalmente de acuerdo" ~ 4,
+          RAW == "Fuertemente de acuerdo" ~ 4,
           TRUE ~ 9999 # EXTREME value so we can detect when we are not catching a response
         ))
 
