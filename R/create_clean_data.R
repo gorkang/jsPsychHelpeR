@@ -7,7 +7,7 @@
 ##' @return
 ##' @author gorkang
 ##' @export
-create_clean_data <- function(DF_raw) {
+create_clean_data <- function(DF_raw, save_output = TRUE) {
   
   DF_clean_raw =
     DF_raw %>% 
@@ -24,6 +24,11 @@ create_clean_data <- function(DF_raw) {
   
   # Creates one line per response for screens with multiple responses (e.g. Q0, Q1)
   DF_clean = separate_responses(DF_clean_raw)  
+  
+  
+  # Save files --------------------------------------------------------------
+  if (save_output == TRUE) save_files(DF_clean, short_name_scale = "clean", is_scale = FALSE)
+  
   
   # Output of function ---------------------------------------------------------
   return(DF_clean)
