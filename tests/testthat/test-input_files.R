@@ -83,8 +83,9 @@ testthat::test_that('Check all input files have the essential columns', {
   
   
   # Actual expectation -------------------------------------------------------------
-  
+  DF_columns_files = DF_final %>% count(value)
   testthat::expect_gt(nrow(DF_columns_files), 1) # Checks that we have some rows in the DF
+  
   testthat::expect_length(names_missing_columns, 0)
   
 })

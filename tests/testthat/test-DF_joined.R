@@ -35,7 +35,8 @@ testthat::test_that('Check DF_joined', {
     pull()
   
   # DF_joined
-  tasks_joined = names(DF_joined) %>% as_tibble() %>%
+  tasks_joined = 
+    names(DF_joined) %>% as_tibble() %>%
     filter(grepl("DIR_NA", value)) %>% 
     mutate(name = gsub("_DIR_NA", "", value)) %>% pull(name)
   
