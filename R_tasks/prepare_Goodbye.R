@@ -71,8 +71,17 @@ prepare_Goodbye <- function(DF_clean, short_name_scale_str) {
     
     # NAs for RAW and DIR items
     mutate(!!name_RAW_NA := rowSums(is.na(select(., -matches(items_to_ignore) & matches("_RAW")))),
-           !!name_DIR_NA := rowSums(is.na(select(., -matches(items_to_ignore) & matches("_DIR")))))
+           !!name_DIR_NA := rowSums(is.na(select(., -matches(items_to_ignore) & matches("_DIR"))))) %>% 
     
+  mutate(
+    
+    # Score Scale
+    !!name_DIRt := "DONE"
+    
+  )
+  
+    
+  
   # [END ADAPT]: ***************************************************************
   # ****************************************************************************
 

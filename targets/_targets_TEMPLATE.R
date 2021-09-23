@@ -72,7 +72,7 @@ JOINS_HERE
   ## Analysis ----------------------------------------------------------------- 
   
   # Prepare a DF ready for the analysis
-  tar_target(DF_analysis, create_DF_analysis(DF_joined)),
+  tar_target(DF_analysis, create_DF_analysis(DF_joined, last_task = "Goodbye_DIRt", save_output = TRUE)),
   
   # [TODO] Descriptive Table 1
   # Important: Should we compare DF_analysis with the final data used in each model? 
