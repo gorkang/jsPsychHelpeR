@@ -117,7 +117,7 @@ prepare_BART <- function(DF_clean, short_name_scale_str) {
                   group_by(id) %>%
                   summarise(BART_totalMoney = max(as.numeric(totalMoney)), .groups = "drop"), 
                 by = "id"
-      ) %>% rename_with(~paste0(., "_DIRd"), BART_meanRoundsSafe:BART_totalMoney)
+      ) %>% rename_with(~paste0(., "_DIRd"), BART_meanRoundsExplode:BART_totalMoney)
 
   
   
