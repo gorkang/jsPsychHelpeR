@@ -5,7 +5,7 @@ Project template and set of helper scripts for data preparation and analysis of 
 Please, address any correspondence to [gorkang\@gmail.com](mailto:gorkang@gmail.com)
 
 
-![](img/jsPsych-trinity.png){width=60%}
+![](img/jsPsych-trinity.png)
 
 
 
