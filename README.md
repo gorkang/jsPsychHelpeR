@@ -2,37 +2,39 @@
 
 Project template and set of helper scripts for data preparation and analysis of [jsPsych](https://www.jspsych.org/) experiments created with [jsPsych-maker](https://github.com/gorkang/jsPsych-maker).
 
-Please, address any correspondence to [gorkang\@gmail.com](mailto:gorkang@gmail.com){.email}
+Please, address any correspondence to [gorkang\@gmail.com](mailto:gorkang@gmail.com)
 
 
 ![](img/jsPsych-trinity.png)
 
 
 
-## Setup
+## How to use
 
-1.  Run `setup.R` :
-
--   Makes sure all the necessary packages are present
--   Makes sure all the necessary folders are present
-
-2. Copy the output .csv files to data/NUMBER_PROJECT (e.g. data/0)
-
-3. Run `create_targets_file()` to create a _targets.R file for your data. For example:
+If you run or simulated participants on a [jsPsych](https://www.jspsych.org/) experiment created with [jsPsych-maker](https://github.com/gorkang/jsPsych-maker), you can simply run:
 
 ```
-invisible(lapply(list.files("./R", full.names = TRUE, pattern = ".R$"), source))
-create_targets_file(pid_protocol = 0, folder_data = "data/0/")
-```   
+usethis::use_course(url = "gorkang/jsPsychHelper", destdir = "~/Downloads/")
+```
 
-## First run
+Then, open `run.R` and follow the instructions. Mainly:  
+
+```
+# REPLACE pid = 0 with your project ID
+
+invisible(lapply(list.files("./R", full.names = TRUE, pattern = ".R$"), source))
+run_initial_setup(pid = 0) 
+```
+
+
+### First run
 
 1. To make sure there are no old objects: `targets::tar_destroy()`
 
 2. Run `targets::tar_make()` to start!
 
 
-## Outputs
+### Outputs
 
 All the Rmd reports, tables, figures, etc will appear in the `outputs` folder.  
 

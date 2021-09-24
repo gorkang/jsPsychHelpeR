@@ -407,10 +407,12 @@ create_targets_file <- function(pid_protocol = 0, folder_data = NULL, folder_tas
 
   # DEBUG
   # folder_tasks = "/home/emrys/Downloads/COURSE/gorkang-jsPsychMaker-d94788a/canonical_protocol/tasks/"
-  # folder_data = "data/"
+  # folder_data = "data/0"
   # TODO: should move not used prepare_XXX() to subfolder? Or delete.
   
   suppressPackageStartupMessages(library(dplyr))
+  
+  if (file.exists("_targets_automatic_file.R")) file.remove("_targets_automatic_file.R")
   
   
   # If both parameters have info, choose folder_data
@@ -431,26 +433,34 @@ create_targets_file <- function(pid_protocol = 0, folder_data = NULL, folder_tas
       pull(experimento)
   }
   
+  if (length(files) > 0) {
+    
+    # Read template
+    template = readLines("targets/_targets_TEMPLATE.R")
+    
+    # Prepare targets section and joins section
+    targets = paste0("   tar_target(df_", files, ", prepare_", files, "(DF_clean, short_name_scale_str = '", files,"')),\n") %>% paste(., collapse = "")
+    joins = paste0("\t\t\t\t\t\t\t df_", files, ",\n") %>% paste(., collapse = "") %>% gsub(",\n$", "", .)
   
-  # Read template
-  template = readLines("targets/_targets_TEMPLATE.R")
+    # Replace  
+    final_targets = gsub("TARGETS_HERE", targets, template)
+    final_joins = gsub("JOINS_HERE", joins, final_targets)
+    final_file = gsub("pid_target = 999", paste0("pid_target = ", pid_protocol), final_joins)
+    # cat(final_joins, sep = "\n")
   
-  # Prepare targets section and joins section
-  targets = paste0("   tar_target(df_", files, ", prepare_", files, "(DF_clean, short_name_scale_str = '", files,"')),\n") %>% paste(., collapse = "")
-  joins = paste0("\t\t\t\t\t\t\t df_", files, ",\n") %>% paste(., collapse = "") %>% gsub(",\n$", "", .)
-
-  # Replace  
-  final_targets = gsub("TARGETS_HERE", targets, template)
-  final_joins = gsub("JOINS_HERE", joins, final_targets)
-  final_file = gsub("pid_target = 999", paste0("pid_target = ", pid_protocol), final_joins)
-  # cat(final_joins, sep = "\n")
-
-  cat(final_file, file = "_targets_automatic_file.R", sep = "\n")
+    # Create final file
+    cat(final_file, file = "_targets_automatic_file.R", sep = "\n")
+    
+  } else {
+    
+    cli_text(col_red("{symbol$cross} "), "0 tasks found for protocol '", pid_protocol, "'. NOT creating _targets.R file")
+  
+  }
   
   
   if (file.exists("_targets_automatic_file.R")) {
-    
-    response_prompt = menu(c("Yes", "No"), title = "Overwrite _targets.R?")
+
+    response_prompt = menu(c("Yes", "No"), title = paste0(cli::cli_text(cli::col_green("\n\n{symbol$tick} FOUND the following tasks:")), paste(files, collapse = ", "), cli::col_yellow("\n\nOverwrite _targets.R?")))
     
     if (response_prompt == 1) {
       
@@ -871,10 +881,12 @@ number_items_tasks <- function(DF_joined) {
 update_data <- function(id_protocol, sensitive_tasks = c("")) {
   
   # DEBUG
-  # id_protocol = 3
+  # id_protocol = 0
   # sensitive_tasks = c("DEMOGR")
   
   cat(crayon::yellow(paste0("Synching files from pid ", id_protocol, "\n")))
+  
+  if (!dir.exists(paste0("data/", id_protocol, "/"))) stop("CAN'T find data/", id_protocol)
   
   if (!file.exists(".vault/.credentials")) {
     # If you do not have the .credentials file: rstudioapi::navigateToFile("setup/setup_server_credentials.R")
@@ -885,7 +897,6 @@ update_data <- function(id_protocol, sensitive_tasks = c("")) {
   list_credentials = source(".vault/.credentials")
   if (!dir.exists(paste0(getwd(), '/data/' , id_protocol, '/'))) dir.create(paste0(getwd(), '/data/' , id_protocol, '/'))
   system(paste0('sshpass -p ', list_credentials$value$password, ' rsync -av --rsh=ssh ', list_credentials$value$user, "@", list_credentials$value$IP, ":", list_credentials$value$main_FOLDER, id_protocol, '/.data/ ', getwd(), '/data/' , id_protocol, '/'))
-  
   
   if (sensitive_tasks != "") {
     # MOVE sensitive data to .vault

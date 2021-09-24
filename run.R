@@ -1,21 +1,11 @@
 # Initial setup -----------------------------------------------------------
 
   # Do it only once #
+  invisible(lapply(list.files("./R", full.names = TRUE, pattern = ".R$"), source))
+  run_initial_setup(pid = 999) # REPLACE pid = 0 with your project ID
 
-  # # 1) Run to make sure you have all the necessary packages and folders
-  # source("setup/setup.R")
-  # 
-  # # 2) Make sure you create a "data/0/" folder
-  # if (!dir.exists("data/0/")) dir.create("data/0/")
-  # 
-  # # 3) **Manually** copy .csv files to data/0/
-  # invisible(lapply(list.files("./R", full.names = TRUE, pattern = ".R$"), source))
-  # update_data(id_protocol = 11) # Need a .vault/credentials file. Rename and edit .vault/credentials_TEMPLATE
-  # 
-  # # 4) Run to create a _targets.R file for your data
-  # invisible(lapply(list.files("./R", full.names = TRUE, pattern = ".R$"), source))
-  # create_targets_file(pid_protocol = 0, folder_data = "data/0/")
-   
+
+
 
 # RUN ---------------------------------------------------------------------
 

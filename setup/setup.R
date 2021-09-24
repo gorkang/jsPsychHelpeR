@@ -12,6 +12,8 @@
 # Make sure all packages are present --------------------------------------
 
   if (!require('rmarkdown')) install.packages('rmarkdown'); library('rmarkdown')
+  if (!require('webshot')) install.packages('webshot'); library('webshot')
+  if (!require('cli')) install.packages('cli'); library('cli')
   
   # source("_targets.R")
   # missing_packages = packages_to_load[!packages_to_load %in% installed.packages()[,1]]
@@ -37,7 +39,6 @@
 
   
   # If you have issues with DT::datables()
-  if (!require('webshot')) install.packages('webshot'); library('webshot')
   if (webshot::is_phantomjs_installed() == FALSE) webshot::install_phantomjs()
   
 
@@ -62,7 +63,8 @@
   }
 
   # Clean up _targets folder  
-  targets::tar_destroy()
+  cat(crayon::yellow("Destroying _targets file\n"))
+  targets::tar_destroy(ask = FALSE)
   
 
 
