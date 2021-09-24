@@ -5,7 +5,7 @@ Project template and set of helper scripts for data preparation and analysis of 
 Please, address any correspondence to [gorkang\@gmail.com](mailto:gorkang@gmail.com)
 
 
-![](img/jsPsych-trinity.png)
+![](img/jsPsych-trinity.png){width=60%}
 
 
 
@@ -16,14 +16,15 @@ If you run or simulated participants on a [jsPsych](https://www.jspsych.org/) ex
 ```
 usethis::use_course(url = "gorkang/jsPsychHelper", destdir = "~/Downloads/")
 ```
-
+  
+  
 Then, open `run.R` and follow the instructions. Mainly:  
 
 ```
-# REPLACE pid = 0 with your project ID
+# REPLACE pid = 999 with your project ID
 
 invisible(lapply(list.files("./R", full.names = TRUE, pattern = ".R$"), source))
-run_initial_setup(pid = 0) 
+run_initial_setup(pid = 999) 
 ```
 
 

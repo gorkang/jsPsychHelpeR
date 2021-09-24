@@ -88,5 +88,9 @@
   # Control+P: load all packages and functions
   # Control+M: targets::tar_make()
   # Control+L: targets::rstudio_addin_tar_load()
-  source("setup/setup_shortcuts.R"); setup_shortcuts()
+  
+  if (Sys.info()["sysname"] %in% c("Linux")) {
+    cat(crayon::green("Setup shortcuts [only Linux]\n"))
+    source("setup/setup_shortcuts.R"); setup_shortcuts()
+  }
   
