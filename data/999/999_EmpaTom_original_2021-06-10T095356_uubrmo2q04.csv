@@ -1,0 +1,5 @@
+"rt","stimulus","response","trialid","procedure","trial_type","trial_index","time_elapsed","internal_node_id","slider_start"
+"11276.65500000013","[""vid/Entrevista1.mp4""]","0","EmpaTom_01","EmpaTom","video-button-response","190","121875","0.0-204.0",""
+"482.94499999974505","<div class='justified'>¿Cómo te sientes?</div></br>","1","EmpaTom_02","EmpaTom","html-slider-response","191","122360","0.0-205.0","50"
+"680.7650000000722","<div class='justified'>¿Cuánta compasión sentiste por Tom?</div></br>","1","EmpaTom_03","EmpaTom","html-slider-response","192","123042","0.0-206.0","50"
+"655","{""Q0"":""Tom piensa.""}","{""Q0"":"" que lo que menos desea es olvidarse de su esposa producto del alzheimer""}","EmpaTom_04","EmpaTom","survey-multi-choice-vertical","193","123700","0.0-207.0",""
