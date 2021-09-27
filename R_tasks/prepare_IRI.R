@@ -23,10 +23,13 @@ prepare_IRI <- function(DF_clean, short_name_scale_str) {
   # [ADAPT]: Items to ignore, reverse and dimensions ---------------------------------------
   # ****************************************************************************
   
+  description_task = "Interpersonal reactivity index: la reaccion de un individuo al observar las  experiencias de los demas. La habilidad de entender como se sienten los demas"
+  
   items_to_ignore = c("00") # Ignore these items: If nothing to ignore, keep items_to_ignore = c("00")
   items_to_reverse = c("03", "04", "07", "12", "13", "14", "15", "18", "19") # Reverse these items: If nothing to reverse, keep  items_to_reverse = c("00")
   
   names_dimensions = c("TomaPerspectiva", "Fantasia", "PreocupacionEmpatica", "IncomodidadPersonal") # If no dimensions, keep names_dimensions = c("")
+  description_dimensions = c("Description for TomaPerspectiva", "Description for Fantasia", "Description for PreocupacionEmpatica", "Description for IncomodidadPersonal")
   
   items_DIRd1 = c("03", "08", "11", "15", "21", "25", "28")
   items_DIRd2 = c("01", "05", "07", "12", "16", "23", "26")

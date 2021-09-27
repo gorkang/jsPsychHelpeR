@@ -931,7 +931,7 @@ create_codebook <- function(tasks, number) {
   
   
   # DEBUG
-  # number = 39
+  # number = 33
   
   DF = readLines(tasks[number])
   
@@ -941,6 +941,10 @@ create_codebook <- function(tasks, number) {
   
   # Task
   name_task = gsub("prepare_|\\.R", "", basename(tasks)[number])
+  
+  # Descriptions
+  description_task = gsub('.*description_task \\= \\"(.*)\\"', "\\1", DF_clean[grepl("description_task", DF_clean)])
+  description_dimensions = stringr::str_extract_all(DF_clean[grepl("description_dimensions =", DF_clean)], '"[\\w_ ]{1,50}"') %>% purrr::compact()
   
   # Total
   function_DIRt = gsub(".*!!name_DIRt := (\\w{1,10}).*", "\\1", DF_clean[grepl("!!name_DIRt", DF_clean)]) %>% head(1) # REVIEW INFCONS
@@ -964,6 +968,10 @@ create_codebook <- function(tasks, number) {
   if (length(old_names_dimensions) == 0) old_names_dimensions = ""
   if (length(old_items_dimensions) == 0) old_items_dimensions = ""
   
+  if (length(description_task) == 0) description_task = ""
+  if (length(description_dimensions) == 0) description_dimensions = ""
+  
+  
   if (names_dimensions[1] == "") names_dimensions = old_names_dimensions
   if (items_dimensions[1] == "") items_dimensions = old_items_dimensions
   
@@ -973,7 +981,8 @@ create_codebook <- function(tasks, number) {
       task = name_task,
       names_dimensions = unlist(names_dimensions),
       items_dimensions = items_dimensions,
-      functions = functions_DIRd
+      functions = functions_DIRd,
+      description = description_dimensions %>% unlist(),
     ) %>%
     rowwise() %>% 
     mutate(items_dimensions = paste(items_dimensions, collapse = ", "))
@@ -981,7 +990,14 @@ create_codebook <- function(tasks, number) {
   if (nrow(DF_output) == 1 & sum(DF_output != "") == 1) {
     DF_output %>% mutate(names_dimensions = "TOTAL", items_dimensions = "ALL minus ignored", functions = function_DIRt)
   } else {
-    DF_output %>% bind_rows(tibble(task = name_task, names_dimensions = "TOTAL", items_dimensions = "ALL minus ignored", functions = function_DIRt))
+    DF_output %>% 
+      bind_rows(tibble(task = name_task, names_dimensions = "TOTAL", items_dimensions = "ALL minus ignored", functions = function_DIRt)) %>% 
+      mutate(description = 
+               case_when(
+                 !is.na(description) ~ description,
+                 names_dimensions == "TOTAL" ~ description_task,
+                 TRUE ~ NA_character_
+               ))
   }
   
 }
