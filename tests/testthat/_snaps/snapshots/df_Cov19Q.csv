@@ -1,6 +1,6 @@
 id,Cov19Q_01_RAW,Cov19Q_02_RAW,Cov19Q_03_RAW,Cov19Q_04_RAW,Cov19Q_05_RAW,Cov19Q_06_RAW,Cov19Q_07_RAW,Cov19Q_08_RAW,Cov19Q_09_RAW,Cov19Q_01_DIR,Cov19Q_02_DIR,Cov19Q_03_DIR,Cov19Q_04_DIR,Cov19Q_05_DIR,Cov19Q_06_DIR,Cov19Q_07_DIR,Cov19Q_08_DIR,Cov19Q_09_DIR,Cov19Q_RAW_NA,Cov19Q_DIR_NA,Cov19Q_PrevalenciaTu_DIRd,Cov19Q_PrevalenciaHogar_DIRd,Cov19Q_PrevalenciaCercano_DIRd,Cov19Q_Gravedad_DIRd,Cov19Q_PensamientoConspirativo_DIRd
-1,Si,Si,No,Poco grave,Muy de acuerdo,De acuerdo,Ni de acuerdo ni en desacuerdo,Ni de acuerdo ni en desacuerdo,Ni de acuerdo ni en desacuerdo,1,1,0,2,4,3,2,2,2,0,0,1,1,0,2,13
-2,No,Si,Si,Poco grave,Muy de acuerdo,De acuerdo,Muy en desacuerdo,Muy en desacuerdo,En desacuerdo,0,1,1,2,4,3,0,0,1,0,0,0,1,1,2,8
-3,No,Si,Si,Nada grave,En desacuerdo,Muy de acuerdo,Muy de acuerdo,Muy de acuerdo,Muy de acuerdo,0,1,1,1,1,4,4,4,4,0,0,0,1,1,1,17
-4,Si,No,Si,Extremadamente grave,Muy de acuerdo,Ni de acuerdo ni en desacuerdo,Ni de acuerdo ni en desacuerdo,Muy de acuerdo,Ni de acuerdo ni en desacuerdo,1,0,1,5,4,2,2,4,2,0,0,1,0,1,5,14
-5,Si,Si,No,Poco grave,De acuerdo,Muy de acuerdo,De acuerdo,De acuerdo,Muy de acuerdo,1,1,0,2,3,4,3,3,4,0,0,1,1,0,2,17
+1,Si,No,No,Extremadamente grave,Muy en desacuerdo,De acuerdo,Muy en desacuerdo,Muy de acuerdo,Muy en desacuerdo,1,0,0,5,0,3,0,4,0,0,0,1,0,0,5,7
+2,No,No,No,Medianamente grave,Muy de acuerdo,De acuerdo,Ni de acuerdo ni en desacuerdo,Muy de acuerdo,De acuerdo,0,0,0,3,4,3,2,4,3,0,0,0,0,0,3,16
+3,No,Si,Si,Nada grave,Ni de acuerdo ni en desacuerdo,Ni de acuerdo ni en desacuerdo,Muy en desacuerdo,Muy en desacuerdo,De acuerdo,0,1,1,1,2,2,0,0,3,0,0,0,1,1,1,7
+4,Si,Si,Si,Poco grave,Ni de acuerdo ni en desacuerdo,En desacuerdo,En desacuerdo,Muy en desacuerdo,En desacuerdo,1,1,1,2,2,1,1,0,1,0,0,1,1,1,2,5
+5,Si,Si,Si,Extremadamente grave,Ni de acuerdo ni en desacuerdo,De acuerdo,Ni de acuerdo ni en desacuerdo,De acuerdo,De acuerdo,1,1,1,5,2,3,2,3,3,0,0,1,1,1,5,13

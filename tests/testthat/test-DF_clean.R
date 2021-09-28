@@ -12,6 +12,7 @@ testthat::test_that('Check if any of the items appear more or less than the othe
   # In general, these SHOULD be IDQ_09_1, IDQ_11_1, IDQ_13_1 ???
   white_list = c("AIM_04", "AIM_05", "AIM_06", "AIM_07", "AIM_08", "AIM_09", "AIM_10",
                  "IDQ_10", "IDQ_12", "IDQ_14",
+                 "INFCONS_01", "INFCONS_02", "INFCONS_03", "INFCONS_04", "INFCONS_05", "INFCONS_06", "INFCONS_07", "INFCONS_08", "INFCONS_09", "INFCONS_10", "INFCONS_11", "INFCONS_12", "INFCONS_13", "INFCONS_14", "INFCONS_15", "INFCONS_16", "INFCONS_17", "INFCONS_18", "INFCONS_19", "INFCONS_20", "INFCONS_21", "INFCONS_22", 
                  "OTRASRELIG_07", "OTRASRELIG_09",
                  "PRFBM_02", "PRFBM_03", "PRFBMpost_02", "PRFBMpost_03",
                  "PVC_001_1",

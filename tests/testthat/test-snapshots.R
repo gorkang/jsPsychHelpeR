@@ -9,7 +9,7 @@ testthat::test_that('Check if the snapshots do not change', {
   
   # IF Test was skiped because: "On CRAN".
     Sys.setenv(NOT_CRAN = "true")
-  
+    
   
   # IF THERE IN AN ERROR (eg. in df_AIM): -------------------------------------
   
@@ -18,6 +18,10 @@ testthat::test_that('Check if the snapshots do not change', {
     # waldo::compare(TARGET, SNAPSHOT)
     # If NEW snapshot is OK: # testthat::snapshot_accept()
   
+  # If multiple snapshots fail
+    # options(testthat.progress.max_fails = 100)
+    # testthat::test_file("tests/testthat/test-snapshots.R")
+    # testthat::snapshot_accept()
   
   
   # Name of test (should reflect the name of the file) ----------------------

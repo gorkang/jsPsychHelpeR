@@ -1,6 +1,6 @@
 id,CAS_001_RAW,CAS_002_RAW,CAS_003_RAW,CAS_004_RAW,CAS_005_RAW,CAS_006_RAW,CAS_007_RAW,CAS_001_DIR,CAS_002_DIR,CAS_003_DIR,CAS_004_DIR,CAS_005_DIR,CAS_006_DIR,CAS_007_DIR,CAS_RAW_NA,CAS_DIR_NA,CAS_DIRt
-1,0 No me sucede,3 Me sucede mucho,2 A veces me sucede,0 No me sucede,0 No me sucede,0 No me sucede,0 No me sucede,0,3,2,0,0,0,0,0,0,5
-2,3 Me sucede mucho,1 Casi nunca me sucede,3 Me sucede mucho,2 A veces me sucede,0 No me sucede,3 Me sucede mucho,2 A veces me sucede,3,1,3,2,0,3,2,0,0,14
-3,2 A veces me sucede,1 Casi nunca me sucede,1 Casi nunca me sucede,2 A veces me sucede,1 Casi nunca me sucede,2 A veces me sucede,0 No me sucede,2,1,1,2,1,2,0,0,0,9
-4,2 A veces me sucede,3 Me sucede mucho,2 A veces me sucede,0 No me sucede,2 A veces me sucede,1 Casi nunca me sucede,1 Casi nunca me sucede,2,3,2,0,2,1,1,0,0,11
-5,3 Me sucede mucho,2 A veces me sucede,3 Me sucede mucho,3 Me sucede mucho,1 Casi nunca me sucede,0 No me sucede,1 Casi nunca me sucede,3,2,3,3,1,0,1,0,0,13
+1,3 Me sucede mucho,3 Me sucede mucho,3 Me sucede mucho,2 A veces me sucede,1 Casi nunca me sucede,0 No me sucede,2 A veces me sucede,3,3,3,2,1,0,2,0,0,14
+2,3 Me sucede mucho,2 A veces me sucede,0 No me sucede,1 Casi nunca me sucede,3 Me sucede mucho,2 A veces me sucede,0 No me sucede,3,2,0,1,3,2,0,0,0,11
+3,0 No me sucede,1 Casi nunca me sucede,0 No me sucede,2 A veces me sucede,2 A veces me sucede,2 A veces me sucede,2 A veces me sucede,0,1,0,2,2,2,2,0,0,9
+4,2 A veces me sucede,3 Me sucede mucho,1 Casi nunca me sucede,0 No me sucede,1 Casi nunca me sucede,3 Me sucede mucho,2 A veces me sucede,2,3,1,0,1,3,2,0,0,12
+5,0 No me sucede,2 A veces me sucede,1 Casi nunca me sucede,3 Me sucede mucho,1 Casi nunca me sucede,2 A veces me sucede,2 A veces me sucede,0,2,1,3,1,2,2,0,0,11
