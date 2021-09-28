@@ -1,3 +1,6 @@
-id,SDG_01_RAW,SDG_02_RAW,SDG_03_RAW,SDG_04_RAW,SDG_05_RAW,SDG_06_RAW,SDG_07_RAW,SDG_01_DIR,SDG_02_DIR,SDG_03_DIR,SDG_04_DIR,SDG_05_DIR,SDG_06_DIR,SDG_07_DIR,SDG_RAW_NA,SDG_DIR_NA
-r57bvbwv86,169404983,Casado (a),Media Completa,No tengo registro.,NA,Es estudiante,NA,169404983,1,5,2,NA,5,NA,2,2
-uubrmo2q04,214562053,Separado (a),Media Completa,Si tengo registro.,19,Trabaja a tiempo parcial,"Ejecutivos, administrativos, gerentes",214562053,5,5,1,19,2,2,0,0
+id,SDG_01_RAW,SDG_02_RAW,SDG_03_RAW,SDG_04_RAW,SDG_05_RAW,SDG_06_RAW,SDG_01_DIR,SDG_02_DIR,SDG_03_DIR,SDG_04_DIR,SDG_05_DIR,SDG_06_DIR,SDG_RAW_NA,SDG_DIR_NA
+1,213664148,Viudo (a),Media Incompleta,No tengo registro.,NA,Es rentista,213664148,3,4,2,NA,9,1,1
+2,146837960,Soltero/con pareja,Universitaria Completa o más,Si tengo registro.,16,Es rentista,146837960,7,9,1,16,9,0,0
+3,239931531,Soltero/con pareja,Media Completa,Si tengo registro.,85,No sabe/No responde,239931531,7,5,1,85,10,0,0
+4,247753059,Separado (a),Media Completa,Si tengo registro.,78,Es rentista,247753059,5,5,1,78,9,0,0
+5,164240359,Viudo (a),Sin Estudios,No tengo registro.,NA,"Está desempleado(a), pero busca trabajo",164240359,3,1,2,NA,4,1,1

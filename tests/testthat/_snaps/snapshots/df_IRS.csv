@@ -1,3 +1,6 @@
 id,IRS_001_RAW,IRS_002_RAW,IRS_003_RAW,IRS_004_RAW,IRS_005_RAW,IRS_006_RAW,IRS_001_DIR,IRS_002_DIR,IRS_003_DIR,IRS_004_DIR,IRS_005_DIR,IRS_006_DIR,IRS_RAW_NA,IRS_DIR_NA,IRS_DIRt
-r57bvbwv86,4 Ni acuerdo ni desacuerdo,6 De acuerdo,1 Completamente en desacuerdo,6 De acuerdo,6 De acuerdo,3 En alguna medida en desacuerdo,4,6,1,6,6,3,0,0,26
-uubrmo2q04,4 Ni acuerdo ni desacuerdo,7 Completamente de acuerdo,7 Completamente de acuerdo,7 Completamente de acuerdo,5 En alguna medida acuerdo,7 Completamente de acuerdo,4,7,7,7,5,7,0,0,37
+1,4 Ni acuerdo ni desacuerdo,6 De acuerdo,2 En desacuerdo,2 En desacuerdo,1 Completamente en desacuerdo,4 Ni acuerdo ni desacuerdo,4,6,2,2,1,4,0,0,19
+2,6 De acuerdo,4 Ni acuerdo ni desacuerdo,4 Ni acuerdo ni desacuerdo,4 Ni acuerdo ni desacuerdo,5 En alguna medida acuerdo,3 En alguna medida en desacuerdo,6,4,4,4,5,3,0,0,26
+3,7 Completamente de acuerdo,1 Completamente en desacuerdo,7 Completamente de acuerdo,4 Ni acuerdo ni desacuerdo,5 En alguna medida acuerdo,3 En alguna medida en desacuerdo,7,1,7,4,5,3,0,0,27
+4,6 De acuerdo,7 Completamente de acuerdo,3 En alguna medida en desacuerdo,1 Completamente en desacuerdo,3 En alguna medida en desacuerdo,1 Completamente en desacuerdo,6,7,3,1,3,1,0,0,21
+5,1 Completamente en desacuerdo,1 Completamente en desacuerdo,1 Completamente en desacuerdo,6 De acuerdo,3 En alguna medida en desacuerdo,6 De acuerdo,1,1,1,6,3,6,0,0,18

@@ -1,0 +1,8 @@
+"view_history","rt","trialid","procedure","trial_type","trial_index","time_elapsed","internal_node_id","stimulus","response"
+"[{""page_index"":0,""viewing_time"":361}]","362","Instructions_01","SDG","instructions","802","926763","0.0-772.0","",""
+"","578","SDG_01","SDG","survey-text","803","927345","0.0-773.0","{""Q0"":""Rut Completo (sin puntos ni guión y con dígito verificador, en caso que termine en k, reemplace por un 0):""}","{""Q0"":""239931531""}"
+"","1281","SDG_02","SDG","survey-multi-choice-vertical","804","928636","0.0-774.0","{""Q0"":""¿Cuál es su actual situación de pareja?""}","{""Q0"":"" Soltero/con pareja""}"
+"","1467","SDG_03","SDG","survey-multi-choice-vertical","805","930119","0.0-775.0","{""Q0"":""¿Cuál es el grado más alto de educación que usted ha completado?""}","{""Q0"":"" Media Completa""}"
+"","794","SDG_04","SDG","survey-multi-choice-vertical","806","930924","0.0-776.0","{""Q0"":""¿Tiene Nº de registro social de hogares? (Si no sabe puede consultar aquí: http://www.registrosocial.gob.cl/. Luego ingrese a \""ir a mi registro\"" e ingrese los datos que le solicitan. En caso que tenga, recuerde el porcentaje al cual corresponde, en caso contrario indique la opción \""No tengo registro\"").""}","{""Q0"":"" Si tengo registro.""}"
+"","573","SDG_05","SDG","survey-text","807","931504","0.0-777.0-0.0","{""Q0"":""Ingrese el porcentaje al que corresponde en el registro social de hogares:""}","{""Q0"":""85""}"
+"","1540","SDG_06","SDG","survey-multi-choice-vertical","808","933058","0.0-778.0","{""Q0"":""¿Cuál es su situación ocupacional actual?""}","{""Q0"":"" No sabe/No responde""}"

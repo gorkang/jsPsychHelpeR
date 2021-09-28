@@ -1,0 +1,6 @@
+"rt","stimulus","button_pressed","trialid","procedure","trial_type","trial_index","time_elapsed","internal_node_id","response","slider_start"
+"2351.800000000745","<div style=""max-width:600px;""><p>Descripcion de la tarea e instrucciones. Tom tiene Alzheimer....</p></div>","0","Instructions_01","EmpaTom","html-button-response","220","414374","0.0-235.0","",""
+"11360.800000000745","[""vid/Entrevista1.mp4""]","","EmpaTom_01","EmpaTom","video-button-response","221","425740","0.0-236.0","0",""
+"568.0999999977648","<div class='justified'>¿Cómo te sientes?</div></br>","","EmpaTom_02","EmpaTom","html-slider-response","222","426311","0.0-237.0","1","50"
+"453.30000000074506","<div class='justified'>¿Cuánta compasión sentiste por Tom?</div></br>","","EmpaTom_03","EmpaTom","html-slider-response","223","426767","0.0-238.0","1","50"
+"1034","{""Q0"":""Tom piensa.""}","","EmpaTom_04","EmpaTom","survey-multi-choice-vertical","224","427806","0.0-239.0","{""Q0"":"" que es muy probable que olvide a su esposa producto del alzheimer""}",""

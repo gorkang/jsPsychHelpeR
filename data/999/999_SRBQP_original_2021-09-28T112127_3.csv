@@ -1,0 +1,7 @@
+"view_history","rt","trialid","procedure","trial_type","trial_index","time_elapsed","internal_node_id","stimulus","response"
+"[{""page_index"":0,""viewing_time"":373}]","373","Instructions_01","SRBQP","instructions","832","954436","0.0-805.0","",""
+"","993","SRBQP_001","SRBQP","survey-multi-choice-vertical","833","955443","0.0-806.0","{""Q0"":""Mis creencias me han ayudado a sobrellevar el estrés ocasionado por la pandemia.""}","{""Q0"":"" 5 En alguna medida acuerdo""}"
+"","877","SRBQP_002","SRBQP","survey-multi-choice-vertical","834","956328","0.0-807.0","{""Q0"":""Mis creencias me han ayudado a sobrellevar momentos de ansiedad durante la pandemia.""}","{""Q0"":"" 5 En alguna medida acuerdo""}"
+"","782","SRBQP_003","SRBQP","survey-multi-choice-vertical","835","957119","0.0-808.0","{""Q0"":""Mis creencias me han ayudado a sobrellevar momentos de tristeza y depresión durante la pandemia.""}","{""Q0"":"" 2 En desacuerdo""}"
+"","1014","SRBQP_004","SRBQP","survey-multi-choice-vertical","836","958140","0.0-809.0","{""Q0"":""Mis creencias se hicieron más fuertes durante la pandemia.""}","{""Q0"":"" 1 Completamente en desacuerdo""}"
+"","798","SRBQP_005","SRBQP","survey-multi-choice-vertical","837","958944","0.0-810.0","{""Q0"":""En general, me considero una persona sin creencias.""}","{""Q0"":"" 1 Completamente en desacuerdo""}"
