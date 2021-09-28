@@ -63,7 +63,7 @@ prepare_OBJNUM <- function(DF_clean, short_name_scale_str) {
           trialid == "OBJNUM_06" & RAW == "10%" ~ 1,
           trialid == "OBJNUM_07" & as.numeric(RAW) == 100 ~ 1,
           trialid == "OBJNUM_08" & as.numeric(RAW) == 20 ~ 1,
-          trialid == "OBJNUM_09" & RAW %in% c("2% en 10 años", "2 de cada 100 en 10 años", "1% en 5 años", "1 de 100 en 5 años") ~ 1,
+          trialid == "OBJNUM_09" & as.numeric(RAW) %in% c(2) ~ 1, # SHOULD ACCEPT 0.02 ? #RAW %in% c("2% en 10 años", "2 de cada 100 en 10 años", "1% en 5 años", "1 de 100 en 5 años") ~ 1,
           RAW == "Poco" ~ 2,
           is.na(RAW) ~ NA_real_,
           grepl(items_to_ignore, trialid) ~ NA_real_,
