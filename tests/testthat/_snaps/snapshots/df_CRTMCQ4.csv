@@ -1,6 +1,6 @@
 id,CRTMCQ4_01_RAW,CRTMCQ4_02_RAW,CRTMCQ4_03_RAW,CRTMCQ4_04_RAW,CRTMCQ4_05_RAW,CRTMCQ4_06_RAW,CRTMCQ4_07_RAW,CRTMCQ4_01_DIR,CRTMCQ4_02_DIR,CRTMCQ4_03_DIR,CRTMCQ4_04_DIR,CRTMCQ4_05_DIR,CRTMCQ4_06_DIR,CRTMCQ4_07_DIR,CRTMCQ4_RAW_NA,CRTMCQ4_DIR_NA,CRTMCQ4_Reflectiveness_DIRd,CRTMCQ4_Intuitiveness_DIRd
-1,90 pesos,500 minutos,36 días,3 días,1 estudiante,$10.000,ha ganado dinero.,,,,,,intuitive,intuitive,0,0,0,2
-2,10 pesos,5 minutos,47 días,12 días,29 estudiantes,$20.000,ha ganado dinero.,,reflective,reflective,,reflective,reflective,intuitive,0,0,4,1
-3,50 pesos,20 minutos,24 días,4 días,29 estudiantes,$30.000,no ha ganado ni perdido dinero.,reflective,,intuitive,reflective,reflective,,,0,0,3,1
-4,10 pesos,500 minutos,36 días,9 días,30 estudiantes,$20.000,ha ganado dinero.,,,,intuitive,intuitive,reflective,intuitive,0,0,1,3
-5,50 pesos,20 minutos,47 días,3 días,30 estudiantes,$30.000,ha ganado dinero.,reflective,,reflective,,intuitive,,intuitive,0,0,2,2
+1,90 pesos,5 minutos,12 días,3 días,1 estudiante,$10.000,no ha ganado ni perdido dinero.,,reflective,,,,intuitive,,0,0,1,1
+2,50 pesos,5 minutos,24 días,4 días,30 estudiantes,$0,ha ganado dinero.,reflective,reflective,intuitive,reflective,intuitive,,intuitive,0,0,3,3
+3,10 pesos,20 minutos,47 días,12 días,29 estudiantes,$10.000,ha perdido dinero.,,,reflective,,reflective,intuitive,reflective,0,0,3,1
+4,50 pesos,5 minutos,24 días,9 días,30 estudiantes,$10.000,ha perdido dinero.,reflective,reflective,intuitive,intuitive,intuitive,intuitive,reflective,0,0,3,4
+5,10 pesos,5 minutos,24 días,9 días,29 estudiantes,$30.000,no se puede determinar.,,reflective,intuitive,intuitive,reflective,,,0,0,2,2

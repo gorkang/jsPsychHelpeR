@@ -1,6 +1,6 @@
-id,AIM_01_RAW,AIM_02_RAW,AIM_03_RAW,AIM_10_RAW,AIM_01_DIR,AIM_02_DIR,AIM_03_DIR,AIM_10_DIR,AIM_RAW_NA,AIM_DIR_NA,AIM_TramoIngreso_DIRd,AIM_DIRt
-1,Instituto técnico (CFT) o instituto profesional incompleto (carreras de 1 a 3 años).,Técnicos y profesionales de nivel medio (incluye hasta suboficiales FFAA y Carabineros).,8,1.410.000 mil – 2.459.000,6,7,7,4,0,0,4,c2
-2,Básica completa; primaria o preparatoria completa.,"Otros grupos no identificados (incluye rentistas, personas en situación de discapacidad, etc.)",56,809 mil – 1.409.000 mil,3,10,7,3,0,0,3,d
-3,Universitaria incompleta (carreras de 4 o más años).,Trabajadores de los servicios y vendedores de comercio y mercados.,0,NA,8,3,1,NA,1,1,0,NA
-4,Sin estudios formales.,Agricultores y trabajadores calificados agropecuarios y pesqueros.,14,1.410.000 mil – 2.459.000,1,4,7,4,0,0,4,c3
-5,Media científico humanista o media técnico profesional completa; humanidades completas.,"Otros grupos no identificados (incluye rentistas, personas en situación de discapacidad, etc.)",55,464 mil – 808 mil,5,10,7,2,0,0,2,d
+id,AIM_01_RAW,AIM_02_RAW,AIM_03_RAW,AIM_08_RAW,AIM_10_RAW,AIM_01_DIR,AIM_02_DIR,AIM_03_DIR,AIM_08_DIR,AIM_10_DIR,AIM_RAW_NA,AIM_DIR_NA,AIM_TramoIngreso_DIRd,AIM_DIRt
+1,Básica incompleta; primaria o preparatoria incompleta.,Técnicos y profesionales de nivel medio (incluye hasta suboficiales FFAA y Carabineros).,91,NA,464 mil – 808 mil,2,7,7,NA,2,1,1,2,d
+2,Universitaria incompleta (carreras de 4 o más años).,Operadores de instalaciones y máquinas y montadores / conductores de vehículos.,5,NS/NR,NA,8,5,5,99,NA,1,1,99,NA
+3,Universitaria completa (carreras de 4 o más años); oficial de FFAA y Carabineros.,Agricultores y trabajadores calificados agropecuarios y pesqueros.,96,NA,Menos de 464 mil,9,4,7,NA,1,1,1,1,d
+4,Media científico humanista o media técnico profesional completa; humanidades completas.,"Obreros, operarios y artesanos de artes mecánicas y de otros oficios.",48,NA,2.460.000 – 4.289.000,5,2,7,NA,5,1,1,5,c2
+5,Sin estudios formales.,Agricultores y trabajadores calificados agropecuarios y pesqueros.,80,NA,2.460.000 – 4.289.000,1,4,7,NA,5,1,1,5,c2

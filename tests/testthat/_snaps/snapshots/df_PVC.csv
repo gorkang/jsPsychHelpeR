@@ -1,6 +1,6 @@
 id,PVC_001_RAW,PVC_001_1_RAW,PVC_001_DIR,PVC_001_1_DIR,PVC_RAW_NA,PVC_DIR_NA
-1,No,No,No,No,0,0
-2,No,No estoy seguro,No,No estoy seguro,0,0
-3,No,No,No,No,0,0
-4,No,Si,No,Si,0,0
-5,No,No,No,No,0,0
+1,No,No estoy seguro,No,No estoy seguro,0,0
+2,No,Si,No,Si,0,0
+3,Si,NA,Si,NA,1,1
+4,No,No estoy seguro,No,No estoy seguro,0,0
+5,Si,NA,Si,NA,1,1

@@ -1,6 +1,6 @@
 id,SDG_01_RAW,SDG_02_RAW,SDG_03_RAW,SDG_04_RAW,SDG_05_RAW,SDG_06_RAW,SDG_01_DIR,SDG_02_DIR,SDG_03_DIR,SDG_04_DIR,SDG_05_DIR,SDG_06_DIR,SDG_RAW_NA,SDG_DIR_NA
-1,194893226,Divorciado/anulado (a),Media Completa,No tengo registro.,NA,Es rentista,194893226,4,5,2,NA,9,1,1
-2,283331284,Separado (a),Media Completa,Si tengo registro.,36,Es estudiante,283331284,5,5,1,36,5,0,0
-3,164179465,Soltero/sin pareja,Universitaria Incompleta,Si tengo registro.,43,"No trabaja, ni busca trabajo",164179465,6,8,1,43,6,0,0
-4,120712903,Conviviente,Universitaria Completa o más,No tengo registro.,NA,Es estudiante,120712903,2,9,2,NA,5,1,1
-5,170786479,Viudo (a),Media Incompleta,No tengo registro.,NA,Es ama de casa,170786479,3,4,2,NA,7,1,1
+1,280306998,Casado (a),Media Incompleta,No tengo registro.,NA,Es ama de casa,280306998,1,4,2,NA,7,1,1
+2,211703301,Divorciado/anulado (a),Básica Completa,Si tengo registro.,69,No sabe/No responde,211703301,4,3,1,69,10,0,0
+3,272076818,Soltero/sin pareja,Básica Completa,Si tengo registro.,21,"No trabaja, ni busca trabajo",272076818,6,3,1,21,6,0,0
+4,114005674,Soltero/con pareja,Universitaria Incompleta,No tengo registro.,NA,Es rentista,114005674,7,8,2,NA,9,1,1
+5,233147795,Viudo (a),Universitaria Incompleta,No tengo registro.,NA,Está jubilado o pensionado,233147795,3,8,2,NA,8,1,1
