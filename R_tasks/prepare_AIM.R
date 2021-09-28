@@ -76,7 +76,10 @@ prepare_AIM <- function(DF_clean, short_name_scale_str) {
         RAW == "Técnicos y profesionales de nivel medio (incluye hasta suboficiales FFAA y Carabineros)." ~ "7",
         RAW == "Profesionales, científicos e intelectuales." ~ "8",
         RAW == "Alto ejecutivo (gerente general o gerente de área o sector) de empresa privadas o pública- Director o dueño de grandes empresa- Alto directivo del poder ejecutivo, de los cuerpos legislativos y la administración pública (incluye oficiales de FFAA y Carabineros)." ~ "9",
+        
         RAW == "Otros grupos no identificados (incluye rentistas, incapacitados, etc.)" ~ "10",
+        RAW == "Otros grupos no identificados (incluye rentistas, personas en situación de discapacidad, etc.)" ~ "10",
+        
         
         # These are numbers. Need to store them as characters here and postpone the processing
         trialid == "AIM_03" ~ RAW, 
