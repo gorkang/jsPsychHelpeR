@@ -1,6 +1,6 @@
-id,SDG_01_RAW,SDG_02_RAW,SDG_03_RAW,SDG_04_RAW,SDG_05_RAW,SDG_06_RAW,SDG_01_DIR,SDG_02_DIR,SDG_03_DIR,SDG_04_DIR,SDG_05_DIR,SDG_06_DIR,SDG_RAW_NA,SDG_DIR_NA
-1,100798933,Soltero/con pareja,Universitaria Completa o más,Si tengo registro.,73,Es estudiante,100798933,7,9,1,73,5,0,0
-2,100798933,Soltero/con pareja,Universitaria Completa o más,Si tengo registro.,73,Es estudiante,100798933,7,9,1,73,5,0,0
-3,119204479,Viudo (a),Media Incompleta,Si tengo registro.,46,Es rentista,119204479,3,4,1,46,9,0,0
-4,100798933,Soltero/con pareja,Universitaria Completa o más,Si tengo registro.,73,Es estudiante,100798933,7,9,1,73,5,0,0
-5,221112110,Soltero/sin pareja,Universitaria Completa o más,No tengo registro.,NA,"No trabaja, ni busca trabajo",221112110,6,9,2,NA,6,1,1
+id,SDG_01_RAW,SDG_02_RAW,SDG_03_RAW,SDG_04_RAW,SDG_06_RAW,SDG_07_RAW,SDG_01_DIR,SDG_02_DIR,SDG_03_DIR,SDG_04_DIR,SDG_06_DIR,SDG_07_DIR,SDG_RAW_NA,SDG_DIR_NA
+1,202592101,Soltero/sin pareja,Técnica Incompleta,No tengo registro.,Trabaja a tiempo completo,Trabajo con productos de precisión o artesanías. Técnicos en reparación.,202592101,6,6,2,1,5,0,0
+2,202592101,Soltero/sin pareja,Técnica Incompleta,No tengo registro.,Trabaja a tiempo completo,Trabajo con productos de precisión o artesanías. Técnicos en reparación.,202592101,6,6,2,1,5,0,0
+3,202592101,Soltero/sin pareja,Técnica Incompleta,No tengo registro.,Trabaja a tiempo completo,Trabajo con productos de precisión o artesanías. Técnicos en reparación.,202592101,6,6,2,1,5,0,0
+4,202592101,Soltero/sin pareja,Técnica Incompleta,No tengo registro.,Trabaja a tiempo completo,Trabajo con productos de precisión o artesanías. Técnicos en reparación.,202592101,6,6,2,1,5,0,0
+5,202592101,Soltero/sin pareja,Técnica Incompleta,No tengo registro.,Trabaja a tiempo completo,Trabajo con productos de precisión o artesanías. Técnicos en reparación.,202592101,6,6,2,1,5,0,0

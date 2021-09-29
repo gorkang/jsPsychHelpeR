@@ -1,6 +1,6 @@
 id,CRT7_01_RAW,CRT7_02_RAW,CRT7_03_RAW,CRT7_04_RAW,CRT7_05_RAW,CRT7_06_RAW,CRT7_07_RAW,CRT7_01_DIR,CRT7_02_DIR,CRT7_03_DIR,CRT7_04_DIR,CRT7_05_DIR,CRT7_06_DIR,CRT7_07_DIR,CRT7_RAW_NA,CRT7_DIR_NA,CRT7_DIRt
-1,93,50,36,38,57,100,No ha ganado ni perdido dinero,0,0,0,0,0,0,0,0,0,0
-2,35,11,68,3,52,93,No ha ganado ni perdido dinero,0,0,0,0,0,0,0,0,0,0
-3,1,61,97,68,55,85,No ha ganado ni perdido dinero,0,0,0,0,0,0,0,0,0,0
-4,35,11,68,3,52,93,No ha ganado ni perdido dinero,0,0,0,0,0,0,0,0,0,0
-5,70,83,42,12,35,11,No ha ganado ni perdido dinero,0,0,0,0,0,0,0,0,0,0
+1,65,23,0,24,33,32,Ha ganado dinero,0,0,0,0,0,0,0,0,0,0
+2,23,0,24,33,32,88,No ha ganado ni perdido dinero,0,0,0,0,0,0,0,0,0,0
+3,0,24,33,32,88,56,Ha perdido dinero,0,0,0,0,0,0,1,0,0,1
+4,33,32,88,56,45,43,No ha ganado ni perdido dinero,0,0,0,0,0,0,0,0,0,0
+5,33,32,88,56,45,43,No ha ganado ni perdido dinero,0,0,0,0,0,0,0,0,0,0
