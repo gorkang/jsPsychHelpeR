@@ -1,6 +1,6 @@
 id,ESM_01_RAW,ESM_02_RAW,ESM_03_RAW,ESM_04_RAW,ESM_05_RAW,ESM_06_RAW,ESM_07_RAW,ESM_08_RAW,ESM_09_RAW,ESM_10_RAW,ESM_11_RAW,ESM_01_DIR,ESM_02_DIR,ESM_03_DIR,ESM_04_DIR,ESM_05_DIR,ESM_06_DIR,ESM_07_DIR,ESM_08_DIR,ESM_09_DIR,ESM_10_DIR,ESM_11_DIR,ESM_RAW_NA,ESM_DIR_NA,ESM_DIRt
-1,Igual,Si,Mala,No,No se,Si,Muy Mala,Si,Si,No se,No,0,1,1,-1,0,1,2,1,1,0,-1,0,0,5
-2,Peor,No se,Muy Mala,Si,No se,No se,Muy Buena,No,No se,No se,No se,1,0,2,1,0,0,-2,-1,0,0,0,0,0,1
-3,Igual,No se,Muy Mala,No,No,Si,Muy Buena,No se,No,No se,Si,0,0,2,-1,-1,1,-2,0,-1,0,1,0,0,-1
-4,Igual,No se,Muy Buena,No se,No se,No,Muy Buena,Si,Si,Si,No se,0,0,-2,0,0,-1,-2,1,1,1,0,0,0,-2
-5,Igual,No,Muy Buena,No,No se,No se,Muy Buena,No se,No,Si,No,0,-1,-2,-1,0,0,-2,0,-1,1,-1,0,0,-7
+1,Igual,Si,Buena,Si,No,Si,Muy Buena,No se,Si,Si,No se,0,1,-1,1,-1,1,-2,0,1,1,0,0,0,1
+2,Mejor,Si,Muy Mala,No,No,No se,Muy Mala,No,Si,No,No,-1,1,2,-1,-1,0,2,-1,1,-1,-1,0,0,0
+3,Peor,No,Mala,No,No,No,Buena,No se,No se,No,No,1,-1,1,-1,-1,-1,-1,0,0,-1,-1,0,0,-5
+4,Igual,No,Muy Buena,No,No,No se,Muy Buena,No,No,Si,No,0,-1,-2,-1,-1,0,-2,-1,-1,1,-1,0,0,-9
+5,Mejor,No,Buena,No se,Si,No,Buena,Si,No,Si,No,-1,-1,-1,0,1,-1,-1,1,-1,1,-1,0,0,-4
