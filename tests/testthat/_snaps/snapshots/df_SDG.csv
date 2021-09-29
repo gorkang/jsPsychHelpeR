@@ -1,6 +1,6 @@
-id,SDG_01_RAW,SDG_02_RAW,SDG_03_RAW,SDG_04_RAW,SDG_05_RAW,SDG_06_RAW,SDG_07_RAW,SDG_01_DIR,SDG_02_DIR,SDG_03_DIR,SDG_04_DIR,SDG_05_DIR,SDG_06_DIR,SDG_07_DIR,SDG_RAW_NA,SDG_DIR_NA
-1,195296488,Conviviente,Básica Incompleta,Si tengo registro.,14,No sabe/No responde,NA,195296488,2,2,1,14,10,NA,1,1
-2,279324168,Soltero/con pareja,No sabe o no aplica,No tengo registro.,NA,Trabaja a tiempo completo,"Operador de máquinas, instalador, inspectores",279324168,7,10,2,NA,1,6,1,1
-3,135598257,Soltero/sin pareja,Técnica Incompleta,Si tengo registro.,29,Trabaja esporádicamente,"Trabajos de apoyo administrativo, incluyendo trabajos eclesiásticos administrativos",135598257,6,6,1,29,3,4,0,0
-4,216881295,Divorciado/anulado (a),Técnica Incompleta,Si tengo registro.,20,Está jubilado o pensionado,NA,216881295,4,6,1,20,8,NA,1,1
-5,113174135,Soltero/con pareja,Universitaria Incompleta,Si tengo registro.,46,Trabaja a tiempo parcial,Trabajo con productos de precisión o artesanías. Técnicos en reparación.,113174135,7,8,1,46,2,5,0,0
+id,SDG_01_RAW,SDG_02_RAW,SDG_03_RAW,SDG_04_RAW,SDG_05_RAW,SDG_06_RAW,SDG_01_DIR,SDG_02_DIR,SDG_03_DIR,SDG_04_DIR,SDG_05_DIR,SDG_06_DIR,SDG_RAW_NA,SDG_DIR_NA
+1,100798933,Soltero/con pareja,Universitaria Completa o más,Si tengo registro.,73,Es estudiante,100798933,7,9,1,73,5,0,0
+2,100798933,Soltero/con pareja,Universitaria Completa o más,Si tengo registro.,73,Es estudiante,100798933,7,9,1,73,5,0,0
+3,119204479,Viudo (a),Media Incompleta,Si tengo registro.,46,Es rentista,119204479,3,4,1,46,9,0,0
+4,100798933,Soltero/con pareja,Universitaria Completa o más,Si tengo registro.,73,Es estudiante,100798933,7,9,1,73,5,0,0
+5,221112110,Soltero/sin pareja,Universitaria Completa o más,No tengo registro.,NA,"No trabaja, ni busca trabajo",221112110,6,9,2,NA,6,1,1
