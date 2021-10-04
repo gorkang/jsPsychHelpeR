@@ -9,7 +9,6 @@ editor_options:
 
 knitr::opts_chunk$set(echo = TRUE)
 targets::tar_load(DF_analysis)
-DF = DF_analysis
 
 ```
 
@@ -21,7 +20,8 @@ Table 1 with {median} ({p25}, {p75})", "{min}, {max}:
 
 ```{r summary, echo=FALSE}
 
-table1 = DF %>%
+table1 = 
+  DF_analysis %>%
   select(-id) %>%
   tbl_summary(
     type = all_continuous() ~ "continuous2",

@@ -35,7 +35,7 @@ analysis_descriptive_plots <- function(DF_joined, DF_raw) {
     geom_histogram(bins = 15) +
     theme_minimal()
   
-  ggsave("outputs/plots/plot_descriptive_numeric.png", plot1, dpi = 150, height = 12, width = 20)
+  # ggsave("outputs/plots/plot_descriptive_numeric.png", plot1, dpi = 150, height = 12, width = 20)
   
   
   d2 <- 
@@ -56,7 +56,7 @@ analysis_descriptive_plots <- function(DF_joined, DF_raw) {
       coord_flip() +
       theme_minimal()
     
-    ggsave("outputs/plots/plot_descriptive_categorical.png", plot2, dpi = 150, height = 12, width = 20)
+    # ggsave("outputs/plots/plot_descriptive_categorical.png", plot2, dpi = 150, height = 12, width = 20)
   } else {
     plot2 = NULL
   }
@@ -79,7 +79,7 @@ analysis_descriptive_plots <- function(DF_joined, DF_raw) {
     theme_minimal() +
     scale_x_log10(n.breaks = 10)
   
-  ggsave("outputs/plots/plot_tiempos.png", plot_tiempos, dpi = 150, height = 12, width = 20)
+  # ggsave("outputs/plots/plot_tiempos.png", plot_tiempos, dpi = 150, height = 12, width = 20)
   
   
   

@@ -25,6 +25,8 @@
   targets::tar_load(DF_analysis)
   DF_analysis
   
+  # CHECK warnings
+  targets::tar_meta() %>% select(name, warnings) %>% drop_na()
 
 # Task --------------------------------------------------------------------
 

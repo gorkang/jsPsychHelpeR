@@ -181,7 +181,7 @@ targets <- list(
   
   # [TODO] Descriptive Table 1
   # Important: Should we compare DF_analysis with the final data used in each model? 
-  tar_render(descriptives_table1, "doc/descriptives_table1.Rmd", deployment = "main"),
+  # tar_render(descriptives_table1, "doc/descriptives_table1.Rmd", deployment = "main"),
 
   # Analisys report
   # tar_render(report_analysis, "doc/report_analysis.Rmd",

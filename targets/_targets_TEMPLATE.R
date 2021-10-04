@@ -74,9 +74,8 @@ JOINS_HERE
   # Prepare a DF ready for the analysis
   tar_target(DF_analysis, create_DF_analysis(DF_joined, last_task = "Goodbye_DIRt", save_output = TRUE)),
   
-  # [TODO] Descriptive Table 1
-  # Important: Should we compare DF_analysis with the final data used in each model? 
-  tar_render(descriptives_table1, "doc/descriptives_table1.Rmd", deployment = "main"),
+  # Descriptive Table 1
+  # tar_render(descriptives_table1, "doc/descriptives_table1.Rmd", deployment = "main"),
 
   # Analisys report
   # tar_render(report_analysis, "doc/report_analysis.Rmd",

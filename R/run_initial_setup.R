@@ -35,9 +35,11 @@ run_initial_setup <- function(pid) {
       cli::cli_h1("Download files")
       update_data(id_protocol = pid) 
     } else {
-      cli::cli_text(cli::col_red("{symbol$cross} "), "sshpass or rsync not installed. Can't use `update_data()`")
+      cli::cli_text(cli::col_red("{cli::symbol$cross} "), "sshpass or rsync not installed. Can't use `update_data()`")
       cli::cli_text(cli::col_silver("- You need to manually download the files to '", paste0("data/", pid), "'"))
     }
+  } else {
+    cli::cli_text(cli::col_red("{cli::symbol$cross} "), "Can find server credentials in '.vault/.credentials'")
   }
   
   # 4) Create a _targets.R file for your data
