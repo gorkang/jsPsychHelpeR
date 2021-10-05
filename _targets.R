@@ -59,7 +59,6 @@ targets <- list(
   # Use R/prepare_template.R to create new preparation_scripts
 
    tar_target(df_AIM, prepare_AIM(DF_clean, short_name_scale_str = 'AIM')),
-   tar_target(df_BART, prepare_BART(DF_clean, short_name_scale_str = 'BART')),
    tar_target(df_BNT, prepare_BNT(DF_clean, short_name_scale_str = 'BNT')),
    tar_target(df_bRCOPE, prepare_bRCOPE(DF_clean, short_name_scale_str = 'bRCOPE')),
    tar_target(df_CAS, prepare_CAS(DF_clean, short_name_scale_str = 'CAS')),
@@ -118,7 +117,6 @@ targets <- list(
   tar_target(DF_joined, 
              create_joined(
 							 df_AIM,
-							 df_BART,
 							 df_BNT,
 							 df_bRCOPE,
 							 df_CAS,
@@ -179,11 +177,10 @@ targets <- list(
   # Prepare a DF ready for the analysis
   tar_target(DF_analysis, create_DF_analysis(DF_joined, last_task = "Goodbye_DIRt", save_output = TRUE)),
   
-  # [TODO] Descriptive Table 1
-  # Important: Should we compare DF_analysis with the final data used in each model? 
+  # Descriptive Table 1
   # tar_render(descriptives_table1, "doc/descriptives_table1.Rmd", deployment = "main"),
 
-  # Analisys report
+  # Analysis report
   # tar_render(report_analysis, "doc/report_analysis.Rmd",
   #            output_file = paste0("../outputs/reports/report_analysis.html")),
 
@@ -231,8 +228,18 @@ targets <- list(
                            pid_report = pid_target, 
                            last_task = "Goodbye", 
                            goal = 500),
-             output_file = paste0("../outputs/reports/report_PROGRESS_", pid_target , ".html"))
+             output_file = paste0("../outputs/reports/report_PROGRESS_", pid_target , ".html")),
 
+  # Progress report by group
+  tar_render(report_grouped_PROGRESS, path = "doc/grouped_PROGRESS.Rmd", 
+             params = list(input_DF = DF_analysis, 
+                           last_scale = "DEBRIEF_esfuerzo_DIRd",
+                           goal = 300,
+                           group_vars = c("AIM_DIRt", "DEMOGR_genero_DIRd"),
+                           n_groups = 6),
+             output_file = paste0("../outputs/reports/report_grouped_PROGRESS_", pid_target , ".html"))
+  
+  
 
 )
 

@@ -77,7 +77,7 @@ JOINS_HERE
   # Descriptive Table 1
   # tar_render(descriptives_table1, "doc/descriptives_table1.Rmd", deployment = "main"),
 
-  # Analisys report
+  # Analysis report
   # tar_render(report_analysis, "doc/report_analysis.Rmd",
   #            output_file = paste0("../outputs/reports/report_analysis.html")),
 
@@ -125,7 +125,18 @@ JOINS_HERE
                            pid_report = pid_target, 
                            last_task = "Goodbye", 
                            goal = 500),
-             output_file = paste0("../outputs/reports/report_PROGRESS_", pid_target , ".html"))
+             output_file = paste0("../outputs/reports/report_PROGRESS_", pid_target , ".html")),
+
+  # Progress report by group
+  tar_render(report_grouped_PROGRESS, path = "doc/grouped_PROGRESS.Rmd", 
+             params = list(input_DF = DF_analysis, 
+                           last_scale = "Goodbye_DIRt",
+                           goal = 500,
+                           group_vars = c("DEMOGR_genero_DIRd"),
+                           n_groups = 5),
+             output_file = paste0("../outputs/reports/report_grouped_PROGRESS_", pid_target , ".html"))
+
+
 
 
 )
