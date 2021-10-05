@@ -2,7 +2,7 @@
 
   # Do it only once #
   invisible(lapply(list.files("./R", full.names = TRUE, pattern = ".R$"), source))
-  run_initial_setup(pid = 999) # REPLACE pid = 0 with your project ID
+  run_initial_setup(pid = 999) # REPLACE pid = 999 with your project ID
 
 
 

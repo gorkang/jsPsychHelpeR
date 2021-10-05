@@ -1,6 +1,6 @@
 # jsPsychHelpeR
 
-Project template and set of helper scripts for data preparation and analysis of [jsPsych](https://www.jspsych.org/) experiments created with [jsPsych-maker](https://github.com/gorkang/jsPsych-maker).
+Standardize and automatize data preparation and analysis of [jsPsych](https://www.jspsych.org/) experiments created with [jsPsychMaker](https://github.com/gorkang/jsPsychMaker).
 
 Please, address any correspondence to [gorkang\@gmail.com](mailto:gorkang@gmail.com)
 
@@ -14,6 +14,8 @@ Please, address any correspondence to [gorkang\@gmail.com](mailto:gorkang@gmail.
 If you run or simulated participants on a [jsPsych](https://www.jspsych.org/) experiment created with [jsPsych-maker](https://github.com/gorkang/jsPsych-maker), you can simply run:
 
 ```
+if (!require('usethis')) install.packages('usethis'); library('usethis')
+
 usethis::use_course(url = "gorkang/jsPsychHelper", destdir = "~/Downloads/")
 ```
   

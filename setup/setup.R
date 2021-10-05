@@ -9,6 +9,12 @@
   if (!require('tarchetypes')) install.packages('tarchetypes'); library('tarchetypes')
   
 
+  # Clean up _targets folder  
+  cat(crayon::yellow("Destroying _targets file\n"))
+  targets::tar_destroy(ask = FALSE)
+
+
+
 # Make sure all packages are present --------------------------------------
 
   if (!require('rmarkdown')) install.packages('rmarkdown'); library('rmarkdown')
@@ -61,11 +67,6 @@
     invisible(file.remove(list.files("outputs", pattern = "*", full.names = TRUE, recursive = TRUE)))
     
   }
-
-  # Clean up _targets folder  
-  cat(crayon::yellow("Destroying _targets file\n"))
-  targets::tar_destroy(ask = FALSE)
-  
 
 
 # Server credentials ------------------------------------------------------
