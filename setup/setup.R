@@ -10,7 +10,7 @@
   
 
   # Clean up _targets folder  
-  cat(crayon::yellow("Destroying _targets file\n"))
+  cat(crayon::yellow("Destroying OLD _targets files\n"))
   targets::tar_destroy(ask = FALSE)
 
 
