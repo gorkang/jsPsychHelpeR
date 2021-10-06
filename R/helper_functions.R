@@ -520,7 +520,7 @@ auto_reliability = function(DF, short_name_scale = short_name_scale_str, items =
     items_selection = paste0(short_name_scale, "_", items, "_DIR")
   }
 
-
+  
   # Get selected variables
   temp_clean_RAW = DF %>%
     dplyr::select(all_of(items_selection))
@@ -528,12 +528,19 @@ auto_reliability = function(DF, short_name_scale = short_name_scale_str, items =
   temp_clean = temp_clean_RAW %>%
     select_if(~ !any(is.na(.))) # Need to delete columns with any NA
 
+  
+  # CHECK variance
+  variance_WARNING = ifelse(all(1:ncol(temp_clean) %>% map_dbl(~ sd(temp_clean[.x] %>% unlist)) == 0), "No variance", NA) 
+  if (!is.na(variance_WARNING)) cat(crayon::red("x NO variance. sd = 0"), "\n")
+  
+  
+  
   # deleted_items_NAs
   deleted_items_NAs = paste(names(temp_clean_RAW)[!names(temp_clean_RAW) %in% names(temp_clean)])
-  if (length(deleted_items_NAs) > 0) cat(crayon::red("\nDELETED VARS (have NA's)", paste(deleted_items_NAs, collapse = ", "), ""))
+  if (length(deleted_items_NAs) > 0) cat(crayon::red("x DELETED VARS (have NA's)", paste(deleted_items_NAs, collapse = ", "), "\n"))
 
   # Filter items where r.drop < min_rdrop
-  delete_items_raw = safely_alpha_table(temp_clean)
+  delete_items_raw = suppressMessages(safely_alpha_table(temp_clean))
   if (!is.null(delete_items_raw$result)) {
     delete_items = delete_items_raw$result %>% select(nitem, r.drop) %>% filter(r.drop <= min_rdrop) %>% pull(nitem)
     delete_items_warnings = delete_items_raw$warnings
@@ -544,7 +551,7 @@ auto_reliability = function(DF, short_name_scale = short_name_scale_str, items =
   if (exists("delete_items") == FALSE) delete_items = 0
   if (length(delete_items) == 0) {
 
-    temp_clean_alpha_raw = safely_alpha_raw(temp_clean)$result
+    temp_clean_alpha_raw = suppressMessages(safely_alpha_raw(temp_clean)$result)
     if (!is.null(temp_clean_alpha_raw)) {
       alpha_initial = round(temp_clean_alpha_raw, 3)
     } else {
@@ -554,7 +561,7 @@ auto_reliability = function(DF, short_name_scale = short_name_scale_str, items =
     delete_items = NULL
     keep_items = names(temp_clean)
 
-    cat(crayon::green("\nNo items with r.drop <= ", min_rdrop), "|| alpha: ", alpha_initial, "")
+    cat(crayon::green("No items with r.drop <= ", min_rdrop), "|| alpha: ", alpha_initial, "\n")
 
   } else {
 
@@ -565,21 +572,21 @@ auto_reliability = function(DF, short_name_scale = short_name_scale_str, items =
     temp_seleccionados = temp_clean %>% dplyr::select(all_of(keep_items))
 
     # Alphas
-    temp_alpha_initial_raw = safely_alpha_raw(temp_clean)$result
+    temp_alpha_initial_raw = suppressMessages(safely_alpha_raw(temp_clean)$result)
     if (!is.null(temp_alpha_initial_raw)) {
       alpha_initial = round(temp_alpha_initial_raw, 3)
     } else {
       alpha_initial = NULL
     }
     
-    temp_alpha_final_raw = safely_alpha_raw(temp_seleccionados)$result
+    temp_alpha_final_raw = suppressMessages(safely_alpha_raw(temp_seleccionados)$result)
     if (!is.null(temp_alpha_final_raw)) {
       alpha_final = round(temp_alpha_final_raw, 3)
     } else {
       alpha_final = NULL
     }
     
-    cat(crayon::yellow("\nFiltered", paste0(length(delete_items), "/", ncol(temp_clean_RAW)), "items with r.drop <= ", min_rdrop), "|| alpha: ", alpha_initial , "->", alpha_final, "")
+    cat(crayon::yellow("Filtered", paste0(length(delete_items), "/", ncol(temp_clean_RAW)), "items with r.drop <= ", min_rdrop), "|| alpha: ", alpha_initial , "->", alpha_final, "\n")
 
 
   }
