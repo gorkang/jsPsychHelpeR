@@ -30,7 +30,8 @@ testthat::test_that('Check all input files have the essential columns', {
   DF_final = purrr::map_dfr(one_of_each_file, read_check, workers = workers) %>% 
     separate(col = name_file, 
              into = c("project", "experimento", "version", "datetime", "id"), 
-             sep = c("_"), remove = FALSE, extra = "merge") 
+             sep = c("_"), remove = FALSE, extra = "merge") %>% 
+    mutate(id = gsub("\\.csv", "", id))
   
   
   # Essential columns
