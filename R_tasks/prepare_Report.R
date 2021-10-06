@@ -117,14 +117,17 @@ prepare_Report <- function(DF_clean, short_name_scale_str) {
   
   DF_wide_RAW_DIR =
     DF_wide_RAW %>% 
+    
+    
+    
     mutate(
       
       # Make sure to use the correct formula: rowMeans() / rowSums()
       
       # Score Dimensions (see standardized_names(help_names = TRUE) for instructions)
       !!name_DIRd1 := get(paste0(short_name_scale_str, "_", items_DIRd1, "_DIR")),
-      !!name_DIRd2 := get(paste0(short_name_scale_str, "_", items_DIRd2, "_DIR")),
-      !!name_DIRd3 := get(paste0(short_name_scale_str, "_", items_DIRd3, "_DIR")),
+      !!name_DIRd2 := ifelse(suppressWarnings(ncol(DF_wide_RAW %>% select(DF_wide_RAW$Report_001_1_DIR))) > 0, get(paste0(short_name_scale_str, "_", items_DIRd2, "_DIR")), NA_character_),
+      !!name_DIRd3 := ifelse(suppressWarnings(ncol(DF_wide_RAW %>% select(DF_wide_RAW$Report_001_1_DIR))) > 0, get(paste0(short_name_scale_str, "_", items_DIRd3, "_DIR")), NA_character_),
       !!name_DIRd4 := ifelse(get(paste0(short_name_scale_str, "_", items_DIRd4, "_DIR")) == 1, get(!!name_DIRd3), NA_character_)
       
       
@@ -135,6 +138,7 @@ prepare_Report <- function(DF_clean, short_name_scale_str) {
       # !!name_DIRt := rowSums(select(., matches("_DIR$")), na.rm = TRUE)
       
     )
+
   
   # [END ADAPT]: ***************************************************************
   # ****************************************************************************
