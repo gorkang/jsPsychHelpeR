@@ -1,0 +1,72 @@
+---
+title: "Grouped progress"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+params:
+  input_DF: DF_analysis
+  last_scale: "Goodbye_DIRt"
+  goal: 100
+  group_vars: ""
+  n_groups: 1
+---
+
+```{r setup, include=FALSE}
+
+# DEBUG
+# targets::tar_load(DF_analysis)
+# params = list(
+#   input_DF = DF_analysis,
+#   last_scale = "DEBRIEF_esfuerzo_DIRd",
+#   goal = 300,
+#   group_vars = c("AIM_DIRt", "DEMOGR_genero_DIRd"),
+#   n_groups = 6
+# )
+
+
+knitr::opts_chunk$set(echo = TRUE)
+
+
+# General data prepatation
+DF_analysis = 
+  params$input_DF %>% 
+  select(all_of(params$group_vars), params$last_scale) %>% 
+  filter(!is.na(params$last_scale)) %>% 
+  count(across(all_of(params$group_vars)), name = "completed") %>% 
+  mutate(missing = (params$goal / params$n_groups) - completed,
+         goal = (params$goal / params$n_groups)) %>% 
+  
+  # Specific variable transformation 
+  mutate(AIM_DIRt = 
+           case_when(
+            AIM_DIRt %in% c("d", "e") ~ "EXP",
+            AIM_DIRt %in% c("c2", "c3") ~ "CONc",
+            AIM_DIRt %in% c("c1a", "c1b", "ab") ~ "CONa",
+            TRUE ~ NA_character_)) %>% 
+  rename(group = AIM_DIRt)
+
+```
+
+---  
+
+
+`r nrow(DF_analysis)` out of `r params$goal` participants completed the experiment (`r round(nrow(DF_analysis) / params$goal, 2) * 100`%). The completion criteria is reaching `r params$last_scale`.  
+
+The final goal (`r params$goal`) is divided in `r params$n_groups` groups.  This is `r (params$goal / params$n_groups)` per group.   
+
+We create the groups crossing the variables: `r paste(params$group_vars, collapse = " & ")`.  
+
+---  
+
+```{r summary, echo=FALSE}
+
+DF_analysis %>% 
+DT::datatable(options = list(dom = 'ti'), rownames = FALSE) %>% 
+      DT::formatStyle(
+        columns = c("missing"), 
+        target = "cell",
+        color = DT::styleInterval(cuts = c(-10, 0), values = c("red", "orange", "green"))
+    )
+
+
+```
