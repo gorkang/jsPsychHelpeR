@@ -34,16 +34,16 @@ DF_analysis =
   filter(!is.na(params$last_scale)) %>% 
   count(across(all_of(params$group_vars)), name = "completed") %>% 
   mutate(missing = (params$goal / params$n_groups) - completed,
-         goal = (params$goal / params$n_groups)) %>% 
+         goal = (params$goal / params$n_groups)) 
   
   # Specific variable transformation 
-  mutate(AIM_DIRt = 
-           case_when(
-            AIM_DIRt %in% c("d", "e") ~ "EXP",
-            AIM_DIRt %in% c("c2", "c3") ~ "CONc",
-            AIM_DIRt %in% c("c1a", "c1b", "ab") ~ "CONa",
-            TRUE ~ NA_character_)) %>% 
-  rename(group = AIM_DIRt)
+  # mutate(AIM_DIRt = 
+  #          case_when(
+  #           AIM_DIRt %in% c("d", "e") ~ "EXP",
+  #           AIM_DIRt %in% c("c2", "c3") ~ "CONc",
+  #           AIM_DIRt %in% c("c1a", "c1b", "ab") ~ "CONa",
+  #           TRUE ~ NA_character_)) %>% 
+  # rename(group = AIM_DIRt)
 
 ```
 
