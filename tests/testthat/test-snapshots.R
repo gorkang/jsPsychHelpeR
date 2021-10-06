@@ -36,7 +36,7 @@ testthat::test_that('Check if the snapshots do not change', {
   testthat::local_edition(3)
   
   testthat::expect_snapshot_file(here::here("outputs/data/df_AIM.csv"))
-  testthat::expect_snapshot_file(here::here("outputs/data/df_BART.csv"))
+  # testthat::expect_snapshot_file(here::here("outputs/data/df_BART.csv"))
   testthat::expect_snapshot_file(here::here("outputs/data/df_BNT.csv"))
   testthat::expect_snapshot_file(here::here("outputs/data/df_bRCOPE.csv"))
   testthat::expect_snapshot_file(here::here("outputs/data/df_CAS.csv"))
