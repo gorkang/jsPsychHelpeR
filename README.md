@@ -5,13 +5,9 @@ Standardize and automatize data preparation and analysis of [jsPsych](https://ww
 Please, address any correspondence to [gorkang\@gmail.com](mailto:gorkang@gmail.com)
 
 
-![](img/jsPsych-trinity.png)
-
-
-
 ## How to use
 
-If you run or simulated participants on a [jsPsych](https://www.jspsych.org/) experiment created with [jsPsych-maker](https://github.com/gorkang/jsPsych-maker), you can simply run:
+If you run or simulated participants on a [jsPsych](https://www.jspsych.org/) experiment created with [jsPsychMaker](https://github.com/gorkang/jsPsychMaker), you can simply run:
 
 ```
 if (!require('usethis')) install.packages('usethis'); library('usethis')
