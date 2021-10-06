@@ -21,7 +21,7 @@ testthat::test_that('Check all input files have the essential columns', {
   # We read ONE file for each task. Otherwise, with big protocols it takes ages
   one_of_each_file = 
     input_files %>% as_tibble() %>% 
-    separate(col = value, into = c("project", "experimento", "version", "datetime", "id"), sep = c("_"), remove = FALSE) %>% 
+    separate(col = value, into = c("project", "experimento", "version", "datetime", "id"), sep = c("_"), remove = FALSE, extra = "merge") %>% 
     group_by(experimento) %>% 
     sample_n(1) %>% 
     pull(value)
@@ -30,7 +30,7 @@ testthat::test_that('Check all input files have the essential columns', {
   DF_final = purrr::map_dfr(one_of_each_file, read_check, workers = workers) %>% 
     separate(col = name_file, 
              into = c("project", "experimento", "version", "datetime", "id"), 
-             sep = c("_"), remove = FALSE) 
+             sep = c("_"), remove = FALSE, extra = "merge") 
   
   
   # Essential columns
@@ -68,6 +68,16 @@ testthat::test_that('Check all input files have the essential columns', {
       map_df(~ wich_files_missing_columns(name_missing_column = names_missing_columns[.x], DF_final) %>% as_tibble() %>% mutate(column_missing = names_missing_columns[.x]) %>% rename(file = value))
   }
   
+  
+
+  # TEST2 -------------------------------------------------------------------
+  
+  # We expect the csv to be: project_experimento_version_datetime_id.csv
+  # If there is a .csv in the id field is because there was a mistake separating the filename
+   extra_pieces_in_csv = any(grepl("\\.csv", DF_final$id))
+  
+  
+  
   # Warning and log ---------------------------------------------------------
   
   if (length(names_missing_columns) > 0) {
@@ -85,7 +95,9 @@ testthat::test_that('Check all input files have the essential columns', {
   # Actual expectation -------------------------------------------------------------
   DF_columns_files = DF_final %>% count(value)
   testthat::expect_gt(nrow(DF_columns_files), 1) # Checks that we have some rows in the DF
-  
-  testthat::expect_length(names_missing_columns, 0)
+  testthat::expect_length(names_missing_columns, 0) # No missing critical columns
+  testthat::expect_identical(extra_pieces_in_csv, FALSE, info = "We expect the csv to be: project_experimento_version_datetime_id.csv, but this has some extra bits separated by '_'")
+
+
   
 })
