@@ -75,7 +75,7 @@ testthat::test_that('Check all input files have the essential columns', {
   
   # We expect the csv to be: project_experimento_version_datetime_id.csv
   # If there is a .csv in the id field is because there was a mistake separating the filename
-   extra_pieces_in_csv = any(grepl("\\.csv", DF_final$id))
+   extra_pieces_in_csv = any(grepl("_", DF_final$id))
   
   
   
