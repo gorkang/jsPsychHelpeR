@@ -58,16 +58,6 @@ prepare_DEMOGR <- function(DF_clean, short_name_scale_str) {
   
   # Create long DIR ------------------------------------------------------------
   
-  # [ADAPT]: Items to ignore and reverse ---------------------------------------
-  # ****************************************************************************
-  
-  items_to_ignore = c("00|00") # Ignore the following items: If nothing to ignore, keep "00|00"
-  items_to_reverse = c("00|00") # Reverse the following items: If nothing to ignore, keep "00|00"
-  
-  # [END ADAPT]: ***************************************************************
-  # ****************************************************************************
-  
-  
   DF_long_DIR = 
     DF_long_RAW %>% 
     select(id, trialid, RAW) %>%
@@ -133,17 +123,30 @@ prepare_DEMOGR <- function(DF_clean, short_name_scale_str) {
           trialid == "DEMOGR_12" ~ RAW,
           trialid == "DEMOGR_13" ~ RAW,
           trialid == "DEMOGR_14" ~ RAW,
-          trialid == "DEMOGR_15" ~ RAW,
+          
+          trialid == "DEMOGR_15" & RAW == "No" ~ "0",
+          trialid == "DEMOGR_15" & RAW == "Si" ~ "1",
+          
           trialid == "DEMOGR_16" ~ RAW,
-          trialid == "DEMOGR_17" ~ RAW,
+          
+          trialid == "DEMOGR_17" & RAW == "No" ~ "0",
+          trialid == "DEMOGR_17" & RAW == "Si" ~ "1",
+          trialid == "DEMOGR_17" & RAW == "No se" ~ "2",
+          
+          
           trialid == "DEMOGR_18" ~ RAW,
-          trialid == "DEMOGR_19" ~ RAW,
+          
+          trialid == "DEMOGR_19" & RAW == "" ~ "0",
+          trialid == "DEMOGR_19" & RAW == "Madre" ~ "1",
+          trialid == "DEMOGR_19" & RAW == "Hermanas" ~ "2",
+          trialid == "DEMOGR_19" & RAW == "Amigas cercanas" ~ "3",
+          trialid == "DEMOGR_19" & RAW == "Madre; Hermanas" ~ "4",
+          trialid == "DEMOGR_19" & RAW == "Madre; Amigas cercanas" ~ "5",
+          trialid == "DEMOGR_19" & RAW == "Hermanas; Amigas cercanas" ~ "6",
+          trialid == "DEMOGR_19" & RAW == "Madre; Hermanas; Amigas cercanas" ~ "7",
           
           # trialid == "DEMOGR_16" & RAW == "Parto por cesárea (parto quirúrgico de un infante a través de una incisión en el abdomen y útero de la madre)" ~ "0",
           # trialid == "DEMOGR_16" & RAW == "Parto vaginal (parto que ocurre por vía vaginal, con o sin intervenciones como anestesia)" ~ "1",
-          
-          
-          
           
           
           is.na(RAW) ~ NA_character_,
@@ -151,16 +154,7 @@ prepare_DEMOGR <- function(DF_clean, short_name_scale_str) {
           TRUE ~ "9999"
         )
     )
-    
-    # Invert items
-    # mutate(
-    #   DIR = 
-    #     case_when(
-    #       DIR == 9999 ~ DIR, # To keep the missing values unchanged
-    #       grepl(items_to_reverse, trialid) ~ (6 - DIR),
-    #       TRUE ~ DIR
-    #     )
-    # )
+
     
     # [END ADAPT]: ***************************************************************
     # ****************************************************************************
@@ -181,10 +175,17 @@ prepare_DEMOGR <- function(DF_clean, short_name_scale_str) {
   
   DF_wide_RAW_DIR =
     DF_wide_RAW %>% 
-    left_join(DF_lookup, by = c("DEMOGR_06_DIR" = "comuna")) %>% 
-    mutate(DEMOGR_comuna_DIRd = ifelse(is.na(DEMOGR_comuna_DIRd), paste0("Not found: ", DEMOGR_06_DIR), DEMOGR_comuna_DIRd)) %>% 
-  
     
+    # Mach a simplified version of the strings (lower case, only standard characters and no extra space at the end)
+    mutate(COMUNA = tolower(stringi::stri_trans_general(str = DEMOGR_06_DIR, id = "Latin-ASCII")) %>% gsub(" $", "", .)) %>% 
+    left_join(DF_lookup %>% mutate(COMUNA = tolower(stringi::stri_trans_general(str = comuna, id = "Latin-ASCII")) %>% gsub(" $", "", .)), 
+              by = c("COMUNA")) %>% 
+    mutate(DEMOGR_comuna_DIRd = ifelse(is.na(DEMOGR_comuna_DIRd), paste0("Not found: ", DEMOGR_06_DIR), DEMOGR_comuna_DIRd)) %>%
+    select(-COMUNA) %>% 
+    
+    # left_join(DF_lookup, by = c("DEMOGR_06_DIR" = "comuna")) %>% 
+    # mutate(DEMOGR_comuna_DIRd = ifelse(is.na(DEMOGR_comuna_DIRd), paste0("Not found: ", DEMOGR_06_DIR), DEMOGR_comuna_DIRd)) %>% 
+  
     
     # [ADAPT]: Scales and dimensions calculations --------------------------------
     # ****************************************************************************
