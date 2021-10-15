@@ -40,7 +40,7 @@ prepare_TEMPLATE <- function(DF_clean, short_name_scale_str) {
                      help_names = FALSE) # help_names = FALSE once the script is ready
   
   # Create long -------------------------------------------------------------
-  DF_long_RAW = create_raw_long(DF_clean, short_name_scale = short_name_scale_str, numeric_responses = FALSE)
+  DF_long_RAW = create_raw_long(DF_clean, short_name_scale = short_name_scale_str, numeric_responses = FALSE, is_experiment = FALSE)
   
   # Show number of items, responses, etc. [uncomment to help prepare the test] 
   # prepare_helper(DF_long_RAW, show_trialid_questiontext = TRUE)
