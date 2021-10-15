@@ -168,16 +168,19 @@ check_NAs <- function(DF_joined) {
 ##' @return
 ##' @author gorkang
 ##' @export
-create_raw_long <- function(DF_clean, short_name_scale, numeric_responses = FALSE) {
+create_raw_long <- function(DF_clean, short_name_scale, numeric_responses = FALSE, is_experiment = FALSE) {
 
   # DEBUG
-  # short_name_scale = "SCSORF"
+  # short_name_scale = "FONDECYT"
+  # is_experiment = TRUE
 
+  experimental_conditions = "NOTHING_SHOULD_MATCH_THIS"
+  if (is_experiment == TRUE) experimental_conditions = "condition_"
+  
   DF_output = 
     DF_clean %>%
-      # filter(experimento == name_scale) %>%
       filter(grepl(paste0(short_name_scale, "_[0-9]"), trialid)) %>%
-      select(id, experimento, rt, trialid, stimulus, response) %>%
+      select(id, experimento, rt, trialid, stimulus, response, starts_with(eval(experimental_conditions), ignore.case = FALSE)) %>%
       mutate(response =
                if (numeric_responses == TRUE) {
                  as.numeric(response)
@@ -188,6 +191,19 @@ create_raw_long <- function(DF_clean, short_name_scale, numeric_responses = FALS
       drop_na(trialid) %>%
       rename(RAW = response) %>%
       arrange(trialid, id)
+  
+    # If is experiment, make sure condition_within is fine
+    if (is_experiment == TRUE) {
+      if (any(grepl("[ -]", DF_output$condition_within))) {
+        cli_text(col_red("{symbol$cross} "), "Unholy names found in condition_within. Cleaning up. It can take a while...\n")
+        
+        DF_output = 
+          DF_output %>% 
+          rowwise() %>% 
+          mutate(condition_within = paste(map_chr(str_split(condition_within, pattern = "_", simplify = TRUE), janitor::make_clean_names, case = "small_camel"), collapse = "_"))
+      }
+    }
+  
   
   if (nrow(DF_output) == 0) stop("No trialid's matching '", short_name_scale, "_[0-9]' found in DF_clean")
   return(DF_output)
