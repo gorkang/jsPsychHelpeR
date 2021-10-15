@@ -1,4 +1,4 @@
-run_initial_setup <- function(pid) {
+run_initial_setup <- function(pid, download_files = TRUE) {
   
   # DEBUG
   # pid = "0"
@@ -28,7 +28,7 @@ run_initial_setup <- function(pid) {
   if (!dir.exists(paste0("data/", pid, "/"))) dir.create(paste0("data/", pid, "/"))
   
   # 3) **Manually** copy .csv files to data/[YOUR_PROJECT_ID]/ or DOWNLOAD from server (needs a .vault/credentials file. Rename and edit .vault/credentials_TEMPLATE)
-  if (credentials_exist) {
+  if (credentials_exist & download_files == TRUE) {
     
     # sshpass and rsync installed (?)
     if (SSHPASS != "" & RSYNC != "") { 
