@@ -8,6 +8,7 @@ run_initial_setup <- function(pid, download_files = TRUE) {
   SSHPASS = Sys.which("sshpass") # Check if sshpass is installed
   RSYNC = Sys.which("rsync") # Check if rsync is installed
   
+  # CHECK if NO files in project's folder & NO credentials to download
   if (length(files_pid) == 0 & credentials_exist == FALSE) {
     cat(crayon::red(
     paste0("Can't access protocol csv files:

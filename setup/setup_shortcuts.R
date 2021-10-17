@@ -9,9 +9,10 @@
 setup_shortcuts <- function() {
 
   cat(crayon::yellow("\nInstalling packages needed for {shrtcts}...\n"))
-  if (!require('remotes')) install.packages('remotes'); library('remotes')
+  
+  rlang::check_installed(c("remotes", "fs"), reason = "for {shortcuts} to work") 
   suppressMessages(remotes::install_github("gadenbuie/shrtcts"))
-  if (!require('fs')) install.packages('fs'); library('fs')
+  
   
   cat(crayon::yellow("Copying configuration files...\n"))
   file.copy(from = "setup/.shrtcts.R", to = paste0(fs::path_home(), "/.shrtcts.R"))

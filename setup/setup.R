@@ -3,50 +3,31 @@
   # You might need to run it twice and restart the RStudio session afterwards: Control + Shift + F10
 
 
-# Install targets and tarchetypes ------------------------------------------
-
-  if (!require('targets')) install.packages('targets'); library('targets')
-  if (!require('tarchetypes')) install.packages('tarchetypes'); library('tarchetypes')
-  
-
-  # Clean up _targets folder  
-  cat(crayon::yellow("Destroying OLD _targets files\n"))
-  targets::tar_destroy(ask = FALSE)
-
-
-
 # Make sure all packages are present --------------------------------------
 
-  if (!require('rmarkdown')) install.packages('rmarkdown'); library('rmarkdown')
-  if (!require('webshot')) install.packages('webshot'); library('webshot')
-  if (!require('cli')) install.packages('cli'); library('cli')
-  
-  # source("_targets.R")
-  # missing_packages = packages_to_load[!packages_to_load %in% installed.packages()[,1]]
-  # 
-  # if (length(missing_packages) > 0) {
-  #   cat("The following packages are missing and will be installed: ", packages_to_load[!packages_to_load %in% installed.packages()[,1]])
-  #   install.packages(packages_to_load[!packages_to_load %in% installed.packages()[,1]])
-  # } else {
-  #   cat(crayon::green("All the necessary packages are present\n"))
-  # }
+  if (!require('rlang')) install.packages('rlang'); library('rlang')
+  if (!require('targets')) install.packages('targets'); library('targets')
 
   # Create _targets_packages and read all dependencies
   targets::tar_renv()
   packages_renv = gsub("library\\(|\\)", "", readLines("_targets_packages.R")[-1])
-  missing_packages = packages_renv[!packages_renv %in% installed.packages()[,1]]
   
-  if (length(missing_packages) > 0) {
-    cat("The following packages are missing and will be installed: ", missing_packages)
-    install.packages(missing_packages)
-  } else {
-    cat(crayon::green("All the necessary packages are present\n"))
-  }
-
+  # Asks user before installing all packages missing (if any)
+  rlang::check_installed(packages_renv, reason = "for jsPsychHelpeR to work") 
   
   # If you have issues with DT::datables()
   if (webshot::is_phantomjs_installed() == FALSE) webshot::install_phantomjs()
+
+
+# Clean up ----------------------------------------------------------------
+
+  # Clean up _targets folder  
+  cat(crayon::yellow("Destroying OLD _targets files\n"))
+  targets::tar_destroy(ask = FALSE)
   
+  # Delete content of outputs
+  invisible(file.remove(list.files("outputs", pattern = "*", full.names = TRUE, recursive = TRUE)))
+
 
 # Make sure all the necessary folders exist -----------------------------
   
@@ -62,9 +43,7 @@
     cat(crayon::yellow("Creating necessary folders: "), paste(necessary_folders, collapse = ", "), "\n")
     invisible(purrr::map(necessary_folders, dir.create, recursive = TRUE, showWarnings = FALSE))
     system("chmod 700 -R .vault/")
-    
-    # Delete content of outputs
-    invisible(file.remove(list.files("outputs", pattern = "*", full.names = TRUE, recursive = TRUE)))
+
     
   }
 
