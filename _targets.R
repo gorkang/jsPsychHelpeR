@@ -59,6 +59,7 @@ targets <- list(
   # Use R/prepare_template.R to create new preparation_scripts
 
    tar_target(df_AIM, prepare_AIM(DF_clean, short_name_scale_str = 'AIM')),
+   tar_target(df_BART, prepare_BART(DF_clean, short_name_scale_str = 'BART')),
    tar_target(df_BNT, prepare_BNT(DF_clean, short_name_scale_str = 'BNT')),
    tar_target(df_bRCOPE, prepare_bRCOPE(DF_clean, short_name_scale_str = 'bRCOPE')),
    tar_target(df_CAS, prepare_CAS(DF_clean, short_name_scale_str = 'CAS')),
@@ -77,6 +78,7 @@ targets <- list(
    tar_target(df_ERQ, prepare_ERQ(DF_clean, short_name_scale_str = 'ERQ')),
    tar_target(df_ESM, prepare_ESM(DF_clean, short_name_scale_str = 'ESM')),
    tar_target(df_FDMQ, prepare_FDMQ(DF_clean, short_name_scale_str = 'FDMQ')),
+   tar_target(df_FONDECYT, prepare_FONDECYT(DF_clean, short_name_scale_str = 'FONDECYT')),
    tar_target(df_GHQ12, prepare_GHQ12(DF_clean, short_name_scale_str = 'GHQ12')),
    tar_target(df_Goodbye, prepare_Goodbye(DF_clean, short_name_scale_str = 'Goodbye')),
    tar_target(df_HRPVB, prepare_HRPVB(DF_clean, short_name_scale_str = 'HRPVB')),
@@ -117,6 +119,7 @@ targets <- list(
   tar_target(DF_joined, 
              create_joined(
 							 df_AIM,
+							 df_BART,
 							 df_BNT,
 							 df_bRCOPE,
 							 df_CAS,
@@ -135,6 +138,7 @@ targets <- list(
 							 df_ERQ,
 							 df_ESM,
 							 df_FDMQ,
+							 df_FONDECYT,
 							 df_GHQ12,
 							 df_Goodbye,
 							 df_HRPVB,
@@ -233,13 +237,14 @@ targets <- list(
   # Progress report by group
   tar_render(report_grouped_PROGRESS, path = "doc/grouped_PROGRESS.Rmd", 
              params = list(input_DF = DF_analysis, 
-                           last_scale = "DEBRIEF_esfuerzo_DIRd",
-                           goal = 300,
-                           group_vars = c("AIM_DIRt", "DEMOGR_genero_DIRd"),
-                           n_groups = 6),
+                           last_scale = "Goodbye_DIRt",
+                           goal = 500,
+                           group_vars = c("DEMOGR_genero_DIRd"),
+                           n_groups = 5),
              output_file = paste0("../outputs/reports/report_grouped_PROGRESS_", pid_target , ".html"))
-  
-  
+
+
+
 
 )
 
