@@ -11,7 +11,7 @@ testthat::test_that('Check DF_joined', {
 
   # TEST 1: NON canonical names --------------------------------------------------------------------
   
-  expected_names = grep("^.*_RAW$|^.*_DIR$|^.*_DIRt$|^.*_DIRd$|^.*_RELt$|^.*_RELd$|^.*_STDt$|^.*_STDd|^.*DIR_NA$|^.*RAW_NA$", names(DF_joined %>% select(-id)), ignore.case = FALSE, fixed = FALSE, value = TRUE)
+  expected_names = grep("condition_between|condition_within|^.*_RAW$|^.*_DIR$|^.*_DIRt$|^.*_DIRd$|^.*_RELt$|^.*_RELd$|^.*_STDt$|^.*_STDd|^.*DIR_NA$|^.*RAW_NA$", names(DF_joined %>% select(-id)), ignore.case = FALSE, fixed = FALSE, value = TRUE)
   non_canonical_names = names(DF_joined %>% select(-id))[!names(DF_joined %>% select(-id)) %in% expected_names]
 
   if (length(non_canonical_names) > 0) cat(crayon::red(paste0("\nERROR: DF_joined contains non-standard columns: ", crayon::silver(paste(non_canonical_names, collapse = ", ")), "\n\n")))

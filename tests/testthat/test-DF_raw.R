@@ -33,7 +33,8 @@ testthat::test_that('Check if DF_raw', {
 
     canonical_names_columns =  c("filename", "trial_type", "trial_index", "time_elapsed", "internal_node_id", "view_history", "rt", "trialid", "stimulus", "response", "id", "project", "experimento", "version", "datetime",
                                  "procedure", "success", "url", "question_order", "slider_start", "button_pressed", 
-                                 "condition_within")
+                                 "condition_within", "condition_between",
+                                 "timeout", "failed_images", "failed_audio", "failed_video")
 
     non_canonical_names = names(DF_raw)[!names(DF_raw) %in% canonical_names_columns]
   

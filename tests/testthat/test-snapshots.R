@@ -35,7 +35,9 @@ testthat::test_that('Check if the snapshots do not change', {
   # testthat edition
   testthat::local_edition(3)
   
+  # COMMENTED: Tests with random components
   testthat::expect_snapshot_file(here::here("outputs/data/df_AIM.csv"))
+  # testthat::expect_snapshot_file(here::here("outputs/data/df_BART.csv"))
   testthat::expect_snapshot_file(here::here("outputs/data/df_BNT.csv"))
   testthat::expect_snapshot_file(here::here("outputs/data/df_bRCOPE.csv"))
   testthat::expect_snapshot_file(here::here("outputs/data/df_CAS.csv"))
@@ -50,19 +52,26 @@ testthat::test_that('Check if the snapshots do not change', {
   testthat::expect_snapshot_file(here::here("outputs/data/df_DEBRIEF.csv"))
   testthat::expect_snapshot_file(here::here("outputs/data/df_DEMOGR.csv"))
   testthat::expect_snapshot_file(here::here("outputs/data/df_EAR.csv"))
+  # testthat::expect_snapshot_file(here::here("outputs/data/df_EmpaTom.csv"))
   testthat::expect_snapshot_file(here::here("outputs/data/df_ERQ.csv"))
   testthat::expect_snapshot_file(here::here("outputs/data/df_ESM.csv"))
   testthat::expect_snapshot_file(here::here("outputs/data/df_FDMQ.csv"))
+  # testthat::expect_snapshot_file(here::here("outputs/data/df_FONDECYT.csv"))
   testthat::expect_snapshot_file(here::here("outputs/data/df_GHQ12.csv"))
+  # testthat::expect_snapshot_file(here::here("outputs/data/df_Goodbye.csv"))
+  # testthat::expect_snapshot_file(here::here("outputs/data/df_HRPVB.csv"))
+  # testthat::expect_snapshot_file(here::here("outputs/data/df_HRPVBpost.csv"))
   testthat::expect_snapshot_file(here::here("outputs/data/df_IDQ.csv"))
   testthat::expect_snapshot_file(here::here("outputs/data/df_IEC.csv"))
+  # testthat::expect_snapshot_file(here::here("outputs/data/df_INFCONS.csv"))
   testthat::expect_snapshot_file(here::here("outputs/data/df_IRI.csv"))
   testthat::expect_snapshot_file(here::here("outputs/data/df_IRS.csv"))
   testthat::expect_snapshot_file(here::here("outputs/data/df_MIS.csv"))
   testthat::expect_snapshot_file(here::here("outputs/data/df_OBJNUM.csv"))
   testthat::expect_snapshot_file(here::here("outputs/data/df_OTRASRELIG.csv"))
   testthat::expect_snapshot_file(here::here("outputs/data/df_PBS.csv"))
-
+  # testthat::expect_snapshot_file(here::here("outputs/data/df_PRFBM.csv"))
+  # testthat::expect_snapshot_file(here::here("outputs/data/df_PRFBMpost.csv"))
   testthat::expect_snapshot_file(here::here("outputs/data/df_PSETPP.csv"))
   testthat::expect_snapshot_file(here::here("outputs/data/df_PSPPC.csv"))
   testthat::expect_snapshot_file(here::here("outputs/data/df_PSS.csv"))
@@ -81,19 +90,5 @@ testthat::test_that('Check if the snapshots do not change', {
   testthat::expect_snapshot_file(here::here("outputs/data/df_SRSav.csv"))
   testthat::expect_snapshot_file(here::here("outputs/data/df_SWBQ.csv"))
   testthat::expect_snapshot_file(here::here("outputs/data/df_WEBEXEC.csv"))
-  
-  
-  # Tests with random components
-  # testthat::expect_snapshot_file(here::here("outputs/data/df_BART.csv"))
-  # testthat::expect_snapshot_file(here::here("outputs/data/df_EmpaTom.csv"))
-  # testthat::expect_snapshot_file(here::here("outputs/data/df_Goodbye.csv"))
-  # testthat::expect_snapshot_file(here::here("outputs/data/df_HRPVB.csv"))
-  # testthat::expect_snapshot_file(here::here("outputs/data/df_HRPVBpost.csv"))
-  # testthat::expect_snapshot_file(here::here("outputs/data/df_INFCONS.csv"))
-  # testthat::expect_snapshot_file(here::here("outputs/data/df_PRFBM.csv"))
-  # testthat::expect_snapshot_file(here::here("outputs/data/df_PRFBMpost.csv"))
-  # testthat::expect_snapshot_file(here::here("outputs/data/df_FONDECYT.csv"))
-  
-  
   
 })
