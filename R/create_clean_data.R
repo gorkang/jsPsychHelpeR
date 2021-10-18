@@ -35,7 +35,14 @@ create_clean_data <- function(DF_raw, save_output = TRUE) {
       response = gsub('\\{"".*"":', "", response), # Get rid of {""Q0"":
       response = gsub('\\}$', "", response), # Get rid of }
       response = gsub(pattern = '""', replacement = "", x = response, perl = TRUE) # Remaining double quotes""
-    )
+    ) %>% 
+    
+    # Plugings not using response to store responses
+    mutate(response = 
+             case_when(
+               is.na(response) & !is.na(button_pressed) ~ button_pressed, # html-button-response
+               TRUE ~ response
+               ))
   
   
   # Save files --------------------------------------------------------------
