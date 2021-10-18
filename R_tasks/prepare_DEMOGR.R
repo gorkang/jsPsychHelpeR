@@ -181,7 +181,7 @@ prepare_DEMOGR <- function(DF_clean, short_name_scale_str) {
     left_join(DF_lookup %>% mutate(COMUNA = tolower(stringi::stri_trans_general(str = comuna, id = "Latin-ASCII")) %>% gsub(" $", "", .)), 
               by = c("COMUNA")) %>% 
     mutate(DEMOGR_comuna_DIRd = ifelse(is.na(DEMOGR_comuna_DIRd), paste0("Not found: ", DEMOGR_06_DIR), DEMOGR_comuna_DIRd)) %>%
-    select(-COMUNA) %>% 
+    select(-COMUNA, -comuna) %>% 
     
     # left_join(DF_lookup, by = c("DEMOGR_06_DIR" = "comuna")) %>% 
     # mutate(DEMOGR_comuna_DIRd = ifelse(is.na(DEMOGR_comuna_DIRd), paste0("Not found: ", DEMOGR_06_DIR), DEMOGR_comuna_DIRd)) %>% 

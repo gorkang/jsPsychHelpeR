@@ -60,7 +60,7 @@ prepare_Consent <- function(DF_clean, short_name_scale_str) {
     mutate(
       DIR =
         case_when(
-          RAW == "start" ~ 1,
+          RAW %in% c("start", "0") ~ 1, # html consent response is start, js consent is 0
           is.na(RAW) ~ NA_real_,
           grepl(items_to_ignore, trialid) ~ NA_real_,
           TRUE ~ 9999
@@ -93,12 +93,6 @@ prepare_Consent <- function(DF_clean, short_name_scale_str) {
     mutate(!!name_RAW_NA := rowSums(is.na(select(., -matches(paste0(short_name_scale_str, "_", items_to_ignore, "_RAW")) & matches("_RAW$")))),
            !!name_DIR_NA := rowSums(is.na(select(., -matches(paste0(short_name_scale_str, "_", items_to_ignore, "_DIR")) & matches("_DIR$")))))
   
-  
-  # Reliability -------------------------------------------------------------
-  
-  # REL1 = auto_reliability(DF_wide_RAW, short_name_scale = short_name_scale_str, items = items_DIRd1)
-  # items_RELd1 = REL1$item_selection_string
-    
   
   # [ADAPT]: Scales and dimensions calculations --------------------------------
   # ****************************************************************************
