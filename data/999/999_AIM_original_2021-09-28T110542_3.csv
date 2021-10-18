@@ -1,6 +1,0 @@
-"success","procedure","trial_type","trial_index","time_elapsed","internal_node_id","view_history","rt","trialid","stimulus","response"
-"true","AIM","fullscreen","1","5514","0.0-1.0-0.0","","","","",""
-"","AIM","instructions","2","8876","0.0-2.0","[{""page_index"":0,""viewing_time"":3359}]","3360","Instructions_01","",""
-"","AIM","survey-multi-choice-vertical","3","11339","0.0-3.0","","2456","AIM_01","{""Q0"":""¿Cuál es el nivel educacional alcanzado (último año aprobado) por el principal sostenedor del hogar?""}","{""Q0"":"" Universitaria incompleta (carreras de 4 o más años).""}"
-"","AIM","survey-multi-choice-vertical","4","13029","0.0-4.0","","1682","AIM_02","{""Q0"":""¿Cuál de las siguientes ocupaciones corresponde al trabajo del principal sostenedor del hogar? [Si el principal sostenedor del hogar está cesante o es jubilado, debe ser la última ocupación remunerada que tuvo. Si el principal sostenedor tiene más de 1 trabajo, debe registrarse el de mayor ingreso.]""}","{""Q0"":"" Trabajadores de los servicios y vendedores de comercio y mercados.""}"
-"","AIM","survey-text","5","13857","0.0-5.0","","817","AIM_03","{""Q0"":""Ahora, hablando de su hogar: Incluyéndose usted, ¿cuántas personas viven en su hogar en la actualidad? No considere el servicio doméstico, aunque sea puertas adentro.""}","{""Q0"":""0""}"

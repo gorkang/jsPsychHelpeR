@@ -1,0 +1,5 @@
+"stimulus","rt","response","trialid","procedure","trial_type","trial_index","time_elapsed","internal_node_id"
+"{""Q0"":""¿Desea Ud. Recibir un breve informe acerca de sus respuestas en esta investigación?""}","851","{""Q0"":"" Si, deseo recibir el informe""}","Report_001","Report","survey-multi-choice-vertical","516","418922","0.0-562.0"
+"{""Q0"":""Indique nombre o alias que desee que aparezca personalizado en el informe.""}","568","{""Q0"":""sicnuOz4HCHE7cmZepwhKoWVXdSejfB34KHbPHBvYLCIyqggtpRYrMIRZSfJZO5oKAK6P2FzhhEYa0nxI7Reuy0E""}","Report_001_1","Report","survey-text","517","419492","0.0-563.0-0.0"
+"{""Q0"":""Indique el correo donde se enviará el informe.""}","691","{""Q0"":""hH5Rt2@gmail.com""}","Report_001_2","Report","survey-html-form","518","420186","0.0-564.0-0.0"
+"{""Q0"":""¿Está de acuerdo con que guardemos sus datos de contacto, nombre, edad y mail, para que podamos contactarlo en el futuro para otras investigaciones? Esto no afectará su participación en el presente estudio.""}","645","{""Q0"":"" No, no acepto que mis datos sean reutilizados""}","Report_002","Report","survey-multi-choice-vertical","519","420835","0.0-565.0"

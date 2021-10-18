@@ -1,0 +1,21 @@
+"success","procedure","trial_type","trial_index","time_elapsed","internal_node_id","view_history","rt","trialid","stimulus","button_pressed"
+"true","Consent","fullscreen","1","5556","0.0-1.0-0.0","","","","",""
+"","Consent","instructions","2","8988","0.0-2.0","[{""page_index"":0,""viewing_time"":3429}]","3429","Instructions_001","",""
+"","Consent","html-button-response","3","9981","0.0-3.0","","988.4000000022352","Consent_001","
+
+<div title=""logo""><p style=""margin-bottom: 0.2in; line-height: 100%""><img src=""controllers/media/logo.png"" name=""UAI"" align=""bottom"" width=""200"" height=""44"" border=""0""/></p></div>
+<div>
+<h3 class=""western"" align=""center"">Consentimiento Informado</h3><br/>
+<b>Nombre del proyecto: </b>[[Título del proyecto]] <br/>
+<b>Investigador(a) Principal: </b>[[Nombre investigador/a]], [[Afiliacion investigador/a]].<br/>
+<b>Propósito: </b>[[Breve descripcion del proposito del proyecto]].<br/><br/>
+<b>Procedimiento: </b>[[Breve descripcion del procedimiento]].<br/><br/>
+<b>Riesgos Asociados: </b>No hay riesgos asociados con este estudio. Si bien al responder, usted revela información privada, ésta será empleada únicamente para fines de investigación, resguardando la privacidad y confidencialidad, pues sólo se analizarán los datos agrupados y no los datos individuales.<br/><br/>
+<b>Beneficios: </b>Es probable que, como resultado de participar en este estudio, no haya beneficios inmediatos para usted. Sin embargo, los resultados mejorarán nuestra comprensión sobre [[Breve descripción de factores que comprenderemos mejor tras el estudio]].<br/><br/>
+<b>Confidencialidad: </b>Al seleccionar &quot;acepto participar&quot;, usted da permiso al equipo de investigación para que analice sus datos. Sin embargo, toda la información producida en esta investigación es confidencial, y por tanto, sólo será utilizada con fines de investigación. No mantendremos su nombre en nuestra base de datos, ni habrá forma de asociar posteriormente la información que usted nos dé con su identidad. La información que usaremos, tanto en informes como en artículos que se deriven del estudio, consistirá solo en datos agrupados (por ejemplo, promedios). La información confidencial será almacenada con clave y de manera privada sólo en el computador del investigador responsable . Si desea tener más información o conocer los resultados de este estudio, puede contactarse con la persona responsable del proyecto ([[Nombre investigador/a]], email: <a href=""mailto:[[EMAIL investigador/a]]"">[[EMAIL investigador/a]]</a>)<br/><br/>
+<b>Voluntariedad: </b>La participación en este estudio es voluntaria. Usted puede retirarse cuando lo desee sin que exista consecuencia negativa alguna por esto. Su retiro no significa que no pueda participar en otro de nuestros estudios en el futuro. Si usted tiene un reclamo o siente que sus derechos fueron vulnerados por alguna de las personas que realizan este estudio, puede contactarse con el Comité de Ética de la Universidad [[Universidad investigador/a]], cuyo Presidente/a o Secretario/a es [[Nombre presidenta/e comité ética]] en el teléfono [[Teléfono presidenta/e comité ética]], o en el correo electrónico: <a href=""mailto:[[Email presidenta/e comité ética]]"">[[Email presidenta/e comité ética]]</a>. <br/><br/>
+<em>Al seleccionar “acepto participar” usted declara que está dispuesto/a a participar voluntariamente de ésta investigación: </em>
+<BR><BR>
+</div>
+
+","0"

@@ -1,0 +1,3 @@
+"stimulus","rt","response","trialid","procedure","trial_type","trial_index","time_elapsed","internal_node_id"
+"{""Q0"":""¿Desea Ud. Recibir un breve informe acerca de sus respuestas en esta investigación?""}","880","{""Q0"":"" No deseo recibir el informe""}","Report_001","Report","survey-multi-choice-vertical","516","417853","0.0-562.0"
+"{""Q0"":""¿Está de acuerdo con que guardemos sus datos de contacto, nombre, edad y mail, para que podamos contactarlo en el futuro para otras investigaciones? Esto no afectará su participación en el presente estudio.""}","602","{""Q0"":"" No, no acepto que mis datos sean reutilizados""}","Report_002","Report","survey-multi-choice-vertical","517","418459","0.0-565.0"
