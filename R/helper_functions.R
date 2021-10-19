@@ -1035,3 +1035,46 @@ create_codebook <- function(tasks, number) {
 #           create_codebook(.x)
 #           }
 #     )
+
+
+
+
+#' check_project_and_results
+#' Check the project tasks and compare with the csv results to see if there are results or tasks missing
+#'
+#' @param participants 
+#' @param folder_protocol 
+#' @param folder_results 
+#'
+#' @return
+#' @export
+#'
+#' @examples
+check_project_and_results <- function(participants, folder_protocol, folder_results) {
+  
+  # DEBUG
+  # participants = 5
+  
+  files_protocol = dir(folder_protocol)
+  files_results = dir(folder_results)
+  
+  if (length(files_protocol) / (length(files_results)/participants) == 1)  {
+    cat("OK, one task per participant")
+    # dir("../jsPsychMaker/canonical_protocol/tasks")
+  } else {
+    cat(length(files_protocol), "tasks\n")
+    cat(length(files_results)/participants, "files per participant\n")
+  }
+  
+  experiments_results = tibble(filename = files_results) %>% tidyr::separate(col = filename,
+                                                                             into = c("project", "experimento", "version", "datetime", "id"),
+                                                                             sep = c("_"), remove = FALSE) %>%
+    mutate(id = gsub("(*.)\\.csv", "\\1", id)) %>% distinct(experimento) %>% 
+    pull(experimento)
+  
+  missing_experiments = files_protocol[!files_protocol %in% paste0(experiments_results, ".js")]
+  
+  cat("Missing data for: ", missing_experiments)
+  
+  
+}
