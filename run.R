@@ -30,7 +30,7 @@
 # Task --------------------------------------------------------------------
 
   # Open report_analysis.Rmd and edit
-  rstudioapi::navigateToFile("doc/report_analysis.Rmd")
+  rstudioapi::navigateToFile("Rmd/report_analysis.Rmd")
   
   # After editing it:
   targets::tar_make()

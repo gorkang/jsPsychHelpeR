@@ -30,7 +30,7 @@ run_sensitive_data <- function(df_SDG, run_online_FORM = FALSE) {
   
   # Report ------------------------------------------------------------------
   cat(crayon::yellow("Preparando report_candidatos...\n"))
-  rmarkdown::render(".vault/doc/report_candidatos.Rmd", "html_document", quiet = TRUE, clean = TRUE, envir = new.env())
+  rmarkdown::render(".vault/Rmd/report_candidatos.Rmd", "html_document", quiet = TRUE, clean = TRUE, envir = new.env())
   
  return(df_AIM)
   

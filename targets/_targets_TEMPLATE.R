@@ -75,10 +75,10 @@ JOINS_HERE
   tar_target(DF_analysis, create_DF_analysis(DF_joined, last_task = "Goodbye_DIRt", save_output = TRUE)),
   
   # Descriptive Table 1
-  # tar_render(descriptives_table1, "doc/descriptives_table1.Rmd", deployment = "main"),
+  # tar_render(descriptives_table1, "Rmd/descriptives_table1.Rmd", deployment = "main"),
 
   # Analysis report
-  # tar_render(report_analysis, "doc/report_analysis.Rmd",
+  # tar_render(report_analysis, "Rmd/report_analysis.Rmd",
   #            output_file = paste0("../outputs/reports/report_analysis.html")),
 
 
@@ -114,13 +114,13 @@ JOINS_HERE
   # Reports ------------------------------------------------------------------
 
   # Automatic report
-  tar_render(report_DF_clean, "doc/report_DF_clean.Rmd", 
+  tar_render(report_DF_clean, "Rmd/report_DF_clean.Rmd", 
              params = list(last_task = "Goodbye",
                            pid_report = pid_target),
              output_file = paste0("../outputs/reports/report_DF_clean.html")),
   
   # Progress report
-  tar_render(report_PROGRESS, path = "doc/report_PROGRESS.Rmd", 
+  tar_render(report_PROGRESS, path = "Rmd/report_PROGRESS.Rmd", 
              params = list(input_files_vector = input_files, 
                            pid_report = pid_target, 
                            last_task = "Goodbye", 
@@ -128,7 +128,7 @@ JOINS_HERE
              output_file = paste0("../outputs/reports/report_PROGRESS_", pid_target , ".html")),
 
   # Progress report by group
-  tar_render(report_grouped_PROGRESS, path = "doc/grouped_PROGRESS.Rmd", 
+  tar_render(report_grouped_PROGRESS, path = "Rmd/grouped_PROGRESS.Rmd", 
              params = list(input_DF = DF_analysis, 
                            last_scale = "Goodbye_DIRt",
                            goal = 500,

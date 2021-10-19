@@ -32,7 +32,7 @@
 # Make sure all the necessary folders exist -----------------------------
   
   necessary_folders = c("data", "outputs/data", "outputs/plots", "outputs/reliability", "outputs/reports", "outputs/tables", "outputs/tests_outputs", 
-                        ".vault", ".vault/docs", ".vault/outputs/data", ".vault/outputs/reports")
+                        ".vault", ".vault/data_vault", ".vault/Rmd", ".vault/outputs/data", ".vault/outputs/reports")
   
   if (all(necessary_folders %in% dir(recursive = TRUE, include.dirs = TRUE, all.files = TRUE))) {
     

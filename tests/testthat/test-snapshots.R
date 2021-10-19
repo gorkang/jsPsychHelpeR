@@ -61,6 +61,7 @@ testthat::test_that('Check if the snapshots do not change', {
   # testthat::expect_snapshot_file(here::here("outputs/data/df_Goodbye.csv"))
   # testthat::expect_snapshot_file(here::here("outputs/data/df_HRPVB.csv"))
   # testthat::expect_snapshot_file(here::here("outputs/data/df_HRPVBpost.csv"))
+  testthat::expect_snapshot_file(here::here("outputs/data/df_IBT.csv"))
   testthat::expect_snapshot_file(here::here("outputs/data/df_IDQ.csv"))
   testthat::expect_snapshot_file(here::here("outputs/data/df_IEC.csv"))
   # testthat::expect_snapshot_file(here::here("outputs/data/df_INFCONS.csv"))
@@ -88,6 +89,7 @@ testthat::test_that('Check if the snapshots do not change', {
   testthat::expect_snapshot_file(here::here("outputs/data/df_SRA.csv"))
   testthat::expect_snapshot_file(here::here("outputs/data/df_SRBQP.csv"))
   testthat::expect_snapshot_file(here::here("outputs/data/df_SRSav.csv"))
+  testthat::expect_snapshot_file(here::here("outputs/data/df_STAI.csv"))
   testthat::expect_snapshot_file(here::here("outputs/data/df_SWBQ.csv"))
   testthat::expect_snapshot_file(here::here("outputs/data/df_WEBEXEC.csv"))
   

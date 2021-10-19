@@ -83,6 +83,7 @@ targets <- list(
    tar_target(df_Goodbye, prepare_Goodbye(DF_clean, short_name_scale_str = 'Goodbye')),
    tar_target(df_HRPVB, prepare_HRPVB(DF_clean, short_name_scale_str = 'HRPVB')),
    tar_target(df_HRPVBpost, prepare_HRPVBpost(DF_clean, short_name_scale_str = 'HRPVBpost')),
+   tar_target(df_IBT, prepare_IBT(DF_clean, short_name_scale_str = 'IBT')),
    tar_target(df_IDQ, prepare_IDQ(DF_clean, short_name_scale_str = 'IDQ')),
    tar_target(df_IEC, prepare_IEC(DF_clean, short_name_scale_str = 'IEC')),
    tar_target(df_INFCONS, prepare_INFCONS(DF_clean, short_name_scale_str = 'INFCONS')),
@@ -110,6 +111,7 @@ targets <- list(
    tar_target(df_SRA, prepare_SRA(DF_clean, short_name_scale_str = 'SRA')),
    tar_target(df_SRBQP, prepare_SRBQP(DF_clean, short_name_scale_str = 'SRBQP')),
    tar_target(df_SRSav, prepare_SRSav(DF_clean, short_name_scale_str = 'SRSav')),
+   tar_target(df_STAI, prepare_STAI(DF_clean, short_name_scale_str = 'STAI')),
    tar_target(df_SWBQ, prepare_SWBQ(DF_clean, short_name_scale_str = 'SWBQ')),
    tar_target(df_WEBEXEC, prepare_WEBEXEC(DF_clean, short_name_scale_str = 'WEBEXEC')),
 
@@ -143,6 +145,7 @@ targets <- list(
 							 df_Goodbye,
 							 df_HRPVB,
 							 df_HRPVBpost,
+							 df_IBT,
 							 df_IDQ,
 							 df_IEC,
 							 df_INFCONS,
@@ -170,6 +173,7 @@ targets <- list(
 							 df_SRA,
 							 df_SRBQP,
 							 df_SRSav,
+							 df_STAI,
 							 df_SWBQ,
 							 df_WEBEXEC
              )),
@@ -182,10 +186,10 @@ targets <- list(
   tar_target(DF_analysis, create_DF_analysis(DF_joined, last_task = "Goodbye_DIRt", save_output = TRUE)),
   
   # Descriptive Table 1
-  # tar_render(descriptives_table1, "doc/descriptives_table1.Rmd", deployment = "main"),
+  # tar_render(descriptives_table1, "Rmd/descriptives_table1.Rmd", deployment = "main"),
 
   # Analysis report
-  # tar_render(report_analysis, "doc/report_analysis.Rmd",
+  # tar_render(report_analysis, "Rmd/report_analysis.Rmd",
   #            output_file = paste0("../outputs/reports/report_analysis.html")),
 
 
@@ -221,13 +225,13 @@ targets <- list(
   # Reports ------------------------------------------------------------------
 
   # Automatic report
-  tar_render(report_DF_clean, "doc/report_DF_clean.Rmd", 
+  tar_render(report_DF_clean, "Rmd/report_DF_clean.Rmd", 
              params = list(last_task = "Goodbye",
                            pid_report = pid_target),
              output_file = paste0("../outputs/reports/report_DF_clean.html")),
   
   # Progress report
-  tar_render(report_PROGRESS, path = "doc/report_PROGRESS.Rmd", 
+  tar_render(report_PROGRESS, path = "Rmd/report_PROGRESS.Rmd", 
              params = list(input_files_vector = input_files, 
                            pid_report = pid_target, 
                            last_task = "Goodbye", 
@@ -235,7 +239,7 @@ targets <- list(
              output_file = paste0("../outputs/reports/report_PROGRESS_", pid_target , ".html")),
 
   # Progress report by group
-  tar_render(report_grouped_PROGRESS, path = "doc/grouped_PROGRESS.Rmd", 
+  tar_render(report_grouped_PROGRESS, path = "Rmd/grouped_PROGRESS.Rmd", 
              params = list(input_DF = DF_analysis, 
                            last_scale = "Goodbye_DIRt",
                            goal = 500,
