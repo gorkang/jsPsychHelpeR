@@ -39,6 +39,10 @@ run_initial_setup <- function(pid, download_files = TRUE) {
       cli::cli_text(cli::col_red("{cli::symbol$cross} "), "sshpass or rsync not installed. Can't use `update_data()`")
       cli::cli_text(cli::col_silver("- You need to manually download the files to '", paste0("data/", pid), "'"))
     }
+    
+  } else if (download_files == FALSE) {
+    cli::cli_text(cli::col_red("{cli::symbol$cross} "), "Will not download files")
+    cli::cli_text(cli::col_silver("- You may need to manually download the files to '", paste0("data/", pid), "'"))
   } else {
     cli::cli_text(cli::col_red("{cli::symbol$cross} "), "Can find server credentials in '.vault/.credentials'")
   }

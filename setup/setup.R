@@ -9,6 +9,7 @@
   if (!require('targets')) install.packages('targets'); library('targets')
 
   # Create _targets_packages and read all dependencies
+  targets::tar_destroy(ask = FALSE) # To avoid tar_renv() error
   targets::tar_renv()
   packages_renv = gsub("library\\(|\\)", "", readLines("_targets_packages.R")[-1])
   
