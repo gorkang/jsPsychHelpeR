@@ -37,6 +37,9 @@ create_clean_data <- function(DF_raw, save_output = TRUE) {
       response = gsub(pattern = '""', replacement = "", x = response, perl = TRUE) # Remaining double quotes""
     ) %>% 
     
+    # Need to make sure the columns used below exist
+    mutate(button_pressed = ifelse("button_pressed" %in% names(.), button_pressed, NA_character_)) %>% 
+    
     # Plugings not using response to store responses
     mutate(response = 
              case_when(
