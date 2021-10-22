@@ -24,26 +24,35 @@ params:
 # )
 
 
+
 knitr::opts_chunk$set(echo = TRUE)
 
-
-# General data prepatation
-DF_analysis = 
-  params$input_DF %>% 
-  select(all_of(params$group_vars), params$last_scale) %>% 
-  filter(!is.na(params$last_scale)) %>% 
-  count(across(all_of(params$group_vars)), name = "completed") %>% 
-  mutate(missing = (params$goal / params$n_groups) - completed,
-         goal = (params$goal / params$n_groups)) 
+# Check if group_vars columns exist
+if (all(params$group_vars %in% names(DF_analysis))) {
   
-  # Specific variable transformation 
-  # mutate(AIM_DIRt = 
-  #          case_when(
-  #           AIM_DIRt %in% c("d", "e") ~ "EXP",
-  #           AIM_DIRt %in% c("c2", "c3") ~ "CONc",
-  #           AIM_DIRt %in% c("c1a", "c1b", "ab") ~ "CONa",
-  #           TRUE ~ NA_character_)) %>% 
-  # rename(group = AIM_DIRt)
+  # General data prepatation
+  DF_analysis = 
+    params$input_DF %>% 
+    select(all_of(params$group_vars), params$last_scale) %>% 
+    filter(!is.na(params$last_scale)) %>% 
+    count(across(all_of(params$group_vars)), name = "completed") %>% 
+    mutate(missing = (params$goal / params$n_groups) - completed,
+           goal = (params$goal / params$n_groups)) 
+    
+    # Specific variable transformation 
+    # mutate(AIM_DIRt = 
+    #          case_when(
+    #           AIM_DIRt %in% c("d", "e") ~ "EXP",
+    #           AIM_DIRt %in% c("c2", "c3") ~ "CONc",
+    #           AIM_DIRt %in% c("c1a", "c1b", "ab") ~ "CONa",
+    #           TRUE ~ NA_character_)) %>% 
+    # rename(group = AIM_DIRt)
+} else {
+  cat("Check if the group_vars are in DF_analysis")
+}
+
+
+
 
 ```
 
@@ -60,13 +69,19 @@ We create the groups crossing the variables: `r paste(params$group_vars, collaps
 
 ```{r summary, echo=FALSE}
 
-DF_analysis %>% 
-DT::datatable(options = list(dom = 'ti'), rownames = FALSE) %>% 
-      DT::formatStyle(
-        columns = c("missing"), 
-        target = "cell",
-        color = DT::styleInterval(cuts = c(-10, 0), values = c("red", "orange", "green"))
-    )
+DT_analysis = 
+  DF_analysis %>% 
+  DT::datatable(options = list(dom = 'ti'), rownames = FALSE) 
 
+if (all(params$group_vars %in% names(DF_analysis))) {
+  DT_analysis %>% 
+    DT::formatStyle(
+      columns = c("missing"), 
+      target = "cell",
+      color = DT::styleInterval(cuts = c(-10, 0), values = c("red", "orange", "green"))
+  )
+} else {
+  DT_analysis
+}
 
 ```
