@@ -476,7 +476,7 @@ create_targets_file <- function(pid_protocol = 0, folder_data = NULL, folder_tas
   
   if (file.exists("_targets_automatic_file.R")) {
 
-    response_prompt = menu(c("Yes", "No"), title = paste0(cli::cli_text(cli::col_green("\n\n{symbol$tick} FOUND the following tasks:")), paste(files, collapse = ", "), cli::col_yellow("\n\nOverwrite _targets.R?")))
+    response_prompt = menu(c("Yes", "No"), title = paste0(cli::cli_text(cli::col_green("\n\n{cli::symbol$tick} FOUND the following tasks:")), paste(files, collapse = ", "), cli::col_yellow("\n\nOverwrite _targets.R?")))
     
     if (response_prompt == 1) {
       
