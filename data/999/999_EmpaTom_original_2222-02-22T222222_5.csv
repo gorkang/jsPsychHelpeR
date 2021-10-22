@@ -1,7 +1,0 @@
-"success","timeout","failed_images","failed_audio","failed_video","trialid","procedure","trial_type","trial_index","time_elapsed","internal_node_id","rt","stimulus","button_pressed","response","slider_start"
-"true","false","[]","[]","[]","preload_01","EmpaTom","preload","835","648854","0.0-819.0","","","","",""
-"","","","","","Instructions_01","EmpaTom","html-button-response","836","652886","0.0-820.0","4030.60000000149","<div style=""max-width:600px;""><p>Descripcion de la tarea e instrucciones. Tom tiene Alzheimer....</p></div>","0","",""
-"","","","","","EmpaTom_01","EmpaTom","video-button-response","837","664386","0.0-821.0","11493.900000002235","[""media/vid/Entrevista1.mp4""]","","0",""
-"","","","","","EmpaTom_02","EmpaTom","html-slider-response","838","665224","0.0-822.0","830.5999999977648","<div class='justified'>¿Cómo te sientes?</div></br>","","2","4"
-"","","","","","EmpaTom_03","EmpaTom","html-slider-response","839","665876","0.0-823.0","649.6000000014901","<div class='justified'>¿Cuánta compasión sentiste por Tom?</div></br>","","5","4"
-"","","","","","EmpaTom_04","EmpaTom","survey-multi-choice-vertical","840","667029","0.0-824.0","1149","{""Q0"":""Tom piensa.""}","","{""Q0"":"" que se dará por vencido y olvidará a su esposa producto del alzheimer""}",""

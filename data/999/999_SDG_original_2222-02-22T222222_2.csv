@@ -1,8 +1,0 @@
-"view_history","rt","trialid","procedure","trial_type","trial_index","time_elapsed","internal_node_id","stimulus","response"
-"[{""page_index"":0,""viewing_time"":415}]","416","Instructions_01","SDG","instructions","610","489270","0.0-664.0","",""
-"","1787","SDG_01","SDG","survey-text","611","491060","0.0-665.0","{""Q0"":""Rut Completo (sin puntos ni guión y con dígito verificador, en caso que termine en k, reemplace por un 0):""}","{""Q0"":""215173483""}"
-"","1261","SDG_02","SDG","survey-multi-choice-vertical","612","492331","0.0-666.0","{""Q0"":""¿Cuál es su actual situación de pareja?""}","{""Q0"":"" Conviviente""}"
-"","1646","SDG_03","SDG","survey-multi-choice-vertical","613","493992","0.0-667.0","{""Q0"":""¿Cuál es el grado más alto de educación que usted ha completado?""}","{""Q0"":"" No sabe o no aplica""}"
-"","747","SDG_04","SDG","survey-multi-choice-vertical","614","494743","0.0-668.0","{""Q0"":""¿Tiene Nº de registro social de hogares? (Si no sabe puede consultar aquí: http://www.registrosocial.gob.cl/. Luego ingrese a \""ir a mi registro\"" e ingrese los datos que le solicitan. En caso que tenga, recuerde el porcentaje al cual corresponde, en caso contrario indique la opción \""No tengo registro\"").""}","{""Q0"":"" No tengo registro.""}"
-"","1504","SDG_06","SDG","survey-multi-choice-vertical","615","496260","0.0-670.0","{""Q0"":""¿Cuál es su situación ocupacional actual?""}","{""Q0"":"" Trabaja a tiempo completo""}"
-"","1723","SDG_07","SDG","survey-multi-choice-vertical","616","498011","0.0-671.0-0.0","{""Q0"":""¿Qué tipo de trabajo hace usted?""}","{""Q0"":"" Operador de máquinas, instalador, inspectores""}"
