@@ -10,6 +10,7 @@ dev/
 _targets_old.R
 
 # Do not upload _targets meta
+_targets/objects/
 _targets/meta/
 
 # Do not upload sensitive data
