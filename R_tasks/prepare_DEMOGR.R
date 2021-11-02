@@ -93,7 +93,7 @@ prepare_DEMOGR <- function(DF_clean, short_name_scale_str) {
           
           trialid == "DEMOGR_02" & RAW == "Masculino" ~ "0",
           trialid == "DEMOGR_02" & RAW == "Femenino" ~ "1",
-          trialid == "DEMOGR_02" & RAW == "No binario" ~ "0",
+          trialid == "DEMOGR_02" & RAW == "No binario" ~ "2",
           
           trialid == "DEMOGR_03" ~ RAW,
           

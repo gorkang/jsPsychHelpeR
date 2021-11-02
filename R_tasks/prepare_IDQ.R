@@ -19,9 +19,25 @@ prepare_IDQ <- function(DF_clean, short_name_scale_str) {
   # DEBUG
   # debug_function(prepare_IDQ)
 
+  
+  # [ADAPT]: Items to ignore, reverse and dimensions ---------------------------------------
+  # ****************************************************************************
+  
+  items_to_ignore = c("00") # Ignore these items: If nothing to ignore, keep items_to_ignore = c("00")
+  items_to_reverse = c("00") # Reverse these items: If nothing to reverse, keep  items_to_reverse = c("00")
+  
+  names_dimensions = c("edad", "genero") # If no dimensions, keep names_dimensions = c("")
+  
+  items_DIRd1 = c("02")
+  items_DIRd2 = c("04")
+  
+  # [END ADAPT]: ***************************************************************
+  # ****************************************************************************
+  
+  
   # Standardized names ------------------------------------------------------
   standardized_names(short_name_scale = short_name_scale_str, 
-                     # dimensions = c("NameDimension1", "NameDimension2"), # Use names of dimensions, "" or comment out line
+                     dimensions = names_dimensions,
                      help_names = FALSE) # help_names = FALSE once the script is ready
   
   # Create long -------------------------------------------------------------
@@ -32,17 +48,7 @@ prepare_IDQ <- function(DF_clean, short_name_scale_str) {
   
   
   # Create long DIR ------------------------------------------------------------
-  
-  # [ADAPT]: Items to ignore and reverse ---------------------------------------
-  # ****************************************************************************
-  
-  items_to_ignore = c("00|00") # Ignore the following items: If nothing to ignore, keep "00|00"
-  items_to_reverse = c("00|00") # Reverse the following items: If nothing to ignore, keep "00|00"
-  
-  # [END ADAPT]: ***************************************************************
-  # ****************************************************************************
-  
-  
+
   DF_long_DIR = 
     DF_long_RAW %>% 
     select(id, trialid, RAW) %>%
@@ -87,7 +93,7 @@ prepare_IDQ <- function(DF_clean, short_name_scale_str) {
     
 
   # Create DF_wide_RAW_DIR -----------------------------------------------------
-  DF_wide_RAW_DIR =
+  DF_wide_RAW =
     DF_long_DIR %>% 
     pivot_wider(
       names_from = trialid, 
@@ -96,23 +102,20 @@ prepare_IDQ <- function(DF_clean, short_name_scale_str) {
     
     # NAs for RAW and DIR items
     mutate(!!name_RAW_NA := rowSums(is.na(select(., -matches(items_to_ignore) & matches("_RAW")))),
-           !!name_DIR_NA := rowSums(is.na(select(., -matches(items_to_ignore) & matches("_DIR"))))) %>% 
+           !!name_DIR_NA := rowSums(is.na(select(., -matches(items_to_ignore) & matches("_DIR")))))
       
     
   # [ADAPT]: Scales and dimensions calculations --------------------------------
   # ****************************************************************************
     # [USE STANDARD NAMES FOR Scales and dimensions: name_DIRt, name_DIRd1, etc.] Check with: standardized_names(help_names = TRUE)
-
-    mutate(
-
-      # Score Dimensions (see standardized_names(help_names = TRUE) for instructions)
-      # !!name_DIRd1 := rowSums(select(., matches("02|04|05") & matches("_DIR$")), na.rm = TRUE), 
-      # !!name_DIRd2 := rowSums(select(., matches("01|03|08") & matches("_DIR$")), na.rm = TRUE), 
+  DF_wide_RAW_DIR = 
+    DF_wide_RAW %>% 
+      mutate(
+        !!name_DIRd1 := get(paste0(short_name_scale_str, "_", items_DIRd1, "_DIR")), 
+        !!name_DIRd2 := get(paste0(short_name_scale_str, "_", items_DIRd2, "_DIR"))
+      )
       
-      # Score Scale
-      # !!name_DIRt := rowSums(select(., matches("_DIR$")), na.rm = TRUE)
-      
-    )
+
     
   # [END ADAPT]: ***************************************************************
   # ****************************************************************************
