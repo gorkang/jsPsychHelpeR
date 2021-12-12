@@ -7,6 +7,8 @@
 
   if (!require('rlang')) install.packages('rlang'); library('rlang')
   if (!require('targets')) install.packages('targets'); library('targets')
+  if (!require('tarchetypes')) install.packages('tarchetypes'); library('tarchetypes')
+  if (!require('rmarkdown')) install.packages('rmarkdown'); library('rmarkdown')
 
   # Create _targets_packages and read all dependencies
   targets::tar_destroy(ask = FALSE) # To avoid tar_renv() error
