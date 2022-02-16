@@ -195,12 +195,30 @@ create_raw_long <- function(DF_clean, short_name_scale, numeric_responses = FALS
     # If is experiment, make sure condition_within is fine
     if (is_experiment == TRUE) {
       if (any(grepl("[ -]", DF_output$condition_within))) {
+        
+        condition_within_options = unique(DF_output$condition_within)
+        
         cli_text(col_red("{symbol$cross} "), "Unholy names found in condition_within. Cleaning up. It can take a while...\n")
+        
+        # NEW WAY: create a diccionary and left_join
+        DICCIONARY_within = DF_output %>% 
+          distinct(condition_within) %>% 
+          rowwise() %>% 
+          mutate(condition_withinOK = paste(map_chr(str_split(condition_within, pattern = "_", simplify = TRUE), janitor::make_clean_names, case = "small_camel"), collapse = "_"))
+        
+        # Show changes
+        cli_li(DICCIONARY_within %>% transmute(DIFF = paste0(condition_within, " -> ",  condition_withinOK)) %>% pull(DIFF))
         
         DF_output = 
           DF_output %>% 
-          rowwise() %>% 
-          mutate(condition_within = paste(map_chr(str_split(condition_within, pattern = "_", simplify = TRUE), janitor::make_clean_names, case = "small_camel"), collapse = "_"))
+          left_join(DICCIONARY_within, by = "condition_within") %>% 
+          mutate(condition_within = condition_withinOK) %>% select(-condition_withinOK)
+        
+        # Very slow
+        # DF_output = 
+        #   DF_output %>% 
+        #   rowwise() %>% 
+        #   mutate(condition_within = paste(map_chr(str_split(condition_within, pattern = "_", simplify = TRUE), janitor::make_clean_names, case = "small_camel"), collapse = "_"))
       }
     }
   
@@ -317,6 +335,8 @@ save_files <- function(DF, short_name_scale, is_scale = TRUE, is_sensitive = FAL
 #' @examples
 prepare_helper <- function(DF_long_RAW, show_trialid_questiontext = FALSE) {
 
+  # DF_long_RAW created by create_raw_long()
+  
   # Items
   vector_items = DF_long_RAW %>% distinct(trialid) %>% arrange(trialid) %>% pull(trialid)
 
@@ -423,7 +443,7 @@ create_targets_file <- function(pid_protocol = 0, folder_data = NULL, folder_tas
 
   # DEBUG
   # folder_tasks = "/home/emrys/Downloads/COURSE/gorkang-jsPsychMaker-d94788a/canonical_protocol/tasks/"
-  # folder_data = "data/0"
+  # folder_data = "data/10"
   # TODO: should move not used prepare_XXX() to subfolder? Or delete.
   
   suppressPackageStartupMessages(library(dplyr))
@@ -480,15 +500,25 @@ create_targets_file <- function(pid_protocol = 0, folder_data = NULL, folder_tas
     
     if (response_prompt == 1) {
       
-    # Backup file
-    if (file.exists("_targets.R")) file.rename(from = "_targets.R", to = "_targets_old.R")
-    
-    # RENAME _targets_automatic_file.R as _targets.R
-    file.rename(from = "_targets_automatic_file.R", to = "_targets.R")
-    
-    cat(crayon::green("\nNEW _targets.R created.\n"), 
-        crayon::silver("Use the following commands to start the data preparation: \n"),
-        "targets::tar_destroy() # Delete cache\n targets::tar_make() # Start data preparation\n")
+      # Backup file
+      if (file.exists("_targets.R")) file.rename(from = "_targets.R", to = "_targets_old.R")
+      
+      # RENAME _targets_automatic_file.R as _targets.R
+      file.rename(from = "_targets_automatic_file.R", to = "_targets.R")
+      
+      # DELETE UNUSED tasks
+      TASKS_TO_DELETE = list.files("R_tasks/") %>% as_tibble() %>% mutate(task = gsub("prepare_(.*)\\.R", "\\1", value)) %>% filter(!task %in% files) %>% pull(value) %>% paste0("R_tasks/", .)
+      delete_prompt = menu(c("Yes", "No"), title = paste0(cli::cli_text(cli::col_yellow("\n\nDelete ", length(TASKS_TO_DELETE), " unused tasks from R_tasks/?"))))
+      
+      if (delete_prompt == 1) {
+        zip("outputs/deleted_tasks.zip", TASKS_TO_DELETE %>% pull(value) %>% paste0("R_tasks/", .))
+        file.remove(TASKS_TO_DELETE)
+        cli::cli_alert(paste0("Deleted ", length(TASKS_TO_DELETE), " unused tasks. CS copy made in `outputs/deleted_tasks.zip`"))
+      }
+      # Messages
+      cat(crayon::green("\nNEW _targets.R created.\n"), 
+          crayon::silver("Use the following commands to start the data preparation: \n"),
+          "targets::tar_destroy() # Delete cache\n targets::tar_make() # Start data preparation\n")
     
     } else {
       cat(crayon::yellow("OK, nothing done\n"))
@@ -917,9 +947,10 @@ update_data <- function(id_protocol, sensitive_tasks = c("")) {
     stop("CAN'T find .vault/.credentials")
   }
   
+  WD = gsub(" ", "\\ ", getwd(), fixed = TRUE) # Replace " " in path to avoid error
   list_credentials = source(".vault/.credentials")
   if (!dir.exists(paste0(getwd(), '/data/' , id_protocol, '/'))) dir.create(paste0(getwd(), '/data/' , id_protocol, '/'))
-  system(paste0('sshpass -p ', list_credentials$value$password, ' rsync -av --rsh=ssh ', list_credentials$value$user, "@", list_credentials$value$IP, ":", list_credentials$value$main_FOLDER, id_protocol, '/.data/ ', getwd(), '/data/' , id_protocol, '/'))
+  system(paste0('sshpass -p ', list_credentials$value$password, ' rsync -av --rsh=ssh ', list_credentials$value$user, "@", list_credentials$value$IP, ":", list_credentials$value$main_FOLDER, id_protocol, '/.data/ ', WD, '/data/' , id_protocol, '/'))
   
   if (sensitive_tasks != "") {
     # MOVE sensitive data to .vault
