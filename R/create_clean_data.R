@@ -9,6 +9,9 @@
 ##' @export
 create_clean_data <- function(DF_raw, save_output = TRUE) {
   
+  # targets::tar_load_globals()
+  # debug_function("create_clean_data")
+  
   DF_clean_raw =
     DF_raw %>% 
     janitor::clean_names() %>% 
@@ -46,6 +49,13 @@ create_clean_data <- function(DF_raw, save_output = TRUE) {
                is.na(response) & !is.na(button_pressed) ~ button_pressed, # html-button-response
                TRUE ~ response
                ))
+  
+  
+  # CHECK duplicate trialid's -----------------------------------------------
+  DF_duplicate_trialids_raw = DF_clean %>% count(id, trialid) %>% arrange(desc(n)) %>% filter(n > 1)
+  duplicate_trialids = DF_duplicate_trialids_raw %>% count(trialid) %>% pull(trialid) %>% paste(., collapse = "; ")
+  DF_duplicate_trialids = DF_duplicate_trialids_raw %>% count(id)
+  if (nrow(DF_duplicate_trialids) > 0) rlang::abort(message = paste0("There are duplicate trialid's: \n", paste("-", duplicate_trialids, collapse = "\n"), "\n\nFor more details check `create_clean_data()`"))
   
   
   # Save files --------------------------------------------------------------
