@@ -44,7 +44,7 @@ targets <- list(
   ## Read files --------------------------------------------------------------
   
   # RAW data
-  tar_target(input_files, list.files(path = paste0("data/", pid_target), pattern="*.csv", full.names = TRUE), format = "file"),
+  tar_target(input_files, list.files(path = paste0("data/", pid_target), pattern = "*.csv", full.names = TRUE, recursive = TRUE), format = "file"),
   tar_target(DF_raw, read_data(input_files, anonymize = FALSE)),
   
   # Cleaned data
