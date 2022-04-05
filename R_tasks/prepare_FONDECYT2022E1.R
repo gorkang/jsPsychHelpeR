@@ -1,12 +1,12 @@
-##' Prepare FONDECYT
+##' Prepare FONDECYT2022E1
 ##'
 ##' Template for the functions to prepare specific tasks. Most of this file should not be changed
 ##' Things to change: 
-##'   - Name of function: prepare_FONDECYT -> prepare_[value of short_name_scale_str] 
+##'   - Name of function: prepare_FONDECYT2022E1 -> prepare_[value of short_name_scale_str] 
 ##'   - dimensions parameter in standardized_names()
 ##'   - 2 [ADAPT] chunks
 ##'
-##' @title prepare_FONDECYT
+##' @title prepare_FONDECYT2022E1
 ##'
 ##' @param short_name_scale_str 
 ##' @param DF_clean
@@ -14,19 +14,19 @@
 ##' @return
 ##' @author gorkang
 ##' @export
-prepare_FONDECYT <- function(DF_clean, short_name_scale_str) {
-
+prepare_FONDECYT2022E1 <- function(DF_clean, short_name_scale_str) {
+  
   # DEBUG
-  # debug_function(prepare_FONDECYT)
+  # debug_function(prepare_FONDECYT2022E1)
   
   # TIENEN dos copias [es la caratula: prueba 1/4]
-  # FONDECYT_01_0
-  # FONDECYT_07_0
+  # FONDECYT2022E1_01_0
+  # FONDECYT2022E1_07_0
   
   
   
   
-
+  
   # [ADAPT]: Items to ignore and reverse ---------------------------------------
   # ****************************************************************************
   
@@ -64,7 +64,7 @@ prepare_FONDECYT <- function(DF_clean, short_name_scale_str) {
   # Create long -------------------------------------------------------------
   DF_long_RAW = 
     create_raw_long(DF_clean, short_name_scale = short_name_scale_str, numeric_responses = FALSE, is_experiment = TRUE) %>% 
-
+    
     # SHOULD DO THIS INSIDE create_raw_long is_experiment????
     mutate(trialid = gsub("_[1-5]$", "", trialid),
            trialid = paste0(trialid, "_", condition_within)) %>% 
@@ -81,25 +81,25 @@ prepare_FONDECYT <- function(DF_clean, short_name_scale_str) {
     select(id, trialid, RAW, condition_between) %>%
     
     
-  # [ADAPT]: RAW to DIR for individual items -----------------------------------
+    # [ADAPT]: RAW to DIR for individual items -----------------------------------
   # ****************************************************************************
   
-    # Transformations
-    mutate(
-      DIR =
-        case_when(
-          RAW == "Si" ~ "1",
-          RAW == "No" ~ "0",
-          is.na(RAW) ~ NA_character_,
-          grepl(items_to_ignore, trialid) ~ NA_character_,
-          TRUE ~ RAW
-        )
-    )
-    
+  # Transformations
+  mutate(
+    DIR =
+      case_when(
+        RAW == "Si" ~ "1",
+        RAW == "No" ~ "0",
+        is.na(RAW) ~ NA_character_,
+        grepl(items_to_ignore, trialid) ~ NA_character_,
+        TRUE ~ RAW
+      )
+  )
+  
   # [END ADAPT]: ***************************************************************
   # ****************************************************************************
-    
-
+  
+  
   # Create DF_wide_RAW_DIR -----------------------------------------------------
   DF_wide_RAW =
     DF_long_DIR %>% 
@@ -117,16 +117,16 @@ prepare_FONDECYT <- function(DF_clean, short_name_scale_str) {
   
   # REL1 = auto_reliability(DF_wide_RAW, short_name_scale = short_name_scale_str, items = items_DIRd1)
   # items_RELd1 = REL1$item_selection_string
-    
+  
   
   # [ADAPT]: Scales and dimensions calculations --------------------------------
   # ****************************************************************************
-    # [USE STANDARD NAMES FOR Scales and dimensions: name_DIRt, name_DIRd1, etc.] Check with: standardized_names(help_names = TRUE)
-
+  # [USE STANDARD NAMES FOR Scales and dimensions: name_DIRt, name_DIRd1, etc.] Check with: standardized_names(help_names = TRUE)
+  
   DF_wide_RAW_DIR =
     DF_wide_RAW %>% 
     mutate(
-
+      
       # Make sure to use the correct formula: rowMeans() / rowSums()
       
       # Score Dimensions (see standardized_names(help_names = TRUE) for instructions)
@@ -135,16 +135,16 @@ prepare_FONDECYT <- function(DF_clean, short_name_scale_str) {
       
       # Reliability Dimensions (see standardized_names(help_names = TRUE) for instructions)
       # !!name_RELd1 := rowMeans(select(., paste0(short_name_scale_str, "_", items_RELd1, "_DIR")), na.rm = TRUE), 
-
+      
       # Score Scale
       # !!name_DIRt := rowSums(select(., matches("_DIR$")), na.rm = TRUE)
       
     )
-    
+  
   # [END ADAPT]: ***************************************************************
   # ****************************************************************************
-
-
+  
+  
   # CHECK NAs -------------------------------------------------------------------
   check_NAs(DF_wide_RAW_DIR)
   
@@ -153,5 +153,5 @@ prepare_FONDECYT <- function(DF_clean, short_name_scale_str) {
   
   # Output of function ---------------------------------------------------------
   return(DF_wide_RAW_DIR) 
- 
+  
 }
