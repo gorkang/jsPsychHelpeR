@@ -37,7 +37,7 @@
   necessary_folders = c("data", "outputs/backup", "outputs/data", "outputs/plots", "outputs/reliability", "outputs/reports", "outputs/tables", "outputs/tests_outputs", 
                         ".vault", ".vault/data_vault", ".vault/Rmd", ".vault/outputs/data", ".vault/outputs/reports")
   
-  if (!all(necessary_folders %in% dir(recursive = TRUE, include.dirs = TRUE, all.files = TRUE))) {
+  if (all(necessary_folders %in% dir(recursive = TRUE, include.dirs = TRUE, all.files = TRUE))) {
     
     cli::cli_alert_success("All the necessary folders are present\n")
     
