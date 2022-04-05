@@ -14,7 +14,7 @@
 ##' @return
 ##' @author gorkang
 ##' @export
-prepare_FORM5 <- function(DF_clean_sensitive, DF_DICCIONARY_id, short_name_scale_str) {
+prepare_FORM5 <- function(DF_clean, DF_DICCIONARY_id, short_name_scale_str) {
 
   # DEBUG
   # debug_function(prepare_FORM5)
@@ -25,7 +25,7 @@ prepare_FORM5 <- function(DF_clean_sensitive, DF_DICCIONARY_id, short_name_scale
                      help_names = FALSE) # help_names = FALSE once the script is ready
   
   # Create long -------------------------------------------------------------
-  DF_long_RAW = create_raw_long(DF_clean_sensitive, short_name_scale = short_name_scale_str, numeric_responses = FALSE)
+  DF_long_RAW = create_raw_long(DF_clean, short_name_scale = short_name_scale_str, numeric_responses = FALSE)
   
   # Show number of items, responses, etc. [uncomment to help prepare the test] 
   # prepare_helper(DF_long_RAW, show_trialid_questiontext = TRUE)
@@ -110,12 +110,12 @@ prepare_FORM5 <- function(DF_clean_sensitive, DF_DICCIONARY_id, short_name_scale
   
   
   ## GET protocol id ---------------
-  DF_wide_RAW_DIR = 
-    DF_wide_RAW_DIR %>% 
-    rename(id_form = id) %>% 
-    mutate(rut = FORM5_01_RAW) %>% 
-    left_join(DF_DICCIONARY_id, by = "id_form") %>% 
-    select(id, RUT, everything())
+  # DF_wide_RAW_DIR = 
+  #   DF_wide_RAW_DIR %>% 
+  #   rename(id_form = id) %>% 
+  #   mutate(rut = FORM5_01_RAW) %>% 
+  #   left_join(DF_DICCIONARY_id, by = "id_form") %>% 
+  #   select(id, RUT, everything())
   
   
   
