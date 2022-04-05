@@ -25,7 +25,7 @@
 # Clean up ----------------------------------------------------------------
 
   # Clean up _targets folder  
-  cat(crayon::yellow("Destroying OLD _targets files\n"))
+  cli::cli_alert_warning("Destroying OLD _targets/* files\n")
   targets::tar_destroy(ask = FALSE)
   
   # Delete content of outputs
@@ -34,16 +34,17 @@
 
 # Make sure all the necessary folders exist -----------------------------
   
-  necessary_folders = c("data", "outputs/data", "outputs/plots", "outputs/reliability", "outputs/reports", "outputs/tables", "outputs/tests_outputs", 
+  necessary_folders = c("data", "outputs/backup", "outputs/data", "outputs/plots", "outputs/reliability", "outputs/reports", "outputs/tables", "outputs/tests_outputs", 
                         ".vault", ".vault/data_vault", ".vault/Rmd", ".vault/outputs/data", ".vault/outputs/reports")
   
-  if (all(necessary_folders %in% dir(recursive = TRUE, include.dirs = TRUE, all.files = TRUE))) {
+  if (!all(necessary_folders %in% dir(recursive = TRUE, include.dirs = TRUE, all.files = TRUE))) {
     
-    cat(crayon::green("All the necessary folders are present\n"))
+    cli::cli_alert_success("All the necessary folders are present\n")
     
   } else {
     
-    cat(crayon::yellow("Creating necessary folders: "), paste(necessary_folders, collapse = ", "), "\n")
+    cli::cli_alert_warning("Creating necessary folders: \n")
+    cli::cli_li(paste(necessary_folders, collapse = ", "), "\n")
     invisible(purrr::map(necessary_folders, dir.create, recursive = TRUE, showWarnings = FALSE))
     system("chmod 700 -R .vault/")
 
@@ -73,7 +74,8 @@
   # Control+L: targets::rstudio_addin_tar_load()
   
   if (Sys.info()["sysname"] %in% c("Linux")) {
-    cat(crayon::green("Setup shortcuts [only Linux]\n"))
-    source("setup/setup_shortcuts.R"); setup_shortcuts()
+    cli::cli_alert_warning("Setting up shortcuts [only Linux]\n")
+    source("setup/setup_shortcuts.R")
+    setup_shortcuts()
   }
   
