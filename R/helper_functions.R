@@ -507,7 +507,8 @@ create_targets_file <- function(pid_protocol = 0, folder_data = NULL, folder_tas
       file.rename(from = "_targets_automatic_file.R", to = "_targets.R")
       
       # DELETE UNUSED tasks
-      TASKS_TO_DELETE = list.files("R_tasks/") %>% as_tibble() %>% mutate(task = gsub("prepare_(.*)\\.R", "\\1", value)) %>% filter(!task %in% files) %>% pull(value) %>% paste0("R_tasks/", .)
+      # TASKS_TO_DELETE = list.files("R_tasks/") %>% as_tibble() %>% mutate(task = gsub("prepare_(.*)\\.R", "\\1", value)) %>% filter(!task %in% files) %>% pull(value) %>% paste0("R_tasks/", .)
+      TASKS_TO_DELETE = list.files("R_tasks/") %>% as_tibble() %>% mutate(task = gsub("prepare_(.*)\\.R", "\\1", value)) %>% filter(!task %in% files & !grepl("\\.csv", value)) %>% pull(value) %>% paste0("R_tasks/", .)
       delete_prompt = menu(c("Yes", "No"), title = paste0(cli::cli_text(cli::col_yellow("\n\nDelete ", length(TASKS_TO_DELETE), " unused tasks from R_tasks/?"))))
       
       if (delete_prompt == 1) {
