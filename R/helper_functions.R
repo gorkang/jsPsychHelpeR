@@ -511,7 +511,7 @@ create_targets_file <- function(pid_protocol = 0, folder_data = NULL, folder_tas
       delete_prompt = menu(c("Yes", "No"), title = paste0(cli::cli_text(cli::col_yellow("\n\nDelete ", length(TASKS_TO_DELETE), " unused tasks from R_tasks/?"))))
       
       if (delete_prompt == 1) {
-        zip("outputs/deleted_tasks.zip", TASKS_TO_DELETE %>% pull(value) %>% paste0("R_tasks/", .))
+        zip(zipfile = "outputs/deleted_tasks.zip", files = TASKS_TO_DELETE)
         file.remove(TASKS_TO_DELETE)
         cli::cli_alert(paste0("Deleted ", length(TASKS_TO_DELETE), " unused tasks. CS copy made in `outputs/deleted_tasks.zip`"))
       }
