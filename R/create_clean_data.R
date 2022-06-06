@@ -53,9 +53,11 @@ create_clean_data <- function(DF_raw, save_output = TRUE) {
   
   # CHECK duplicate trialid's -----------------------------------------------
   DF_duplicate_trialids_raw = DF_clean %>% count(id, trialid) %>% arrange(desc(n)) %>% filter(n > 1)
+  DF_message = DF_clean %>% count(id, experimento, trialid) %>% arrange(desc(n)) %>% filter(n > 1) %>% group_by(id) %>% summarize(duplicate_tasks = paste(unique(experimento), collapse = ", ")) %>% transmute(message = paste0(id, ": ", duplicate_tasks ))
   duplicate_trialids = DF_duplicate_trialids_raw %>% count(trialid) %>% pull(trialid) %>% paste(., collapse = "; ")
-  DF_duplicate_trialids = DF_duplicate_trialids_raw %>% count(id)
-  if (nrow(DF_duplicate_trialids) > 0) rlang::abort(message = paste0("There are duplicate trialid's: \n", paste("-", duplicate_trialids, collapse = "\n"), "\n\nFor more details check `create_clean_data()`"))
+  # DF_duplicate_trialids = DF_duplicate_trialids_raw %>% count(id)
+  # if (nrow(DF_duplicate_trialids) > 0) rlang::abort(message = paste0("There are duplicate trialid's: \n", paste("-", duplicate_trialids, collapse = "\n"), "\n\nFor more details check `create_clean_data()`"))
+  if (nrow(DF_message) > 0) rlang::abort(message = paste0("There are duplicate trialid's for: 'participant: tasks' \n", paste("-", DF_message, collapse = "\n"), "\n\nFor more details check `create_clean_data()`"))
   
   
   # Save files --------------------------------------------------------------
