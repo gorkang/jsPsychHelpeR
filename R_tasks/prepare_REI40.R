@@ -14,7 +14,7 @@
 ##' @return
 ##' @author gorkang
 ##' @export
-prepare_REI40 <- function(DF_clean, short_name_scale_str) {
+prepare_REI40 <- function(DF_clean, short_name_scale_str, v02_fix = FALSE) {
 
   # DEBUG
   # debug_function(prepare_REI40)
@@ -47,6 +47,15 @@ prepare_REI40 <- function(DF_clean, short_name_scale_str) {
   # Create long -------------------------------------------------------------
   DF_long_RAW = create_raw_long(DF_clean, short_name_scale = short_name_scale_str, numeric_responses = TRUE)
   
+
+  # TEMPORAL FIX ------------------------------------------------------------
+  if (v02_fix == TRUE) {
+    DF_dicc = read_csv("R_tasks/prepare_REI40_diccionary.csv", show_col_types = FALSE)
+    DF_long_RAW = DF_long_RAW %>% 
+      left_join(DF_dicc, by = "trialid") %>% 
+      mutate(trialid = trialid_OK) %>% 
+      select(-trialid_OK)
+  }
   # Show number of items, responses, etc. [uncomment to help prepare the test] 
   # prepare_helper(DF_long_RAW, show_trialid_questiontext = TRUE)
   
