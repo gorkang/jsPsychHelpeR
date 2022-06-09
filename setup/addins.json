@@ -1,5 +1,6 @@
 {
-    "targets::tar_make": "Ctrl+M",
+    "targets::tar_make": "Ctrl+Alt+Shift+M",
+    "targets::rstudio_addin_tar_make_bg": "Ctrl+M",
     "targets::rstudio_addin_tar_progress": "Ctrl+,",
     "targets::rstudio_addin_tar_load": "Ctrl+L",
     "targets::rstudio_addin_tar_visnetwork": "Ctrl+G",

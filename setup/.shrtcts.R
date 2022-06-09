@@ -10,8 +10,9 @@
 
 praise::praise
 
-message("Loading _packages.R and R/helper_functions.R")
+message("Loading _targets_packages.R, _targets.R and R/helper_functions.R")
 
-if (file.exists("./_packages.R")) suppressPackageStartupMessages(source("./_packages.R"))
+# if (file.exists("./_packages.R")) suppressPackageStartupMessages(source("./_packages.R"))
+if (file.exists("./_targets_packages.R")) suppressPackageStartupMessages(source("./_targets_packages.R"))
 if (file.exists("./_targets.R")) source("./_targets.R")
 if (file.exists("./R/helper_functions.R")) source("./R/helper_functions.R")

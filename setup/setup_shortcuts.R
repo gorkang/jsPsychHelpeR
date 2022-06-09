@@ -6,7 +6,7 @@
 #' @export
 #'
 #' @examples
-setup_shortcuts <- function() {
+setup_shortcuts <- function(overwrite = FALSE) {
 
   cli::cli_alert_warning("Installing packages needed for `shrtcts`...\n")
   
@@ -15,8 +15,8 @@ setup_shortcuts <- function() {
   
   cli::cli_alert_warning("Copying configuration files...\n")
   
-  file.copy(from = "setup/.shrtcts.R", to = paste0(fs::path_home(), "/.shrtcts.R"))
-  file.copy(from = "setup/addins.json", to = paste0(fs::path_home_r(), "/.R/rstudio/keybindings/addins.jsonX"))
+  file.copy(from = "setup/.shrtcts.R", to = paste0(fs::path_home(), "/.shrtcts.R"), overwrite = overwrite)
+  file.copy(from = "setup/addins.json", to = paste0(fs::path_home_r(), "/.R/rstudio/keybindings/addins.json"), overwrite = overwrite)
   
   cli::cli_alert_warning("Aplying configuration.\n")
   
