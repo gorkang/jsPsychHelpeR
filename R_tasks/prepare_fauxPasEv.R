@@ -205,6 +205,18 @@ prepare_fauxPasEv <- function(DF_clean, short_name_scale_str) {
   # Save DF with OPEN responses for manual correction ---
   
   if (!file.exists(dirname(here::here(manual_correction_output)))) dir.create(dirname(here::here(manual_correction_output)))
+  
+  if (file.exists(here::here(manual_correction_output))) {
+    cli::cli_alert_info(c("Archivo '{manual_correction_output}' ya existe, SOBREESCRIBIENDO"))
+  } else {
+    cli::cli_alert_info(c("Archivo '{manual_correction_output}' NO existe, creando por primera vez"))
+    cli::cli_alert_info(c("REMEMBER to create correction file.\n",
+                     "You need to:\n", 
+                     "1) Copy '{manual_correction_output}' to '{manual_correction_input}'\n", 
+                     "2) manually correct responses in '{manual_correction_input}'\n",
+                     "- Look for '123456789' in the DIR column and replace with numeric value"))
+  }
+  
   DF_long_DIR %>% 
     filter(DIR == 123456789) %>% 
     writexl::write_xlsx(here::here(manual_correction_output))
