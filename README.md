@@ -19,7 +19,7 @@ usethis::use_course(url = "gorkang/jsPsychHelper", destdir = "~/Downloads/")
 Then, open `run.R` and follow the instructions. Mainly:  
 
 ```
-# REPLACE pid = 999 with your project ID
+# REPLACE 'pid = 999' with your project ID
 
 invisible(lapply(list.files("./R", full.names = TRUE, pattern = ".R$"), source))
 run_initial_setup(pid = 999) 

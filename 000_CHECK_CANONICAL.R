@@ -1,10 +1,16 @@
 # Sistema para sincronizar canonical_protocol_DEV a protocolo 999 y testearlo:
   
+
+# TODO: 
+# - Unzip snaps to 'tests/testthat/_snaps/snapshots' before running the pipeline
+# - Are we using tests/manual_correction?
+
+
   # Load all R/ functions
   invisible(lapply(list.files("./R", full.names = TRUE, pattern = ".R$"), source))
 
 
-  # 0) RENAME config_CANONICAL.js to config_CANONICAL.js
+  # 0) RENAME config_CANONICAL.js to config.js
   #   - CS of config.js
   #   - RENAME
   
@@ -12,13 +18,13 @@
 # 1) UPLOAD jsPsychMaker/canonical_protocol to http://cscn.uai.cl/lab/public/instruments/protocols/999 ----------------------------
 
   # Upload canonical protocol to 999
-  sync_server_local(server_folder = "999", local_folder = "../jsPsychMaker/canonical_protocol_DEV", direction = "local_to_server")
+  sync_server_local(direction = "local_to_server", server_folder = "999", local_folder = "../jsPsychMaker/canonical_protocol_DEV")
   
   # DELETE old SERVER 999/.data/ files from server
   list_credentials = source(".vault/.credentials") # Get server credentials
   system(paste0('sshpass -p ', list_credentials$value$password, ' ssh ', list_credentials$value$user, '@', list_credentials$value$IP, ' rm ', list_credentials$value$main_FOLDER, 999, '/.data/*'))
   # system(paste0('sshpass -p ', list_credentials$value$password, ' ssh ', list_credentials$value$user, '@', list_credentials$value$IP, ' rm ', list_credentials$value$main_FOLDER, 'test/canonical_protocol_DEV/', '/.data/*'))
-  
+  # system(paste0('sshpass -p ', list_credentials$value$password, ' ssh ', list_credentials$value$user, '@', list_credentials$value$IP, ' rm ', list_credentials$value$main_FOLDER, 'test/tasks_DEV/', '/.data/*'))
 
 
 # 2) jPsychMonkeys: Run 5 monkeys... same ID's, same responses per task (only if no randomization in jsPsych) ----------------------
@@ -41,7 +47,7 @@
   
   # Update data from server
   invisible(lapply(list.files("./R", full.names = TRUE, pattern = ".R$"), source))
-  run_initial_setup(pid = 999, download_files = FALSE)
+  run_initial_setup(pid = 999, download_files = TRUE)
   # update_data(id_protocol = "test/canonical_protocol_DEV/")
   # update_data(id_protocol = 999)
   
@@ -51,14 +57,14 @@
   file.rename(from = FILES_IN, FILES_OUT)
   
   
-  # CHECK
+  # CHECK we have results files for all tasks
   check_project_and_results(participants = 5,
                             folder_protocol = "../jsPsychMaker/canonical_protocol_DEV/tasks",
                             folder_results = "data/999/")
 
   
   # Run project
-  targets::tar_destroy()
+  targets::tar_destroy(ask = FALSE)
   targets::tar_make()
   
   # Check test file
