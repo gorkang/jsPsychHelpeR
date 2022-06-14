@@ -10,6 +10,13 @@
   if (!require('tarchetypes')) install.packages('tarchetypes'); library('tarchetypes')
   if (!require('rmarkdown')) install.packages('rmarkdown'); library('rmarkdown')
 
+
+# REVIEW: This solves the renv error without needing to tar_destroy()?
+# if (file.exists("_targets_packages.R")) {
+# } else {
+#   cli::cli_abort("RUN `targets::tar_renv()` in the console before proceeding")
+# }
+
   # Create _targets_packages and read all dependencies
   targets::tar_destroy(ask = FALSE) # To avoid tar_renv() error
   targets::tar_renv()
@@ -34,8 +41,8 @@
 
 # Make sure all the necessary folders exist -----------------------------
   
-  necessary_folders = c("data", "outputs/backup", "outputs/data", "outputs/plots", "outputs/reliability", "outputs/reports", "outputs/tables", "outputs/tests_outputs", 
-                        ".vault", ".vault/data_vault", ".vault/Rmd", ".vault/outputs/data", ".vault/outputs/reports")
+  necessary_folders = c("data/manual_correction", "outputs/backup", "outputs/data", "outputs/plots", "outputs/reliability", "outputs/reports", "outputs/tables", "outputs/tests_outputs", 
+                        ".vault/data_vault", ".vault/Rmd", ".vault/outputs/data", ".vault/outputs/reports")
   
   if (all(necessary_folders %in% dir(recursive = TRUE, include.dirs = TRUE, all.files = TRUE))) {
     
@@ -76,6 +83,6 @@
   if (Sys.info()["sysname"] %in% c("Linux")) {
     cli::cli_alert_warning("Setting up shortcuts [only Linux]\n")
     source("setup/setup_shortcuts.R")
-    setup_shortcuts()
+    setup_shortcuts(overwrite = FALSE)
   }
   
