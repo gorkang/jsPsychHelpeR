@@ -1,22 +1,51 @@
 # Initial setup -----------------------------------------------------------
 
-  # Do it only once #
-  invisible(lapply(list.files("./R", full.names = TRUE, pattern = ".R$"), source))
-  run_initial_setup(pid = 999, download_files = TRUE) # REPLACE pid = 999 with your project ID
+  # **Run only once**
 
+  # 1) FULLY AUTOMATIC (works on linux computers with FTP credentials)
+    # REPLACE 'pid = 999' with your project ID
+    invisible(lapply(list.files("./R", full.names = TRUE, pattern = ".R$"), source))
+    run_initial_setup(pid = 999, download_files = TRUE)
 
+  # 2) SEMI AUTOMATIC
+    # Will need to manually place data in 'data/pid' 
+    # REPLACE 'pid' with your project ID
+    invisible(lapply(list.files("./R", full.names = TRUE, pattern = ".R$"), source))
+    run_initial_setup(pid = 999, download_files = FALSE)
+    
 
-# RUN ---------------------------------------------------------------------
+  
+# RUN pipeline -------------------------------------------------------------
 
   # Visualize targets tree
   targets::tar_visnetwork(targets_only = TRUE, label = "time")
 
-  # First time, and if needed, clean up old targets
-  targets::tar_destroy()
+  # First time, and if needed, clean up old targets (deletes _targets/)
+  # targets::tar_destroy()
   
-  # Run project
+  # Run data preparation 
   targets::tar_make()
 
+  
+  
+# Edit report ---------------------------------------------------------------
+
+  # Open report_analysis.Rmd and edit
+  rstudioapi::navigateToFile("Rmd/report_analysis.Rmd")
+  
+  # After editing it:
+  targets::tar_make()
+
+  
+
+# Other commands ----------------------------------------------------------
+
+  # _targets.R contains the full pipeline
+  rstudioapi::navigateToFile("_targets.R") # Open _targets.R file
+  
+  
+  # After running the pipeline with targets::tar_make()
+  
   # List available objects
   targets::tar_objects()
   
@@ -26,11 +55,6 @@
   
   # CHECK warnings
   targets::tar_meta() %>% select(name, warnings) %>% drop_na()
-
-# Task --------------------------------------------------------------------
-
-  # Open report_analysis.Rmd and edit
-  rstudioapi::navigateToFile("Rmd/report_analysis.Rmd")
   
-  # After editing it:
-  targets::tar_make()
+  
+  
