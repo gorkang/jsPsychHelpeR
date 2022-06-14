@@ -1,11 +1,12 @@
 # Standalone function to Download/Upload files from server to local folder or vice-versa
-sync_server_local <- function(server_folder, local_folder, direction, only_test = TRUE) {
+sync_server_local <- function(server_folder, local_folder, direction, only_test = TRUE, exclude_csv = FALSE) {
   
   # DEBUG
   # server_folder = "test/FONDECYT2021/"
   # local_folder = "canonical_protocol_DEV/"
   # direction = "server_to_local"
   # only_test = TRUE
+  # exclude_csv = TRUE
   
   if (only_test == TRUE) {
     extra_message = paste0(cli::col_red("THIS IS A dry-run"))
@@ -14,6 +15,14 @@ sync_server_local <- function(server_folder, local_folder, direction, only_test 
     extra_message = ""
     dry_run = ""
   }
+  
+  
+  if (exclude_csv) {
+    exclude_files = " --exclude='*.csv' "
+  } else {
+    exclude_files = ""
+  }
+  
   
   local_folder = normalizePath(here::here(local_folder))
   local_folder_terminal = gsub(" ", "\\\\ ", local_folder)
@@ -64,6 +73,7 @@ sync_server_local <- function(server_folder, local_folder, direction, only_test 
       # DOWNLOAD server to local
       system(
         paste0('sshpass -p ', list_credentials$value$password, ' rsync -av ', dry_run, ' --rsh=ssh ', 
+               exclude_files,
                list_credentials$value$user, "@", list_credentials$value$IP, ":", list_credentials$value$main_FOLDER, server_folder, '/ ',
                here::here(local_folder_terminal), '/ '
         )
