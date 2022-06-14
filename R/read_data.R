@@ -17,12 +17,28 @@ read_data <- function(input_files, anonymize = FALSE, save_output = TRUE, worker
   # debug_function(read_data)
   # workers = 1
   
+  # We accept either a single zip file or multiple csv files
+    # The function list_input_files() checks that is the case, so input_files here SHOULD be one of these two
+  all_csvs = all(grepl("\\.csv", input_files))
+  all_zips = all(grepl("\\.zip", input_files))
   
-  # Read all files
-  DF_raw_read = purrr::map_dfr(input_files %>% set_names(basename(.)), data.table::fread, .id = "filename", colClasses = 'character', encoding = 'UTF-8', nThread = as.numeric(workers)) %>% as_tibble()
-  # colClasses = c(response = "character")
+  # Read file/s
+  if (all_csvs) {
+    
+    DF_raw_read = purrr::map_dfr(input_files %>% set_names(basename(.)), data.table::fread, .id = "filename", colClasses = 'character', encoding = 'UTF-8', nThread = as.numeric(workers)) %>% as_tibble()
+    # colClasses = c(response = "character")
+    
+  } else if (all_zips) {
+    
+    # Unzips to temp folder, reads files and deletes temp folder
+    DF_raw_read = read_zips(input_files)  
+    
+  } else {
+    cli::cli_abort("Something wrong in read_data(). Are input files all csv files or a single zip file?")
+  }
   
-  # if (!"response" %in% names(DF_raw_read)) DF_raw_read = DF_raw_read %>% rename(response = responses)
+  
+  # In some old jsPsych plugins, we have a responses column instead of response
   if (!"response" %in% names(DF_raw_read) & "responses" %in% names(DF_raw_read)) DF_raw_read = DF_raw_read %>% rename(response = responses)
   
   

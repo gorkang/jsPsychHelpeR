@@ -179,7 +179,13 @@ create_raw_long <- function(DF_clean, short_name_scale, numeric_responses = FALS
   
   DF_output = 
     DF_clean %>%
-      filter(grepl(paste0(short_name_scale, "_[0-9]"), trialid)) %>%
+    
+      # OLD system
+      # filter(grepl(paste0(short_name_scale, "_[0-9]"), trialid)) %>%
+    
+      # NEW system
+      filter(experimento == short_name_scale) %>%
+    
       select(id, experimento, rt, trialid, stimulus, response, starts_with(eval(experimental_conditions), ignore.case = FALSE)) %>%
       mutate(response =
                if (numeric_responses == TRUE) {
@@ -443,9 +449,10 @@ create_targets_file <- function(pid_protocol = 0, folder_data = NULL, folder_tas
 
   # DEBUG
   # folder_tasks = "/home/emrys/Downloads/COURSE/gorkang-jsPsychMaker-d94788a/canonical_protocol/tasks/"
-  # folder_data = "data/10"
-  # TODO: should move not used prepare_XXX() to subfolder? Or delete.
-  
+  # folder_data = "data/999"
+  # folder_tasks = NULL
+  # pid_protocol = 999
+
   suppressPackageStartupMessages(library(dplyr))
   
   if (file.exists("_targets_automatic_file.R")) file.remove("_targets_automatic_file.R")
@@ -453,20 +460,40 @@ create_targets_file <- function(pid_protocol = 0, folder_data = NULL, folder_tas
   
   # If both parameters have info, choose folder_data
   if (!is.null(folder_data) & !is.null(folder_tasks)) {
-    cat(crayon::yellow("Both 'folder_data' and 'folder_tasks' have information. Using 'folder_data'\n"))
+    cli::cli_alert_info("Both 'folder_data' and 'folder_tasks' have information. Using 'folder_data'\n")
     folder_tasks = NULL
   } 
   
   # List js files or parse data files
   if (is.null(folder_data) & !is.null(folder_tasks)) {
+    
     files = gsub(".js", "", basename(list.files(folder_tasks, recursive = FALSE, pattern = ".js")))
+    
   } else if (!is.null(folder_data) & is.null(folder_tasks)) {
-    files = 
-      list.files(folder_data, recursive = TRUE) %>% 
-      as_tibble() %>% 
-      tidyr::separate(col = value, into = c("project", "experimento", "version", "datetime", "id"), sep = c("_"), remove = TRUE) %>% 
-      distinct(experimento) %>% 
-      pull(experimento)
+    
+    input_files = list.files(folder_data, recursive = TRUE, full.names = TRUE) 
+    all_csvs = all(grepl("\\.csv", input_files))
+    all_zips = all(grepl("\\.zip", input_files))
+    
+    # If folder contains csv files
+    if (all_csvs) {
+      
+      files = list.files(folder_data, recursive = TRUE) %>% 
+        as_tibble() %>% 
+        tidyr::separate(col = value, into = c("project", "experimento", "version", "datetime", "id"), sep = c("_"), remove = TRUE) %>% 
+        distinct(experimento) %>% 
+        pull(experimento)
+      
+    # If folder contains single zip
+    } else if (all_zips) {
+      
+      # Unzips to temp folder, reads files and deletes temp folder
+      files = read_zips(input_files) %>% distinct(procedure) %>% pull(procedure)
+      
+    } else {
+      cli::cli_abort("Something wrong. {folder_data} should contain all csv files or a single zip file")
+    }
+    
   }
   
   if (length(files) > 0) {
@@ -493,36 +520,73 @@ create_targets_file <- function(pid_protocol = 0, folder_data = NULL, folder_tas
   
   }
   
-  
+  # If previous step was successful
   if (file.exists("_targets_automatic_file.R")) {
 
-    response_prompt = menu(c("Yes", "No"), title = paste0(cli::cli_text(cli::col_green("\n\n{cli::symbol$tick} FOUND the following tasks:")), paste(files, collapse = ", "), cli::col_yellow("\n\nOverwrite _targets.R?")))
+    response_prompt = menu(choices = c("Yes", "No"), 
+                           title = 
+                             cli::cli(
+                               {
+                                 cli::cli_par()
+                                 cli::cli_alert_info("Overwrite file '_targets.R' to include the following tasks?")
+                                 cli::cli_end()
+                                 cli::cli_text("{.pkg {files}}")
+                                }
+                               )
+                           )
     
     if (response_prompt == 1) {
       
-      # Backup file
+      # Create Backup file
       if (file.exists("_targets.R")) file.rename(from = "_targets.R", to = "_targets_old.R")
       
-      # RENAME _targets_automatic_file.R as _targets.R
+      # RENAME _targets_automatic_file.R as _targets.R. _targets_automatic_file.R was created in the previous step
       file.rename(from = "_targets_automatic_file.R", to = "_targets.R")
       
       # DELETE UNUSED tasks
-      # TASKS_TO_DELETE = list.files("R_tasks/") %>% as_tibble() %>% mutate(task = gsub("prepare_(.*)\\.R", "\\1", value)) %>% filter(!task %in% files) %>% pull(value) %>% paste0("R_tasks/", .)
       TASKS_TO_DELETE = list.files("R_tasks/") %>% as_tibble() %>% mutate(task = gsub("prepare_(.*)\\.R", "\\1", value)) %>% filter(!task %in% files & !grepl("\\.csv", value)) %>% pull(value) %>% paste0("R_tasks/", .)
-      delete_prompt = menu(c("Yes", "No"), title = paste0(cli::cli_text(cli::col_yellow("\n\nDelete ", length(TASKS_TO_DELETE), " unused tasks from R_tasks/?"))))
+      
+      delete_prompt = menu(choices = c("Yes", "No"), 
+                           title = cli::cli(
+                             {
+                               cli::cli_par()
+                               cli::cli_alert_info("{cli::col_red('Delete')} the following {length(TASKS_TO_DELETE)} unused tasks from 'R_tasks/'?:")
+                               cli::cli_end()
+                               cli::cli_text("{.pkg {basename(TASKS_TO_DELETE)}}")
+                             }
+                             )
+                           )
+      
       
       if (delete_prompt == 1) {
-        zip(zipfile = "outputs/deleted_tasks.zip", files = TASKS_TO_DELETE)
+        cli::cli_alert_info("Zipping unused tasks to create backup")
+        zip(zipfile = "outputs/backup/deleted_tasks.zip", files = TASKS_TO_DELETE)
         file.remove(TASKS_TO_DELETE)
-        cli::cli_alert(paste0("Deleted ", length(TASKS_TO_DELETE), " unused tasks. CS copy made in `outputs/deleted_tasks.zip`"))
+        cli::cli_alert_warning(paste0("Deleted ", length(TASKS_TO_DELETE), " unused tasks. Backup in `outputs/backup/deleted_tasks.zip`"))
       }
-      # Messages
-      cat(crayon::green("\nNEW _targets.R created.\n"), 
-          crayon::silver("Use the following commands to start the data preparation: \n"),
-          "targets::tar_destroy() # Delete cache\n targets::tar_make() # Start data preparation\n")
+      
+      # END Messages
+      
+      cli::cli(
+        {
+          cli::cli_par()
+          cli::cli_h1("All done\n\n")
+          cli::cli_end()
+    
+          cli::cli_par()
+          cli::cli_alert_info("NEW '_targets.R' created")
+          cli::cli_end()
+          
+          cli::cli_text(cli::col_grey("Use the following commands to start the data preparation:"))
+          cli::cli_li(c("Visualize pipeline: {.code targets::tar_visnetwork()}",
+                        "Delete cache: {.code targets::tar_destroy()}", 
+                        "Start data preparation: {.code targets::tar_make()}"))
+          
+        }
+      )
     
     } else {
-      cat(crayon::yellow("OK, nothing done\n"))
+      cli::cli_alert_warning("OK, nothing done\n")
     }
     
   }
@@ -924,7 +988,7 @@ number_items_tasks <- function(DF_joined) {
 
 
 #' update_data
-#' Update data/id_protocol folder using rsync
+#' Download 'data/id_protocol' folder from server using rsync
 #'
 #' @param id_protocol 
 #'
@@ -935,24 +999,47 @@ number_items_tasks <- function(DF_joined) {
 update_data <- function(id_protocol, sensitive_tasks = c("")) {
   
   # DEBUG
-  # id_protocol = 0
+  # id_protocol = 999
   # sensitive_tasks = c("DEMOGR")
+
+  # CHECKS ------------------------------------------------------------------
   
-  cat(crayon::yellow(paste0("Synching files from pid ", id_protocol, "\n")))
+  credentials_exist = file.exists(".vault/.credentials")
+  SSHPASS = Sys.which("sshpass") # Check if sshpass is installed
+  RSYNC = Sys.which("rsync") # Check if rsync is installed
+  if (!dir.exists(paste0(getwd(), '/data/' , id_protocol, '/'))) dir.create(paste0(getwd(), '/data/' , id_protocol, '/'))
+  # if (!dir.exists(paste0("data/", id_protocol, "/"))) stop("CAN'T find the destination folder: 'data/", id_protocol, "'")
   
-  if (!dir.exists(paste0("data/", id_protocol, "/"))) stop("CAN'T find data/", id_protocol)
-  
-  if (!file.exists(".vault/.credentials")) {
-    # If you do not have the .credentials file: rstudioapi::navigateToFile("setup/setup_server_credentials.R")
-    cat(crayon::red("The file .vault/.credentials does NOT exist. Follow the steps in: "), "\n", crayon::yellow('rstudioapi::navigateToFile("setup/setup_server_credentials.R")\n'))
-    stop("CAN'T find .vault/.credentials")
+  if (!credentials_exist) {
+    cli::cli_abort(
+      c("The file '.vault/.credentials' does NOT exist. Follow the steps in: ", 
+        'rstudioapi::navigateToFile("setup/setup_server_credentials.R")'))
   }
+   
+  
+  # Download files ----------------------------------------------------------
+
+  cli::cli_alert_info("Synching files from pid {id_protocol} to 'data/{id_protocol}'")
   
   WD = gsub(" ", "\\ ", getwd(), fixed = TRUE) # Replace " " in path to avoid error
   list_credentials = source(".vault/.credentials")
-  if (!dir.exists(paste0(getwd(), '/data/' , id_protocol, '/'))) dir.create(paste0(getwd(), '/data/' , id_protocol, '/'))
-  system(paste0('sshpass -p ', list_credentials$value$password, ' rsync -av --rsh=ssh ', list_credentials$value$user, "@", list_credentials$value$IP, ":", list_credentials$value$main_FOLDER, id_protocol, '/.data/ ', WD, '/data/' , id_protocol, '/'))
+  result = system(paste0('sshpass -p ', list_credentials$value$password, 
+                ' rsync -av --rsh=ssh ', 
+                # From
+                list_credentials$value$user, "@", list_credentials$value$IP, ":", list_credentials$value$main_FOLDER, id_protocol, '/.data/ ', 
+                # To
+                WD, '/data/' , id_protocol, '/'), 
+                intern = TRUE)
   
+  if (length(result) == 4) {
+    cli::cli_alert_info("All files already in 'data/{id_protocol}'")
+  } else {
+    cli::cli_alert_success("Downloaded {length(result) - 5} files to 'data/{id_protocol}'")
+  }
+  
+
+  # Move sensitive files to .vault/data -------------------------------------
+
   if (sensitive_tasks != "") {
     # MOVE sensitive data to .vault
     data_folder = paste0("data/", id_protocol)
@@ -962,7 +1049,8 @@ update_data <- function(id_protocol, sensitive_tasks = c("")) {
     destination_names = gsub(data_folder, destination_folder, sensitive_files)
     file.rename(from = sensitive_files, to = destination_names)
     
-    cat(crayon::green(paste0("Moved ", length(destination_names), " files matching '", paste(sensitive_tasks, collapse = "|"), "' to ", destination_folder, "\n")))
+    cli::cli_alert_success("Moved {length(destination_names)} files matching '{paste(sensitive_tasks, collapse = '|')}' to '{destination_folder}'")
+    
   }
   
 }
@@ -1109,4 +1197,52 @@ check_project_and_results <- function(participants, folder_protocol, folder_resu
   cat("Missing data for: ", missing_experiments)
   
   
+}
+
+
+
+
+#' read_zips
+#' Function to unzip and read csv files
+#'
+#' @param input_files 
+#' @param workers 
+#' @param unzip_dir 
+#' @param silent 
+#' @param do_cleanup 
+#'
+#' @return
+#' @export
+#'
+#' @examples
+read_zips = function(input_files, workers = 1, unzip_dir = file.path(dirname(input_files), sprintf("csvtemp_%s", sub(".zip", "", basename(input_files)))), silent = FALSE, do_cleanup = TRUE){
+  
+  # DEBUG
+  # workers = 1
+  # unzip_dir = file.path(dirname(input_files), sprintf("csvtemp_%s", sub(".zip", "", basename(input_files))))
+  # silent = FALSE
+  # do_cleanup = TRUE
+  
+  dir.create(unzip_dir, showWarnings = FALSE)
+  
+  # unzip zips OR tar.xz
+  if (tools::file_ext(input_files) == "zip") {
+    unzip(input_files, overwrite = TRUE, exdir = unzip_dir)
+  } else if (tools::file_ext(input_files) %in% c("tar", "xz")) {
+    untar(input_files, exdir = unzip_dir) 
+  } else {
+    cat(paste0("The file extension is '.", tools::file_ext(input_files), "' but needs to be either '.zip' or '.tar.xz'\n"))
+  }
+  
+  fns = list.files(unzip_dir, recursive = TRUE) %>% setNames(file.path(unzip_dir, .), .)
+  
+  if (!all(tools::file_ext(fns) == "csv")) cli::cli_abort("The zip file should only contain CSV files")
+  
+  # Read files
+  res = purrr::map_dfr(fns %>% set_names(basename(.)), data.table::fread, .id = "filename", colClasses = 'character', encoding = 'UTF-8', nThread = as.numeric(workers)) %>% as_tibble()
+  
+  # Delete files
+  if (do_cleanup) unlink(unzip_dir, recursive = TRUE)
+  
+  return(res)
 }

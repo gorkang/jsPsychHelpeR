@@ -21,7 +21,7 @@
   # Packages to load
   main_packages = c("cli", "crayon", "furrr", "patchwork", "renv", "tarchetypes", "targets", "testthat")
   data_preparation_packages = c("dplyr", "forcats", "here", "janitor", "purrr", "readr", "stringr", "tibble", "tidyr") #"safer", 
-  data_analysis_packages = c("broom", "broom.mixed", "emmeans", "gmodels", "gt", "gtsummary", "irr", "lme4", "parameters", "performance", "psych", "sjPlot") #"report"
+  data_analysis_packages = c("broom", "broom.mixed", "emmeans", "gt", "gtsummary", "irr", "lme4", "parameters", "performance", "psych", "sjPlot") #"report" "gmodels"
   data_visualization_packages = c("DT", "ggalluvial", "ggridges")
   non_declared_dependencies = c("qs", "visNetwork", "webshot", "performance", "shinyWidgets")
   extra_packages = c("shrtcts")
@@ -43,8 +43,10 @@ targets <- list(
   
   ## Read files --------------------------------------------------------------
   
+  # Input files (can be a single zip file or multiple csv files)
+  tar_target(input_files, list_input_files(pid_target), format = "file"),
+  
   # RAW data
-  tar_target(input_files, list.files(path = paste0("data/", pid_target), pattern = "*.csv", full.names = TRUE, recursive = TRUE), format = "file"),
   tar_target(DF_raw, read_data(input_files, anonymize = FALSE)),
   
   # Cleaned data
