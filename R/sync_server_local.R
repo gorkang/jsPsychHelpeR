@@ -1,10 +1,11 @@
-# Sync server with local Maker
+# Standalone function to Download/Upload files from server to local folder or vice-versa
 sync_server_local <- function(server_folder, local_folder, direction, only_test = TRUE) {
   
   # DEBUG
   # server_folder = "test/FONDECYT2021/"
   # local_folder = "canonical_protocol_DEV/"
   # direction = "server_to_local"
+  # only_test = TRUE
   
   if (only_test == TRUE) {
     extra_message = paste0(cli::col_red("THIS IS A dry-run"))
