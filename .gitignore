@@ -4,7 +4,6 @@
 .RData
 .Ruserdata
 .Renviron
-dev/
 
 # _targets backup
 _targets_old.R
@@ -17,10 +16,14 @@ _targets/meta/
 .vault/.credentials
 .vault/*/
 
+# Do not upload dev and data
+dev/
+data/*.csv
+
 # Do not upload output files
 outputs/
 *.html
-*.zip
+#*.zip
 
 # Uncomment if don't want to upload data and targets cache
 # data/
