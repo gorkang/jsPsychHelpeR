@@ -1,13 +1,23 @@
-# Run this to Download all protocols (minus csv's) to a local folder, and then check for which ones we do not have preparation scripts
+# Run this to Download all protocols (minus csv's) to a local folder
+# Then check:
+# - for which ones we do not have preparation scripts 
+# - for which ones we do not have googledoc details in
+    # + https://docs.google.com/spreadsheets/d/1Eo0F4GcmqWZ1cghTpQlA4aHsc8kTABss-HAeimE2IqA/edit#gid=0
+    # + https://docs.google.com/spreadsheets/d/1LAsyTZ2ZRP_xLiUBkqmawwnKWgy8OCwq4mmWrrc_rpQ/edit#gid=0
+
 check_missing_prepare_TASK <- function(sync_protocols = FALSE, check_trialids = FALSE) {
-  
   
   # DEBUG
   # sync_protocols = FALSE
+  # check_trialids = FALSE
 
+  
   targets::tar_load_globals()
   
+  
   # Download all protocols ------------------------------------------------
+  
+  # rsync's to local folder all except the csv files
   
   if (sync_protocols == TRUE) {
     # https://unix.stackexchange.com/questions/432801/rsync-exclude-a-certain-file-extension-unless-zipped
@@ -19,10 +29,11 @@ check_missing_prepare_TASK <- function(sync_protocols = FALSE, check_trialids = 
   }
 
 
-# Unique tasks -----------------------------------------------------------
+  # Unique tasks -----------------------------------------------------------
 
+  # Unique tasks found in all the protocols
   ALL_files = list.files("../CSCN-server/protocols/", pattern = "*.js", full.names = TRUE, recursive = TRUE)
-  DF_files =
+  DF_tasks =
     ALL_files[grepl("*tasks/.*\\.js", ALL_files)] %>% as_tibble() %>% 
     filter(!grepl("OLD_TESTS", value)) %>% 
     mutate(task = gsub("\\.js", "", basename(value)),
@@ -32,7 +43,7 @@ check_missing_prepare_TASK <- function(sync_protocols = FALSE, check_trialids = 
     distinct(task, .keep_all = TRUE)
 
 
-# Unique correction scripts -----------------------------------------------
+  # Unique correction scripts -----------------------------------------------
 
   ALL_scripts = list.files("R_tasks/", pattern = "*.R", full.names = TRUE, recursive = TRUE)
   DF_scripts = 
@@ -41,18 +52,46 @@ check_missing_prepare_TASK <- function(sync_protocols = FALSE, check_trialids = 
     distinct(script)
 
 
-# Tasks without correction scripts ----------------------------------------
+  # Tasks without correction scripts ----------------------------------------
 
   # List
-  missing_tasks = DF_files$task[!DF_files$task %in% DF_scripts$script]
+  missing_script = DF_tasks$task[!DF_tasks$task %in% DF_scripts$script]
   
   # DF
-  DF_missing_tasks = DF_files %>% filter(task %in% missing_tasks) %>% arrange(task)
+  DF_missing_script = DF_tasks %>% filter(task %in% missing_tasks) %>% arrange(task)
  
 #   # List
-#   missing_tasks = DF_files %>% filter(task %in% missing_tasks) %>% arrange(task) %>% pull(task) %>% cat()
+#   missing_tasks = DF_tasks %>% filter(task %in% missing_tasks) %>% arrange(task) %>% pull(task) %>% cat()
 
 
+  # Google doc --------------------------------------------------------------
+
+  # Reads canonical googledoc and googledoc with NEW tasks and combines them
+  
+  googlesheets4::gs4_auth("gorkang@gmail.com")
+  DF_googledoc1 = googlesheets4::read_sheet("1Eo0F4GcmqWZ1cghTpQlA4aHsc8kTABss-HAeimE2IqA", sheet = 2, skip = 0) %>% 
+    rename(short_name = `Código Test`) %>% 
+    filter(short_name != "short_name") %>% 
+    arrange(short_name) %>% 
+    select(short_name, Nombre, Descripcion) %>% 
+    tidyr::drop_na(short_name)
+  
+  DF_googledoc_NEW = googlesheets4::read_sheet("1LAsyTZ2ZRP_xLiUBkqmawwnKWgy8OCwq4mmWrrc_rpQ", sheet = 2, skip = 0) %>% 
+    rename(short_name = `Código Test`) %>% 
+    filter(short_name != "short_name: NO debe contener espacios ni caracteres extraños :)") %>% 
+    arrange(short_name) %>% 
+    select(short_name, Nombre, Descripcion) %>% 
+    tidyr::drop_na(short_name)
+  
+  DF_googledoc = DF_googledoc1 %>% bind_rows(DF_googledoc_NEW) %>% distinct(short_name)
+  
+  # Checks which tasks do not appear in the googledocs
+  missing_tasks_googledoc = DF_tasks$task[!DF_tasks$task %in% DF_googledoc$short_name]
+  
+  # DF
+  DF_missing_googledoc = DF_tasks %>% filter(task %in% missing_tasks_googledoc) %>% arrange(task)
+  
+  
   # CHECK TRIALIDs ----------------------------------------------------------
   
   if (check_trialids == TRUE) {
@@ -87,8 +126,9 @@ check_missing_prepare_TASK <- function(sync_protocols = FALSE, check_trialids = 
   # OUTPUT ------------------------------------------------------------------
 
   OUTPUT = 
-    list(missing_tasks = missing_tasks,
-         DF_missing_tasks = DF_missing_tasks)
+    list(DF_missing_script = DF_missing_script,
+         DF_missing_googledoc = DF_missing_googledoc)
+  
   return(OUTPUT)
   
 }
