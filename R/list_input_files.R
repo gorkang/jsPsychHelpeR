@@ -1,3 +1,12 @@
+#' list_input_files
+#' Lists all input csv files or single zip file in a data folder. 
+#'
+#' @param pid_target 
+#'
+#' @return
+#' @export
+#'
+#' @examples
 list_input_files <- function(pid_target) {
   
   # DEBUG
