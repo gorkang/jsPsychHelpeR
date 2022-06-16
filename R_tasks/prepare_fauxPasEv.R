@@ -194,7 +194,6 @@ prepare_fauxPasEv <- function(DF_clean, short_name_scale_str) {
   # [END ADAPT]: ***************************************************************
   # ****************************************************************************
   
-  
 
   # MANUAL CORRECTION -------------------------------------------------------
   
@@ -206,17 +205,14 @@ prepare_fauxPasEv <- function(DF_clean, short_name_scale_str) {
   
   if (!file.exists(dirname(here::here(manual_correction_output)))) dir.create(dirname(here::here(manual_correction_output)))
   
+  # CHECK output file
   if (file.exists(here::here(manual_correction_output))) {
-    cli::cli_alert_info(c("Archivo '{manual_correction_output}' ya existe, SOBREESCRIBIENDO"))
+    cli::cli_alert_info(c("'{manual_correction_output}' already exists, OVERWIRITING"))
   } else {
-    cli::cli_alert_info(c("Archivo '{manual_correction_output}' NO existe, creando por primera vez"))
-    cli::cli_alert_info(c("REMEMBER to create correction file.\n",
-                     "You need to:\n", 
-                     "1) Copy '{manual_correction_output}' to '{manual_correction_input}'\n", 
-                     "2) manually correct responses in '{manual_correction_input}'\n",
-                     "- Look for '123456789' in the DIR column and replace with numeric value"))
+    cli::cli_alert_info(c("Creating '{manual_correction_output}'"))
   }
   
+  # Create file
   DF_long_DIR %>% 
     filter(DIR == 123456789) %>% 
     writexl::write_xlsx(here::here(manual_correction_output))
@@ -224,13 +220,57 @@ prepare_fauxPasEv <- function(DF_clean, short_name_scale_str) {
   
   # Read manual correction file ---
   if (file.exists(manual_correction_input)) {
+    cli::cli_par()
+    cli::cli_alert_info("Manual correction of fauxPas already exists")
+    cli::cli_end()
+    
     DF_manual_correction = readxl::read_excel(here::here("data/manual_correction/fauxPasEv_manual_correction.xlsx")) 
+    nrow_output = nrow(readxl::read_excel(manual_correction_output))
+    nrow_input = nrow(DF_manual_correction)
+    
+    nrow_uncorrected = DF_manual_correction %>% filter(DIR == 123456789) %>% nrow()
+    
+    # Check if raw output file == manual correction input file
+    if(nrow_output == nrow_input) {
+      
+      cli::cli_par()
+      cli::cli_alert("CHECK 1 OK: manual correction and RAW data have the same number of rows")  
+      # Show n of uncorrected rows
+      if (nrow_uncorrected > 0) cli::cli_alert_danger(paste0("CHECK 2 WARNING | manual correction has {nrow_uncorrected} uncorrected rows (DIR == 123456789) || ", cli::bg_green('FIX THIS'), " ||"))
+      cli::cli_end()
+      
+    } else {
+      cli::cli_par()
+      cli::cli_alert_danger(paste0("ERROR | manual correction and RAW data **DO NOT HAVE** the same number of rows || ", cli::bg_green('You need to FIX THIS to continue'), " ||"))
+      cli::cli_end()
+      
+      cli::cli_par()
+      cli::cli_alert_info(c("INSTRUCTIONS to fix issue with the manual correction file.\n",
+                            "1) Compare '{manual_correction_output}' with '{manual_correction_input}'\n", 
+                            "2) Copy new lines to '{manual_correction_input}' (probably new participants?)\n", 
+                            "3) manually correct responses in '{manual_correction_input}'\n",
+                            "- Look for '123456789' in the DIR column and replace with numeric value"))
+      cli::cli_end()
+      
+      cli::cli_abort(c("Correction file has different number of rows than the RAW data follow the ℹ INSTRUCTIONS alert in the Console"))
+    }
+  
+    
+    
   } else {
-    cli::cli_abort(c("Correction file NOT found.",
-                     "You need to:", 
-                     "1) Copy '{manual_correction_output}' to '{manual_correction_input}'", 
-                     "2) manually correct responses in '{manual_correction_input}'",
-                     "- Look for '123456789' in the DIR column and replace with numeric value"))
+    cli::cli_par()
+    cli::cli_alert_danger(c("ERROR | manual correction file '{manual_correction_input}' DOES NOT EXIST || {cli::bg_green('You need to FIX THIS to continue')} ||"))
+    cli::cli_end()
+    
+    cli::cli_par()
+    cli::cli_alert_info(c("INSTRUCTIONS to create the manual correction file.\n",
+                          "1) Copy '{manual_correction_output}' to '{manual_correction_input}'\n", 
+                          "2) manually correct responses in '{manual_correction_input}'\n",
+                          "- Look for '123456789' in the DIR column and replace with numeric value"))
+    cli::cli_end()
+    
+    cli::cli_abort(c("Correction file NOT found!: follow the ℹ INSTRUCTIONS alert in the Console"))
+    
   }
   
   
