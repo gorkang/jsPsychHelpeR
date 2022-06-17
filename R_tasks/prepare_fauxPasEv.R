@@ -286,8 +286,9 @@ prepare_fauxPasEv <- function(DF_clean, short_name_scale_str) {
   
   uncorrected_responses = nrow(DF_manual_correction %>% filter(DIR == 123456789))
   if (uncorrected_responses > 0) cli::cli_abort(c("Responses not corrected: follow the ℹ INSTRUCTIONS alert in the Console\n",
-                                                  "- In the meantime, for the pipeline to run, you can go to _targets.R and comment the line starting with:\n",
-                                                  "  tar_target(df_fauxPasEv, prepare_fauxPasEv(..."))
+                                                  "- In the meantime, for the pipeline to run, you can go to _targets.R and comment the following lines:\n",
+                                                  "- line starting with: tar_target(df_fauxPasEv, prepare_fauxPasEv(...\n",
+                                                  "- df_fauxPasEv line in create_joined() function"))
   
   
   # Add manual correction file back ---

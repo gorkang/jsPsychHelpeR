@@ -8,7 +8,6 @@ editor_options:
 params:
   last_task: ""
   pid_report: 0
-
 ---
 
 ```{r setup, include=FALSE}
@@ -29,10 +28,10 @@ DF = DF_clean
 ```
 
 ```{r plot_form_progress, include=FALSE}
-  
-plot_form_progress = show_progress_pid(pid = params$pid_report, files_vector = DF_clean$filename, last_task = params$last_task, goal = 500)$PLOT_progress
-
-ggsave(here::here("outputs/plots/plot_form_progress.png"), plot_form_progress, width = 15, height = 9)
+# Plot created in report_PROGRESS.Rmd
+# plot_form_progress = show_progress_pid(pid = params$pid_report, files_vector = DF_clean$filename, last_task = params$last_task, goal = 500)$PLOT_progress
+# 
+# ggsave(here::here("outputs/plots/plot_form_progress.png"), plot_form_progress, width = 15, height = 9, bg = "white")
   
 ```
 

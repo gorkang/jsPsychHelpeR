@@ -78,7 +78,7 @@ DT::datatable(DF$DF_progress,
 
 DF$PLOT_progress
 
-ggsave(here::here(paste0("outputs/plots/plot_", params$pid_report, "_progress.png")), DF$PLOT_progress, width = 16, height = 10)
+ggsave(here::here(paste0("outputs/plots/plot_", params$pid_report, "_progress.png")), DF$PLOT_progress, width = 16, height = 10, bg = "white")
   
 ```
 
