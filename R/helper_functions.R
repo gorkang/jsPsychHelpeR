@@ -138,7 +138,7 @@ check_NAs <- function(DF_joined) {
   if (ncol(DF_CHECK_NA) == 2) {
 
     # Check we have the same number of NAs in RAW and PROC DFs
-    if (!identical(DF_CHECK_NA[[1]], DF_CHECK_NA[[2]])) stop("Missing data when processing RAW responses")
+    if (!identical(DF_CHECK_NA[[1]], DF_CHECK_NA[[2]])) cli::cli_abort(c("Missing data when processing RAW responses:", "-{colnames(DF_CHECK_NA)} have different values"))
 
     # [REWIEW]: Other ways to check equality
     # all(DF_CHECK_NA[1] == DF_CHECK_NA[2])
@@ -146,7 +146,7 @@ check_NAs <- function(DF_joined) {
 
   } else {
 
-    cat(crayon::blue("\n  - Can't perform NA check, DF does not have RAW_NA and DIR_NA columns\n"))
+    cli::cli_alert_danger("\n  - Can't perform NA check, DF does not have RAW_NA and DIR_NA columns\n")
 
   }
 
