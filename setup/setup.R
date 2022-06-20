@@ -6,16 +6,7 @@
 # Make sure all packages are present --------------------------------------
 
   if (!require('rlang')) install.packages('rlang'); library('rlang')
-  if (!require('targets')) install.packages('targets'); library('targets')
-  if (!require('tarchetypes')) install.packages('tarchetypes'); library('tarchetypes')
-  if (!require('rmarkdown')) install.packages('rmarkdown'); library('rmarkdown')
-
-
-# REVIEW: This solves the renv error without needing to tar_destroy()?
-# if (file.exists("_targets_packages.R")) {
-# } else {
-#   cli::cli_abort("RUN `targets::tar_renv()` in the console before proceeding")
-# }
+  rlang::check_installed(c("targets", "tarchetypes", "rmarkdown"), reason = "to run the initial {jsPsychHelpeR} setup")
 
   # Create _targets_packages and read all dependencies
   targets::tar_destroy(ask = FALSE) # To avoid tar_renv() error
@@ -23,7 +14,7 @@
   packages_renv = gsub("library\\(|\\)", "", readLines("_targets_packages.R")[-1])
   
   # Asks user before installing all packages missing (if any)
-  rlang::check_installed(packages_renv, reason = "for jsPsychHelpeR to work") 
+  rlang::check_installed(packages_renv, reason = "for {jsPsychHelpeR} to work") 
   
   # If you have issues with DT::datables()
   if (webshot::is_phantomjs_installed() == FALSE) webshot::install_phantomjs()
@@ -39,7 +30,7 @@
   invisible(file.remove(list.files("outputs", pattern = "*", full.names = TRUE, recursive = TRUE)))
 
 
-# Make sure all the necessary folders exist -----------------------------
+# Make sure all the necessary folders exist -------------------------------
   
   necessary_folders = c("data/manual_correction", "outputs/backup", "outputs/data", "outputs/plots", "outputs/reliability", "outputs/reports", "outputs/tables", "outputs/tests_outputs", 
                         ".vault/data_vault", ".vault/Rmd", ".vault/outputs/data", ".vault/outputs/reports")
