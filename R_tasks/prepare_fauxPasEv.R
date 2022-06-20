@@ -207,9 +207,9 @@ prepare_fauxPasEv <- function(DF_clean, short_name_scale_str) {
   
   # CHECK output file
   if (file.exists(here::here(manual_correction_output))) {
-    cli::cli_alert_info(c("'{manual_correction_output}' already exists, OVERWIRITING"))
+    cli::cli_alert_info(cli::col_none(c("OVERWIRITING '{manual_correction_output}'")))
   } else {
-    cli::cli_alert_info(c("Creating '{manual_correction_output}'"))
+    cli::cli_alert_info(cli::col_none(c("Creating '{manual_correction_output}'")))
   }
   
   # Create file
@@ -220,9 +220,9 @@ prepare_fauxPasEv <- function(DF_clean, short_name_scale_str) {
   
   # Read manual correction file ---
   if (file.exists(manual_correction_input)) {
-    cli::cli_par()
-    cli::cli_alert_info("Manual correction of fauxPas already exists")
-    cli::cli_end()
+    # cli::cli_par()
+    cli::cli_alert_success(cli::col_none("CHECK 1 OK | Manual correction of fauxPas already exists in '{manual_correction_input}'"))
+    # cli::cli_end()
     
     DF_manual_correction = readxl::read_excel(here::here("data/manual_correction/fauxPasEv_manual_correction.xlsx")) 
     nrow_output = nrow(readxl::read_excel(manual_correction_output))
@@ -234,17 +234,18 @@ prepare_fauxPasEv <- function(DF_clean, short_name_scale_str) {
     if(nrow_output == nrow_input) {
       
       cli::cli_par()
-      cli::cli_alert("CHECK 1 OK: manual correction and RAW data have the same number of rows")  
+      cli::cli_alert_success(cli::col_none("CHECK 2 OK | manual correction and RAW data have the same number of rows"))
       # Show n of uncorrected rows
-      if (nrow_uncorrected > 0) cli::cli_alert_danger(paste0("CHECK 2 WARNING | manual correction has {nrow_uncorrected} uncorrected rows (DIR == 123456789) || ", cli::bg_green('YOU NEED TO FIX THIS'), " ||"))
+      if (nrow_uncorrected > 0) cli::cli_alert_danger(paste0("CHECK 3 WARNING | manual correction has {nrow_uncorrected} uncorrected rows (DIR == 123456789) || ", cli::bg_green('YOU NEED TO FIX THIS'), " ||"))
       cli::cli_end()
-      
+
+      cli::cli_h1(text = "INSTRUCTIONS")
       cli::cli_par()
-      cli::cli_alert_info(c("INSTRUCTIONS to manually correct responses:\n",
+      cli::cli_alert_info(c("To manually correct responses:\n",
                             "1) Open file: '{manual_correction_input}'\n", 
                             "2) Look for '123456789' in the DIR column and replace with numeric value"))
       cli::cli_end()
-      
+      cli::cli_h1(text = "")
       
     } else {
       
@@ -252,6 +253,7 @@ prepare_fauxPasEv <- function(DF_clean, short_name_scale_str) {
       cli::cli_alert_danger(paste0("ERROR | manual correction and RAW data **DO NOT HAVE** the same number of rows || ", cli::bg_green('You need to FIX THIS to continue'), " ||"))
       cli::cli_end()
       
+      cli::cli_h1(text = "INSTRUCTIONS")
       cli::cli_par()
       cli::cli_alert_info(c("INSTRUCTIONS to fix issue with the manual correction file.\n",
                             "1) Compare '{manual_correction_output}' with '{manual_correction_input}'\n", 
@@ -259,6 +261,8 @@ prepare_fauxPasEv <- function(DF_clean, short_name_scale_str) {
                             "3) manually correct responses in '{manual_correction_input}'\n",
                             "- Look for '123456789' in the DIR column and replace with numeric value"))
       cli::cli_end()
+      cli::cli_h1(text = "")
+      
       
       cli::cli_abort(c("Correction file has different number of rows than the RAW data follow the ℹ INSTRUCTIONS alert in the Console"))
     }
@@ -267,17 +271,20 @@ prepare_fauxPasEv <- function(DF_clean, short_name_scale_str) {
     
   } else {
     cli::cli_par()
-    cli::cli_alert_danger(c("ERROR | manual correction file '{manual_correction_input}' DOES NOT EXIST || {cli::bg_green('You need to FIX THIS to continue')} ||"))
+    cli::cli_alert_danger(c("ERROR | manual correction file '{manual_correction_input}' DOES NOT EXIST || {cli::bg_green('You need to FIX THIS')} ||"))
     cli::cli_end()
     
+    cli::cli_h1(text = "INSTRUCTIONS")
     cli::cli_par()
     cli::cli_alert_info(c("INSTRUCTIONS to create the manual correction file.\n",
                           "1) Copy '{manual_correction_output}' to '{manual_correction_input}'\n", 
                           "2) manually correct responses in '{manual_correction_input}'\n",
                           "- Look for '123456789' in the DIR column and replace with numeric value"))
     cli::cli_end()
+    cli::cli_h1(text = "")
     
-    cli::cli_abort(c("Correction file NOT found!: follow the ℹ INSTRUCTIONS alert in the Console"))
+    
+    cli::cli_abort(c("Correction file NOT found!: follow the INSTRUCTIONS alert in the Console"))
     
   }
   
@@ -285,11 +292,12 @@ prepare_fauxPasEv <- function(DF_clean, short_name_scale_str) {
   # CHECKS ---
   
   uncorrected_responses = nrow(DF_manual_correction %>% filter(DIR == 123456789))
-  if (uncorrected_responses > 0) cli::cli_abort(c("Responses not corrected: follow the ℹ INSTRUCTIONS alert in the Console\n",
+  if (uncorrected_responses > 0) {
+    cli::cli_abort(c("Responses not corrected: follow the INSTRUCTIONS alert in the Console\n",
                                                   "- In the meantime, for the pipeline to run, you can go to _targets.R and comment the following lines:\n",
                                                   "- line starting with: tar_target(df_fauxPasEv, prepare_fauxPasEv(...\n",
                                                   "- df_fauxPasEv line in create_joined() function"))
-  
+  }
   
   # Add manual correction file back ---
   
@@ -301,6 +309,7 @@ prepare_fauxPasEv <- function(DF_clean, short_name_scale_str) {
     bind_rows(DF_manual_correction)
   
   # ****************************************************************************
+  
   
 
   # Create DF_wide_RAW_DIR -----------------------------------------------------
