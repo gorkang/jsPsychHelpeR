@@ -383,7 +383,142 @@ prepare_helper <- function(DF_long_RAW, show_trialid_questiontext = FALSE) {
 }
 
 
+#' get_dimensions_googledoc
+#' Get information from the main jsPsychR GoogleSheet to help creating a new task
+#'
+#' @param short_name_text 
+#'
+#' @return
+#' @export
+#'
+#' @examples
+get_dimensions_googledoc <- function(short_name_text) {
+  
+  
+  # READ google sheet -------------------------------------------------------
+  
+  cli::cli_h1("Reading https://docs.google.com/spreadsheets/d/1LAsyTZ2ZRP_xLiUBkqmawwnKWgy8OCwq4mmWrrc_rpQ/edit#gid=0")
+  
+  googlesheets4::gs4_auth("gorkang@gmail.com")
+  DF_dimensions = googlesheets4::read_sheet("1LAsyTZ2ZRP_xLiUBkqmawwnKWgy8OCwq4mmWrrc_rpQ", sheet = 5, skip = 0) %>% 
+    rename(short_name = `Código Test`) %>% 
+    # filter(short_name != "short_name: NO debe contener espacios ni caracteres extraños :)") %>% 
+    # arrange(short_name) %>% 
+    # select(short_name, Nombre, Descripcion) %>% 
+    tidyr::drop_na(short_name) %>% 
+    filter(short_name == short_name_text) %>% 
+    janitor::clean_names()
+  
+  
+  DF_items = googlesheets4::read_sheet("1LAsyTZ2ZRP_xLiUBkqmawwnKWgy8OCwq4mmWrrc_rpQ", sheet = 4, skip = 0) %>% 
+    rename(short_name = `Código Test`) %>% 
+    # filter(short_name != "short_name: NO debe contener espacios ni caracteres extraños :)") %>% 
+    # arrange(short_name) %>% 
+    # select(short_name, Nombre, Descripcion) %>% 
+    tidyr::drop_na(short_name) %>% 
+    filter(short_name == short_name_text) %>% 
+    janitor::clean_names()
+  
+  
 
+  # CHECK -------------------------------------------------------------------
+  if (nrow(DF_dimensions) == 0 & nrow(DF_items) == 0) {
+    cli::cli_h1("WARNING")
+    cli::cli_alert_danger("{short_name_text} is not in the Google Doc")
+  }
+
+    
+  
+  
+  # Items invertidos --------------------------------------------------------
+  
+  if (nrow(DF_items) > 0) {
+    
+    cli::cli_h1("Items invertidos")
+    NUMBERS_inverse = stringi::stri_extract_all(str = DF_items["items_invertidos"] %>% pull(items_invertidos) %>% unlist(), regex = "[0-9]{1,3}") %>% unlist() %>% as.numeric()
+    NUMBERS_inverse_formatted = sprintf("%02d", NUMBERS_inverse)
+    
+    paste0('items_to_reverse = c("', paste(NUMBERS_inverse_formatted, collapse = '", "'), '")\n') %>% cat()
+  
+  }
+  
+  # Dimensiones -------------------------------------------------------------
+  
+  if (nrow(DF_dimensions) > 0) {
+    
+    cli::cli_h1("Dimensiones")
+    NAMES_dimensions_CamelCase = janitor::make_clean_names(DF_dimensions %>% pull(nombre_dimension), case = "big_camel")
+    
+    paste0('names_dimensions = c("', 
+           paste(NAMES_dimensions_CamelCase, collapse = '", "'),
+           '")') %>% cat()
+    
+    
+    
+      ## Items dimensiones -------------------------------------------------------
+      
+      cli::cli_par()
+      cli::cli_text("") 
+      cli::cli_h2("Items Dimensiones")
+      cli::cli_end()
+      
+      # For each of the rows in the google doc
+      1:nrow(DF_dimensions) %>% 
+        walk(~
+               {
+                 numbers_RAW = DF_dimensions[.x,"numero_item_dimension_o_sub_escala"] %>% pull(numero_item_dimension_o_sub_escala)
+                 
+                 # Get chunks of numbers (separated by "," or ", ")
+                 numbers_chunks = stringi::stri_extract_all(str = gsub(",|, ", ",", numbers_RAW), regex = "[0-9]{1,3},|[0-9]{1,3}-[0-9]{1,3}|[0-9]{1,3}$") %>% unlist() %>% gsub(",", "", .)
+                 
+                 # For each of the chunks in numero_item_dimension_o_sub_escala
+                 NUMBERS = 1:length(numbers_chunks) %>% 
+                   map(~ 
+                         {
+                           # If there is a "-" create sequence
+                           if (grepl("-", numbers_chunks[.x])) {
+                             do.call(what = "seq", args = as.list(stringi::stri_extract_all(numbers_chunks[.x], regex = "[0-9]{1,3}", simplify = FALSE) %>% unlist() %>% as.numeric()))
+                           } else {
+                             as.numeric(numbers_chunks[.x])
+                           }
+                         }
+                   ) %>% unlist()
+                 
+                 NUMBERS_formatted = sprintf("%02d", NUMBERS)
+                 
+                 paste0('items_DIRd', .x,' = c("', paste(NUMBERS_formatted, collapse = '", "'),
+                        '")\n') %>% cat()
+                 
+               })
+      
+      cli::cli_par()
+      cli::cli_text("") 
+      cli::cli_h2("Calculo Dimensiones")
+      
+      cli::cli_end()
+      
+      1:nrow(DF_dimensions) %>% 
+        walk(~
+               {
+                 calculo_dimension_RAW = DF_dimensions[.x, "calculo_dimension"] %>% pull(calculo_dimension)
+                 # cli::cli_alert_info(calculo_dimension_RAW)
+                 if (tolower(calculo_dimension_RAW) %in% c("promedio", "media", "mean")) {
+                   string_function = "rowMeans"
+                 } else if (tolower(calculo_dimension_RAW) %in% c("suma", "sumatorio", "sumatoria")){
+                   string_function = "rowSums"
+                 } else {
+                   cli::cli_alert_danger("calculo_dimension is '{calculo_dimension_RAW}', but we only know how to work with either 'promedio' or 'suma'")
+                   string_function = calculo_dimension_RAW
+                 }
+    
+                 # !!name_DIRd1 := rowMeans(select(., paste0(short_name_scale_str, "_", items_DIRd1, "_DIR")), na.rm = TRUE), 
+                 paste0('!!name_DIRd', .x, ' := ', string_function, '(select(., paste0(short_name_scale_str, "_", items_DIRd', .x, ', "_DIR")), na.rm = TRUE),\n') %>% cat()
+                 
+               })
+  }    
+  
+  
+}
 
 #' create_new_task
 #' Create a new prepare_TASK.R file from prepare_TEMPLATE.R replacing TEMPLATE by the short name of the new task
@@ -395,17 +530,17 @@ prepare_helper <- function(DF_long_RAW, show_trialid_questiontext = FALSE) {
 #' @export
 #'
 #' @examples
-create_new_task <- function(short_name_task, overwrite = FALSE) {
+create_new_task <- function(short_name_task, overwrite = FALSE, get_dimensions_googledoc = FALSE) {
 
   # DEBUG
-  # short_name_task = "PSS"
+  # short_name_task = "DELETEME"
   # overwrite = FALSE
 
   # Create file ---
   new_task_file = paste0("R_tasks/prepare_", short_name_task ,".R")
 
   if (!file.exists(new_task_file) | overwrite == TRUE) {
-    cat(crayon::green("\nCreating new file: ", crayon::silver(new_task_file), "\n"))
+    cli::cli_alert_info(c("\nCreating new file: ", crayon::silver(new_task_file), "\n"))
     file.copy("R_tasks/prepare_TEMPLATE.R", new_task_file, overwrite = overwrite)
 
 
@@ -418,19 +553,42 @@ create_new_task <- function(short_name_task, overwrite = FALSE) {
     cat(crayon::yellow("\nFile ", crayon::silver(new_task_file), " already exists. Not overwriting\n"))
   }
 
-  # Line to add in _targets.R
+  
+  
+
+  # get_dimensions_googledoc ------------------------------------------------
+
+    if (get_dimensions_googledoc == TRUE) {
+      get_dimensions_googledoc(short_name_text = short_name_task)
+    }
+  
+
+  # Openfile
+  rstudioapi::navigateToFile(new_task_file)
+  
+  
+  # OUTPUT ------------------------------------------------------------------
+
+    # Line to add in _targets.R
   short_name_old = short_name_task
 
-
   # Output messages ---
-  cat(crayon::green("\nLine for _targets.R: \n"))
+  cli::cli_h1("ADD the following lines to _targets.R")
   cat(paste0('tar_target(df_', short_name_task, ', prepare_', short_name_task, '(DF_clean, short_name_scale_str = "', short_name_old, '")),\n'))
   cat(crayon::green("\nDON'T FORGET TO ADD", crayon::silver(paste0("df_", short_name_task)), "to create_joined() in _targets.R:", crayon::silver("create_joined(..., ", paste0("df_", short_name_task, ")\n\n"))))
 
 }
 
 
-# Create an OR vector for the grepl() and other functions. From c(1,2) to "1|2"
+#' create_vector_items
+#' Create an OR vector for the grepl() and other functions. From c(1,2) to "1|2"
+#'
+#' @param VECTOR 
+#'
+#' @return
+#' @export
+#'
+#' @examples
 create_vector_items <- function(VECTOR) {
   # VECTOR = c( 5, 9, 14, 16, 18)
   cat(paste(sprintf("%02d", VECTOR), collapse = "|"))
