@@ -1,12 +1,7 @@
-##' Prepare FDMQ
+##' Prepare MDMQ
+##' It was mistakenly named FDMQ before
 ##'
-##' Template for the functions to prepare specific tasks. Most of this file should not be changed
-##' Things to change: 
-##'   - Name of function: prepare_FDMQ -> prepare_[value of short_name_scale_str] 
-##'   - dimensions parameter in standardized_names()
-##'   - 2 [ADAPT] chunks
-##'
-##' @title prepare_FDMQ
+##' @title prepare_MDMQ
 ##'
 ##' @param short_name_scale_str 
 ##' @param DF_clean
@@ -14,10 +9,10 @@
 ##' @return
 ##' @author gorkang
 ##' @export
-prepare_FDMQ <- function(DF_clean, short_name_scale_str) {
+prepare_MDMQ <- function(DF_clean, short_name_scale_str) {
 
   # DEBUG
-  # debug_function(prepare_FDMQ)
+  # debug_function(prepare_MDMQ)
 
   
   # [ADAPT]: Items to ignore, reverse and dimensions ---------------------------------------
