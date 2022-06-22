@@ -58,11 +58,9 @@ check_missing_prepare_TASK <- function(sync_protocols = FALSE, check_trialids = 
   missing_script = DF_tasks$task[!DF_tasks$task %in% DF_scripts$script]
   
   # DF
-  DF_missing_script = DF_tasks %>% filter(task %in% missing_tasks) %>% arrange(task)
+  DF_missing_script = DF_tasks %>% filter(task %in% missing_script) %>% arrange(task)
  
-#   # List
-#   missing_tasks = DF_tasks %>% filter(task %in% missing_tasks) %>% arrange(task) %>% pull(task) %>% cat()
-
+  
 
   # Google doc --------------------------------------------------------------
 
@@ -125,8 +123,16 @@ check_missing_prepare_TASK <- function(sync_protocols = FALSE, check_trialids = 
 
   # OUTPUT ------------------------------------------------------------------
 
+  DF_FINAL = 
+    DF_tasks %>% 
+    full_join(DF_missing_script %>% mutate(missing_script = task) %>% select(-protocols), by = c("task")) %>% 
+    left_join(DF_missing_googledoc %>% mutate(missing_googledoc = task) %>% select(-protocols), by = c("task")) %>% 
+    select(task, starts_with("missing"), everything())
+  
+
   OUTPUT = 
-    list(DF_missing_script = DF_missing_script,
+    list(DF_FINAL = DF_FINAL,
+         DF_missing_script = DF_missing_script,
          DF_missing_googledoc = DF_missing_googledoc)
   
   return(OUTPUT)
