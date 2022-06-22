@@ -1,5 +1,5 @@
 # Standalone function to Download/Upload files from server to local folder or vice-versa
-sync_server_local <- function(server_folder, local_folder, direction, only_test = TRUE, exclude_csv = FALSE) {
+sync_server_local <- function(server_folder, local_folder, direction, only_test = TRUE, exclude_csv = FALSE, delete_nonexistent = FALSE) {
   
   # DEBUG
   # server_folder = "test/FONDECYT2021/"
@@ -8,6 +8,9 @@ sync_server_local <- function(server_folder, local_folder, direction, only_test 
   # only_test = TRUE
   # exclude_csv = TRUE
   
+
+  # Parameters --------------------------------------------------------------
+
   if (only_test == TRUE) {
     extra_message = paste0(cli::col_red("THIS IS A dry-run"))
     dry_run = " --dry-run "
@@ -22,6 +25,14 @@ sync_server_local <- function(server_folder, local_folder, direction, only_test 
   } else {
     exclude_files = ""
   }
+  
+  if (delete_nonexistent) {
+    delete_nonexistent_files = " --delete "
+  } else {
+    delete_nonexistent_files = ""
+  }
+  
+  
   
   
   local_folder = normalizePath(here::here(local_folder))
@@ -38,10 +49,12 @@ sync_server_local <- function(server_folder, local_folder, direction, only_test 
     if (SSHPASS != "" & RSYNC != "") { 
       # cli::cli_text(cli::col_green("{cli::symbol$tick} "), "All is well.")
     } else {
-      cli::cli_text(cli::col_red("{cli::symbol$cross} "), "'sshpass' or 'rsync' not installed. Can't use `sync_server_local()`")
+      cli::cli_alert_danger("'sshpass' or 'rsync' not installed. Can't use `sync_server_local()`")
+      # cli::cli_text(cli::col_red("{cli::symbol$cross} "), "'sshpass' or 'rsync' not installed. Can't use `sync_server_local()`")
     }
   } else {
-    cli::cli_text(cli::col_red("{cli::symbol$cross} "), "Can find server credentials in '.vault/.credentials'")
+    cli::cli_alert_danger("Can't find server credentials in '.vault/.credentials'")
+    # cli::cli_text(cli::col_red("{cli::symbol$cross} "), "Can't find server credentials in '.vault/.credentials'")
   }
   
   
@@ -57,6 +70,8 @@ sync_server_local <- function(server_folder, local_folder, direction, only_test 
     stop()
   }
   
+  
+  cli::cli_h1("sync {direction} | delete_nonexistent {delete_nonexistent}")
   out <- utils::menu(c("yes", "no"), title = cat(message_text))
   
   
@@ -73,7 +88,8 @@ sync_server_local <- function(server_folder, local_folder, direction, only_test 
       # DOWNLOAD server to local
       system(
         paste0('sshpass -p ', list_credentials$value$password, ' rsync -av ', dry_run, ' --rsh=ssh ', 
-               exclude_files,
+               delete_nonexistent_files, # Delete files from destination if they are NOT in origin anymore
+               exclude_files, # exclude CSV files
                list_credentials$value$user, "@", list_credentials$value$IP, ":", list_credentials$value$main_FOLDER, server_folder, '/ ',
                here::here(local_folder_terminal), '/ '
         )
@@ -93,7 +109,8 @@ sync_server_local <- function(server_folder, local_folder, direction, only_test 
     }
     
   } else {
-    cat(crayon::green("Not doing anything..."))
+    # cat(crayon::green("Not doing anything..."))
+    cli::cli_alert_success("Not doing anything...")
   }
   
 }
