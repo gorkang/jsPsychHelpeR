@@ -1,4 +1,4 @@
-##' Prepare DEMOGRsensitive
+##' Prepare DEMOGR3
 ##'
 ##' Template for the functions to prepare specific tasks. Most of this file should not be changed
 ##' Things to change: 
@@ -6,7 +6,7 @@
 ##'   - dimensions parameter in standardized_names()
 ##'   - 2 [ADAPT] chunks
 ##'
-##' @title prepare_DEMOGRsensitive
+##' @title prepare_DEMOGR3
 ##'
 ##' @param short_name_scale_str 
 ##' @param DF_clean
@@ -14,10 +14,10 @@
 ##' @return
 ##' @author gorkang
 ##' @export
-prepare_DEMOGRsensitive <- function(short_name_scale_str) {
+prepare_DEMOGR3 <- function(short_name_scale_str) {
 
   # DEBUG
-  # debug_function(prepare_DEMOGRsensitive)
+  # debug_function(prepare_DEMOGR3)
 
   
 
