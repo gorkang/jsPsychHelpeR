@@ -1,12 +1,12 @@
-##' Prepare FORM
+##' Prepare FORM4
 ##'
 ##' Template for the functions to prepare specific tasks. Most of this file should not be changed
 ##' Things to change: 
-##'   - Name of function: prepare_FORM -> prepare_[value of short_name_scale_str] 
+##'   - Name of function: prepare_FORM4 -> prepare_[value of short_name_scale_str] 
 ##'   - dimensions parameter in standardized_names()
 ##'   - 2 [ADAPT] chunks
 ##'
-##' @title prepare_FORM
+##' @title prepare_FORM4
 ##'
 ##' @param short_name_scale_str 
 ##' @param DF_clean
@@ -14,10 +14,10 @@
 ##' @return
 ##' @author gorkang
 ##' @export
-prepare_FORM <- function(DF_clean_form, short_name_scale_str) {
+prepare_FORM4 <- function(DF_clean_form, short_name_scale_str) {
 
   # DEBUG
-  # debug_function(prepare_FORM)
+  # debug_function(prepare_FORM4)
 
   
   # Standardized names ------------------------------------------------------
@@ -51,11 +51,11 @@ prepare_FORM <- function(DF_clean_form, short_name_scale_str) {
   
     # [ADAPT]: RAW to DIR for individual items -----------------------------------
     # ****************************************************************************
-    # 1 FORM_01 Indica tu edad                                    
-    # 2 FORM_02 Indica tu género                                  
-    # 3 FORM_03 Indica tu correo electrónico personal             
-    # 4 FORM_04 ¿Alguna vez has tenido un parto vaginal o cesarea?
-    # 5 FORM_05 ¿Quieres tener hijos en el futuro?                
+    # 1 FORM4_01 Indica tu edad                                    
+    # 2 FORM4_02 Indica tu género                                  
+    # 3 FORM4_03 Indica tu correo electrónico personal             
+    # 4 FORM4_04 ¿Alguna vez has tenido un parto vaginal o cesarea?
+    # 5 FORM4_05 ¿Quieres tener hijos en el futuro?                
     
     
     
@@ -63,17 +63,17 @@ prepare_FORM <- function(DF_clean_form, short_name_scale_str) {
     mutate(
       DIR =
         case_when(
-          trialid == "FORM_01" ~ RAW,
+          trialid == "FORM4_01" ~ RAW,
           
-          trialid == "FORM_02" & RAW == "Masculino" ~ "0",
-          trialid == "FORM_02" & RAW == "Femenino" ~ "1",
-          trialid == "FORM_02" & RAW == "No binario" ~ "0",
+          trialid == "FORM4_02" & RAW == "Masculino" ~ "0",
+          trialid == "FORM4_02" & RAW == "Femenino" ~ "1",
+          trialid == "FORM4_02" & RAW == "No binario" ~ "0",
           
-          trialid == "FORM_03" ~ RAW,
+          trialid == "FORM4_03" ~ RAW,
           
-          trialid == "FORM_04" ~ RAW,
+          trialid == "FORM4_04" ~ RAW,
           
-          trialid == "FORM_05" ~ RAW,
+          trialid == "FORM4_05" ~ RAW,
 
           is.na(RAW) ~ NA_character_,
           grepl(items_to_ignore, trialid) ~ NA_character_,
