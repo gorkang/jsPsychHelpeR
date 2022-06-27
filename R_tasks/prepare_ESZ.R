@@ -43,7 +43,7 @@ prepare_ESZ <- function(DF_clean, short_name_scale_str) {
   DF_long_RAW = create_raw_long(DF_clean, short_name_scale = short_name_scale_str, numeric_responses = FALSE, is_experiment = FALSE)
   
   # Show number of items, responses, etc. [uncomment to help prepare the test] 
-  prepare_helper(DF_long_RAW, show_trialid_questiontext = TRUE)
+  # prepare_helper(DF_long_RAW, show_trialid_questiontext = TRUE)
   
   
   # Create long DIR ------------------------------------------------------------
@@ -55,19 +55,22 @@ prepare_ESZ <- function(DF_clean, short_name_scale_str) {
     
   # [ADAPT]: RAW to DIR for individual items -----------------------------------
   # ****************************************************************************
-  
+
     # Transformations
     mutate(
       DIR =
         case_when(
-          RAW == "Nunca" ~ 1,
-          RAW == "Poco" ~ 2,
-          RAW == "Medianamente" ~ 3,
-          RAW == "Bastante" ~ 4,
-          RAW == "Mucho" ~ 5,
+          trialid %in% c("ESZ_01", "ESZ_02", "ESZ_03", "ESZ_04", "ESZ_05", "ESZ_06") & RAW == "Nunca" ~ 1,
+          trialid %in% c("ESZ_01", "ESZ_02", "ESZ_03", "ESZ_04", "ESZ_05", "ESZ_06") & RAW == "Rara Vez" ~ 2,
+          trialid %in% c("ESZ_01", "ESZ_02", "ESZ_03", "ESZ_04", "ESZ_05", "ESZ_06") & RAW == "Algunas veces" ~ 3,
+          trialid %in% c("ESZ_01", "ESZ_02", "ESZ_03", "ESZ_04", "ESZ_05", "ESZ_06") & RAW == "Casi siempre" ~ 4,
+          trialid %in% c("ESZ_01", "ESZ_02", "ESZ_03", "ESZ_04", "ESZ_05", "ESZ_06") & RAW == "Siempre" ~ 5,
+          
+          trialid %in% c("ESZ_07") ~ as.numeric(RAW),
+          
           is.na(RAW) ~ NA_real_,
           grepl(items_to_ignore, trialid) ~ NA_real_,
-          TRUE ~ as.numeric(RAW)
+          TRUE ~ 9999
         )
     ) %>% 
     

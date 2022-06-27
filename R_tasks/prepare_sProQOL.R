@@ -61,11 +61,13 @@ prepare_sProQOL <- function(DF_clean, short_name_scale_str) {
     mutate(
       DIR =
         case_when(
-          RAW == "Nunca" ~ 1,
-          RAW == "Poco" ~ 2,
-          RAW == "Medianamente" ~ 3,
-          RAW == "Bastante" ~ 4,
-          RAW == "Mucho" ~ 5,
+          trialid %in% c("sProQOL_01", "sProQOL_02", "sProQOL_03", "sProQOL_04", "sProQOL_05", "sProQOL_06", "sProQOL_07", "sProQOL_08", "sProQOL_09") & RAW == "Nunca" ~ 0,
+          trialid %in% c("sProQOL_01", "sProQOL_02", "sProQOL_03", "sProQOL_04", "sProQOL_05", "sProQOL_06", "sProQOL_07", "sProQOL_08", "sProQOL_09") & RAW == "Rara Vez" ~ 1,
+          trialid %in% c("sProQOL_01", "sProQOL_02", "sProQOL_03", "sProQOL_04", "sProQOL_05", "sProQOL_06", "sProQOL_07", "sProQOL_08", "sProQOL_09") & RAW == "Algunas veces" ~ 2,
+          trialid %in% c("sProQOL_01", "sProQOL_02", "sProQOL_03", "sProQOL_04", "sProQOL_05", "sProQOL_06", "sProQOL_07", "sProQOL_08", "sProQOL_09") & RAW == "Con alguna frecuencia" ~ 3,
+          trialid %in% c("sProQOL_01", "sProQOL_02", "sProQOL_03", "sProQOL_04", "sProQOL_05", "sProQOL_06", "sProQOL_07", "sProQOL_08", "sProQOL_09") & RAW == "Casi siempre" ~ 4,
+          trialid %in% c("sProQOL_01", "sProQOL_02", "sProQOL_03", "sProQOL_04", "sProQOL_05", "sProQOL_06", "sProQOL_07", "sProQOL_08", "sProQOL_09") & RAW == "Siempre" ~ 5,
+          
           is.na(RAW) ~ NA_real_,
           grepl(items_to_ignore, trialid) ~ NA_real_,
           TRUE ~ 9999
