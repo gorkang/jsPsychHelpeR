@@ -392,14 +392,16 @@ prepare_helper <- function(DF_long_RAW, show_trialid_questiontext = FALSE) {
 #' @export
 #'
 #' @examples
-get_dimensions_googledoc <- function(short_name_text) {
+get_dimensions_googledoc <- function(short_name_text, google_username = "gorkang@gmail.com") {
   
+  # DEBUG
+  # short_name_text = "ESZ"
   
   # READ google sheet -------------------------------------------------------
   
   cli::cli_h1("Reading https://docs.google.com/spreadsheets/d/1LAsyTZ2ZRP_xLiUBkqmawwnKWgy8OCwq4mmWrrc_rpQ/edit#gid=0")
   
-  googlesheets4::gs4_auth("gorkang@gmail.com")
+  googlesheets4::gs4_auth(google_username)
   DF_dimensions = googlesheets4::read_sheet("1LAsyTZ2ZRP_xLiUBkqmawwnKWgy8OCwq4mmWrrc_rpQ", sheet = 5, skip = 0) %>% 
     rename(short_name = `Código Test`) %>% 
     # filter(short_name != "short_name: NO debe contener espacios ni caracteres extraños :)") %>% 
@@ -429,18 +431,66 @@ get_dimensions_googledoc <- function(short_name_text) {
 
     
   
-  
-  # Items invertidos --------------------------------------------------------
-  
-  if (nrow(DF_items) > 0) {
+
+  # ITEMS -------------------------------------------------------------------
+
+    if (nrow(DF_items) > 0) {
+      
+      ## Items invertidos -----------------------------------------------------
+      
+      cli::cli_h1("Items invertidos")
+      
+      # For each of the rows in the google doc
+      1:nrow(DF_items) %>% 
+        walk(~
+               {
+                 #.x = 1
+                 numbers_RAW = DF_items[.x,"items_invertidos"] %>% pull(items_invertidos)
+                 
+                 # Extract numbers from cell with individual numbers and intervals as (1-7)
+                 NUMBERS_formatted = create_number_series(numbers_RAW)
+                 
+                 # Create R vector
+                 paste0('items_to_reverse = c("', paste(NUMBERS_formatted, collapse = '", "'),
+                        '")\n') %>% cat()
+               })
+      # NUMBERS_inverse = stringi::stri_extract_all(str = DF_items["items_invertidos"] %>% pull(items_invertidos) %>% unlist(), regex = "[0-9]{1,3}") %>% unlist() %>% as.numeric()
+      # NUMBERS_inverse_formatted = sprintf("%02d", NUMBERS_inverse)
+      # paste0('items_to_reverse = c("', paste(NUMBERS_inverse_formatted, collapse = '", "'), '")\n') %>% cat()
     
-    cli::cli_h1("Items invertidos")
-    NUMBERS_inverse = stringi::stri_extract_all(str = DF_items["items_invertidos"] %>% pull(items_invertidos) %>% unlist(), regex = "[0-9]{1,3}") %>% unlist() %>% as.numeric()
-    NUMBERS_inverse_formatted = sprintf("%02d", NUMBERS_inverse)
-    
-    paste0('items_to_reverse = c("', paste(NUMBERS_inverse_formatted, collapse = '", "'), '")\n') %>% cat()
-  
-  }
+      
+    ## Conversion numerica --------------------------------------------------
+      
+      cli::cli_h1("Conversion numérica")
+      
+      short_name = DF_items[.x,"short_name"] %>% pull(short_name)
+      
+      # For each of the rows in the google doc
+      1:nrow(DF_items) %>%
+        walk(~
+               {
+                 
+                 cli::cli_text()
+                 ## Items to apply the numeric conversion
+                   #.x = 1
+                   numbers_RAW = DF_items[.x,"items"] %>% pull(items)
+                   
+                   # Extract numbers from cell with individual numbers and intervals as (1-7)
+                   NUMBERS_formatted = create_number_series(numbers_RAW)
+                 
+                 
+                 ## Specific numeric conversion
+                   numeric_conversion = DF_items[.x,"conversion_numerica"] %>% pull(conversion_numerica)
+                   numbers_chunks_all = stringi::stri_extract_all(str = gsub("=| = ", "=", numeric_conversion) %>% gsub("$", "\n", .), regex = ".*\n") %>% unlist() %>% gsub("\n", "", .)
+                   numbers_chunks_destination = stringi::stri_extract_all(str = numbers_chunks_all, regex = ".*=") %>% unlist() %>% gsub("=", "", .)
+                   numbers_chunks_origin = stringi::stri_extract_all(str = numbers_chunks_all, regex = "=.*") %>% unlist() %>% gsub("=", "", .)
+
+                 ## Create final R vector
+                  paste0('trialid %in% c("', paste(paste0(short_name , '_', NUMBERS_formatted), collapse = '", "'),'") & RAW == "', numbers_chunks_origin,'" ~ ', numbers_chunks_destination, ',\n') %>% cat()
+                  
+               })
+
+    }
   
   # Dimensiones -------------------------------------------------------------
   
@@ -466,26 +516,13 @@ get_dimensions_googledoc <- function(short_name_text) {
       1:nrow(DF_dimensions) %>% 
         walk(~
                {
+                 #.x = 1
                  numbers_RAW = DF_dimensions[.x,"numero_item_dimension_o_sub_escala"] %>% pull(numero_item_dimension_o_sub_escala)
                  
-                 # Get chunks of numbers (separated by "," or ", ")
-                 numbers_chunks = stringi::stri_extract_all(str = gsub(",|, ", ",", numbers_RAW), regex = "[0-9]{1,3},|[0-9]{1,3}-[0-9]{1,3}|[0-9]{1,3}$") %>% unlist() %>% gsub(",", "", .)
-                 
-                 # For each of the chunks in numero_item_dimension_o_sub_escala
-                 NUMBERS = 1:length(numbers_chunks) %>% 
-                   map(~ 
-                         {
-                           # If there is a "-" create sequence
-                           if (grepl("-", numbers_chunks[.x])) {
-                             do.call(what = "seq", args = as.list(stringi::stri_extract_all(numbers_chunks[.x], regex = "[0-9]{1,3}", simplify = FALSE) %>% unlist() %>% as.numeric()))
-                           } else {
-                             as.numeric(numbers_chunks[.x])
-                           }
-                         }
-                   ) %>% unlist()
-                 
-                 NUMBERS_formatted = sprintf("%02d", NUMBERS)
-                 
+                 # Extract numbers from cell with individual numbers and intervals as (1-7)
+                 NUMBERS_formatted = create_number_series(numbers_RAW)
+
+                 # Create R vector
                  paste0('items_DIRd', .x,' = c("', paste(NUMBERS_formatted, collapse = '", "'),
                         '")\n') %>% cat()
                  
@@ -577,6 +614,45 @@ create_new_task <- function(short_name_task, overwrite = FALSE, get_dimensions_g
   cat(paste0('tar_target(df_', short_name_task, ', prepare_', short_name_task, '(DF_clean, short_name_scale_str = "', short_name_old, '")),\n'))
   cat(crayon::green("\nDON'T FORGET TO ADD", crayon::silver(paste0("df_", short_name_task)), "to create_joined() in _targets.R:", crayon::silver("create_joined(..., ", paste0("df_", short_name_task, ")\n\n"))))
 
+}
+
+
+#' create_number_series
+#' Create a number series from a vector of numbers including individual numbers 
+#' and intervals such as c(1, "3-8", 11, "22-24")
+#' 
+#' @param numbers_RAW 
+#'
+#' @return
+#' @export
+#'
+#' @examples
+create_number_series <- function(numbers_RAW) {
+  
+  # numbers_RAW = c(1, "3-8", 11, "22-24")
+  
+  # Get rid of spaces
+  numbers_RAW_clean = gsub(" ", "", numbers_RAW) #gsub(" - ", "-", numbers_RAW) %>% 
+  
+  # Get chunks of numbers (separated by "," or ", ")
+  numbers_chunks = stringi::stri_extract_all(str = gsub(",|, ", ",", numbers_RAW_clean), regex = "[0-9]{1,3},|[0-9]{1,3}-[0-9]{1,3}|[0-9]{1,3}$") %>% unlist() %>% gsub(",", "", .)
+  
+  # For each of the chunks in numero_item_dimension_o_sub_escala
+  NUMBERS = 1:length(numbers_chunks) %>% 
+    map(~ 
+          {
+            # If there is a "-" create sequence
+            if (grepl("-", numbers_chunks[.x])) {
+              do.call(what = "seq", args = as.list(stringi::stri_extract_all(numbers_chunks[.x], regex = "[0-9]{1,3}", simplify = FALSE) %>% unlist() %>% as.numeric()))
+            } else {
+              as.numeric(numbers_chunks[.x])
+            }
+          }
+    ) %>% unlist()
+  
+  NUMBERS_formatted = sprintf("%02d", NUMBERS)
+  
+  return(NUMBERS_formatted)
 }
 
 
