@@ -14,15 +14,20 @@
 ##' @return
 ##' @author gorkang
 ##' @export
-prepare_DEMOGR3 <- function(short_name_scale_str) {
+prepare_DEMOGR3 <- function(DF_clean, short_name_scale_str) {
 
   # DEBUG
   # debug_function(prepare_DEMOGR3)
 
+
+  # NOTE --------------------------------------------------------------------
+  # We do not use DF_clean as the data is sensitive
   
 
   # Read sensitive data -----------------------------------------------------
-  input_files_sensitive = list.files(path = ".vault/data", pattern = "*.csv", full.names = TRUE)
+  input_files_sensitive = list.files(path = ".vault/data_vault", pattern = "*.csv", full.names = TRUE)
+  if (length(input_files_sensitive) == 0) cli::cli_abort("DEMGR3 files should be in .vault/data_vault/")
+  
   DF_raw_sensitive = read_data(input_files_sensitive, anonymize = FALSE, save_output = FALSE)
   DF_clean_sensitive = create_clean_data(DF_raw_sensitive)
   
