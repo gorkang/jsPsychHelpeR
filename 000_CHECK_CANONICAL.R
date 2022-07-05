@@ -1,11 +1,9 @@
-# TODO: --------------------------------------------------------------------
+### TODO --
 
   # - Unzip snapshots to 'tests/testthat/_snaps/snapshots' before running the pipeline
   # - Are we using tests/manual_correction?
 
-
 # SYNC ALL protocols to CSCN-server ---------------------------------------
-
 
   # Load all R/ functions
   invisible(lapply(list.files("./R", full.names = TRUE, pattern = ".R$"), source))
@@ -14,7 +12,7 @@
     # - Tasks with no prepare_TASK() script!
     # - Tasks NOT in Google Doc
     # - Check trialid's are OK
-  DF_missing = check_missing_prepare_TASK(sync_protocols = TRUE, check_trialids = FALSE, delete_nonexistent = TRUE)
+  DF_missing = check_missing_prepare_TASK(sync_protocols = TRUE, check_trialids = TRUE, delete_nonexistent = TRUE)
   
   # DF_missing$DF_FINAL %>% View
   DF_missing$DF_FINAL %>% tidyr::replace_na(list(missing_script = "", 
@@ -24,7 +22,12 @@
   
   # Tasks ready to create prepare_*.R script   
   DF_missing$DF_FINAL %>% filter(!is.na(missing_script) & is.na(missing_googledoc))
-
+  DF_missing$DF_FINAL %>% filter(!is.na(missing_script) | !is.na(missing_googledoc)) %>% 
+    filter(!task %in% c("DEMOGR24", "DEMOGRfondecyt2022E1", "ITC", "fauxPasEv")) %>%  # "MDDF_respaldo", "mic_test", "faux_pas",
+    select(-matches("missing"), -Nombre, -Descripcion) %>% #View
+    write_csv("dev/missing_tasks.csv")
+  
+  
   
 # Sync canonical_protocol_DEV to 999 and test ------------------------------
   
@@ -89,3 +92,20 @@
     
     # Check test file
     # rstudioapi::navigateToFile("outputs/tests_outputs/test-DF_clean.csv")
+
+    
+    
+    
+    
+# CHECK TWO RUNS ARE IDENTICAL --------------------------------------------
+  
+  folder1 = "/home/emrys/Downloads/JSPSYCH/jsPsychHelpeR_test-survey/TEST/data999/"
+  folder2 = "/home/emrys/Downloads/JSPSYCH/jsPsychHelpeR_test-survey/TEST/data999/"
+  DF_joined1 = readr::read_csv(paste0(folder1, "/DF_joined.csv"))
+  DF_joined2 = readr::read_csv(paste0(folder2, "/DF_joined.csv"))
+  DF_clean1 = readr::read_csv(paste0(folder1, "/DF_clean.csv"))
+  DF_clean2 = readr::read_csv(paste0(folder2, "/DF_clean.csv"))
+  
+  waldo::compare(DF_joined1, DF_joined2)
+  waldo::compare(DF_clean1, DF_clean2)
+  
