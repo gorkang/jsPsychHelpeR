@@ -12,7 +12,7 @@ check_missing_prepare_TASK <- function(sync_protocols = FALSE, check_trialids = 
   # check_trialids = FALSE
 
   
-  targets::tar_load_globals()
+  suppressPackageStartupMessages(targets::tar_load_globals())
   
   
   # SOURCES -----------------------------------------------------------------
@@ -41,8 +41,7 @@ check_missing_prepare_TASK <- function(sync_protocols = FALSE, check_trialids = 
   
 
   # DATA SOURCES ------------------------------------------------------------
-  
-  
+      
     # Unique tasks -----------------------------------------------------------
   
       # Unique tasks found in all the protocols
@@ -69,24 +68,38 @@ check_missing_prepare_TASK <- function(sync_protocols = FALSE, check_trialids = 
     # Google doc --------------------------------------------------------------
     
       # Reads canonical googledoc and googledoc with NEW tasks and combines them
+      googlesheets4::local_gs4_quiet() # No googlesheets4::read_sheet messages
       
       googlesheets4::gs4_auth("gorkang@gmail.com")
-      DF_googledoc1 = googlesheets4::read_sheet("1Eo0F4GcmqWZ1cghTpQlA4aHsc8kTABss-HAeimE2IqA", sheet = 2, skip = 0) %>% 
+      DF_googledoc1 = 
+        googlesheets4::read_sheet("1Eo0F4GcmqWZ1cghTpQlA4aHsc8kTABss-HAeimE2IqA", sheet = 2, skip = 0) %>% 
         rename(short_name = `Código Test`) %>% 
-        filter(short_name != "short_name") %>% 
+        filter(!grepl("short_name", short_name)) %>% 
         arrange(short_name) %>% 
         select(short_name, Nombre, Descripcion) %>% 
         tidyr::drop_na(short_name)
       
-      DF_googledoc_NEW = googlesheets4::read_sheet("1LAsyTZ2ZRP_xLiUBkqmawwnKWgy8OCwq4mmWrrc_rpQ", sheet = 2, skip = 0) %>% 
+      DF_googledoc_NEW = 
+        googlesheets4::read_sheet("1LAsyTZ2ZRP_xLiUBkqmawwnKWgy8OCwq4mmWrrc_rpQ", sheet = 2, skip = 0) %>% 
         rename(short_name = `Código Test`) %>% 
-        filter(short_name != "short_name: NO debe contener espacios ni caracteres extraños :)") %>% 
+        filter(!grepl("short_name", short_name)) %>% 
         arrange(short_name) %>% 
         select(short_name, Nombre, Descripcion) %>% 
         tidyr::drop_na(short_name)
       
       DF_googledoc = DF_googledoc1 %>% bind_rows(DF_googledoc_NEW) %>% distinct(short_name)
       
+
+    # Unique names ------------------------------------------------------------
+      
+      cli::cli_h1("CHECK duplicates")
+      # Check we don't have duplicate names
+      count_TASK_names = DF_googledoc %>% count(short_name) %>% filter(n != 1)
+      if (nrow(count_TASK_names) != 0) { 
+        cli::cli_alert_danger("DUPLICATED short_name: {paste(count_TASK_names$short_name, collapse = '; ')}")
+      } else {
+        cli::cli_alert_success("No duplicated short_name in the Google docs")
+      }
     
 
   # MISSING -----------------------------------------------------------------
@@ -117,17 +130,26 @@ check_missing_prepare_TASK <- function(sync_protocols = FALSE, check_trialids = 
     
     source("../jsPsychMaker/R/helper_functions.R")  
     ALL_PROTOCOLS = basename(list.dirs("../CSCN-server/protocols/", recursive = FALSE))
-    TEST_PROTOCOLS = basename(list.dirs("../CSCN-server/protocols/test/", recursive = FALSE))
+    TEST_PROTOCOLS = basename(list.dirs("../CSCN-server/protocols/test/protocols_DEV", recursive = FALSE))
     
     
+    cli::cli_h1("FOLDER: protocols/")
     OUTPUT_ALL = 1:length(ALL_PROTOCOLS) %>% 
       map(~  check_trialids(local_folder_protocol = paste0("../CSCN-server/protocols/", ALL_PROTOCOLS[.x], "/")))
     
+    cli::cli_h1("FOLDER: protocols/test/protocols_DEV/")
     OUTPUT_TEST = 1:length(TEST_PROTOCOLS) %>% 
-      map(~  check_trialids(local_folder_protocol = paste0("../CSCN-server/protocols/test/", TEST_PROTOCOLS[.x], "/")))
+      map(~  check_trialids(local_folder_protocol = paste0("../CSCN-server/protocols/test/protocols_DEV/", TEST_PROTOCOLS[.x], "/")))
     
     # CHECK 999
+    cli::cli_h1("FOLDER: protocols/999/")
     check_trialids(local_folder_protocol = paste0("../CSCN-server/protocols/999/"))
+    
+    # - experiment: MLQ 
+    # - trialid:    CEL_01 
+    
+    # - experiment: PRFBMpost 
+    # - trialid:    PRFBM_03_if 
     
     # - experiment: RMET.js 
     # - trialid:    question001_1, question001_2 
@@ -139,6 +161,13 @@ check_missing_prepare_TASK <- function(sync_protocols = FALSE, check_trialids = 
     # - experiment: Goodbye.js, IRS.js 
     # - trialid:    question001, effort 
       
+    # - experiment: FORM4 
+    # - trialid:    FORM_01, FORM_02, FORM_03, FORM_04, FORM_05, FORM_06 
+    
+    # - experiment: FONDECYT2022E1 
+    # - trialid:    if_instructions_000, FONDECYT2022E1 + _giro_check_ending 
+    
+    
   }
   
 
