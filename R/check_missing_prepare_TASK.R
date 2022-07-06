@@ -12,8 +12,21 @@ check_missing_prepare_TASK <- function(sync_protocols = FALSE, check_trialids = 
   # check_trialids = FALSE
 
   
-  suppressPackageStartupMessages(targets::tar_load_globals())
+  # suppressPackageStartupMessages(targets::tar_load_globals())
+  if (file.exists("../jsPsychHelpeR/_targets_packages.R")) {
+    suppressPackageStartupMessages(source("../jsPsychHelpeR/_targets_packages.R"))
+    invisible(lapply(list.files("../jsPsychHelpeR/R", full.names = TRUE, pattern = ".R$"), source))
+  } else {
+    suppressPackageStartupMessages(source("_targets_packages.R"))
+    invisible(lapply(list.files("./R", full.names = TRUE, pattern = ".R$"), source))
+  }
   
+  
+  
+  
+  local_protocols = here::here("../CSCN-server/protocols/")
+  local_prepare_tasks = here::here("R_tasks/")
+  if (!file.exists(local_prepare_tasks)) local_prepare_tasks = here::here("../jsPsychHelpeR/R_tasks/")
   
   # SOURCES -----------------------------------------------------------------
   
@@ -31,7 +44,7 @@ check_missing_prepare_TASK <- function(sync_protocols = FALSE, check_trialids = 
   if (sync_protocols == TRUE) {
     # https://unix.stackexchange.com/questions/432801/rsync-exclude-a-certain-file-extension-unless-zipped
     sync_server_local(server_folder = "", 
-                      local_folder = "../CSCN-server/protocols/", 
+                      local_folder = local_protocols, 
                       direction = "server_to_local", 
                       only_test = !sync_protocols, # we do !sync_protocols because the parameter is only_test (!)
                       exclude_csv = TRUE, # DO NOT INCLUDE DATA
@@ -45,7 +58,7 @@ check_missing_prepare_TASK <- function(sync_protocols = FALSE, check_trialids = 
     # Unique tasks -----------------------------------------------------------
   
       # Unique tasks found in all the protocols
-      ALL_tasks = list.files("../CSCN-server/protocols/", pattern = "*.js", full.names = TRUE, recursive = TRUE)
+      ALL_tasks = list.files(local_protocols, pattern = "*.js", full.names = TRUE, recursive = TRUE)
       DF_tasks =
         ALL_tasks[grepl("*tasks/.*\\.js", ALL_tasks)] %>% as_tibble() %>% 
         filter(!grepl("OLD_TESTS", value)) %>% 
@@ -58,7 +71,7 @@ check_missing_prepare_TASK <- function(sync_protocols = FALSE, check_trialids = 
   
     # Unique correction scripts -----------------------------------------------
   
-      ALL_scripts = list.files("R_tasks/", pattern = "*.R", full.names = TRUE, recursive = TRUE)
+      ALL_scripts = list.files(local_prepare_tasks, pattern = "*.R", full.names = TRUE, recursive = TRUE)
       DF_scripts = 
         ALL_scripts %>% as_tibble() %>% 
         mutate(script = gsub("prepare_(.*)\\.R", "\\1", basename(value))) %>% 
@@ -128,22 +141,22 @@ check_missing_prepare_TASK <- function(sync_protocols = FALSE, check_trialids = 
   
   if (check_trialids == TRUE) {
     
-    source("../jsPsychMaker/R/helper_functions.R")  
-    ALL_PROTOCOLS = basename(list.dirs("../CSCN-server/protocols/", recursive = FALSE))
-    TEST_PROTOCOLS = basename(list.dirs("../CSCN-server/protocols/test/protocols_DEV", recursive = FALSE))
+    source(here::here("../jsPsychMaker/R/helper_functions.R"))
+    ALL_PROTOCOLS = basename(list.dirs(local_protocols, recursive = FALSE))
+    TEST_PROTOCOLS = basename(list.dirs(paste0(local_protocols, "/test/protocols_DEV/"), recursive = FALSE))
     
     
     cli::cli_h1("FOLDER: protocols/")
     OUTPUT_ALL = 1:length(ALL_PROTOCOLS) %>% 
-      map(~  check_trialids(local_folder_protocol = paste0("../CSCN-server/protocols/", ALL_PROTOCOLS[.x], "/")))
+      map(~  check_trialids(local_folder_protocol = paste0(local_protocols, ALL_PROTOCOLS[.x], "/")))
     
     cli::cli_h1("FOLDER: protocols/test/protocols_DEV/")
     OUTPUT_TEST = 1:length(TEST_PROTOCOLS) %>% 
-      map(~  check_trialids(local_folder_protocol = paste0("../CSCN-server/protocols/test/protocols_DEV/", TEST_PROTOCOLS[.x], "/")))
+      map(~  check_trialids(local_folder_protocol = paste0(local_protocols, "/test/protocols_DEV/", TEST_PROTOCOLS[.x], "/")))
     
     # CHECK 999
     cli::cli_h1("FOLDER: protocols/999/")
-    check_trialids(local_folder_protocol = paste0("../CSCN-server/protocols/999/"))
+    check_trialids(local_folder_protocol = paste0(local_protocols, "/999/"))
     
     # - experiment: MLQ 
     # - trialid:    CEL_01 
