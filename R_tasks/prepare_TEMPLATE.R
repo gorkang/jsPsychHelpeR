@@ -22,10 +22,10 @@ prepare_TEMPLATE <- function(DF_clean, short_name_scale_str) {
   # [ADAPT]: Items to ignore and reverse ---------------------------------------
   # ****************************************************************************
   
-  items_to_ignore = c("000") # Ignore these items: If nothing to ignore, keep items_to_ignore = c("00")
-  items_to_reverse = c("000") # Reverse these items: If nothing to reverse, keep  items_to_reverse = c("00")
+  items_to_ignore = c("000") # Ignore these items: If nothing to ignore, keep as is
+  items_to_reverse = c("000") # Reverse these items: If nothing to reverse, keep as is
   
-  names_dimensions = c("") # If no dimensions, keep names_dimensions = c("")
+  names_dimensions = c("") # If no dimensions, keep as is
   
   items_DIRd1 = c("")
   items_DIRd2 = c("")
@@ -36,11 +36,14 @@ prepare_TEMPLATE <- function(DF_clean, short_name_scale_str) {
   
   # Standardized names ------------------------------------------------------
   standardized_names(short_name_scale = short_name_scale_str, 
-                     dimensions = names_dimensions, # Use names of dimensions, "" or comment out line
-                     help_names = FALSE) # help_names = FALSE once the script is ready
+                     dimensions = names_dimensions,
+                     help_names = FALSE) # FALSE once script is ready
   
   # Create long -------------------------------------------------------------
-  DF_long_RAW = create_raw_long(DF_clean, short_name_scale = short_name_scale_str, numeric_responses = FALSE, is_experiment = FALSE)
+  DF_long_RAW = create_raw_long(DF_clean, 
+                                short_name_scale = short_name_scale_str, 
+                                numeric_responses = FALSE, 
+                                is_experiment = FALSE)
   
   # Show number of items, responses, etc. [uncomment to help prepare the test] 
   # prepare_helper(DF_long_RAW, show_trialid_questiontext = TRUE)
@@ -106,7 +109,9 @@ prepare_TEMPLATE <- function(DF_clean, short_name_scale_str) {
   
   # [ADAPT]: Scales and dimensions calculations --------------------------------
   # ****************************************************************************
-    # [USE STANDARD NAMES FOR Scales and dimensions: name_DIRt, name_DIRd1, etc.] Check with: standardized_names(help_names = TRUE)
+    # USE STANDARD NAMES FOR scales and dimensions: name_DIRt, name_DIRd1, etc.
+    # These are created in the line above: standardized_names()
+    # To check the names use the parameter help_names = TRUE in standardized_names()
 
   DF_wide_RAW_DIR =
     DF_wide_RAW %>% 
