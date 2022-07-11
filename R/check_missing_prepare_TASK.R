@@ -97,23 +97,36 @@ check_missing_prepare_TASK <- function(sync_protocols = FALSE, check_trialids = 
         rename(short_name = `Código Test`) %>% 
         filter(!grepl("short_name", short_name)) %>% 
         arrange(short_name) %>% 
-        select(short_name, Nombre, Descripcion) %>% 
+        select(short_name, Nombre, Descripcion, EMAIL) %>% 
         tidyr::drop_na(short_name)
       
       DF_googledoc = DF_googledoc1 %>% bind_rows(DF_googledoc_NEW) %>% distinct(short_name)
       
-
-    # Unique names ------------------------------------------------------------
       
-      cli::cli_h1("CHECK duplicates")
-      # Check we don't have duplicate names
-      count_TASK_names = DF_googledoc %>% count(short_name) %>% filter(n != 1)
-      if (nrow(count_TASK_names) != 0) { 
-        cli::cli_alert_danger("DUPLICATED short_name: {paste(count_TASK_names$short_name, collapse = '; ')}")
-      } else {
-        cli::cli_alert_success("No duplicated short_name in the Google docs")
-      }
-    
+      # All sheets from NEW to check we have all data
+      DF_googledoc_NEW_citas = 
+        googlesheets4::read_sheet("1LAsyTZ2ZRP_xLiUBkqmawwnKWgy8OCwq4mmWrrc_rpQ", sheet = 3, skip = 0) %>% 
+        rename(short_name = `Código Test`) %>% 
+        filter(!grepl("short_name", short_name)) %>%
+        tidyr::drop_na(short_name) %>% 
+        select(short_name) %>% mutate(citas = "")
+      
+      DF_googledoc_NEW_puntajes = 
+        googlesheets4::read_sheet("1LAsyTZ2ZRP_xLiUBkqmawwnKWgy8OCwq4mmWrrc_rpQ", sheet = 4, skip = 0) %>% 
+        rename(short_name = `Código Test`) %>% 
+        filter(!grepl("short_name", short_name)) %>%
+        tidyr::drop_na(short_name) %>% 
+        select(short_name) %>% mutate(puntajes = "")
+      
+      DF_googledoc_NEW_dimensiones = 
+        googlesheets4::read_sheet("1LAsyTZ2ZRP_xLiUBkqmawwnKWgy8OCwq4mmWrrc_rpQ", sheet = 5, skip = 0) %>% 
+        rename(short_name = `Código Test`) %>% 
+        filter(!grepl("short_name", short_name)) %>%
+        tidyr::drop_na(short_name) %>% 
+        select(short_name) %>% mutate(dimensiones = "")
+      
+
+   
 
   # MISSING -----------------------------------------------------------------
 
@@ -183,6 +196,44 @@ check_missing_prepare_TASK <- function(sync_protocols = FALSE, check_trialids = 
     
   }
   
+    
+    # MISSING tabs in NEW tasks -----------------------------------------------
+    
+    cli::cli_h1("CHECK missing info in tabs")
+    
+    DF_all_NEW = 
+      DF_googledoc_NEW %>% select(short_name, EMAIL) %>% mutate(resumen = "") %>% 
+      left_join(DF_googledoc_NEW_citas, by = "short_name") %>% 
+      left_join(DF_googledoc_NEW_puntajes, by = "short_name") %>% 
+      left_join(DF_googledoc_NEW_dimensiones, by = "short_name") %>% 
+      distinct(short_name, .keep_all = TRUE) %>% 
+      filter(is.na(resumen) | is.na(citas) | is.na(puntajes) | is.na(dimensiones)) %>% 
+      tidyr::replace_na(replace = list(resumen = "resumen", citas = "citas", puntajes = "puntajes", dimensiones = "dimensiones")) %>% 
+      mutate(TEXT = paste(resumen, citas, puntajes, dimensiones, sep = ", "),
+             TEXT = gsub("^ | ,|^,", "", TEXT))
+    
+    TEXT_missing = DF_all_NEW %>% 
+      group_by(EMAIL) %>% 
+      summarise(tasks = paste(paste0(short_name, " (", TEXT, ") "), collapse = "; "),
+                TEXT = unique(TEXT)) %>% 
+      mutate(TEXT = paste0(EMAIL, ": ", tasks)) %>% 
+      pull(TEXT)
+    
+    cli::cli_alert_danger("Tasks missing info in tabs: ")
+    cli::cli_li(TEXT_missing)
+    
+    
+    # Unique names ------------------------------------------------------------
+    
+    cli::cli_h1("CHECK duplicates")
+    # Check we don't have duplicate names
+    count_TASK_names = DF_googledoc %>% count(short_name) %>% filter(n != 1)
+    if (nrow(count_TASK_names) != 0) { 
+      cli::cli_alert_danger("DUPLICATED short_name: {paste(count_TASK_names$short_name, collapse = '; ')}")
+    } else {
+      cli::cli_alert_success("No duplicated short_name in the Google docs")
+    }
+    
 
   # OUTPUT ------------------------------------------------------------------
 
@@ -199,7 +250,8 @@ check_missing_prepare_TASK <- function(sync_protocols = FALSE, check_trialids = 
     list(DF_FINAL = DF_FINAL,
          DF_missing_tasks = DF_missing_tasks,
          DF_missing_script = DF_missing_script,
-         DF_missing_googledoc = DF_missing_googledoc)
+         DF_missing_googledoc = DF_missing_googledoc,
+         TEXT_missing = TEXT_missing)
   
   return(OUTPUT)
   
