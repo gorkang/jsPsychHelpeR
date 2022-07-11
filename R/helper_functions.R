@@ -1236,7 +1236,7 @@ update_data <- function(id_protocol, sensitive_tasks = c("")) {
   # id_protocol = 999
   # sensitive_tasks = c("DEMOGR")
 
-  # CHECKS ------------------------------------------------------------------
+  # CHECKS --
   
   credentials_exist = file.exists(".vault/.credentials")
   SSHPASS = Sys.which("sshpass") # Check if sshpass is installed
@@ -1251,7 +1251,7 @@ update_data <- function(id_protocol, sensitive_tasks = c("")) {
   }
    
   
-  # Download files ----------------------------------------------------------
+  # Download files --
 
   cli::cli_alert_info("Synching files from pid {id_protocol} to 'data/{id_protocol}'")
   
@@ -1272,7 +1272,7 @@ update_data <- function(id_protocol, sensitive_tasks = c("")) {
   }
   
 
-  # Move sensitive files to .vault/data -------------------------------------
+  # Move sensitive files to .vault/data --
 
   if (sensitive_tasks != "") {
     # MOVE sensitive data to .vault
@@ -1300,15 +1300,12 @@ update_data <- function(id_protocol, sensitive_tasks = c("")) {
 #' @examples
 create_codebook <- function(tasks, number) {
   
-  # TODO -----------------------
-  
-  # - Add reversed items
-  # - Add ignored items
+  # TODO ---
   # - Add totals
   
   
   # DEBUG
-  # number = 33
+  # number = 51
   
   DF = readLines(tasks[number])
   
@@ -1327,13 +1324,18 @@ create_codebook <- function(tasks, number) {
   function_DIRt = gsub(".*!!name_DIRt := (\\w{1,10}).*", "\\1", DF_clean[grepl("!!name_DIRt", DF_clean)]) %>% head(1) # REVIEW INFCONS
   
   # Dimensions
-  names_dimensions = stringr::str_extract_all(DF_clean[grepl("names_dimensions =", DF_clean)], '"[\\w_]{1,50}"') %>% purrr::compact()
+  names_dimensions = stringr::str_extract_all(DF_clean[grepl("names_dimensions =", DF_clean)], '"[\\w_]{1,50}"') %>% purrr::compact() %>% unlist() %>% gsub('\"', "",.)
   # num_dimensions = stringr::str_extract_all(DF_clean[grepl("items_DIRd[0-9] =", DF_clean)], "items_DIRd[0-9]{1,2}")
   items_dimensions = stringr::str_extract_all(DF_clean[grepl("items_DIRd[0-9] =", DF_clean)], "[0-9]{2,3}_[\\w]{1,20}|[0-9]{2,3}") %>% purrr::compact()
   functions_DIRd = gsub(".*!!name_DIRd[0-9] := (\\w{1,10}).*", "\\1", lines_DIRd)
   
+  items_reversed = stringr::str_extract_all(DF_clean[grepl("items_to_reverse =", DF_clean)], '"[\\w_]{1,50}"') %>% purrr::compact() %>% unlist() %>% gsub('\"', "",.) %>% unique() %>% paste(., collapse = ", ")
+  items_ignored = stringr::str_extract_all(DF_clean[grepl("items_to_ignore =", DF_clean)], '"[\\w_]{1,50}"') %>% purrr::compact() %>% unlist() %>% gsub('\"', "",.) %>% unique() %>% paste(., collapse = ", ")
+  
+  
+  
   # Dimensions OLD STRUCTURE
-  old_names_dimensions =  stringr::str_extract_all(DF_clean[grepl("dimensions =", DF_clean)], '"[\\w_]{1,50}"') %>% purrr::compact()
+  old_names_dimensions =  stringr::str_extract_all(DF_clean[grepl("dimensions =", DF_clean)], '"[\\w_]{1,50}"') %>% purrr::compact() %>% unlist() %>% gsub('\"', "",.)
   old_items_dimensions = stringr::str_extract_all(lines_DIRd, "[0-9]{2,3}_[\\w]{1,20}|[0-9]{2,3}") %>% purrr::compact()
   
   
@@ -1342,6 +1344,8 @@ create_codebook <- function(tasks, number) {
   if (length(functions_DIRd) == 0) functions_DIRd = ""
   if (length(names_dimensions) == 0) names_dimensions = ""
   if (length(items_dimensions) == 0) items_dimensions = ""
+  if (length(items_reversed) == 0) items_reversed = ""
+  if (length(items_ignored) == 0) items_ignored = ""
   if (length(old_names_dimensions) == 0) old_names_dimensions = ""
   if (length(old_items_dimensions) == 0) old_items_dimensions = ""
   
@@ -1358,9 +1362,12 @@ create_codebook <- function(tasks, number) {
       task = name_task,
       names_dimensions = unlist(names_dimensions),
       items_dimensions = items_dimensions,
+      items_reversed = items_reversed,
+      items_ignored = items_ignored,
       functions = functions_DIRd,
       description = description_dimensions %>% unlist(),
     ) %>%
+    # For each of the dimensions
     rowwise() %>% 
     mutate(items_dimensions = paste(items_dimensions, collapse = ", "))
   
@@ -1379,16 +1386,13 @@ create_codebook <- function(tasks, number) {
   
 }
 
-# tasks = list.files("R_tasks", pattern = "\\.R", full.names = TRUE)
-# 
-# 
-# 1:length(tasks) %>% 
-#   map(~ 
-#         { 
-#           # cat(.x, "\n")
-#           create_codebook(.x)
-#           }
-#     )
+tasks = list.files("R_tasks", pattern = "\\.R", full.names = TRUE)
+1:length(tasks) %>%
+  map(~
+        {
+          cli::cli_h1(.x, "\n")
+          create_codebook(tasks, .x)
+          })
 
 
 
