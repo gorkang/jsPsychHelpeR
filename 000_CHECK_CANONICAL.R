@@ -12,7 +12,15 @@
     # - Tasks with no prepare_TASK() script!
     # - Tasks NOT in Google Doc
     # - Check trialid's are OK
-  DF_missing = check_missing_prepare_TASK(sync_protocols = TRUE, check_trialids = TRUE, delete_nonexistent = TRUE)
+    # - Check no missing info in Google doc of NEW tasks
+DF_missing = 
+  check_missing_prepare_TASK(
+    sync_protocols = TRUE,
+    check_trialids = TRUE,
+    check_new_task_tabs = TRUE,
+    delete_nonexistent = TRUE,
+    show_all_messages = FALSE
+    )
   
   # DF_missing$DF_FINAL %>% View
   DF_missing$DF_FINAL %>% tidyr::replace_na(list(missing_script = "", 
