@@ -5,11 +5,13 @@
     # + https://docs.google.com/spreadsheets/d/1Eo0F4GcmqWZ1cghTpQlA4aHsc8kTABss-HAeimE2IqA/edit#gid=0
     # + https://docs.google.com/spreadsheets/d/1LAsyTZ2ZRP_xLiUBkqmawwnKWgy8OCwq4mmWrrc_rpQ/edit#gid=0
 
-check_missing_prepare_TASK <- function(sync_protocols = FALSE, check_trialids = FALSE, delete_nonexistent = FALSE) {
+check_missing_prepare_TASK <- function(sync_protocols = FALSE, check_trialids = FALSE, check_new_task_tabs = FALSE, delete_nonexistent = FALSE, show_all_messages = FALSE) {
   
   # DEBUG
-  # sync_protocols = FALSE
-  # check_trialids = FALSE
+  # sync_protocols = TRUE
+  # check_trialids = TRUE
+  # check_new_task_tabs = TRUE
+  # delete_nonexistent = TRUE
 
   
   # suppressPackageStartupMessages(targets::tar_load_globals())
@@ -102,30 +104,7 @@ check_missing_prepare_TASK <- function(sync_protocols = FALSE, check_trialids = 
       
       DF_googledoc = DF_googledoc1 %>% bind_rows(DF_googledoc_NEW) %>% distinct(short_name)
       
-      
-      # All sheets from NEW to check we have all data
-      DF_googledoc_NEW_citas = 
-        googlesheets4::read_sheet("1LAsyTZ2ZRP_xLiUBkqmawwnKWgy8OCwq4mmWrrc_rpQ", sheet = 3, skip = 0) %>% 
-        rename(short_name = `Código Test`) %>% 
-        filter(!grepl("short_name", short_name)) %>%
-        tidyr::drop_na(short_name) %>% 
-        select(short_name) %>% mutate(citas = "")
-      
-      DF_googledoc_NEW_puntajes = 
-        googlesheets4::read_sheet("1LAsyTZ2ZRP_xLiUBkqmawwnKWgy8OCwq4mmWrrc_rpQ", sheet = 4, skip = 0) %>% 
-        rename(short_name = `Código Test`) %>% 
-        filter(!grepl("short_name", short_name)) %>%
-        tidyr::drop_na(short_name) %>% 
-        select(short_name) %>% mutate(puntajes = "")
-      
-      DF_googledoc_NEW_dimensiones = 
-        googlesheets4::read_sheet("1LAsyTZ2ZRP_xLiUBkqmawwnKWgy8OCwq4mmWrrc_rpQ", sheet = 5, skip = 0) %>% 
-        rename(short_name = `Código Test`) %>% 
-        filter(!grepl("short_name", short_name)) %>%
-        tidyr::drop_na(short_name) %>% 
-        select(short_name) %>% mutate(dimensiones = "")
-      
-
+    
    
 
   # MISSING -----------------------------------------------------------------
@@ -154,49 +133,52 @@ check_missing_prepare_TASK <- function(sync_protocols = FALSE, check_trialids = 
   
   if (check_trialids == TRUE) {
     
-    source(here::here("../jsPsychMaker/R/helper_functions.R"))
+    source(here::here("../jsPsychHelpeR/R/helper_functions.R"))
     ALL_PROTOCOLS = basename(list.dirs(local_protocols, recursive = FALSE))
     TEST_PROTOCOLS = basename(list.dirs(paste0(local_protocols, "/test/protocols_DEV/"), recursive = FALSE))
     
     
     cli::cli_h1("FOLDER: protocols/")
     OUTPUT_ALL = 1:length(ALL_PROTOCOLS) %>% 
-      map(~  check_trialids(local_folder_protocol = paste0(local_protocols, ALL_PROTOCOLS[.x], "/")))
+      map(~  check_trialids(local_folder_protocol = paste0(local_protocols, ALL_PROTOCOLS[.x], "/"), show_all_messages = show_all_messages))
     
     cli::cli_h1("FOLDER: protocols/test/protocols_DEV/")
     OUTPUT_TEST = 1:length(TEST_PROTOCOLS) %>% 
-      map(~  check_trialids(local_folder_protocol = paste0(local_protocols, "/test/protocols_DEV/", TEST_PROTOCOLS[.x], "/")))
+      map(~  check_trialids(local_folder_protocol = paste0(local_protocols, "/test/protocols_DEV/", TEST_PROTOCOLS[.x], "/"), show_all_messages = show_all_messages))
     
     # CHECK 999
     cli::cli_h1("FOLDER: protocols/999/")
-    check_trialids(local_folder_protocol = paste0(local_protocols, "/999/"))
-    
-    # - experiment: MLQ 
-    # - trialid:    CEL_01 
-    
-    # - experiment: PRFBMpost 
-    # - trialid:    PRFBM_03_if 
-    
-    # - experiment: RMET.js 
-    # - trialid:    question001_1, question001_2 
-    
-    # NOMBRE TAREA MAL!!!  
-    # - experiment: faux_pas.js 
-    # - trialid:    faux_pas_001 
-    
-    # - experiment: Goodbye.js, IRS.js 
-    # - trialid:    question001, effort 
-      
-    # - experiment: FORM4 
-    # - trialid:    FORM_01, FORM_02, FORM_03, FORM_04, FORM_05, FORM_06 
-    
-    # - experiment: FONDECYT2022E1 
-    # - trialid:    if_instructions_000, FONDECYT2022E1 + _giro_check_ending 
-    
+    check_trialids(local_folder_protocol = paste0(local_protocols, "/999/"), show_all_messages = show_all_messages)
     
   }
   
+  if (check_new_task_tabs == TRUE) {
     
+    
+    # All sheets from NEW to check we have all data
+    DF_googledoc_NEW_citas = 
+      googlesheets4::read_sheet("1LAsyTZ2ZRP_xLiUBkqmawwnKWgy8OCwq4mmWrrc_rpQ", sheet = 3, skip = 0) %>% 
+      rename(short_name = `Código Test`) %>% 
+      filter(!grepl("short_name", short_name)) %>%
+      tidyr::drop_na(short_name) %>% 
+      select(short_name) %>% mutate(citas = "")
+    
+    DF_googledoc_NEW_puntajes = 
+      googlesheets4::read_sheet("1LAsyTZ2ZRP_xLiUBkqmawwnKWgy8OCwq4mmWrrc_rpQ", sheet = 4, skip = 0) %>% 
+      rename(short_name = `Código Test`) %>% 
+      filter(!grepl("short_name", short_name)) %>%
+      tidyr::drop_na(short_name) %>% 
+      select(short_name) %>% mutate(puntajes = "")
+    
+    DF_googledoc_NEW_dimensiones = 
+      googlesheets4::read_sheet("1LAsyTZ2ZRP_xLiUBkqmawwnKWgy8OCwq4mmWrrc_rpQ", sheet = 5, skip = 0) %>% 
+      rename(short_name = `Código Test`) %>% 
+      filter(!grepl("short_name", short_name)) %>%
+      tidyr::drop_na(short_name) %>% 
+      select(short_name) %>% mutate(dimensiones = "")
+    
+    
+  
     # MISSING tabs in NEW tasks -----------------------------------------------
     
     cli::cli_h1("CHECK missing info in tabs")
@@ -212,16 +194,20 @@ check_missing_prepare_TASK <- function(sync_protocols = FALSE, check_trialids = 
       mutate(TEXT = paste(resumen, citas, puntajes, dimensiones, sep = ", "),
              TEXT = gsub("^ | ,|^,", "", TEXT))
     
-    TEXT_missing = DF_all_NEW %>% 
+    MISSING_tabs = DF_all_NEW %>% 
       group_by(EMAIL) %>% 
       summarise(tasks = paste(paste0(short_name, " (", TEXT, ") "), collapse = "; "),
-                TEXT = unique(TEXT)) %>% 
+                TEXT = unique(TEXT), 
+                .groups = "drop") %>% 
       mutate(TEXT = paste0(EMAIL, ": ", tasks)) %>% 
       pull(TEXT)
     
     cli::cli_alert_danger("Tasks missing info in tabs: ")
-    cli::cli_li(TEXT_missing)
+    cli::cli_li(MISSING_tabs)
     
+  } else {
+    MISSING_tabs = NULL
+  }
     
     # Unique names ------------------------------------------------------------
     
@@ -251,7 +237,7 @@ check_missing_prepare_TASK <- function(sync_protocols = FALSE, check_trialids = 
          DF_missing_tasks = DF_missing_tasks,
          DF_missing_script = DF_missing_script,
          DF_missing_googledoc = DF_missing_googledoc,
-         TEXT_missing = TEXT_missing)
+         MISSING_tabs = MISSING_tabs)
   
   return(OUTPUT)
   
