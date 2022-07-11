@@ -1,12 +1,12 @@
-run_initial_setup <- function(pid, download_files = TRUE) {
+run_initial_setup <- function(pid, download_files = TRUE, download_task_script = TRUE) {
   
   # DEBUG
-  # pid = "0"
+  # pid = "999"
   
   files_pid = list.files(paste0("data/", pid))
   credentials_exist = file.exists(".vault/.credentials")
-  SSHPASS = Sys.which("sshpass") # Check if sshpass is installed
-  RSYNC = Sys.which("rsync") # Check if rsync is installed
+  # SSHPASS = Sys.which("sshpass") # Check if sshpass is installed
+  # RSYNC = Sys.which("rsync") # Check if rsync is installed
   
   # CHECK if NO files in project's folder & NO credentials to download
   if (length(files_pid) == 0 & credentials_exist == FALSE) {
@@ -55,32 +55,44 @@ run_initial_setup <- function(pid, download_files = TRUE) {
       # or DOWNLOAD from server (needs a .vault/credentials file. 
       # Rename and edit .vault/credentials_TEMPLATE)
     
-    if (credentials_exist & download_files == TRUE) {
+    if (credentials_exist) {
       
-      # Are sshpass and rsync installed ?
-      if (SSHPASS != "" & RSYNC != "") { 
+      if (download_files == TRUE) {
+ 
+          cli::cli_par()
+          cli::cli_h1("Download files")
+          cli::cli_end()
+          
+          update_data(id_protocol = pid) 
+          
+        } else if (download_files == FALSE) {
+          
+          cli::cli_alert_danger("Will NOT download files")
+          cli::cli_alert_info("You may need to manually download the files to '{paste0('data/', pid, '/')}'")
+          
+        }
+      
+      
+      if (download_task_script == TRUE) {
         
         cli::cli_par()
-        cli::cli_h1("Download files")
+        cli::cli_h1("Download task script")
         cli::cli_end()
         
-        update_data(id_protocol = pid) 
+        # Get protocol without data and zip it in data/protocol_PID.zip
+        get_zip_protocol(pid)
+          
         
-      } else {
+      } else if (download_task_script == FALSE) {
         
-        cli::cli_alert_danger("'sshpass' or 'rsync' not installed. Can't use `update_data()`")
-        cli::cli_alert_info("You need to manually download the files to '{paste0('data/', pid, '/')}'")
+        cli::cli_alert_danger("Will NOT download task script")
+        # cli::cli_alert_info("You may need to manually download the files to '{paste0('data/', pid, '/')}'")
         
       }
       
-    } else if (download_files == FALSE) {
-      
-      cli::cli_alert_danger("Will not download files")
-      cli::cli_alert_info("You may need to manually download the files to '{paste0('data/', pid, '/')}'")
-      
     } else {
       
-      cli::cli_alert_danger("Can find server credentials in '.vault/.credentials'")
+      cli::cli_alert_danger("Can't find server credentials in '.vault/.credentials'")
       
     }
     

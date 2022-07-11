@@ -1,6 +1,27 @@
-# Standalone function to Download/Upload files from server to local folder or vice-versa
-sync_server_local <- function(server_folder, local_folder, direction, only_test = TRUE, exclude_csv = FALSE, delete_nonexistent = FALSE) {
-  
+#' sync_server_local
+#' Standalone function to Download/Upload files from server to local folder or vice-versa
+#'
+#' @param server_folder 
+#' @param local_folder 
+#' @param direction should be either 'server_to_local' or 'local_to_server'
+#' @param only_test TRUE/FALSE
+#' @param exclude_csv DO NOT INCLUDE DATA
+#' @param delete_nonexistent  Delete files localy if they are NOT in server anymore
+#' @param dont_ask For the initial setup, do not ask and proceed! DANGER
+#'
+#' @return
+#' @export
+#'
+#' @examples
+sync_server_local <-
+  function(server_folder,
+           local_folder,
+           direction,
+           only_test = TRUE,
+           exclude_csv = FALSE,
+           delete_nonexistent = FALSE,
+           dont_ask = FALSE) {
+    
   # DEBUG
   # server_folder = "test/FONDECYT2021/"
   # local_folder = "canonical_protocol_DEV/"
@@ -72,7 +93,14 @@ sync_server_local <- function(server_folder, local_folder, direction, only_test 
   
   
   cli::cli_h1("sync {direction} | delete_nonexistent {delete_nonexistent}")
-  out <- utils::menu(c("yes", "no"), title = cat(message_text))
+  
+  if (dont_ask == TRUE) {
+    out = 1
+    cat(paste0(cli::col_yellow("BACKUP of full protocol without data: "), cli::col_silver("cscn.uai.cl/", server_folder, " -->> data/protocol_", server_folder, ".zip"), "\n", extra_message))
+  } else {
+    out <- utils::menu(c("yes", "no"), title = cat(message_text))  
+  }
+  
   
   
   # SYNC --------------------------------------------------------------------

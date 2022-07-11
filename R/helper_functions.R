@@ -397,7 +397,7 @@ get_dimensions_googledoc <- function(short_name_text, google_username = "gorkang
   # DEBUG
   # short_name_text = "ESZ"
   
-  # READ google sheet -------------------------------------------------------
+  # READ google sheet ---
   
   cli::cli_h1("Reading https://docs.google.com/spreadsheets/d/1LAsyTZ2ZRP_xLiUBkqmawwnKWgy8OCwq4mmWrrc_rpQ/edit#gid=0")
   
@@ -423,20 +423,18 @@ get_dimensions_googledoc <- function(short_name_text, google_username = "gorkang
   
   
 
-  # CHECK -------------------------------------------------------------------
+  # CHECK ---
   if (nrow(DF_dimensions) == 0 & nrow(DF_items) == 0) {
     cli::cli_h1("WARNING")
     cli::cli_alert_danger("{short_name_text} is not in the Google Doc")
   }
 
     
-  
-
-  # ITEMS -------------------------------------------------------------------
+  # ITEMS ---
 
     if (nrow(DF_items) > 0) {
       
-      ## Items invertidos -----------------------------------------------------
+      ## Items invertidos ---
       
       cli::cli_h1("Items invertidos")
       
@@ -459,7 +457,7 @@ get_dimensions_googledoc <- function(short_name_text, google_username = "gorkang
       # paste0('items_to_reverse = c("', paste(NUMBERS_inverse_formatted, collapse = '", "'), '")\n') %>% cat()
     
       
-    ## Conversion numerica --------------------------------------------------
+    ## Conversion numerica ---
       
       cli::cli_h1("Conversion numérica")
       
@@ -492,7 +490,7 @@ get_dimensions_googledoc <- function(short_name_text, google_username = "gorkang
 
     }
   
-  # Dimensiones -------------------------------------------------------------
+  # Dimensiones ---
   
   if (nrow(DF_dimensions) > 0) {
     
@@ -505,7 +503,7 @@ get_dimensions_googledoc <- function(short_name_text, google_username = "gorkang
     
     
     
-      ## Items dimensiones -------------------------------------------------------
+      ## Items dimensiones ---
       
       cli::cli_par()
       cli::cli_text("") 
@@ -590,10 +588,8 @@ create_new_task <- function(short_name_task, overwrite = FALSE, get_dimensions_g
     cat(crayon::yellow("\nFile ", crayon::silver(new_task_file), " already exists. Not overwriting\n"))
   }
 
-  
-  
 
-  # get_dimensions_googledoc ------------------------------------------------
+  # get_dimensions_googledoc ---
 
     if (get_dimensions_googledoc == TRUE) {
       get_dimensions_googledoc(short_name_text = short_name_task)
@@ -604,7 +600,7 @@ create_new_task <- function(short_name_task, overwrite = FALSE, get_dimensions_g
   rstudioapi::navigateToFile(new_task_file)
   
   
-  # OUTPUT ------------------------------------------------------------------
+  # OUTPUT ---
 
     # Line to add in _targets.R
   short_name_old = short_name_task
@@ -1225,15 +1221,17 @@ number_items_tasks <- function(DF_joined) {
 #' Download 'data/id_protocol' folder from server using rsync
 #'
 #' @param id_protocol 
+#' @param sensitive_tasks 
+#' @param folder_to_download ["data" | "script"] to download data or full script
 #'
 #' @return
 #' @export
 #'
 #' @examples
-update_data <- function(id_protocol, sensitive_tasks = c("")) {
+update_data <- function(id_protocol, sensitive_tasks = c(""), folder_to_download = "data") {
   
   # DEBUG
-  # id_protocol = 999
+  # id_protocol = 22
   # sensitive_tasks = c("DEMOGR")
 
   # CHECKS --
@@ -1241,7 +1239,8 @@ update_data <- function(id_protocol, sensitive_tasks = c("")) {
   credentials_exist = file.exists(".vault/.credentials")
   SSHPASS = Sys.which("sshpass") # Check if sshpass is installed
   RSYNC = Sys.which("rsync") # Check if rsync is installed
-  if (!dir.exists(paste0(getwd(), '/data/' , id_protocol, '/'))) dir.create(paste0(getwd(), '/data/' , id_protocol, '/'))
+  
+  if (!dir.exists(paste0(getwd(), '/', folder_to_download, '/' , id_protocol, '/'))) dir.create(paste0(getwd(), '/', folder_to_download, '/' , id_protocol, '/'))
   # if (!dir.exists(paste0("data/", id_protocol, "/"))) stop("CAN'T find the destination folder: 'data/", id_protocol, "'")
   
   if (!credentials_exist) {
@@ -1250,40 +1249,51 @@ update_data <- function(id_protocol, sensitive_tasks = c("")) {
         'rstudioapi::navigateToFile("setup/setup_server_credentials.R")'))
   }
    
-  
-  # Download files --
-
-  cli::cli_alert_info("Synching files from pid {id_protocol} to 'data/{id_protocol}'")
-  
-  WD = gsub(" ", "\\ ", getwd(), fixed = TRUE) # Replace " " in path to avoid error
-  list_credentials = source(".vault/.credentials")
-  result = system(paste0('sshpass -p ', list_credentials$value$password, 
-                ' rsync -av --rsh=ssh ', 
-                # From
-                list_credentials$value$user, "@", list_credentials$value$IP, ":", list_credentials$value$main_FOLDER, id_protocol, '/.data/ ', 
-                # To
-                WD, '/data/' , id_protocol, '/'), 
-                intern = TRUE)
-  
-  if (length(result) == 4) {
-    cli::cli_alert_info("All files already in 'data/{id_protocol}'")
+  if (SSHPASS != "" & RSYNC != "") { 
+    
+    if (folder_to_download == "data") {
+      server_folder_to_download = ".data"
+    }
+    
+      # Download files --
+    
+      cli::cli_alert_info("Synching files from pid {id_protocol} to 'data/{id_protocol}'")
+      
+      WD = gsub(" ", "\\ ", getwd(), fixed = TRUE) # Replace " " in path to avoid error
+      list_credentials = source(".vault/.credentials")
+      result = system(paste0('sshpass -p ', list_credentials$value$password, 
+                    ' rsync -av --rsh=ssh ', 
+                    # From
+                    list_credentials$value$user, "@", list_credentials$value$IP, ":", list_credentials$value$main_FOLDER, id_protocol, '/', server_folder_to_download, '/ ', 
+                    # To
+                    WD, '/', folder_to_download, '/' , id_protocol, '/'), 
+                    intern = TRUE)
+      
+      if (length(result) == 4) {
+        cli::cli_alert_info("All files already in 'data/{id_protocol}'")
+      } else {
+        cli::cli_alert_success("Downloaded {length(result) - 5} files to 'data/{id_protocol}'")
+      }
+      
+    
+      # Move sensitive files to .vault/data --
+    
+      if (sensitive_tasks != "") {
+        # MOVE sensitive data to .vault
+        data_folder = paste0("data/", id_protocol)
+        sensitive_files = list.files(data_folder, pattern = paste(sensitive_tasks, collapse = "|"), full.names = TRUE)
+        
+        destination_folder = paste0(".vault/data")
+        destination_names = gsub(data_folder, destination_folder, sensitive_files)
+        file.rename(from = sensitive_files, to = destination_names)
+        
+        cli::cli_alert_success("Moved {length(destination_names)} files matching '{paste(sensitive_tasks, collapse = '|')}' to '{destination_folder}'")
+        
+      }
   } else {
-    cli::cli_alert_success("Downloaded {length(result) - 5} files to 'data/{id_protocol}'")
-  }
-  
-
-  # Move sensitive files to .vault/data --
-
-  if (sensitive_tasks != "") {
-    # MOVE sensitive data to .vault
-    data_folder = paste0("data/", id_protocol)
-    sensitive_files = list.files(data_folder, pattern = paste(sensitive_tasks, collapse = "|"), full.names = TRUE)
     
-    destination_folder = paste0(".vault/data")
-    destination_names = gsub(data_folder, destination_folder, sensitive_files)
-    file.rename(from = sensitive_files, to = destination_names)
-    
-    cli::cli_alert_success("Moved {length(destination_names)} files matching '{paste(sensitive_tasks, collapse = '|')}' to '{destination_folder}'")
+    cli::cli_alert_danger("'sshpass' or 'rsync' not installed. Can't use `update_data()`")
+    cli::cli_alert_info("You need to manually download the files to '{paste0('data/', pid, '/')}'")
     
   }
   
@@ -1386,13 +1396,13 @@ create_codebook <- function(tasks, number) {
   
 }
 
-tasks = list.files("R_tasks", pattern = "\\.R", full.names = TRUE)
-1:length(tasks) %>%
-  map(~
-        {
-          cli::cli_h1(.x, "\n")
-          create_codebook(tasks, .x)
-          })
+# tasks = list.files("R_tasks", pattern = "\\.R", full.names = TRUE)
+# 1:length(tasks) %>%
+#   map(~
+#         {
+#           cli::cli_h1(.x, "\n")
+#           create_codebook(tasks, .x)
+#           })
 
 
 
@@ -1483,6 +1493,59 @@ read_zips = function(input_files, workers = 1, unzip_dir = file.path(dirname(inp
   if (do_cleanup) unlink(unzip_dir, recursive = TRUE)
   
   return(res)
+}
+
+
+
+
+#' get_zip_protocol
+#' Get and zip a full jsPsychMakeR protocol without the data to keep it as a backup
+#'
+#' @param pid 
+#' @param sync_protocols 
+#' @param delete_nonexistent Delete local files not existent in server
+#'
+#' @return
+#' @export
+#'
+#' @examples
+get_zip_protocol <- function(pid) {
+  
+  # DEBUG
+  # pid = 22
+  
+  # Get project's folder to be able ro reset it after zipping
+  project_folder = getwd()
+  
+  # Create temp dir to download the protocol
+  TEMP_DIR = tempdir(check = TRUE)
+  
+  sync_server_local(server_folder = pid, 
+                    local_folder = TEMP_DIR,
+                    direction = "server_to_local", 
+                    only_test = FALSE, 
+                    exclude_csv = TRUE, # DO NOT INCLUDE DATA
+                    delete_nonexistent = TRUE,
+                    dont_ask = TRUE)
+  
+  # Set Temp folder as working folder so the files in zip WONT have the temp path
+  setwd(TEMP_DIR)
+  FILES_ZIP = list.files(TEMP_DIR, recursive = TRUE, full.names = FALSE, all.files = TRUE, include.dirs = TRUE)
+  
+  cli::cli_h2("ZIP protocol files to {paste0('/data/protocol_', pid, '.zip')}")
+  # Create safely version so an error won't avoid resetting the project's wd
+  zip_safely = purrr::safely(zip)
+  
+  # Save version of name (if it is in a subfolder, replace / by _)
+  # REVIEW: Works in Windows?
+  pid_safe = str_replace_all(string = pid, pattern = "/", replacement = "_")
+  zip_name = paste0(project_folder, "/data/protocol_", pid_safe, ".zip")
+  
+  # ZIP zilently (flags="-q")
+  RESULT = zip_safely(zipfile = zip_name, files = FILES_ZIP, flags="-q")
+
+  # Reset the project's WD
+  setwd(project_folder)
 }
 
 
