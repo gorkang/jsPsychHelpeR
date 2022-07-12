@@ -152,6 +152,10 @@ check_missing_prepare_TASK <- function(sync_protocols = FALSE, check_trialids = 
     
   }
   
+
+# CHECK all info NEW tasks ------------------------------------------------
+
+    
   if (check_new_task_tabs == TRUE) {
     
     
