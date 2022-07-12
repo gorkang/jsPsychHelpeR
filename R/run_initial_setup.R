@@ -1,4 +1,4 @@
-run_initial_setup <- function(pid, download_files = TRUE, download_task_script = TRUE) {
+run_initial_setup <- function(pid, download_files = FALSE, download_task_script = FALSE) {
   
   # DEBUG
   # pid = "999"
