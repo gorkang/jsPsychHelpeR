@@ -16,6 +16,9 @@
 ##' @export
 prepare_SWBQ <- function(DF_clean, short_name_scale_str) {
 
+  # REMEMBER:
+    # 6 extra items. ONLY use the ones that end up in the dimensions for the total score.
+  
   # DEBUG
   # debug_function(prepare_SWBQ)
 
@@ -33,6 +36,8 @@ prepare_SWBQ <- function(DF_clean, short_name_scale_str) {
   items_DIRd3 = c("04", "10", "20", "22", "24")
   items_DIRd4 = c("02", "06", "11", "13", "15")
 
+  all_items = c(items_DIRd1, items_DIRd2, items_DIRd3, items_DIRd4)
+  
   # [END ADAPT]: ***************************************************************
   # ****************************************************************************
   
@@ -96,7 +101,7 @@ prepare_SWBQ <- function(DF_clean, short_name_scale_str) {
       
       
       # Score Scale
-      !!name_DIRt := rowSums(select(., matches("_DIR$")), na.rm = TRUE)
+      !!name_DIRt := rowSums(select(., paste0(short_name_scale_str, "_", all_items, "_DIR")), na.rm = TRUE)
       
     )
     
