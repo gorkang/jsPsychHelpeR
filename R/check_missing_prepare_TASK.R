@@ -198,15 +198,25 @@ check_missing_prepare_TASK <- function(sync_protocols = FALSE, check_trialids = 
       mutate(TEXT = paste(resumen, citas, puntajes, dimensiones, sep = ", "),
              TEXT = gsub("^ | ,|^,", "", TEXT))
     
-    MISSING_tabs = DF_all_NEW %>% 
+    MISSING_n = 
+      DF_all_NEW %>% 
+      count(EMAIL) %>% 
+      mutate(TEXT = paste0(EMAIL, ": ", n)) %>% 
+      pull(TEXT)
+    
+    MISSING_tabs = 
+      DF_all_NEW %>% 
       group_by(EMAIL) %>% 
       summarise(tasks = paste(paste0(short_name, " (", TEXT, ") "), collapse = "; "),
                 TEXT = unique(TEXT), 
                 .groups = "drop") %>% 
       mutate(TEXT = paste0(EMAIL, ": ", tasks)) %>% 
+      distinct(TEXT, .keep_all = TRUE) %>% # Delete duplicates (when tasks with different missing pieces for same EMAIL)
       pull(TEXT)
     
     cli::cli_alert_danger("Tasks missing info in tabs: ")
+    cli::cli_li(MISSING_n)
+    cli::cli_h2("Details")
     cli::cli_li(MISSING_tabs)
     
   } else {
