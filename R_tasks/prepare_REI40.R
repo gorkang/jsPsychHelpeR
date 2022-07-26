@@ -1,20 +1,17 @@
 ##' Prepare REI40
-##'
-##' Template for the functions to prepare specific tasks. Most of this file should not be changed
-##' Things to change: 
-##'   - Name of function: prepare_REI40 -> prepare_[value of short_name_scale_str] 
-##'   - dimensions parameter in standardized_names()
-##'   - 2 [ADAPT] chunks
+##' REI40 task. 
+##' 
 ##'
 ##' @title prepare_REI40
 ##'
 ##' @param short_name_scale_str 
 ##' @param DF_clean
+##' @param needs_v02_fix If the data comes from an old implementation of REI [fixed Jun 9, 2022], set needs_v02_fix = TRUE to fix the item numbers
 ##'
 ##' @return
 ##' @author gorkang
 ##' @export
-prepare_REI40 <- function(DF_clean, short_name_scale_str, v02_fix = FALSE) {
+prepare_REI40 <- function(DF_clean, short_name_scale_str, needs_v02_fix = FALSE) {
 
   # DEBUG
   # debug_function(prepare_REI40)
@@ -49,7 +46,7 @@ prepare_REI40 <- function(DF_clean, short_name_scale_str, v02_fix = FALSE) {
   
 
   # TEMPORAL FIX ------------------------------------------------------------
-  if (v02_fix == TRUE) {
+  if (needs_v02_fix == TRUE) {
     DF_dicc = read_csv("R_tasks/prepare_REI40_diccionary.csv", show_col_types = FALSE)
     DF_long_RAW = DF_long_RAW %>% 
       left_join(DF_dicc, by = "trialid") %>% 
