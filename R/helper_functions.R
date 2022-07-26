@@ -36,8 +36,6 @@ standardized_names <- function(short_name_scale, dimensions = "", help_names = F
   }
 
 
-# NEW SYSTEM --------------------------------------------------------------
-
   # Create names for dimensions, NAs and/or totals
   if (dimensions[1] != "") {
     
@@ -877,6 +875,7 @@ auto_reliability = function(DF, short_name_scale = short_name_scale_str, items =
   # items =  items_DIRd1
   # min_rdrop = 0.2
   # items =  NULL
+  
 
   # Internal functions
   alpha_table <- function(DF) {psych::alpha(DF, check.keys = TRUE)$item.stats %>% as_tibble(rownames = "nitem")}
@@ -903,8 +902,7 @@ auto_reliability = function(DF, short_name_scale = short_name_scale_str, items =
   
   # CHECK variance
   variance_WARNING = ifelse(all(1:ncol(temp_clean) %>% map_dbl(~ sd(temp_clean[.x] %>% unlist)) == 0), "No variance", NA) 
-  if (!is.na(variance_WARNING)) cat(crayon::red("x NO variance. sd = 0"), "\n")
-  
+  if (!is.na(variance_WARNING)) cli::cli_alert_danger("NO variance in items (sd = 0): \n{paste(items_selection, collapse = '; ')}")
   
   
   # deleted_items_NAs
