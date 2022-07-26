@@ -20,7 +20,7 @@ prepare_Goodbye <- function(DF_clean, short_name_scale_str) {
   # debug_function(prepare_Goodbye)
 
   # Standardized names ------------------------------------------------------
-  standardized_names(short_name_scale = short_name_scale_str, 
+  names_list = standardized_names(short_name_scale = short_name_scale_str, 
                      dimensions = c(""), # Use names of dimensions, "" or comment out line
                      help_names = FALSE) # help_names = FALSE once the script is ready
   
@@ -70,13 +70,13 @@ prepare_Goodbye <- function(DF_clean, short_name_scale_str) {
       names_glue = "{trialid}_{.value}") %>% 
     
     # NAs for RAW and DIR items
-    mutate(!!name_RAW_NA := rowSums(is.na(select(., -matches(items_to_ignore) & matches("_RAW")))),
-           !!name_DIR_NA := rowSums(is.na(select(., -matches(items_to_ignore) & matches("_DIR"))))) %>% 
+    mutate(!!names_list$name_RAW_NA := rowSums(is.na(select(., -matches(items_to_ignore) & matches("_RAW")))),
+           !!names_list$name_DIR_NA := rowSums(is.na(select(., -matches(items_to_ignore) & matches("_DIR"))))) %>% 
     
   mutate(
     
     # Score Scale
-    !!name_DIRt := "DONE"
+    !!names_list$name_DIRt := "DONE"
     
   )
   

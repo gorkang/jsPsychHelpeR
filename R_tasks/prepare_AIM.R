@@ -32,7 +32,7 @@ prepare_AIM <- function(DF_clean, short_name_scale_str) {
   
   
   # Standardized names ------------------------------------------------------
-  standardized_names(short_name_scale = short_name_scale_str, 
+  names_list = standardized_names(short_name_scale = short_name_scale_str, 
                      dimensions = c("TramoIngreso"), # Use names of dimensions, "" or comment out line
                      help_names = FALSE) # help_names = FALSE once the script is ready
   
@@ -177,8 +177,8 @@ prepare_AIM <- function(DF_clean, short_name_scale_str) {
       names_glue = "{trialid}_{.value}") %>% 
     
     # NAs for RAW and DIR items
-    mutate(!!name_RAW_NA := rowSums(is.na(select(., matches("_RAW")))),
-           !!name_DIR_NA := rowSums(is.na(select(., matches("_DIR"))))) %>% 
+    mutate(!!names_list$name_RAW_NA := rowSums(is.na(select(., matches("_RAW")))),
+           !!names_list$name_DIR_NA := rowSums(is.na(select(., matches("_DIR"))))) %>% 
       
     
   # [ADAPT]: Scales and dimensions calculations --------------------------------
@@ -188,10 +188,10 @@ prepare_AIM <- function(DF_clean, short_name_scale_str) {
     mutate(
 
       # Score Dimensions (see standardized_names(help_names = TRUE) for instructions)
-      !!name_DIRd1 := rowSums(select(., matches("04|05|06|07|08|09|10") & matches("_DIR$")), na.rm = TRUE)
+      !!names_list$name_DIRd[1] := rowSums(select(., matches("04|05|06|07|08|09|10") & matches("_DIR$")), na.rm = TRUE)
       
       # Score Scale
-      # !!name_DIRt := rowSums(select(., matches("_DIR$")), na.rm = TRUE)
+      # !!names_list$name_DIRt := rowSums(select(., matches("_DIR$")), na.rm = TRUE)
       
     ) %>% 
     

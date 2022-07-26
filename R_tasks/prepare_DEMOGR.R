@@ -45,7 +45,7 @@ prepare_DEMOGR <- function(DF_clean, short_name_scale_str) {
                          ))
   
   # Standardized names ------------------------------------------------------
-  standardized_names(short_name_scale = short_name_scale_str, 
+  names_list = standardized_names(short_name_scale = short_name_scale_str, 
                      dimensions = names_dimensions,
                      help_names = FALSE) # help_names = FALSE once the script is ready
   
@@ -169,8 +169,8 @@ prepare_DEMOGR <- function(DF_clean, short_name_scale_str) {
         names_glue = "{trialid}_{.value}") %>% 
       
       # NAs for RAW and DIR items
-      mutate(!!name_RAW_NA := rowSums(is.na(select(., -matches(items_to_ignore) & matches("_RAW")))),
-             !!name_DIR_NA := rowSums(is.na(select(., -matches(items_to_ignore) & matches("_DIR")))))
+      mutate(!!names_list$name_RAW_NA := rowSums(is.na(select(., -matches(items_to_ignore) & matches("_RAW")))),
+             !!names_list$name_DIR_NA := rowSums(is.na(select(., -matches(items_to_ignore) & matches("_DIR")))))
   
   
   DF_wide_RAW_DIR =
@@ -192,8 +192,8 @@ prepare_DEMOGR <- function(DF_clean, short_name_scale_str) {
     # [USE STANDARD NAMES FOR Scales and dimensions: name_DIRt, name_DIRd1, etc.] Check with: standardized_names(help_names = TRUE)
     
     mutate(
-      !!name_DIRd1 := get(paste0(short_name_scale_str, "_", items_DIRd1, "_DIR")), 
-      !!name_DIRd2 := get(paste0(short_name_scale_str, "_", items_DIRd2, "_DIR"))
+      !!names_list$name_DIRd[1] := get(paste0(short_name_scale_str, "_", items_DIRd1, "_DIR")), 
+      !!names_list$name_DIRd[2] := get(paste0(short_name_scale_str, "_", items_DIRd2, "_DIR"))
     )
     
     # [END ADAPT]: ***************************************************************

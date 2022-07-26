@@ -90,8 +90,8 @@ prepare_ConsentHTML <- function(DF_clean, short_name_scale_str) {
       names_glue = "{trialid}_{.value}") %>%
 
     # NAs for RAW and DIR items
-    mutate(!!name_RAW_NA := rowSums(is.na(select(., -matches(paste0(short_name_scale_str, "_", items_to_ignore, "_RAW")) & matches("_RAW$")))),
-           !!name_DIR_NA := rowSums(is.na(select(., -matches(paste0(short_name_scale_str, "_", items_to_ignore, "_DIR")) & matches("_DIR$")))))
+    mutate(!!names_list$name_RAW_NA := rowSums(is.na(select(., -matches(paste0(short_name_scale_str, "_", items_to_ignore, "_RAW")) & matches("_RAW$")))),
+           !!names_list$name_DIR_NA := rowSums(is.na(select(., -matches(paste0(short_name_scale_str, "_", items_to_ignore, "_DIR")) & matches("_DIR$")))))
 
 
   # [ADAPT]: Scales and dimensions calculations --------------------------------
@@ -102,7 +102,7 @@ prepare_ConsentHTML <- function(DF_clean, short_name_scale_str) {
     DF_wide_RAW %>%
     mutate(
       # Score Scale
-      !!name_DIRt := rowSums(select(., matches("_DIR$")), na.rm = TRUE)
+      !!names_list$name_DIRt := rowSums(select(., matches("_DIR$")), na.rm = TRUE)
 
     )
 

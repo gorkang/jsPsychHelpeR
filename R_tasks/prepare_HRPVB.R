@@ -41,7 +41,7 @@ prepare_HRPVB <- function(DF_clean, short_name_scale_str) {
   
   
   # Standardized names ------------------------------------------------------
-  standardized_names(short_name_scale = short_name_scale_str, 
+  names_list = standardized_names(short_name_scale = short_name_scale_str, 
                      dimensions = names_dimensions, 
                      help_names = FALSE)
   
@@ -90,8 +90,8 @@ prepare_HRPVB <- function(DF_clean, short_name_scale_str) {
       names_glue = "{trialid}_{.value}") %>% 
     
     # NAs for RAW and DIR items
-    mutate(!!name_RAW_NA := rowSums(is.na(select(., -matches(items_to_ignore) & matches("_RAW")))),
-           !!name_DIR_NA := rowSums(is.na(select(., -matches(items_to_ignore) & matches("_DIR")))))
+    mutate(!!names_list$name_RAW_NA := rowSums(is.na(select(., -matches(items_to_ignore) & matches("_RAW")))),
+           !!names_list$name_DIR_NA := rowSums(is.na(select(., -matches(items_to_ignore) & matches("_DIR")))))
   
   
   
@@ -102,8 +102,8 @@ prepare_HRPVB <- function(DF_clean, short_name_scale_str) {
     DF_wide_RAW %>% 
     mutate(
       # Score Dimensions (see standardized_names(help_names = TRUE) for instructions)
-      !!name_DIRd1 := rowMeans(select(., paste0(short_name_scale_str, "_", items_DIRd1, "_01_DIR")), na.rm = TRUE),
-      !!name_DIRd2 := rowMeans(select(., paste0(short_name_scale_str, "_", items_DIRd2, "_02_DIR")), na.rm = TRUE)
+      !!names_list$name_DIRd[1] := rowMeans(select(., paste0(short_name_scale_str, "_", items_DIRd1, "_01_DIR")), na.rm = TRUE),
+      !!names_list$name_DIRd[2] := rowMeans(select(., paste0(short_name_scale_str, "_", items_DIRd2, "_02_DIR")), na.rm = TRUE)
     )
     
   # [END ADAPT]: ***************************************************************

@@ -37,7 +37,7 @@ prepare_Report <- function(DF_clean, short_name_scale_str) {
   
   
   # Standardized names ------------------------------------------------------
-  standardized_names(short_name_scale = short_name_scale_str, 
+  names_list = standardized_names(short_name_scale = short_name_scale_str, 
                      dimensions = names_dimensions, # Use names of dimensions, "" or comment out line
                      help_names = FALSE) # help_names = FALSE once the script is ready
   
@@ -101,8 +101,8 @@ prepare_Report <- function(DF_clean, short_name_scale_str) {
       names_glue = "{trialid}_{.value}") %>% 
     
     # NAs for RAW and DIR items
-    mutate(!!name_RAW_NA := rowSums(is.na(select(., -matches(paste0(short_name_scale_str, "_", items_to_ignore, "_RAW")) & matches("_RAW$")))),
-           !!name_DIR_NA := rowSums(is.na(select(., -matches(paste0(short_name_scale_str, "_", items_to_ignore, "_DIR")) & matches("_DIR$")))))
+    mutate(!!names_list$name_RAW_NA := rowSums(is.na(select(., -matches(paste0(short_name_scale_str, "_", items_to_ignore, "_RAW")) & matches("_RAW$")))),
+           !!names_list$name_DIR_NA := rowSums(is.na(select(., -matches(paste0(short_name_scale_str, "_", items_to_ignore, "_DIR")) & matches("_DIR$")))))
   
   
   # Reliability -------------------------------------------------------------
@@ -125,19 +125,19 @@ prepare_Report <- function(DF_clean, short_name_scale_str) {
       # Make sure to use the correct formula: rowMeans() / rowSums()
       
       # Score Dimensions (see standardized_names(help_names = TRUE) for instructions)
-      !!name_DIRd1 := get(paste0(short_name_scale_str, "_", items_DIRd1, "_DIR")),
-      # !!name_DIRd2 := ifelse(suppressWarnings(ncol(DF_wide_RAW %>% select(Report_001_1_DIR))) > 0, get(paste0(short_name_scale_str, "_", items_DIRd2, "_DIR")), NA_character_),
-      # !!name_DIRd3 := ifelse(suppressWarnings(ncol(DF_wide_RAW %>% select(Report_001_1_DIR))) > 0, get(paste0(short_name_scale_str, "_", items_DIRd3, "_DIR")), NA_character_),
-      !!name_DIRd2 := ifelse(suppressWarnings(!is.null(DF_wide_RAW$Report_001_1_DIR)) > 0, get(paste0(short_name_scale_str, "_", items_DIRd2, "_DIR")), NA_character_),
-      !!name_DIRd3 := ifelse(suppressWarnings(!is.null(DF_wide_RAW$Report_001_1_DIR)) > 0, get(paste0(short_name_scale_str, "_", items_DIRd3, "_DIR")), NA_character_),
-      !!name_DIRd4 := ifelse(get(paste0(short_name_scale_str, "_", items_DIRd4, "_DIR")) == 1, get(!!name_DIRd3), NA_character_)
+      !!names_list$name_DIRd[1] := get(paste0(short_name_scale_str, "_", items_DIRd1, "_DIR")),
+      # !!names_list$name_DIRd[2] := ifelse(suppressWarnings(ncol(DF_wide_RAW %>% select(Report_001_1_DIR))) > 0, get(paste0(short_name_scale_str, "_", items_DIRd2, "_DIR")), NA_character_),
+      # !!names_list$name_DIRd[3] := ifelse(suppressWarnings(ncol(DF_wide_RAW %>% select(Report_001_1_DIR))) > 0, get(paste0(short_name_scale_str, "_", items_DIRd3, "_DIR")), NA_character_),
+      !!names_list$name_DIRd[2] := ifelse(suppressWarnings(!is.null(DF_wide_RAW$Report_001_1_DIR)) > 0, get(paste0(short_name_scale_str, "_", items_DIRd2, "_DIR")), NA_character_),
+      !!names_list$name_DIRd[3] := ifelse(suppressWarnings(!is.null(DF_wide_RAW$Report_001_1_DIR)) > 0, get(paste0(short_name_scale_str, "_", items_DIRd3, "_DIR")), NA_character_),
+      !!names_list$name_DIRd[4] := ifelse(get(paste0(short_name_scale_str, "_", items_DIRd4, "_DIR")) == 1, get(!!names_list$name_DIRd[3]), NA_character_)
       
       
       # Reliability Dimensions (see standardized_names(help_names = TRUE) for instructions)
-      # !!name_RELd1 := rowMeans(select(., paste0(short_name_scale_str, "_", items_RELd1, "_DIR")), na.rm = TRUE), 
+      # !!names_list$name_RELd[1] := rowMeans(select(., paste0(short_name_scale_str, "_", items_RELd1, "_DIR")), na.rm = TRUE), 
       
       # Score Scale
-      # !!name_DIRt := rowSums(select(., matches("_DIR$")), na.rm = TRUE)
+      # !!names_list$name_DIRt := rowSums(select(., matches("_DIR$")), na.rm = TRUE)
       
     )
 

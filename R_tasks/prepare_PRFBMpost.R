@@ -20,7 +20,7 @@ prepare_PRFBMpost <- function(DF_clean, short_name_scale_str) {
   # debug_function(prepare_PRFBMpost)
 
   # Standardized names ------------------------------------------------------
-  standardized_names(short_name_scale = short_name_scale_str, 
+  names_list = standardized_names(short_name_scale = short_name_scale_str, 
                      dimensions = c("Preferencia", "FuerzaPreferencia", "MotivosMadreBeneficio", "MotivosBebeBeneficio", "MotivosMadreDaño", "MotivosBebeDaño"), # Use names of dimensions, "" or comment out line
                      help_names = FALSE) # help_names = FALSE once the script is ready
   
@@ -96,8 +96,8 @@ prepare_PRFBMpost <- function(DF_clean, short_name_scale_str) {
       names_glue = "{trialid}_{.value}") %>% 
     
     # NAs for RAW and DIR items
-    mutate(!!name_RAW_NA := rowSums(is.na(select(., -matches(items_to_ignore) & matches("_RAW")))),
-           !!name_DIR_NA := rowSums(is.na(select(., -matches(items_to_ignore) & matches("_DIR"))))) %>% 
+    mutate(!!names_list$name_RAW_NA := rowSums(is.na(select(., -matches(items_to_ignore) & matches("_RAW")))),
+           !!names_list$name_DIR_NA := rowSums(is.na(select(., -matches(items_to_ignore) & matches("_DIR"))))) %>% 
       
     
   # [ADAPT]: Scales and dimensions calculations --------------------------------
@@ -107,15 +107,15 @@ prepare_PRFBMpost <- function(DF_clean, short_name_scale_str) {
     mutate(
 
       # Score Dimensions (see standardized_names(help_names = TRUE) for instructions)
-      !!name_DIRd1 := rowMeans(select(., matches("01") & matches("_DIR$")), na.rm = TRUE), 
-      !!name_DIRd2 := rowMeans(select(., matches("02|03") & matches("_DIR$")), na.rm = TRUE), 
-      !!name_DIRd3 := rowMeans(select(., matches("04_beneficio|06_beneficio") & matches("_DIR$")), na.rm = TRUE), 
-      !!name_DIRd4 := rowMeans(select(., matches("05_beneficio|07_beneficio") & matches("_DIR$")), na.rm = TRUE),
-      !!name_DIRd5 := rowMeans(select(., matches("04_daño|06_daño") & matches("_DIR$")), na.rm = TRUE), 
-      !!name_DIRd6 := rowMeans(select(., matches("05_daño|07_daño") & matches("_DIR$")), na.rm = TRUE)
+      !!names_list$name_DIRd[1] := rowMeans(select(., matches("01") & matches("_DIR$")), na.rm = TRUE), 
+      !!names_list$name_DIRd[2] := rowMeans(select(., matches("02|03") & matches("_DIR$")), na.rm = TRUE), 
+      !!names_list$name_DIRd[3] := rowMeans(select(., matches("04_beneficio|06_beneficio") & matches("_DIR$")), na.rm = TRUE), 
+      !!names_list$name_DIRd[4] := rowMeans(select(., matches("05_beneficio|07_beneficio") & matches("_DIR$")), na.rm = TRUE),
+      !!names_list$name_DIRd[5] := rowMeans(select(., matches("04_daño|06_daño") & matches("_DIR$")), na.rm = TRUE), 
+      !!names_list$name_DIRd[6] := rowMeans(select(., matches("05_daño|07_daño") & matches("_DIR$")), na.rm = TRUE)
       
       # Score Scale
-      # !!name_DIRt := rowSums(select(., matches("_DIR$")), na.rm = TRUE)
+      # !!names_list$name_DIRt := rowSums(select(., matches("_DIR$")), na.rm = TRUE)
       
     )
     
