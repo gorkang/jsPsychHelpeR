@@ -1,15 +1,17 @@
-##' Standardized names for Direct scores, dimensions and scales
-##'
-##'
-##'
-##' @param short_name_scale short name of scale
-##' @param dimensions c("DIMENSION1", "DIMENSION2"): list of names for the dimensions
-##' @param help_names TRUE prints a message with the instructions
-##'
-##' @title standardized_names
-##' @return
-##' @author gorkang
-##' @export
+#' standardized_names
+#' Standardized names for Direct scores, dimensions and scales
+#' Creates names_list, which can be used in the prepare_TASK scripts to create 
+#' columns with standardized names for direct scores, total scores, etc.
+#' The OLD version created global variables, now we create a list with everything needed
+#'
+#' @param short_name_scale short name of scale
+#' @param dimensions c("DIMENSION1", "DIMENSION2"): list of names for the dimensions
+#' @param help_names TRUE prints a message with the instructions
+#'
+#' @return
+#' @export
+#'
+#' @examples
 standardized_names <- function(short_name_scale, dimensions = "", help_names = FALSE) {
 
   # Global sufix for direct scores
@@ -17,108 +19,130 @@ standardized_names <- function(short_name_scale, dimensions = "", help_names = F
 
 
   # CHECKS ---
-
-  # Character vector
+  
+  # dimensions is a character vector
   if (!(is.vector(dimensions) & is.character(dimensions[1]))) {
-    cat(
-      crayon::red("ERROR: `dimensions` needs to be a character vector. e.g. c('name1', 'name2')\n"),
-      "       Right now: `dimensions` = ",   paste0(dimensions), "\n")
-    stop()
-
-    # Spaces and other forbiden characters
+    ERROR = paste("\n`dimensions` needs to be a character vector. e.g. c('name1', 'name2')\n",
+                  "Right now: `dimensions` = ",   paste0(dimensions), "\n")
+    stop(ERROR)
+    
+    # dimensions names don't have spaces and other forbidden characters
   } else if (any(grepl(" |_", dimensions))) {
-    cat(
-      crayon::red("ERROR: `dimensions` can't have spaces and '_'.\n",
-                  "       WRONG: c('name dimension', 'name_dimension2')\n",
-                  "       RIGHT: c('namedimension', 'NameDimension2')\n"),
-      "       Right now: `dimensions` = ",   paste0(dimensions), "\n")
-    stop()
+    ERROR = paste("\n`dimensions` can't have spaces or '_'. We recommend using CammelCase\n",
+                  " - WRONG: c('name dimension', 'name_dimension2')\n",
+                  " - RIGHT: c('namedimension', 'NameDimension2')\n",
+                  "Right now: `dimensions` = ",   paste0(dimensions), "\n")
+    stop(ERROR)
   }
 
 
-  # Dimensions names
-  # For each of the values in 'dimensions' will create a name_DIRd[n] and name_STDd[n]
-  if (dimensions[1] != "") {
+# NEW SYSTEM --------------------------------------------------------------
 
+  # Create names for dimensions, NAs and/or totals
+  if (dimensions[1] != "") {
+    
     # DEBUG
     # help_names = TRUE
     # short_name_scale = "XXX"
     # dimensions = c("dimension1", "dimension2")
-
-    # Build strings for DIR
-    names_dimensions_DIR = paste0(short_name_scale, "_", dimensions, "_DIRd")
-    names_variables_DIR = paste0("name_DIRd", 1:length(names_dimensions_DIR))
-
-    # Build strings for REL
-    names_dimensions_REL = paste0(short_name_scale, "_", dimensions, "_RELd")
-    names_variables_REL = paste0("name_RELd", 1:length(names_dimensions_REL))
-
-    # Build strings for STD
-    names_dimensions_STD = paste0(short_name_scale, "_", dimensions, "_STDd")
-    names_variables_STD = paste0("name_STDd", 1:length(names_dimensions_STD))
-
-    # Creates variables in Global Environment
-    map2(names_variables_DIR, names_dimensions_DIR, assign, envir = .GlobalEnv)
-    map2(names_variables_REL, names_dimensions_REL, assign, envir = .GlobalEnv)
-    map2(names_variables_STD, names_dimensions_STD, assign, envir = .GlobalEnv)
-
-    # Message with details ---
-    if (help_names == TRUE) cat(crayon::red(crayon::underline("REMEMBER:\n\n")))
-    if (help_names == TRUE) cat("",
-                                crayon::magenta(crayon::underline("Dimensions\n")),
-                                crayon::green(
-
-                                  paste0("- For the DIRect scores of the dimension '", paste0(names_dimensions_DIR), "'",
-                                         " use the name '", names_variables_DIR, ",",
-                                         crayon::silver(paste0(" FOR EXAMPLE: !!", names_variables_DIR, " := rowSums(...)'\n"))),
-
-                                  paste0("- For the STDard scores of the dimension '", paste0(names_dimensions_STD), "'",
-                                         " use the name '", names_variables_STD, ",",
-                                         crayon::silver(paste0(" FOR EXAMPLE: !!", names_variables_STD, " := rowSums(...)'\n"))),
-
-                                  paste0("- For the RELiability scores of the dimension'", paste0(names_dimensions_STD), "'",
-                                         " use the name '", names_variables_REL, ",",
-                                         crayon::silver(paste0(" FOR EXAMPLE: !!", names_variables_REL, " := rowSums(...)'\n"))),
-                                  "\n"
-                                ))
+    
+    # Build strings for DIR, REL and STD
+    names_list = list(name_DIRd = paste0(short_name_scale, "_", dimensions, "_DIRd"),
+                      name_RELd = paste0(short_name_scale, "_", dimensions, "_RELd"),
+                      name_STDd = paste0(short_name_scale, "_", dimensions, "_STDd"),
+                      name_RAW_NA = paste0(short_name_scale, "_RAW_NA"),
+                      name_DIR_NA = paste0(short_name_scale, "_DIR_NA"),
+                      name_STD_NA = paste0(short_name_scale, "_STDt_NA"),
+                      name_DIRt = paste0(short_name_scale, "_DIRt"),
+                      name_RELt = paste0(short_name_scale, "_RELt"),
+                      name_STDt = paste0(short_name_scale, "_STDt"))
+    
+  } else {
+    
+    # Build strings for DIR, REL and STD
+    names_list = list(name_RAW_NA = paste0(short_name_scale, "_RAW_NA"),
+                      name_DIR_NA = paste0(short_name_scale, "_DIR_NA"),
+                      name_STD_NA = paste0(short_name_scale, "_STDt_NA"),
+                      name_DIRt = paste0(short_name_scale, "_DIRt"),
+                      name_RELt = paste0(short_name_scale, "_RELt"),
+                      name_STDt = paste0(short_name_scale, "_STDt"))
+    
   }
-
-
-  # NAs for RAW and DIR items
-  .GlobalEnv$name_RAW_NA = paste0(short_name_scale, "_RAW_NA")
-  .GlobalEnv$name_DIR_NA = paste0(short_name_scale, "_DIR_NA")
-
-  # Direct scores totals
-  .GlobalEnv$name_DIRt = paste0(short_name_scale, "_DIRt")
-
-  # RELiability total scores
-  .GlobalEnv$name_RELt = paste0(short_name_scale, "_RELt")
-
-  # Standardized scores totals
-  .GlobalEnv$name_STDt_NA = paste0(short_name_scale, "_STDt_NA")
-  .GlobalEnv$name_STDt = paste0(short_name_scale, "_STDt")
-
-
-
-  # Message with details ---
-  if (help_names == TRUE) cat("", crayon::green(
-
-    crayon::magenta(crayon::underline("Total scores\n")),
-
-    paste0("- For the DIRect total score of '",.GlobalEnv$name_DIRt, "'",
-           " use the name 'name_DIRt'",
-           crayon::silver(paste0(" FOR EXAMPLE: !!name_DIRt := rowSums(...)'\n"))),
-
-    paste0("- For the RELiability total score of '",.GlobalEnv$name_RELt, "'",
-           " use the name 'name_RELt'",
-           crayon::silver(paste0(" FOR EXAMPLE: !!name_RELt := rowSums(...)'\n"))),
-
-    paste0("- For the STDardized total score of '",.GlobalEnv$name_STDt, "'",
-           " use the name 'name_STDt'",
-           crayon::silver(paste0(" FOR EXAMPLE: !!name_STDt := rowSums(...)'\n")))
-  ), "\n")
-
+  
+  # names_list$names_dimensions_DIR
+  
+  if (help_names == TRUE){
+    cli::cli_alert_info(
+      c('To create the code to calculate dimensions or total scores you can use:\n', 
+        cli::code_highlight('create_formulas(type = "dimensions_DIR", functions = "sum", names_dimensions)'))
+    )
+  }
+  
+  # NEW SYSTEM OUTPUT
+  return(names_list)
+  
 }
+
+
+
+
+#' create_formulas
+#' It creates the standardized code necessary for the dimensions or total scores calculation in the prepare_TASK scripts
+#' PROBABLY NOT NEEDED, as we SHOULD do all this automatically in get_dimensions_google_doc()
+#' Maybe useful when there are some non-standard elements to the calculations? e.g. See prepare_CS
+#'
+#' @param type One of: c("dimensions_DIR", "dimensions_STD", "dimensions_REL", "total_DIR", "total_REL", "total_STD")
+#' @param functions One of: c("sum"|"mean")
+#' @param dimensions character vector with the dimensions names
+#'
+#' @return
+#' @export
+#'
+#' @examples
+create_formulas <- function(type, functions = "sum", dimensions = NULL) {
+  
+  if (functions == "sum") {
+    functions_str = "rowSums"
+  } else if (functions == "mean") {
+    functions_str = "rowMeans"
+  } else {
+    cli::cli_abort(paste0("'functions' should be one of: ", paste(c("sum", "mean"), collapse = ", ")))  
+  }
+  
+  
+  if (type %in% c("dimensions_DIR", "dimensions_STD", "dimensions_REL")) {
+    
+    if (!is.null(dimensions)) {
+      
+      if (functions == "sum") {
+        # !!names_list$names_dimensions_DIR[1] := rowSums(select(., paste0(short_name_scale_str, "_", items_DIRd1, "_DIR")), na.rm = TRUE), 
+        cat('', paste0('!!names_list$names_', type, '[', 1:length(dimensions), '] := rowSums(select(., paste0(short_name_scale_str, "_", items_DIRd', 1:length(dimensions), ', "_DIR")), na.rm = TRUE),\n'))
+      } else if (functions == "mean") {
+        # !!names_list$names_dimensions_DIR[1] := rowSums(select(., paste0(short_name_scale_str, "_", items_DIRd1, "_DIR")), na.rm = TRUE), 
+        cat('', paste0('!!names_list$names_', type, '[', 1:length(dimensions), '] := rowMeans(select(., paste0(short_name_scale_str, "_", items_DIRd', 1:length(dimensions), ', "_DIR")), na.rm = TRUE),\n'))
+      }
+      
+    } else {
+      cli::cli_abort(paste0("'dimensions' should be a character vector similar to c('dimension1', 'dimension2')"))  
+      
+    }
+    
+  } else if (type %in% c("total_DIR", "total_REL", "total_STD")) {
+    
+    if (functions == "sum") {
+      cat(paste0('!!name_DIRt := rowSums(select(., paste0(short_name_scale_str, "_", all_items, "_DIR")), na.rm = TRUE)'))
+    } else if (functions == "mean") {
+      cat(paste0('!!name_DIRt := rowMeans(select(., paste0(short_name_scale_str, "_", all_items, "_DIR")), na.rm = TRUE)'))
+    }
+    
+  } else {
+    cli::cli_abort(paste0("'type' should be one of: ", paste(c("dimensions_DIR", "dimensions_STD", "dimensions_REL", "total_DIR", "total_REL", "total_STD"), collapse = ", ")))
+  }
+  
+  
+}
+
+
 
 
 ##' Checks if the NAs of the RAW calculation are the same as the ones from the PROC calculation
@@ -395,7 +419,8 @@ prepare_helper <- function(DF_long_RAW, show_trialid_questiontext = FALSE) {
 get_dimensions_googledoc <- function(short_name_text, google_username = "gorkang@gmail.com") {
   
   # DEBUG
-  # short_name_text = "ESZ"
+  # short_name_text = "CS"
+  # google_username = "gorkang@gmail.com"
   
   # READ google sheet ---
   
@@ -461,7 +486,7 @@ get_dimensions_googledoc <- function(short_name_text, google_username = "gorkang
       
       cli::cli_h1("Conversion numérica")
       
-      short_name = DF_items[.x,"short_name"] %>% pull(short_name)
+      short_name = DF_items[1,"short_name"] %>% pull(short_name)
       
       # For each of the rows in the google doc
       1:nrow(DF_items) %>%
@@ -470,7 +495,7 @@ get_dimensions_googledoc <- function(short_name_text, google_username = "gorkang
                  
                  cli::cli_text()
                  ## Items to apply the numeric conversion
-                   #.x = 1
+                   # .x = 1
                    numbers_RAW = DF_items[.x,"items"] %>% pull(items)
                    
                    # Extract numbers from cell with individual numbers and intervals as (1-7)
@@ -483,8 +508,13 @@ get_dimensions_googledoc <- function(short_name_text, google_username = "gorkang
                    numbers_chunks_destination = stringi::stri_extract_all(str = numbers_chunks_all, regex = ".*=") %>% unlist() %>% gsub("=", "", .)
                    numbers_chunks_origin = stringi::stri_extract_all(str = numbers_chunks_all, regex = "=.*") %>% unlist() %>% gsub("=", "", .)
 
-                 ## Create final R vector
-                  paste0('trialid %in% c("', paste(paste0(short_name , '_', NUMBERS_formatted), collapse = '", "'),'") & RAW == "', numbers_chunks_origin,'" ~ ', numbers_chunks_destination, ',\n') %>% cat()
+                   if (all(is.na(numbers_chunks_destination)) | all(is.na(numbers_chunks_origin))) {
+                     cli::cli_alert_danger("NON standard values in column 'conversion_numerica':\n {numbers_chunks_all}")
+                   } else {
+                     ## Create final R vector
+                     paste0('trialid %in% c("', paste(paste0(short_name , '_', NUMBERS_formatted), collapse = '", "'),'") & RAW == "', numbers_chunks_origin,'" ~ ', numbers_chunks_destination, ',\n') %>% cat()    
+                   }
+                 
                   
                })
 
@@ -552,8 +582,8 @@ get_dimensions_googledoc <- function(short_name_text, google_username = "gorkang
                })
   }    
   
-  
 }
+
 
 #' create_new_task
 #' Create a new prepare_TASK.R file from prepare_TEMPLATE.R replacing TEMPLATE by the short name of the new task
@@ -565,18 +595,19 @@ get_dimensions_googledoc <- function(short_name_text, google_username = "gorkang
 #' @export
 #'
 #' @examples
-create_new_task <- function(short_name_task, overwrite = FALSE, get_dimensions_googledoc = FALSE) {
+create_new_task <- function(short_name_task, overwrite = FALSE, get_info_googledoc = FALSE, destination = "R_tasks") {
 
   # DEBUG
-  # short_name_task = "DELETEME"
+  # short_name_task = "CS"
   # overwrite = FALSE
+  # get_info_googledoc = TRUE
 
   # Create file ---
-  new_task_file = paste0("R_tasks/prepare_", short_name_task ,".R")
+  new_task_file = paste0(destination, "/prepare_", short_name_task ,".R")
 
   if (!file.exists(new_task_file) | overwrite == TRUE) {
     cli::cli_alert_info(c("\nCreating new file: ", crayon::silver(new_task_file), "\n"))
-    file.copy("R_tasks/prepare_TEMPLATE.R", new_task_file, overwrite = overwrite)
+    file.copy(paste0(destination, "/prepare_TEMPLATE.R"), new_task_file, overwrite = overwrite)
 
 
     # Replace lines ---
@@ -591,7 +622,7 @@ create_new_task <- function(short_name_task, overwrite = FALSE, get_dimensions_g
 
   # get_dimensions_googledoc ---
 
-    if (get_dimensions_googledoc == TRUE) {
+    if (get_info_googledoc == TRUE) {
       get_dimensions_googledoc(short_name_text = short_name_task)
     }
   
