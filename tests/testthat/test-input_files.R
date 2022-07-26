@@ -18,22 +18,28 @@ testthat::test_that('Check all input files have the essential columns', {
     names(DF) %>% as_tibble() %>% mutate(name_file = file_name)
   }
   
-  # We read ONE file for each task. Otherwise, with big protocols it takes ages
-  one_of_each_file = 
-    input_files %>% as_tibble() %>% 
-    separate(col = value, into = c("project", "experimento", "version", "datetime", "id"), sep = c("_"), remove = FALSE, extra = "merge") %>% 
-    group_by(experimento) %>% 
-    sample_n(1) %>% 
-    pull(value)
+  all_csvs = all(grepl("\\.csv", input_files))
+  all_zips = all(grepl("\\.zip", input_files))
   
-  # Construimos DF global
-  DF_final = purrr::map_dfr(one_of_each_file, read_check, workers = workers) %>% 
-    separate(col = name_file, 
-             into = c("project", "experimento", "version", "datetime", "id"), 
-             sep = c("_"), remove = FALSE, extra = "merge") %>% 
-    mutate(id = gsub("\\.csv", "", id))
-  
-  
+  # Read file/s
+  if (all_csvs) {
+    
+    # We read ONE file for each task. Otherwise, with big protocols it takes ages
+    one_of_each_file = 
+      input_files %>% as_tibble() %>% 
+      separate(col = value, into = c("project", "experimento", "version", "datetime", "id"), sep = c("_"), remove = FALSE, extra = "merge") %>% 
+      group_by(experimento) %>% 
+      sample_n(1) %>% 
+      pull(value)    # colClasses = c(response = "character")
+    
+    # Construimos DF global
+    DF_final = purrr::map_dfr(one_of_each_file, read_check, workers = workers) %>% 
+      separate(col = name_file, 
+               into = c("project", "experimento", "version", "datetime", "id"), 
+               sep = c("_"), remove = FALSE, extra = "merge") %>% 
+      mutate(id = gsub("\\.csv", "", id))
+    
+
   # Essential columns
   essential_columns = c("procedure", "trialid", "rt", "responses", "stimulus")
   whitelist_tasks = ""#c("Consent", "Goodbye")
@@ -99,6 +105,13 @@ testthat::test_that('Check all input files have the essential columns', {
   testthat::expect_length(names_missing_columns, 0) # No missing critical columns
   testthat::expect_identical(extra_pieces_in_csv, FALSE, info = "We expect the csv to be: project_experimento_version_datetime_id.csv, but this has some extra bits separated by '_'")
 
-
+  } else if (all_zips) {
+    
+    cli::cli_alert_info("This test does not run when input is a zip file")    
+    
+  } else {
+    cli::cli_abort("Something wrong in read_data(). Are input files all csv files or a single zip file?")
+  }
+  
   
 })
