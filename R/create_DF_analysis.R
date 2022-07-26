@@ -12,7 +12,7 @@ create_DF_analysis <- function(DF_joined, last_task, save_output = TRUE) {
   # debug_function("create_DF_analysis")
   # Selects all STDt, STDd, DIRt and DIRd scales
   # all_scales also used in "tests/testthat/test-missing_data.R"
-  all_scales = grep(".*_DIRt$|.*_STDt$|.*_DIRd$|.*STDd$", names(DF_joined), value = TRUE, perl = TRUE)
+  all_scales = grep(".*_DIRt$|.*_STDt$|.*_DIRd$|.*RELd$|.*STDd$", names(DF_joined), value = TRUE, perl = TRUE)
     
   DF_analysis = 
     DF_joined %>% 
