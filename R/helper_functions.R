@@ -190,7 +190,7 @@ check_NAs <- function(DF_joined) {
 ##' @return
 ##' @author gorkang
 ##' @export
-create_raw_long <- function(DF_clean, short_name_scale, numeric_responses = FALSE, is_experiment = FALSE) {
+create_raw_long <- function(DF_clean, short_name_scale, numeric_responses = FALSE, is_experiment = FALSE, help_prepare = FALSE) {
 
   # DEBUG
   # short_name_scale = "FONDECYT"
@@ -252,6 +252,9 @@ create_raw_long <- function(DF_clean, short_name_scale, numeric_responses = FALS
   
   
   if (nrow(DF_output) == 0) stop("No trialid's matching '", short_name_scale, "_[0-9]' found in DF_clean")
+  
+  if (help_prepare == TRUE) prepare_helper(DF_output, show_trialid_questiontext = TRUE)
+  
   return(DF_output)
 }
 
@@ -375,6 +378,7 @@ prepare_helper <- function(DF_long_RAW, show_trialid_questiontext = FALSE) {
   vector_responses = DF_long_RAW %>% distinct(RAW) %>% pull(RAW)
   DF_trialid_alternativeresponses = DF_long_RAW %>% count(trialid, RAW) %>% count(trialid, name = "alternative responses")
   DF_check_responses = DF_trialid_alternativeresponses %>% count(`alternative responses`, name = "number of items") %>% arrange(desc(`number of items`))
+  
   DF_responses =
     DF_long_RAW %>%
     count(trialid, RAW) %>%
@@ -388,19 +392,26 @@ prepare_helper <- function(DF_long_RAW, show_trialid_questiontext = FALSE) {
               .groups = "drop") %>%
     DT::datatable()
 
+  cli::cli_h1("Items and responses")
   cat(crayon::blue("\n", length(vector_items), "Items: "), crayon::silver(paste("'", vector_items[c(1,length(vector_items))], "'", collapse = " to ")), "\n")
   cat(crayon::blue("\n", length(vector_responses), "Responses:\n"), crayon::silver(paste(vector_responses, collapse = "\n ")), "\n")
 
+  # Pause 1s to help see the first part of the output
+  Sys.sleep(1)
+  
   if (show_trialid_questiontext == TRUE) {
-    cat("\n", crayon::blue("Showing trialid and stimulus for all the items: "), "\n")
+    cli::cli_h1("trialid and stimulus")
+    # cli::cli_alert_info("Showing trialid and stimulus for all the items: ")
     DF_question %>% print(n = Inf)
   }
 
   if (nrow(DF_check_responses) > 1) {
+    cli::cli_h1("Responses per item")
     cat("\n", crayon::blue(nrow(DF_check_responses), "Different number of responses per item: \n"))
     print(DF_check_responses)
-    DF_responses
   }
+  
+  DF_responses
 
 }
 
@@ -414,43 +425,74 @@ prepare_helper <- function(DF_long_RAW, show_trialid_questiontext = FALSE) {
 #' @export
 #'
 #' @examples
-get_dimensions_googledoc <- function(short_name_text, google_username = "gorkang@gmail.com") {
+get_dimensions_googledoc <- function(short_name_text, google_username = "gorkang@gmail.com", google_sheet = "NEW") {
   
   # DEBUG
-  # short_name_text = "CS"
+  # short_name_text = "MLQ"
   # google_username = "gorkang@gmail.com"
   
   # READ google sheet ---
   
-  cli::cli_h1("Reading https://docs.google.com/spreadsheets/d/1LAsyTZ2ZRP_xLiUBkqmawwnKWgy8OCwq4mmWrrc_rpQ/edit#gid=0")
+  if (google_sheet == "NEW") {
+    google_sheet_ID = "1LAsyTZ2ZRP_xLiUBkqmawwnKWgy8OCwq4mmWrrc_rpQ"
+  } else {
+    google_sheet_ID = "1Eo0F4GcmqWZ1cghTpQlA4aHsc8kTABss-HAeimE2IqA"
+  }
+  
+  cli::cli_h1("Reading https://docs.google.com/spreadsheets/d/{google_sheet_ID}/edit#gid=0")
   
   googlesheets4::gs4_auth(google_username)
-  DF_dimensions = googlesheets4::read_sheet("1LAsyTZ2ZRP_xLiUBkqmawwnKWgy8OCwq4mmWrrc_rpQ", sheet = 5, skip = 0) %>% 
+  
+  # We use this to get the number of items
+  DF_resumen_ALL = googlesheets4::read_sheet(google_sheet_ID, sheet = 2, skip = 0) %>% 
     rename(short_name = `Código Test`) %>% 
+    filter(!grepl("short_name.*", short_name)) %>% 
     # filter(short_name != "short_name: NO debe contener espacios ni caracteres extraños :)") %>% 
     # arrange(short_name) %>% 
     # select(short_name, Nombre, Descripcion) %>% 
-    tidyr::drop_na(short_name) %>% 
+    tidyr::drop_na(short_name) 
+  
+  DF_resumen = DF_resumen_ALL %>% 
     filter(short_name == short_name_text) %>% 
     janitor::clean_names()
   
   
-  DF_items = googlesheets4::read_sheet("1LAsyTZ2ZRP_xLiUBkqmawwnKWgy8OCwq4mmWrrc_rpQ", sheet = 4, skip = 0) %>% 
-    rename(short_name = `Código Test`) %>% 
-    # filter(short_name != "short_name: NO debe contener espacios ni caracteres extraños :)") %>% 
-    # arrange(short_name) %>% 
-    # select(short_name, Nombre, Descripcion) %>% 
-    tidyr::drop_na(short_name) %>% 
-    filter(short_name == short_name_text) %>% 
-    janitor::clean_names()
-  
-  
-
   # CHECK ---
-  if (nrow(DF_dimensions) == 0 & nrow(DF_items) == 0) {
-    cli::cli_h1("WARNING")
-    cli::cli_alert_danger("{short_name_text} is not in the Google Doc")
+  ## Read other tabs only if check passes
+  if (nrow(DF_resumen) == 0) {
+    cli::cli_h1("{short_name_text} not found")
+    cli::cli_par()
+    cli::cli_text('Available tasks: {DF_resumen_ALL$short_name}\n\n')
+    cli::cli_end()
+    cli::cli_abort("{short_name_text} is not in the {google_sheet} Google Doc. ")
   }
+  
+  
+  DF_dimensions = googlesheets4::read_sheet(google_sheet_ID, sheet = 5, skip = 0) %>% 
+    rename(short_name = `Código Test`) %>% 
+    # filter(short_name != "short_name: NO debe contener espacios ni caracteres extraños :)") %>% 
+    # arrange(short_name) %>% 
+    # select(short_name, Nombre, Descripcion) %>% 
+    tidyr::drop_na(short_name) %>% 
+    filter(short_name == short_name_text) %>% 
+    janitor::clean_names()
+  
+  
+  DF_items = googlesheets4::read_sheet(google_sheet_ID, sheet = 4, skip = 0) %>% 
+    rename(short_name = `Código Test`) %>% 
+    # filter(short_name != "short_name: NO debe contener espacios ni caracteres extraños :)") %>% 
+    # arrange(short_name) %>% 
+    # select(short_name, Nombre, Descripcion) %>% 
+    tidyr::drop_na(short_name) %>% 
+    filter(short_name == short_name_text) %>% 
+    janitor::clean_names()
+  
+  # CHECK2 ---
+  ## Read other tabs only if check passes
+  if (nrow(DF_dimensions) == 0 & nrow(DF_items) == 0) {
+    cli::cli_alert_danger("{short_name_text} not found in the dimensions and items tabs")
+  }
+  
 
     
   # ITEMS ---
@@ -459,7 +501,7 @@ get_dimensions_googledoc <- function(short_name_text, google_username = "gorkang
       
       ## Items invertidos ---
       
-      cli::cli_h1("Items invertidos")
+      cli::cli_h1("Items to reverse")
       
       # For each of the rows in the google doc
       1:nrow(DF_items) %>% 
@@ -472,12 +514,9 @@ get_dimensions_googledoc <- function(short_name_text, google_username = "gorkang
                  NUMBERS_formatted = create_number_series(numbers_RAW)
                  
                  # Create R vector
-                 paste0('items_to_reverse = c("', paste(NUMBERS_formatted, collapse = '", "'),
-                        '")\n') %>% cat()
+                 paste0('items_to_reverse = c("', paste(NUMBERS_formatted, collapse = '", "'), '")\n') %>% cat()
                })
-      # NUMBERS_inverse = stringi::stri_extract_all(str = DF_items["items_invertidos"] %>% pull(items_invertidos) %>% unlist(), regex = "[0-9]{1,3}") %>% unlist() %>% as.numeric()
-      # NUMBERS_inverse_formatted = sprintf("%02d", NUMBERS_inverse)
-      # paste0('items_to_reverse = c("', paste(NUMBERS_inverse_formatted, collapse = '", "'), '")\n') %>% cat()
+
     
       
     ## Conversion numerica ---
@@ -485,6 +524,7 @@ get_dimensions_googledoc <- function(short_name_text, google_username = "gorkang
       cli::cli_h1("Conversion numérica")
       
       short_name = DF_items[1,"short_name"] %>% pull(short_name)
+      number_items = unlist(DF_resumen$items)
       
       # For each of the rows in the google doc
       1:nrow(DF_items) %>%
@@ -509,58 +549,85 @@ get_dimensions_googledoc <- function(short_name_text, google_username = "gorkang
                    if (all(is.na(numbers_chunks_destination)) | all(is.na(numbers_chunks_origin))) {
                      cli::cli_alert_danger("NON standard values in column 'conversion_numerica':\n {numbers_chunks_all}")
                    } else {
-                     ## Create final R vector
-                     paste0('trialid %in% c("', paste(paste0(short_name , '_', NUMBERS_formatted), collapse = '", "'),'") & RAW == "', numbers_chunks_origin,'" ~ ', numbers_chunks_destination, ',\n') %>% cat()    
+                     # Create final R vector
+                     ## If all items of test equal, no need to use trialid
+                     if (number_items == length(NUMBERS_formatted)) {
+                       paste0('RAW == "', numbers_chunks_origin,'" ~ ', numbers_chunks_destination, ',\n') %>% cat()
+                     } else {
+                       paste0('trialid %in% c("', paste(paste0(short_name , '_', NUMBERS_formatted), collapse = '", "'),'") & RAW == "', numbers_chunks_origin,'" ~ ', numbers_chunks_destination, ',\n') %>% cat()
+                     }
+                     
                    }
                  
-                  
                })
-
     }
   
   # Dimensiones ---
   
   if (nrow(DF_dimensions) > 0) {
     
+
     cli::cli_h1("Dimensiones")
     NAMES_dimensions_CamelCase = janitor::make_clean_names(DF_dimensions %>% pull(nombre_dimension), case = "big_camel")
+     
     
-    paste0('names_dimensions = c("', 
-           paste(NAMES_dimensions_CamelCase, collapse = '", "'),
-           '")') %>% cat()
-    
-    
-    
-      ## Items dimensiones ---
-      
-      cli::cli_par()
-      cli::cli_text("") 
-      cli::cli_h2("Items Dimensiones")
-      cli::cli_end()
-      
+    # NEW TEMPLATE
+
       # For each of the rows in the google doc
-      1:nrow(DF_dimensions) %>% 
-        walk(~
+      dimensions_items = 
+        1:nrow(DF_dimensions) %>%
+        map_chr(~
                {
                  #.x = 1
                  numbers_RAW = DF_dimensions[.x,"numero_item_dimension_o_sub_escala"] %>% pull(numero_item_dimension_o_sub_escala)
-                 
+
                  # Extract numbers from cell with individual numbers and intervals as (1-7)
                  NUMBERS_formatted = create_number_series(numbers_RAW)
 
                  # Create R vector
-                 paste0('items_DIRd', .x,' = c("', paste(NUMBERS_formatted, collapse = '", "'),
-                        '")\n') %>% cat()
-                 
+                 paste0(DF_dimensions[.x,"nombre_dimension"],' = c("', paste(NUMBERS_formatted, collapse = '", "'),
+                        ifelse(.x == nrow(DF_dimensions), '")\n', '"),\n')) 
+
                })
+    
+      paste0('items_dimensions = list(\n',
+           paste(dimensions_items, collapse = ''),
+           ')') %>% cat()
       
+    # OLD TEMPLATE
+
+    # paste0('names_dimensions = c("', 
+    #        paste(NAMES_dimensions_CamelCase, collapse = '", "'),
+    #        '")') %>% cat()
+    # 
+    #   ## Items dimensiones ---
+    #   cli::cli_par()
+    #   cli::cli_text("") 
+    #   cli::cli_h2("Items Dimensiones")
+    #   cli::cli_end()
+    #   
+    #   # For each of the rows in the google doc
+    #   1:nrow(DF_dimensions) %>% 
+    #     walk(~
+    #            {
+    #              #.x = 1
+    #              numbers_RAW = DF_dimensions[.x,"numero_item_dimension_o_sub_escala"] %>% pull(numero_item_dimension_o_sub_escala)
+    #              
+    #              # Extract numbers from cell with individual numbers and intervals as (1-7)
+    #              NUMBERS_formatted = create_number_series(numbers_RAW)
+    # 
+    #              # Create R vector
+    #              paste0('items_DIRd', .x,' = c("', paste(NUMBERS_formatted, collapse = '", "'),
+    #                     '")\n') %>% cat()
+    #            })
+
       cli::cli_par()
-      cli::cli_text("") 
+      cli::cli_text("")
       cli::cli_h2("Calculo Dimensiones")
-      
+
       cli::cli_end()
-      
-      1:nrow(DF_dimensions) %>% 
+
+      1:nrow(DF_dimensions) %>%
         walk(~
                {
                  calculo_dimension_RAW = DF_dimensions[.x, "calculo_dimension"] %>% pull(calculo_dimension)
@@ -573,12 +640,13 @@ get_dimensions_googledoc <- function(short_name_text, google_username = "gorkang
                    cli::cli_alert_danger("calculo_dimension is '{calculo_dimension_RAW}', but we only know how to work with either 'promedio' or 'suma'")
                    string_function = calculo_dimension_RAW
                  }
-    
-                 # !!name_DIRd1 := rowMeans(select(., paste0(short_name_scale_str, "_", items_DIRd1, "_DIR")), na.rm = TRUE), 
+
+                 # !!name_DIRd1 := rowMeans(select(., paste0(short_name_scale_str, "_", items_DIRd1, "_DIR")), na.rm = TRUE),
                  paste0('!!name_DIRd', .x, ' := ', string_function, '(select(., paste0(short_name_scale_str, "_", items_DIRd', .x, ', "_DIR")), na.rm = TRUE),\n') %>% cat()
-                 
+
                })
-  }    
+      
+  }
   
 }
 
@@ -676,6 +744,8 @@ create_number_series <- function(numbers_RAW) {
     ) %>% unlist()
   
   NUMBERS_formatted = sprintf("%02d", NUMBERS)
+  
+  if (all(NUMBERS_formatted == "NA")) NUMBERS_formatted = "000"
   
   return(NUMBERS_formatted)
 }
@@ -1135,7 +1205,7 @@ show_progress_pid <- function(pid = 3, files_vector, last_task = "Goodbye", goal
 separate_responses <- function(DF) {
   
   # DEBUG
-  # DF = DF_clean_raw
+  # DF = DF_clean_raw #%>% filter(experimento == "MLQ")
   
   # How many different N of responses we have
   different_N = DF %>% 
