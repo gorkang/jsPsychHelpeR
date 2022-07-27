@@ -21,7 +21,7 @@ prepare_TEMPLATE <- function(DF_clean, short_name_scale_str) {
 
   
   
-  # [ADAPT 1/3]: Items to ignore and reverse -----------------------------------
+  # [ADAPT 1/3]: Items to ignore and reverse, dimensions -----------------------
   # ****************************************************************************
   
   description_task = "" # Brief description here

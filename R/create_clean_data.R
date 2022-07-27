@@ -71,10 +71,7 @@ create_clean_data <- function(DF_raw, save_output = TRUE) {
   
   if (nrow(DF_message) > 0) rlang::abort(message = paste0("There are duplicate trialid's for: \n['participant: tasks']\n", paste("-", str_sort(DF_message$message, numeric = TRUE), collapse = "\n"), "\n\nFor more details check `create_clean_data()`"))
   
-  
-  # DF_message = DF_clean %>% count(id, experimento, trialid) %>% arrange(desc(n)) %>% filter(n > 1) %>% 
-  #   group_by(id) %>% summarize(duplicate_tasks = paste(unique(experimento), collapse = ", ")) %>% transmute(message = paste0(id, ": ", duplicate_tasks ))
-
+  # To get full detail, with filenames: 
   # DF_message = DF_clean %>% 
   #   group_by(id, trialid) %>% summarise(N_files = n(), filenames = paste(filename, collapse = "\n")) %>% 
   #   filter(N_files > 1) %>%  
