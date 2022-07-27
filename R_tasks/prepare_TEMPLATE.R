@@ -19,44 +19,49 @@ prepare_TEMPLATE <- function(DF_clean, short_name_scale_str) {
   # DEBUG
   # debug_function(prepare_TEMPLATE)
 
-  # [ADAPT]: Items to ignore and reverse ---------------------------------------
+  
+  
+  # [ADAPT 1/3]: Items to ignore and reverse -----------------------------------
   # ****************************************************************************
+  
+  description_task = "" # Brief description here
   
   items_to_ignore = c("000") # Ignore these items: If nothing to ignore, keep as is
   items_to_reverse = c("000") # Reverse these items: If nothing to reverse, keep as is
   
-  names_dimensions = c("") # If no dimensions, keep as is
+  ## NameDimension1, NameDimension2 should be the names of the dimensions
+  ## Inside each c() create a vector of the item numbers for the dimension
+  ## Add lines as needed. If there are no dimensions, keep as is
+  items_dimensions = list(
+    NameDimension1 = c("000"),
+    NameDimension2 = c("000")
+  )
   
-  items_DIRd1 = c("")
-  items_DIRd2 = c("")
-  
-  # [END ADAPT]: ***************************************************************
+  # [END ADAPT 1/3]: ***********************************************************
   # ****************************************************************************
   
   
   # Standardized names ------------------------------------------------------
   names_list = standardized_names(short_name_scale = short_name_scale_str, 
-                     dimensions = names_dimensions,
-                     help_names = FALSE) # FALSE once script is ready
+                                  dimensions = names(items_dimensions),
+                                  help_names = FALSE) # [KEEP as FALSE]
   
   # Create long -------------------------------------------------------------
   DF_long_RAW = create_raw_long(DF_clean, 
                                 short_name_scale = short_name_scale_str, 
                                 numeric_responses = FALSE, 
-                                is_experiment = FALSE)
-  
-  # Show number of items, responses, etc. [uncomment to help prepare the test] 
-  # prepare_helper(DF_long_RAW, show_trialid_questiontext = TRUE)
+                                is_experiment = FALSE, 
+                                help_prepare = TRUE) # Show n of items, responses,... [CHANGE to FALSE] 
   
   
   # Create long DIR ------------------------------------------------------------
-  
   DF_long_DIR = 
     DF_long_RAW %>% 
     select(id, trialid, RAW) %>%
     
     
-  # [ADAPT]: RAW to DIR for individual items -----------------------------------
+    
+  # [ADAPT 2/3]: RAW to DIR for individual items -------------------------------
   # ****************************************************************************
   
     # Transformations
@@ -84,7 +89,7 @@ prepare_TEMPLATE <- function(DF_clean, short_name_scale_str) {
         )
     )
     
-  # [END ADAPT]: ***************************************************************
+  # [END ADAPT 2/3]: ***********************************************************
   # ****************************************************************************
     
 
@@ -99,29 +104,28 @@ prepare_TEMPLATE <- function(DF_clean, short_name_scale_str) {
     # NAs for RAW and DIR items
     mutate(!!names_list$name_RAW_NA := rowSums(is.na(select(., -matches(paste0(short_name_scale_str, "_", items_to_ignore, "_RAW")) & matches("_RAW$")))),
            !!names_list$name_DIR_NA := rowSums(is.na(select(., -matches(paste0(short_name_scale_str, "_", items_to_ignore, "_DIR")) & matches("_DIR$")))))
+
+
   
+  # [ADAPT 3/3]: Scales and dimensions calculations ----------------------------
+  # ****************************************************************************
   
   # Reliability -------------------------------------------------------------
-  
   # REL1 = auto_reliability(DF_wide_RAW, short_name_scale = short_name_scale_str, items = items_DIRd1)
   # items_RELd1 = REL1$item_selection_string
     
   
-  # [ADAPT]: Scales and dimensions calculations --------------------------------
-  # ****************************************************************************
-    # USE STANDARD NAMES FOR scales and dimensions: names_list$name_DIRd[1], names_list$name_DIRt, etc.
-    # These are created in the line above: standardized_names()
-    # To check the names use the parameter help_names = TRUE in standardized_names()
-
+  # [USE STANDARD NAMES FOR Scales and dimensions: names_list$name_DIRd[1], names_list$name_DIRt,...] 
+  # CHECK with: create_formulas(type = "dimensions_DIR", functions = "sum", names_dimensions)
   DF_wide_RAW_DIR =
     DF_wide_RAW %>% 
     mutate(
 
-      # Make sure to use the correct formula: rowMeans() / rowSums()
+      # [CHECK] Using correct formula? rowMeans() / rowSums()
       
       # Score Dimensions (see standardized_names(help_names = TRUE) for instructions)
-      !!names_list$name_DIRd[1] := rowMeans(select(., paste0(short_name_scale_str, "_", items_DIRd1, "_DIR")), na.rm = TRUE), 
-      !!names_list$name_DIRd[2] := rowMeans(select(., paste0(short_name_scale_str, "_", items_DIRd2, "_DIR")), na.rm = TRUE),
+      !!names_list$name_DIRd[1] := rowMeans(select(., paste0(short_name_scale_str, "_", items_dimensions[[1]], "_DIR")), na.rm = TRUE), 
+      !!names_list$name_DIRd[2] := rowSums(select(., paste0(short_name_scale_str, "_", items_dimensions[[2]], "_DIR")), na.rm = TRUE),
       
       # Reliability Dimensions (see standardized_names(help_names = TRUE) for instructions)
       # !!names_list$name_RELd[1] := rowMeans(select(., paste0(short_name_scale_str, "_", items_RELd1, "_DIR")), na.rm = TRUE), 
@@ -131,7 +135,7 @@ prepare_TEMPLATE <- function(DF_clean, short_name_scale_str) {
       
     )
     
-  # [END ADAPT]: ***************************************************************
+  # [END ADAPT 3/3]: ***********************************************************
   # ****************************************************************************
 
 
