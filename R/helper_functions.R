@@ -1512,6 +1512,12 @@ read_zips = function(input_files, workers = 1, unzip_dir = file.path(dirname(inp
   }
   
   fns = list.files(unzip_dir, recursive = TRUE) %>% setNames(file.path(unzip_dir, .), .)
+
+  # TEST and remove empty files (size < 100 bytes)
+  empty_files = file.info(fns) %>% as_tibble(rownames = "files") %>% filter(size < 100)
+  if (length(empty_files) > 0) cli::cli_alert_warning("There are {length(empty_files)} empty input files (size < 100 bytes)")
+  fns = fns[!fns %in% empty_files$files]
+  
   
   if (!all(tools::file_ext(fns) == "csv")) cli::cli_abort("The zip file should only contain CSV files")
   
