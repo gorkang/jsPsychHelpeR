@@ -376,6 +376,11 @@ prepare_helper <- function(DF_long_RAW, show_trialid_questiontext = FALSE) {
 
   # Responses
   vector_responses = DF_long_RAW %>% distinct(RAW) %>% pull(RAW)
+  if (is.numeric(vector_responses)) {
+    vector_responses = str_sort(vector_responses, numeric = TRUE)
+  } else {
+    vector_responses = str_sort(vector_responses, numeric = FALSE)
+  }
   DF_trialid_alternativeresponses = DF_long_RAW %>% count(trialid, RAW) %>% count(trialid, name = "alternative responses")
   DF_check_responses = DF_trialid_alternativeresponses %>% count(`alternative responses`, name = "number of items") %>% arrange(desc(`number of items`))
   
@@ -641,9 +646,13 @@ get_dimensions_googledoc <- function(short_name_text, google_username = "gorkang
                    string_function = calculo_dimension_RAW
                  }
 
+                 # OLD
                  # !!name_DIRd1 := rowMeans(select(., paste0(short_name_scale_str, "_", items_DIRd1, "_DIR")), na.rm = TRUE),
-                 paste0('!!name_DIRd', .x, ' := ', string_function, '(select(., paste0(short_name_scale_str, "_", items_DIRd', .x, ', "_DIR")), na.rm = TRUE),\n') %>% cat()
+                 # paste0('!!name_DIRd', .x, ' := ', string_function, '(select(., paste0(short_name_scale_str, "_", items_DIRd', .x, ', "_DIR")), na.rm = TRUE),\n') %>% cat()
 
+                 # NEW
+                 # !!names_list$name_DIRd[1] := rowMeans(select(., paste0(short_name_scale_str, "_", items_dimensions[[1]], "_DIR")), na.rm = TRUE), 
+                 paste0('!!names_list$name_DIRd[', .x, '] := ', string_function, '(select(., paste0(short_name_scale_str, "_", items_dimensions[[', .x, ']], "_DIR")), na.rm = TRUE),\n') %>% cat()
                })
       
   }
