@@ -73,13 +73,13 @@ prepare_TEMPLATE <- function(DF_clean, short_name_scale_str) {
           RAW == "Medianamente" ~ 3,
           RAW == "Bastante" ~ 4,
           RAW == "Mucho" ~ 5,
-          is.na(RAW) ~ NA_real_,
-          grepl(items_to_ignore, trialid) ~ NA_real_,
-          TRUE ~ 9999
+          is.na(RAW) ~ NA_real_, # OR NA_character_
+          grepl(items_to_ignore, trialid) ~ NA_real_, # OR NA_character_
+          TRUE ~ 9999 # OR "9999"
         )
     ) %>% 
     
-    # Invert items
+    # Invert items [CAN BE DELETED IF NOT USED or DIR is non-numeric]
     mutate(
       DIR = 
         case_when(
