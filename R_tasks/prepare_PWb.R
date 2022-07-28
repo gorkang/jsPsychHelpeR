@@ -24,7 +24,7 @@ prepare_PWb <- function(DF_clean, short_name_scale_str) {
   # ****************************************************************************
   
   items_to_ignore = c("00") # Ignore these items: If nothing to ignore, keep items_to_ignore = c("00")
-  items_to_reverse = c("04", "05", "08", "09", "13", "15", "20", "22", "25", "26", "27", "29", "30", "33", "34", "36") # Reverse these items: If nothing to reverse, keep  items_to_reverse = c("00")
+  items_to_reverse = c("02", "04", "05", "08", "09", "13", "15", "20", "22", "25", "26", "27", "29", "30", "33", "34", "36") # Reverse these items: If nothing to reverse, keep  items_to_reverse = c("00")
   
   names_dimensions = c("Autoaceptacion", "RelacionesPositivas", "Autonomia", "DominioEntorno", "CrecimientoPersonal", "PropositoVida") # If no dimensions, keep names_dimensions = c("")
   
