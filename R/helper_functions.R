@@ -367,6 +367,7 @@ save_files <- function(DF, short_name_scale, is_scale = TRUE, is_sensitive = FAL
 prepare_helper <- function(DF_long_RAW, show_trialid_questiontext = FALSE) {
 
   # DF_long_RAW created by create_raw_long()
+  # DF_long_RAW = DF_output
   
   # Items
   vector_items = DF_long_RAW %>% distinct(trialid) %>% arrange(trialid) %>% pull(trialid)
@@ -394,8 +395,7 @@ prepare_helper <- function(DF_long_RAW, show_trialid_questiontext = FALSE) {
     group_by(Responses) %>%
     summarise(N = n(),
               trialid = paste(trialid, collapse = ", "),
-              .groups = "drop") %>%
-    DT::datatable()
+              .groups = "drop") 
 
   cli::cli_h1("Items and responses")
   cat(crayon::blue("\n", length(vector_items), "Items: "), crayon::silver(paste("'", vector_items[c(1,length(vector_items))], "'", collapse = " to ")), "\n")
@@ -416,7 +416,8 @@ prepare_helper <- function(DF_long_RAW, show_trialid_questiontext = FALSE) {
     print(DF_check_responses)
   }
   
-  DF_responses
+  # Output the DT table (need to print because this function is called inside another function)
+  DF_responses %>% DT::datatable() %>% print()
 
 }
 
@@ -555,7 +556,10 @@ create_targets_file <- function(pid_protocol = 0, folder_data = NULL, folder_tas
 
   suppressPackageStartupMessages(library(dplyr))
   
-  if (file.exists("_targets_automatic_file.R")) file.remove("_targets_automatic_file.R")
+  if (file.exists("_targets_automatic_file.R")) {
+    cli::cli_alert_info("Deleting OLD _targets_automatic_file.R")
+    file.remove("_targets_automatic_file.R")
+  }
   
   
   # If both parameters have info, choose folder_data
@@ -608,7 +612,8 @@ create_targets_file <- function(pid_protocol = 0, folder_data = NULL, folder_tas
     # Replace  
     final_targets = gsub("TARGETS_HERE", targets, template)
     final_joins = gsub("JOINS_HERE", joins, final_targets)
-    final_file = gsub("pid_target = 999", paste0("pid_target = ", pid_protocol), final_joins)
+    final_file = gsub("pid_target = 999", paste0("pid_target = '", pid_protocol, "'"), final_joins)
+    
     # cat(final_joins, sep = "\n")
   
     # Create final file
