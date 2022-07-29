@@ -880,9 +880,15 @@ show_progress_pid <- function(pid = 3, files_vector, last_task = "Goodbye", goal
   # goal = 850
   # DEBUG = TRUE
   
+  # pid = params$pid_report
+  # files_vector = params$input_files_vector
+  # last_task = params$last_task
+  # goal = params$goal
+  
+  
   # Prepare data ---
   
-  files_csv = files_vector
+  files_csv = basename(files_vector)
   
   DF_files =
     tibble(filename = files_csv) %>%
@@ -1361,14 +1367,14 @@ read_zips = function(input_files, workers = 1, unzip_dir = file.path(dirname(inp
 
   # TEST and remove empty files (size < 100 bytes)
   empty_files = file.info(fns) %>% as_tibble(rownames = "files") %>% filter(size < 100)
-  if (length(empty_files) > 0) cli::cli_alert_warning("There are {length(empty_files)} empty input files (size < 100 bytes)")
+  if (nrow(empty_files) > 0) cli::cli_alert_warning("There are {nrow(empty_files)} empty input files (size < 100 bytes)")
   fns = fns[!fns %in% empty_files$files]
   
   
   if (!all(tools::file_ext(fns) == "csv")) cli::cli_abort("The zip file should only contain CSV files")
   
   # Read files
-  res = purrr::map_dfr(fns %>% set_names(basename(.)), data.table::fread, .id = "filename", colClasses = 'character', encoding = 'UTF-8', nThread = as.numeric(workers)) %>% as_tibble()
+  res = purrr::map_dfr(fns %>% set_names(basename(.)), data.table::fread, .id = "filename", colClasses = 'character', encoding = 'UTF-8', fill = TRUE, nThread = as.numeric(workers)) %>% as_tibble()
   
   # Delete files
   if (do_cleanup) unlink(unzip_dir, recursive = TRUE)
