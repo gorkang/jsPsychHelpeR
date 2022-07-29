@@ -26,14 +26,15 @@ testthat::test_that('Check all input files have the essential columns', {
     
     # We read ONE file for each task. Otherwise, with big protocols it takes ages
     one_of_each_file = 
-      input_files %>% as_tibble() %>% 
+      basename(input_files) %>% as_tibble() %>% 
       separate(col = value, into = c("project", "experimento", "version", "datetime", "id"), sep = c("_"), remove = FALSE, extra = "merge") %>% 
       group_by(experimento) %>% 
       sample_n(1) %>% 
       pull(value)    # colClasses = c(response = "character")
     
     # Construimos DF global
-    DF_final = purrr::map_dfr(one_of_each_file, read_check, workers = workers) %>% 
+    DF_final = purrr::map_dfr(paste0(dirname(input_files), "/", one_of_each_file), read_check, workers = workers) %>% 
+      mutate(name_file = basename(name_file)) %>% 
       separate(col = name_file, 
                into = c("project", "experimento", "version", "datetime", "id"), 
                sep = c("_"), remove = FALSE, extra = "merge") %>% 
