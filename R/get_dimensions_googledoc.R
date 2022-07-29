@@ -25,6 +25,7 @@ get_dimensions_googledoc <- function(short_name_text, google_username = "gorkang
   cli::cli_h1("Reading https://docs.google.com/spreadsheets/d/{google_sheet_ID}/edit#gid=0")
   
   googlesheets4::gs4_auth(google_username)
+  googlesheets4::local_gs4_quiet() # No googlesheets4::read_sheet messages
   
   # We use this to get the number of items
   DF_resumen_ALL = googlesheets4::read_sheet(google_sheet_ID, sheet = 2, skip = 0) %>% 
