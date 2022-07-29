@@ -14,7 +14,7 @@
 ##' @return
 ##' @author gorkang
 ##' @export
-prepare_SWBQ_NEW <- function(DF_clean, short_name_scale_str) {
+prepare_SWBQ <- function(DF_clean, short_name_scale_str) {
 
   # REMEMBER:
     # 6 extra items. ONLY use the ones that end up in the dimensions for the total score.
