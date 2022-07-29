@@ -119,7 +119,7 @@ JOINS_HERE
   # Automatic report
   tar_render(report_DF_clean, "Rmd/report_DF_clean.Rmd", 
              params = list(last_task = "Goodbye",
-                           pid_report = pid_target),
+                           pid_report = gsub("/", "_", pid_target)),
              output_file = paste0("../outputs/reports/report_DF_clean.html")),
   
   # Progress report
@@ -128,7 +128,7 @@ JOINS_HERE
                            pid_report = pid_target, 
                            last_task = "Goodbye", 
                            goal = 500),
-             output_file = paste0("../outputs/reports/report_PROGRESS_", pid_target , ".html")),
+             output_file = paste0("../outputs/reports/report_PROGRESS_", gsub("/", "_", pid_target) , ".html")),
 
   # Progress report by group
   tar_render(report_grouped_PROGRESS, path = "Rmd/grouped_PROGRESS.Rmd", 
@@ -137,7 +137,7 @@ JOINS_HERE
                            goal = 500,
                            group_vars = c("DEMOGR_genero_DIRd"),
                            n_groups = 5),
-             output_file = paste0("../outputs/reports/report_grouped_PROGRESS_", pid_target , ".html"))
+             output_file = paste0("../outputs/reports/report_grouped_PROGRESS_", gsub("/", "_", pid_target) , ".html"))
 
 
 
