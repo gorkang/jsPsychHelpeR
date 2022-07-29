@@ -11,7 +11,7 @@ check_missing_prepare_TASK <- function(sync_protocols = FALSE, check_trialids = 
   # sync_protocols = TRUE
   # check_trialids = TRUE
   # check_new_task_tabs = TRUE
-  # delete_nonexistent = TRUE
+  # delete_nonexistent = FALSE
 
   
   # suppressPackageStartupMessages(targets::tar_load_globals())
@@ -195,8 +195,8 @@ check_missing_prepare_TASK <- function(sync_protocols = FALSE, check_trialids = 
       distinct(short_name, .keep_all = TRUE) %>% 
       filter(is.na(resumen) | is.na(citas) | is.na(puntajes) | is.na(dimensiones)) %>% 
       tidyr::replace_na(replace = list(resumen = "resumen", citas = "citas", puntajes = "puntajes", dimensiones = "dimensiones")) %>% 
-      mutate(TEXT = paste(resumen, citas, puntajes, dimensiones, sep = ", "),
-             TEXT = gsub("^ | ,|^,", "", TEXT))
+      mutate(TEXT = paste0(resumen, ", ", citas, ", ", puntajes, ", ", dimensiones, sep = ", ")) %>% 
+      select(short_name, EMAIL, TEXT)
     
     MISSING_n = 
       DF_all_NEW %>% 
@@ -207,17 +207,20 @@ check_missing_prepare_TASK <- function(sync_protocols = FALSE, check_trialids = 
     MISSING_tabs = 
       DF_all_NEW %>% 
       group_by(EMAIL) %>% 
-      summarise(tasks = paste(paste0(short_name, " (", TEXT, ") "), collapse = "; "),
+      summarise(tasks = paste0(paste0(short_name, " (", TEXT, ") "), collapse = "; "),
                 TEXT = unique(TEXT), 
                 .groups = "drop") %>% 
-      mutate(TEXT = paste0(EMAIL, ": ", tasks)) %>% 
+      mutate(TEXT = paste0(cli::col_cyan(EMAIL), ": ", tasks)) %>% 
       distinct(TEXT, .keep_all = TRUE) %>% # Delete duplicates (when tasks with different missing pieces for same EMAIL)
-      pull(TEXT)
+      mutate(TEXT = gsub(" ; ", "; ", TEXT),
+             TEXT = gsub("  |^ | $| ,|^ ,|^,|, $", "", TEXT),
+             TEXT = gsub("(\\(), ", "\\1", TEXT),
+             TEXT = gsub(", (\\))", "\\1", TEXT))
     
     cli::cli_alert_danger("Tasks missing info in tabs: ")
     cli::cli_li(MISSING_n)
     cli::cli_h2("Details")
-    cli::cli_li(MISSING_tabs)
+    cli::cli_li(MISSING_tabs$TEXT)
     
   } else {
     MISSING_tabs = NULL
