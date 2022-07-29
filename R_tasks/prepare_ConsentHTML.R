@@ -35,7 +35,7 @@ prepare_ConsentHTML <- function(DF_clean, short_name_scale_str) {
 
 
   # Standardized names ------------------------------------------------------
-  standardized_names(short_name_scale = short_name_scale_str,
+  names_list = standardized_names(short_name_scale = short_name_scale_str,
                      dimensions = names_dimensions, # Use names of dimensions, "" or comment out line
                      help_names = FALSE) # help_names = FALSE once the script is ready
 
