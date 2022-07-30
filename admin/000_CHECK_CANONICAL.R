@@ -1,55 +1,28 @@
 ### TODO --
-
   # - Unzip snapshots to 'tests/testthat/_snaps/snapshots' before running the pipeline
   # - Are we using tests/manual_correction?
 
-# SYNC ALL protocols to CSCN-server ---------------------------------------
-
-  # Load all R/ functions
-  invisible(lapply(list.files("./R", full.names = TRUE, pattern = ".R$"), source))
-  
-  # CHECK:  
-    # - Tasks with no prepare_TASK() script!
-    # - Tasks NOT in Google Doc
-    # - Check trialid's are OK
-    # - Check no missing info in Google doc of NEW tasks
-DF_missing = 
-  check_missing_prepare_TASK(
-    sync_protocols = TRUE,
-    check_trialids = TRUE,
-    check_new_task_tabs = TRUE,
-    delete_nonexistent = TRUE,
-    show_all_messages = FALSE
-    )
-  
-  # DF_missing$DF_FINAL %>% View
-  DF_missing$DF_FINAL %>% tidyr::replace_na(list(missing_script = "", 
-                                                 missing_googledoc = "",
-                                                 missing_task = "")) %>% write_csv("dev/DF_missing.csv")
-
-  
-  # Tasks ready to create prepare_*.R script   
-  DF_missing$DF_FINAL %>% filter(!is.na(missing_script) & is.na(missing_googledoc))
-  DF_missing$DF_FINAL %>% filter(!is.na(missing_script) | !is.na(missing_googledoc)) %>% 
-    filter(!task %in% c("DEMOGR24", "DEMOGRfondecyt2022E1", "ITC", "fauxPasEv")) %>%  # "MDDF_respaldo", "mic_test", "faux_pas",
-    select(-matches("missing"), -Nombre, -Descripcion) %>% #View
-    write_csv("dev/missing_tasks.csv")
-  
-  
-  
 # Sync canonical_protocol_DEV to 999 and test ------------------------------
   
     
   # 0) RENAME config_CANONICAL.js to config.js
+  
+    # rstudioapi::navigateToFile("../jsPsychMaker/canonical_protocol_DEV/config.js")
     
-     # - CS of config.js
-     # - RENAME
+     # CS of config.js
+      file.copy("../jsPsychMaker/canonical_protocol_DEV/config.js", 
+                "../jsPsychMaker/canonical_protocol_DEV/config_BACKUP.js")
+     # RENAME
+      file.copy("../jsPsychMaker/canonical_protocol_DEV/config_CANONICAL.js", 
+                "../jsPsychMaker/canonical_protocol_DEV/config.js")
    
     
-  # 1) UPLOAD jsPsychMaker/canonical_protocol to http://cscn.uai.cl/lab/public/instruments/protocols/999 ----------------------------
+  # 1) UPLOAD jsPsychMaker/canonical_protocol_DEV to http://cscn.uai.cl/lab/public/instruments/protocols/999 ----------------------------
   
     # Upload canonical protocol to 999
-    sync_server_local(direction = "local_to_server", server_folder = "999", local_folder = "../jsPsychMaker/canonical_protocol_DEV")
+    sync_server_local(direction = "local_to_server", 
+                      local_folder = "../jsPsychMaker/canonical_protocol_DEV", 
+                      server_folder = "999")
     
     # DELETE old SERVER 999/.data/ files from server
     list_credentials = source(".vault/.credentials") # Get server credentials
@@ -60,7 +33,9 @@ DF_missing =
   
   # 2) jPsychMonkeys: Run 5 monkeys... same ID's, same responses per task (only if no randomization in jsPsych) ----------------------
     
-    # REMEMBER: to delete the 999 protocol things in MYSQL
+    # REMEMBER: to delete the 999 protocol rows in all the MYSQL tables
+    system("mysql-workbench-community")
+    
     
     # Open jsPsychMonkeys RStudio project and launch with the parameters below
     rstudioapi::openProject(path = "../jsPsychMonkeys/", newSession = TRUE)
@@ -101,8 +76,6 @@ DF_missing =
     # Check test file
     # rstudioapi::navigateToFile("outputs/tests_outputs/test-DF_clean.csv")
 
-    
-    
     
     
 # CHECK TWO RUNS ARE IDENTICAL --------------------------------------------

@@ -12,6 +12,7 @@ check_missing_prepare_TASK <- function(sync_protocols = FALSE, check_trialids = 
   # check_trialids = TRUE
   # check_new_task_tabs = TRUE
   # delete_nonexistent = FALSE
+  # show_all_messages = TRUE
 
   
   # suppressPackageStartupMessages(targets::tar_load_globals())
@@ -109,7 +110,7 @@ check_missing_prepare_TASK <- function(sync_protocols = FALSE, check_trialids = 
 
   # MISSING -----------------------------------------------------------------
 
-    # Tasks without correction scripts --------------------------------------
+    # JS Tasks without correction scripts -----------------------------------
   
     missing_script = DF_tasks$task[!DF_tasks$task %in% DF_scripts$script]
     DF_missing_script = DF_tasks %>% filter(task %in% missing_script) %>% arrange(task)
@@ -121,16 +122,17 @@ check_missing_prepare_TASK <- function(sync_protocols = FALSE, check_trialids = 
     DF_missing_googledoc = DF_tasks %>% filter(task %in% missing_tasks_googledoc) %>% arrange(task)
     
   
-    # In google docs not yet implemented -----------------------------------
+    # In google docs not yet implemented (JS) -------------------------------
     
     missing_googledoc_tasks = DF_googledoc_NEW$short_name[!DF_googledoc_NEW$short_name %in% DF_tasks$task]
-    DF_missing_tasks = DF_googledoc_NEW %>% filter(short_name %in% missing_googledoc_tasks) %>% arrange(short_name) %>% 
-      rename(task = short_name)
+    DF_missing_JS_tasks = DF_googledoc_NEW %>% filter(short_name %in% missing_googledoc_tasks) %>% arrange(short_name) %>% 
+      rename(task = short_name) %>% select(-EMAIL)
     
     
     
   # CHECK TRIALIDs ----------------------------------------------------------
   
+  # Same name as function
   if (check_trialids == TRUE) {
     
     source(here::here("../jsPsychHelpeR/R/helper_functions.R"))
@@ -243,15 +245,15 @@ check_missing_prepare_TASK <- function(sync_protocols = FALSE, check_trialids = 
   DF_FINAL = 
     DF_tasks %>% 
     full_join(DF_missing_script %>% mutate(missing_script = task) %>% select(-protocols), by = c("task")) %>% 
-    left_join(DF_missing_googledoc %>% mutate(missing_googledoc = task) %>% select(-protocols), by = c("task")) %>% 
-    bind_rows(DF_missing_tasks %>% mutate(missing_task = task) %>% select(-Nombre, -Descripcion)) %>% 
+    left_join(DF_missing_googledoc %>% mutate(missing_gdoc = task) %>% select(-protocols), by = c("task")) %>% 
+    bind_rows(DF_missing_JS_tasks %>% mutate(missing_task = task) %>% select(-Nombre, -Descripcion)) %>% 
     left_join(DF_googledoc1 %>% bind_rows(DF_googledoc_NEW), by = c("task" = "short_name")) %>% 
     select(task, starts_with("missing"), everything())
   
 
   OUTPUT = 
     list(DF_FINAL = DF_FINAL,
-         DF_missing_tasks = DF_missing_tasks,
+         DF_missing_JS_tasks = DF_missing_JS_tasks,
          DF_missing_script = DF_missing_script,
          DF_missing_googledoc = DF_missing_googledoc,
          MISSING_tabs = MISSING_tabs)
