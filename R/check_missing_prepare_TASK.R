@@ -5,7 +5,13 @@
     # + https://docs.google.com/spreadsheets/d/1Eo0F4GcmqWZ1cghTpQlA4aHsc8kTABss-HAeimE2IqA/edit#gid=0
     # + https://docs.google.com/spreadsheets/d/1LAsyTZ2ZRP_xLiUBkqmawwnKWgy8OCwq4mmWrrc_rpQ/edit#gid=0
 
-check_missing_prepare_TASK <- function(sync_protocols = FALSE, check_trialids = FALSE, check_new_task_tabs = FALSE, delete_nonexistent = FALSE, show_all_messages = FALSE) {
+check_missing_prepare_TASK <- function(sync_protocols = FALSE, 
+                                       check_trialids = FALSE, 
+                                       check_new_task_tabs = FALSE, 
+                                       delete_nonexistent = FALSE, 
+                                       show_all_messages = FALSE,
+                                       helper_folder = ".",
+                                       CSCN_server_folder = "..") {
   
   # DEBUG
   # sync_protocols = TRUE
@@ -13,23 +19,31 @@ check_missing_prepare_TASK <- function(sync_protocols = FALSE, check_trialids = 
   # check_new_task_tabs = TRUE
   # delete_nonexistent = FALSE
   # show_all_messages = TRUE
-
-  
+  # helper_folder = "."
+  # CSCN_server_folder = ".."
   # suppressPackageStartupMessages(targets::tar_load_globals())
-  if (file.exists("../jsPsychHelpeR/_targets_packages.R")) {
-    suppressPackageStartupMessages(source("../jsPsychHelpeR/_targets_packages.R"))
-    invisible(lapply(list.files("../jsPsychHelpeR/R", full.names = TRUE, pattern = ".R$"), source))
-  } else {
-    suppressPackageStartupMessages(source("_targets_packages.R"))
-    invisible(lapply(list.files("./R", full.names = TRUE, pattern = ".R$"), source))
-  }
   
   
+  # if (file.exists("../jsPsychHelpeR/_targets_packages.R")) {
+  #   suppressPackageStartupMessages(source("../jsPsychHelpeR/_targets_packages.R"))
+  #   invisible(lapply(list.files("../jsPsychHelpeR/R", full.names = TRUE, pattern = ".R$"), source))
+  # } else {
+  #   suppressPackageStartupMessages(source("../jsPsychHelpeR/_targets_packages.R"))
+  #   invisible(lapply(list.files("../jsPsychHelpeR/R", full.names = TRUE, pattern = ".R$"), source))
+  # }
   
+  # local_protocols = here::here("../CSCN-server/protocols/")
+  # local_prepare_tasks = here::here("R_tasks/")
+  # if (!file.exists(local_prepare_tasks)) local_prepare_tasks = here::here("../jsPsychHelpeR/R_tasks/")
+  # 
+  suppressPackageStartupMessages(source(paste0(helper_folder, "/_targets_packages.R")))
+  invisible(lapply(list.files(paste0(helper_folder, "/R", full.names = TRUE, pattern = ".R$")), source))
   
-  local_protocols = here::here("../CSCN-server/protocols/")
-  local_prepare_tasks = here::here("R_tasks/")
+  local_protocols = here::here(paste0(CSCN_server_folder, "/CSCN-server/protocols/"))
+  local_prepare_tasks = here::here(paste0(helper_folder, "/R_tasks/"))
   if (!file.exists(local_prepare_tasks)) local_prepare_tasks = here::here("../jsPsychHelpeR/R_tasks/")
+  
+  
   
   # SOURCES -----------------------------------------------------------------
   
@@ -198,7 +212,13 @@ check_missing_prepare_TASK <- function(sync_protocols = FALSE, check_trialids = 
       filter(is.na(resumen) | is.na(citas) | is.na(puntajes) | is.na(dimensiones)) %>% 
       tidyr::replace_na(replace = list(resumen = "resumen", citas = "citas", puntajes = "puntajes", dimensiones = "dimensiones")) %>% 
       mutate(TEXT = paste0(resumen, ", ", citas, ", ", puntajes, ", ", dimensiones, sep = ", ")) %>% 
-      select(short_name, EMAIL, TEXT)
+      select(short_name, EMAIL, TEXT) %>% 
+      mutate(TEXT = gsub(" ; ", "; ", TEXT),
+             TEXT = gsub("  |^ | $| ,|^ ,|^,|, $", "", TEXT),
+             TEXT = gsub("(\\(), ", "\\1", TEXT),
+             TEXT = gsub(", (\\))", "\\1", TEXT),
+             TEXT = gsub("^ ", "", TEXT))
+    
     
     MISSING_n = 
       DF_all_NEW %>% 
@@ -213,11 +233,8 @@ check_missing_prepare_TASK <- function(sync_protocols = FALSE, check_trialids = 
                 TEXT = unique(TEXT), 
                 .groups = "drop") %>% 
       mutate(TEXT = paste0(cli::col_cyan(EMAIL), ": ", tasks)) %>% 
-      distinct(TEXT, .keep_all = TRUE) %>% # Delete duplicates (when tasks with different missing pieces for same EMAIL)
-      mutate(TEXT = gsub(" ; ", "; ", TEXT),
-             TEXT = gsub("  |^ | $| ,|^ ,|^,|, $", "", TEXT),
-             TEXT = gsub("(\\(), ", "\\1", TEXT),
-             TEXT = gsub(", (\\))", "\\1", TEXT))
+      distinct(TEXT, .keep_all = TRUE) # Delete duplicates (when tasks with different missing pieces for same EMAIL)
+      
     
     cli::cli_alert_danger("Tasks missing info in tabs: ")
     cli::cli_li(MISSING_n)
