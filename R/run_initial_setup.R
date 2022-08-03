@@ -103,7 +103,11 @@ run_initial_setup <- function(pid, download_files = FALSE, download_task_script 
     cli::cli_end()
     
     create_targets_file(pid_protocol = pid, folder_data = paste0("data/", pid, "/"))
-
+    
+    # Open _targets.R and run.R
+    rstudioapi::navigateToFile("_targets.R")
+    rstudioapi::navigateToFile("run.R")
+    
   } else {
     
     cli::cli_alert_warning("OK, nothing done")
