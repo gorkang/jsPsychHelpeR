@@ -84,7 +84,7 @@ prepare_TEMPLATE <- function(DF_clean, short_name_scale_str) {
       DIR = 
         case_when(
           DIR == 9999 ~ DIR, # To keep the missing values unchanged
-          trialid %in% paste0(short_name_scale_str, "_", items_to_reverse) ~ (6 - DIR),
+          trialid %in% paste0(short_name_scale_str, "_", items_to_reverse) ~ (6 - DIR), # REVIEW and replace 6 by MAX + 1
           TRUE ~ DIR
         )
     )
