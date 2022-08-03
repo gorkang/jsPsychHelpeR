@@ -89,7 +89,7 @@ get_dimensions_googledoc <- function(short_name_text, google_username = "gorkang
     
     # For each of the rows in the google doc
     1:nrow(DF_items) %>% 
-      walk(~
+      purrr::walk(~
              {
                #.x = 1
                numbers_RAW = DF_items[.x,"items_invertidos"] %>% pull(items_invertidos)
@@ -112,7 +112,7 @@ get_dimensions_googledoc <- function(short_name_text, google_username = "gorkang
     
     # For each of the rows in the google doc
     1:nrow(DF_items) %>%
-      walk(~
+      purrr::walk(~
              {
                
                cli::cli_text()
@@ -167,7 +167,7 @@ get_dimensions_googledoc <- function(short_name_text, google_username = "gorkang
     # For each of the rows in the google doc
     dimensions_items = 
       1:nrow(DF_dimensions) %>%
-      map_chr(~
+      purrr::map_chr(~
                 {
                   #.x = 1
                   numbers_RAW = DF_dimensions[.x,"numero_item_dimension_o_sub_escala"] %>% pull(numero_item_dimension_o_sub_escala)
@@ -219,7 +219,7 @@ get_dimensions_googledoc <- function(short_name_text, google_username = "gorkang
     cli::cli_end()
     
     1:nrow(DF_dimensions) %>%
-      walk(~
+      purrr::walk(~
              {
                calculo_dimension_RAW = DF_dimensions[.x, "calculo_dimension"] %>% pull(calculo_dimension)
                # cli::cli_alert_info(calculo_dimension_RAW)

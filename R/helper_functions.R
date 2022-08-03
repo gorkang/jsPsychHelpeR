@@ -439,6 +439,9 @@ create_new_task <- function(short_name_task, overwrite = FALSE, get_info_googled
   # short_name_task = "CS"
   # overwrite = FALSE
   # get_info_googledoc = TRUE
+  
+  # Needed in case someone launches the function directly (%>%)
+  library(dplyr)
 
   # Create file ---
   new_task_file = paste0(destination, "/prepare_", short_name_task ,".R")
@@ -504,7 +507,7 @@ create_number_series <- function(numbers_RAW) {
   
   # For each of the chunks in numero_item_dimension_o_sub_escala
   NUMBERS = 1:length(numbers_chunks) %>% 
-    map(~ 
+    purrr::map(~ 
           {
             # If there is a "-" create sequence
             if (grepl("-", numbers_chunks[.x])) {
