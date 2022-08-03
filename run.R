@@ -6,7 +6,8 @@
     # REPLACE 'pid = 999' with your project ID
     invisible(lapply(list.files("./R", full.names = TRUE, pattern = ".R$"), source))
     run_initial_setup(pid = "999", download_files = FALSE, download_task_script = FALSE)
-
+    run_initial_setup(pid = "test/protocols_DEV/NEW_TASKS", download_files = TRUE, download_task_script = FALSE)
+    
     
   # 2) SEMI AUTOMATIC
     # Will need to manually place data in 'data/pid' 
@@ -27,6 +28,20 @@
   # Run data preparation 
   targets::tar_make()
 
+
+# Check results -----------------------------------------------------------
+  
+  # After running the pipeline with targets::tar_make()
+  
+  # List available objects
+  targets::tar_objects()
+  
+  # Load DF_analysis file
+  targets::tar_load(DF_analysis)
+  
+  # See DF_analysis dataframe
+  DF_analysis
+  
   
   
 # Edit report ---------------------------------------------------------------
@@ -37,22 +52,13 @@
   # After editing it:
   targets::tar_make()
 
+
   
-
+  
 # Other commands ----------------------------------------------------------
-
+  
   # _targets.R contains the full pipeline
   rstudioapi::navigateToFile("_targets.R") # Open _targets.R file
-  
-  
-  # After running the pipeline with targets::tar_make()
-  
-  # List available objects
-  targets::tar_objects()
-  
-  # Load DF_analysis file
-  targets::tar_load(DF_analysis)
-  DF_analysis
   
   # CHECK warnings
   targets::tar_meta() %>% select(name, warnings) %>% drop_na()
