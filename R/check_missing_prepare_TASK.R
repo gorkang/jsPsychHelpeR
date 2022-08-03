@@ -213,11 +213,8 @@ check_missing_prepare_TASK <- function(sync_protocols = FALSE,
       tidyr::replace_na(replace = list(resumen = "resumen", citas = "citas", puntajes = "puntajes", dimensiones = "dimensiones")) %>% 
       mutate(TEXT = paste0(resumen, ", ", citas, ", ", puntajes, ", ", dimensiones, sep = ", ")) %>% 
       select(short_name, EMAIL, TEXT) %>% 
-      mutate(TEXT = gsub(" ; ", "; ", TEXT),
-             TEXT = gsub("  |^ | $| ,|^ ,|^,|, $", "", TEXT),
-             TEXT = gsub("(\\(), ", "\\1", TEXT),
-             TEXT = gsub(", (\\))", "\\1", TEXT),
-             TEXT = gsub("^ ", "", TEXT))
+      mutate(TEXT = gsub("  |^ | $| ,|^ ,|^,|, $", "", TEXT),
+             TEXT = trimws(TEXT)) # Remove white space at the begining and end of the string
     
     
     MISSING_n = 
