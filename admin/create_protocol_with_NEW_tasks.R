@@ -16,20 +16,40 @@
 
 # Missing CSV's in 999.zip -----------------------------------------------------
   
+find_missing_tasks_in_999 <- function(search_where = "prepare_TASK") {
+  
+  # We can find csv missing when we have the prepare_TASK.R script or
+    # csv missing when we have the tasks/TASK.js script
+  if (!search_where %in% c("prepare_TASK", "js")) cli::cli_abort('ONE OF "prepare_TASK", "js"')
+  
   # For tasks with a prepare_TASK script
   
   # Read csv's in 999.zip
   input_files = list.files("data/999", recursive = TRUE, full.names = TRUE) 
   files = read_zips(input_files) %>% distinct(procedure) %>% pull(procedure)
   
+  
+  JS_missing_CSV =
+    list.files("../jsPsychMaker/protocols_DEV/", pattern = "js$", recursive = TRUE) %>% as_tibble()  %>% 
+    filter(grepl("*tasks/.*\\.js", value)) %>% 
+    mutate(task = gsub("\\.js", "", basename(value))) %>% 
+    filter(!task %in% files) %>% 
+    filter(!task %in% c("TEMPLATE", "TEMPLATE_OLD")) %>% pull(task) 
+  
+  
   TASKS_missing_CSV = list.files("R_tasks/") %>% as_tibble() %>% 
     mutate(task = gsub("prepare_(.*)\\.R", "\\1", value)) %>% 
     filter(!task %in% files & !grepl("\\.csv", value)) %>% 
     filter(!task %in% c("TEMPLATE", "TEMPLATE_OLD")) %>% pull(task) 
   
+  if (search_where == "prepare_TASK") {
+    NEW_TASKS = paste0(TASKS_missing_CSV, ".js")    
+  } else {
+    NEW_TASKS = paste0(JS_missing_CSV, ".js")  
+  }
   
-  NEW_TASKS = paste0(TASKS_missing_CSV, ".js")
 
+  
 
 # Get last version from SERVER --------------------------------------------
 
@@ -61,7 +81,7 @@
   
 # INCLUDE NEW TASKS IN config.js -----------------------------------
   
-  TASKS_vector = paste0("randomly_ordered_tasks_1 = ['", paste(TASKS_missing_CSV, collapse = "', '"), "'];")
+  TASKS_vector = paste0("randomly_ordered_tasks_1 = ['", paste(gsub("\\.js", "", NEW_TASKS), collapse = "', '"), "'];")
   CONFIG = readLines("../CSCN-server/protocols/test/protocols_DEV/NEW_TASKS/config.js")
   
   # Replace
@@ -71,17 +91,36 @@
   # Write file
   cat(final_file, file = "../CSCN-server/protocols/test/protocols_DEV/NEW_TASKS/config.js", sep = "\n")
   
-  # CHECK
-  rstudioapi::navigateToFile("../CSCN-server/protocols/test/protocols_DEV/NEW_TASKS/config.js")
+
+}
+
+# find_missing_tasks_in_999(search_where = "prepare_TASK")
+find_missing_tasks_in_999(search_where = "js")
 
 
 
 # UPLOAD to server --------------------------------------------------------
 
+# CHECK config.js first
+rstudioapi::navigateToFile("../CSCN-server/protocols/test/protocols_DEV/NEW_TASKS/config.js")
+
 source("../jsPsychMaker/R/sync_server_local.R")
+
+# UPLOAD CSCN-server/.../NEW_TASKS to server
 sync_server_local(direction = "local_to_server", 
                   local_folder = "../CSCN-server/protocols/test/protocols_DEV/NEW_TASKS/",
                   server_folder = "test/protocols_DEV/NEW_TASKS/", only_test = FALSE)
+
+# DOWNLOAD to NEW_TASKS to ../jsPsychMaker/protocols_DEV/NEW_TASKS/
+# To make sure the Github jsPsychMaker/protocols_DEV/NEW_TASKS is up to date
+sync_server_local(direction = "server_to_local", 
+                  server_folder = "test/protocols_DEV/NEW_TASKS/",
+                  local_folder = "../jsPsychMaker/protocols_DEV/NEW_TASKS/", 
+                  only_test = FALSE)
+
+cli::cli_h1("REMEMBER")
+cli::cli_alert_info("Commit and PUSH NEW_TASKS changes in jsPsychMaker!!!")
+rstudioapi::openProject(path = "../jsPsychMaker/", newSession = TRUE)
 
 
 # MONKEYS -----------------------------------------------------------------
