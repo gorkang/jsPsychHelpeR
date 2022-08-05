@@ -28,7 +28,7 @@ find_missing_tasks_in_999 <- function(search_where = "prepare_TASK") {
   input_files = list.files("data/999", recursive = TRUE, full.names = TRUE) 
   files = read_zips(input_files) %>% distinct(procedure) %>% pull(procedure)
   
-  
+  # Read all .js tasks in jsPsychMaker/protocols_DEV/
   JS_missing_CSV =
     list.files("../jsPsychMaker/protocols_DEV/", pattern = "js$", recursive = TRUE) %>% as_tibble()  %>% 
     filter(grepl("*tasks/.*\\.js", value)) %>% 
@@ -36,8 +36,9 @@ find_missing_tasks_in_999 <- function(search_where = "prepare_TASK") {
     filter(!task %in% files) %>% 
     filter(!task %in% c("TEMPLATE", "TEMPLATE_OLD")) %>% pull(task) 
   
-  
-  TASKS_missing_CSV = list.files("R_tasks/") %>% as_tibble() %>% 
+  # Read all prepare_TASK in jsPSychHelpeR/R_tasks/
+  TASKS_missing_CSV = 
+    list.files("R_tasks/") %>% as_tibble() %>% 
     mutate(task = gsub("prepare_(.*)\\.R", "\\1", value)) %>% 
     filter(!task %in% files & !grepl("\\.csv", value)) %>% 
     filter(!task %in% c("TEMPLATE", "TEMPLATE_OLD")) %>% pull(task) 
@@ -49,8 +50,6 @@ find_missing_tasks_in_999 <- function(search_where = "prepare_TASK") {
   }
   
 
-  
-
 # Get last version from SERVER --------------------------------------------
 
   invisible(lapply(list.files("./R", full.names = TRUE, pattern = ".R$"), source))
@@ -59,10 +58,25 @@ find_missing_tasks_in_999 <- function(search_where = "prepare_TASK") {
   
 # COPY a clean protocol and the new tasks to NEW_TASKS --------------------
   
-  ALL_js = list.files("../CSCN-server/", recursive = TRUE, pattern = "\\.js") %>% as_tibble() %>% 
-    mutate(task_name = basename(value))
+  ALL_js = 
+    list.files("../CSCN-server/", recursive = TRUE, pattern = "\\.js") %>% as_tibble() %>% 
+    filter(!grepl("NEW_TASKS", value)) %>% # Do not look into NEW_TASKS to avoid circularity
+    filter(grepl("*tasks/.*\\.js", value)) %>% 
+    mutate(task_name = basename(value)) %>% 
+    mutate(mtime = file.info(paste0("../CSCN-server/", value))$mtime,
+           size = file.info(paste0("../CSCN-server/", value))$size)
+    
+  # DT::datatable(ALL_js)
   
-  PATHS_NEW_TASKS = ALL_js %>% filter(task_name %in% NEW_TASKS) %>% distinct(task_name, .keep_all = TRUE) %>% pull(value)
+  # Select newer versions of tasks
+  PATHS_NEW_TASKS = 
+    ALL_js %>% 
+    filter(task_name %in% NEW_TASKS) %>% 
+    group_by(task_name) %>% filter(mtime == max(mtime)) %>% 
+    distinct(task_name, .keep_all = TRUE) %>% 
+    arrange(task_name) %>% 
+    pull(value)
+  
   
   destination_folder = "../CSCN-server/protocols/test/protocols_DEV/NEW_TASKS/"
   
@@ -99,7 +113,7 @@ find_missing_tasks_in_999(search_where = "js")
 
 
 
-# UPLOAD to server --------------------------------------------------------
+# UPLOAD NEW_TASKS to server --------------------------------------------------
 
 # CHECK config.js first
 rstudioapi::navigateToFile("../CSCN-server/protocols/test/protocols_DEV/NEW_TASKS/config.js")
@@ -111,6 +125,11 @@ sync_server_local(direction = "local_to_server",
                   local_folder = "../CSCN-server/protocols/test/protocols_DEV/NEW_TASKS/",
                   server_folder = "test/protocols_DEV/NEW_TASKS/", only_test = FALSE)
 
+
+# TODO: Can just copy instead of download
+  # FROM: ../CSCN-server/protocols/test/protocols_DEV/NEW_TASKS/
+  # TO: ../jsPsychMaker/protocols_DEV/NEW_TASKS/
+    
 # DOWNLOAD to NEW_TASKS to ../jsPsychMaker/protocols_DEV/NEW_TASKS/
 # To make sure the Github jsPsychMaker/protocols_DEV/NEW_TASKS is up to date
 sync_server_local(direction = "server_to_local", 
