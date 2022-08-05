@@ -23,19 +23,9 @@ check_missing_prepare_TASK <- function(sync_protocols = FALSE,
   # CSCN_server_folder = ".."
   # suppressPackageStartupMessages(targets::tar_load_globals())
   
-  
-  # if (file.exists("../jsPsychHelpeR/_targets_packages.R")) {
-  #   suppressPackageStartupMessages(source("../jsPsychHelpeR/_targets_packages.R"))
-  #   invisible(lapply(list.files("../jsPsychHelpeR/R", full.names = TRUE, pattern = ".R$"), source))
-  # } else {
-  #   suppressPackageStartupMessages(source("../jsPsychHelpeR/_targets_packages.R"))
-  #   invisible(lapply(list.files("../jsPsychHelpeR/R", full.names = TRUE, pattern = ".R$"), source))
-  # }
-  
-  # local_protocols = here::here("../CSCN-server/protocols/")
-  # local_prepare_tasks = here::here("R_tasks/")
-  # if (!file.exists(local_prepare_tasks)) local_prepare_tasks = here::here("../jsPsychHelpeR/R_tasks/")
-  # 
+
+  # Load functions  ---------------------------------------------------------
+
   suppressPackageStartupMessages(source(paste0(helper_folder, "/_targets_packages.R")))
   invisible(lapply(list.files(paste0(helper_folder, "/R", full.names = TRUE, pattern = ".R$")), source))
   
