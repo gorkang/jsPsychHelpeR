@@ -2,7 +2,7 @@
 
 # Parameters --------------------------------------------------------------
 
-  pid_target = 999
+  pid_target = '999'
 
 
 # Libraries ---------------------------------------------------------------
@@ -20,13 +20,14 @@
   
   # Packages to load
   main_packages = c("cli", "crayon", "furrr", "patchwork", "renv", "tarchetypes", "targets", "testthat")
-  data_preparation_packages = c("dplyr", "forcats", "here", "janitor", "purrr", "readr", "stringr", "tibble", "tidyr") #"safer", 
+  data_preparation_packages = c("dplyr", "forcats", "here", "janitor", "purrr", "readr", "stringr", "tibble", "tidyr", "writexl") #"safer", 
   data_analysis_packages = c("broom", "broom.mixed", "emmeans", "gt", "gtsummary", "irr", "lme4", "parameters", "performance", "psych", "sjPlot") #"report" "gmodels"
   data_visualization_packages = c("DT", "ggalluvial", "ggridges")
-  non_declared_dependencies = c("qs", "visNetwork", "webshot", "performance", "shinyWidgets")
-  extra_packages = c("shrtcts")
-  packages_to_load = c(main_packages, data_preparation_packages, data_analysis_packages, data_visualization_packages, non_declared_dependencies, extra_packages)
+  non_declared_dependencies = c("qs", "visNetwork", "webshot", "performance", "shinyWidgets", "diffviewer")
+  extra_packages = ifelse (Sys.info()["sysname"] %in% c("Linux"), c("shrtcts"), NA)
+  packages_to_load = purrr::discard(c(main_packages, data_preparation_packages, data_analysis_packages, data_visualization_packages, non_declared_dependencies, extra_packages), is.na)
   
+
   # target options (packages, errors...)
   tar_option_set(packages = packages_to_load, # Load packages for all targets
                  workspace_on_error = TRUE) # Needed to load workspace on error to debug
@@ -66,6 +67,7 @@ targets <- list(
    tar_target(df_bRCOPE, prepare_bRCOPE(DF_clean, short_name_scale_str = 'bRCOPE')),
    tar_target(df_CAS, prepare_CAS(DF_clean, short_name_scale_str = 'CAS')),
    tar_target(df_Consent, prepare_Consent(DF_clean, short_name_scale_str = 'Consent')),
+   tar_target(df_ConsentHTML, prepare_ConsentHTML(DF_clean, short_name_scale_str = 'ConsentHTML')),
    tar_target(df_Cov19Q, prepare_Cov19Q(DF_clean, short_name_scale_str = 'Cov19Q')),
    tar_target(df_COVIDCONTROL, prepare_COVIDCONTROL(DF_clean, short_name_scale_str = 'COVIDCONTROL')),
    tar_target(df_CRS, prepare_CRS(DF_clean, short_name_scale_str = 'CRS')),
@@ -79,8 +81,7 @@ targets <- list(
    tar_target(df_EmpaTom, prepare_EmpaTom(DF_clean, short_name_scale_str = 'EmpaTom')),
    tar_target(df_ERQ, prepare_ERQ(DF_clean, short_name_scale_str = 'ERQ')),
    tar_target(df_ESM, prepare_ESM(DF_clean, short_name_scale_str = 'ESM')),
-   tar_target(df_FDMQ, prepare_FDMQ(DF_clean, short_name_scale_str = 'FDMQ')),
-   tar_target(df_FONDECYT, prepare_FONDECYT(DF_clean, short_name_scale_str = 'FONDECYT')),
+   tar_target(df_GBS, prepare_GBS(DF_clean, short_name_scale_str = 'GBS')),
    tar_target(df_GHQ12, prepare_GHQ12(DF_clean, short_name_scale_str = 'GHQ12')),
    tar_target(df_Goodbye, prepare_Goodbye(DF_clean, short_name_scale_str = 'Goodbye')),
    tar_target(df_HRPVB, prepare_HRPVB(DF_clean, short_name_scale_str = 'HRPVB')),
@@ -91,6 +92,7 @@ targets <- list(
    tar_target(df_INFCONS, prepare_INFCONS(DF_clean, short_name_scale_str = 'INFCONS')),
    tar_target(df_IRI, prepare_IRI(DF_clean, short_name_scale_str = 'IRI')),
    tar_target(df_IRS, prepare_IRS(DF_clean, short_name_scale_str = 'IRS')),
+   tar_target(df_MDMQ, prepare_MDMQ(DF_clean, short_name_scale_str = 'MDMQ')),
    tar_target(df_MIS, prepare_MIS(DF_clean, short_name_scale_str = 'MIS')),
    tar_target(df_OBJNUM, prepare_OBJNUM(DF_clean, short_name_scale_str = 'OBJNUM')),
    tar_target(df_OTRASRELIG, prepare_OTRASRELIG(DF_clean, short_name_scale_str = 'OTRASRELIG')),
@@ -128,6 +130,7 @@ targets <- list(
 							 df_bRCOPE,
 							 df_CAS,
 							 df_Consent,
+							 df_ConsentHTML,
 							 df_Cov19Q,
 							 df_COVIDCONTROL,
 							 df_CRS,
@@ -141,8 +144,7 @@ targets <- list(
 							 df_EmpaTom,
 							 df_ERQ,
 							 df_ESM,
-							 df_FDMQ,
-							 df_FONDECYT,
+							 df_GBS,
 							 df_GHQ12,
 							 df_Goodbye,
 							 df_HRPVB,
@@ -153,6 +155,7 @@ targets <- list(
 							 df_INFCONS,
 							 df_IRI,
 							 df_IRS,
+							 df_MDMQ,
 							 df_MIS,
 							 df_OBJNUM,
 							 df_OTRASRELIG,
@@ -229,7 +232,7 @@ targets <- list(
   # Automatic report
   tar_render(report_DF_clean, "Rmd/report_DF_clean.Rmd", 
              params = list(last_task = "Goodbye",
-                           pid_report = pid_target),
+                           pid_report = gsub("/", "_", pid_target)),
              output_file = paste0("../outputs/reports/report_DF_clean.html")),
   
   # Progress report
@@ -238,7 +241,7 @@ targets <- list(
                            pid_report = pid_target, 
                            last_task = "Goodbye", 
                            goal = 500),
-             output_file = paste0("../outputs/reports/report_PROGRESS_", pid_target , ".html")),
+             output_file = paste0("../outputs/reports/report_PROGRESS_", gsub("/", "_", pid_target) , ".html")),
 
   # Progress report by group
   tar_render(report_grouped_PROGRESS, path = "Rmd/grouped_PROGRESS.Rmd", 
@@ -247,7 +250,7 @@ targets <- list(
                            goal = 500,
                            group_vars = c("DEMOGR_genero_DIRd"),
                            n_groups = 5),
-             output_file = paste0("../outputs/reports/report_grouped_PROGRESS_", pid_target , ".html"))
+             output_file = paste0("../outputs/reports/report_grouped_PROGRESS_", gsub("/", "_", pid_target) , ".html"))
 
 
 
