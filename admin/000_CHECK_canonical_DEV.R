@@ -1,6 +1,11 @@
 ### TODO --
   # - Unzip snapshots to 'tests/testthat/_snaps/snapshots' before running the pipeline
   # - Are we using tests/manual_correction?
+  # STEP 0 SHOULD BE TO CREATE A BACKUP
+
+  # CHECK TWO RUNS ARE IDENTICAL 
+
+
 
 # Sync canonical_protocol_DEV to 999 and test ------------------------------
   
@@ -82,6 +87,7 @@
   
   folder1 = "/home/emrys/Downloads/JSPSYCH/jsPsychHelpeR_test-survey/TEST/data999/"
   folder2 = "/home/emrys/Downloads/JSPSYCH/jsPsychHelpeR_test-survey/TEST/data999/"
+  
   DF_joined1 = readr::read_csv(paste0(folder1, "/DF_joined.csv"))
   DF_joined2 = readr::read_csv(paste0(folder2, "/DF_joined.csv"))
   DF_clean1 = readr::read_csv(paste0(folder1, "/DF_clean.csv"))

@@ -17,7 +17,7 @@
 # Missing CSV's in 999.zip -----------------------------------------------------
   
 find_missing_tasks_in_999 <- function(search_where = "prepare_TASK") {
-  
+  targets::tar_load_globals()
   # We can find csv missing when we have the prepare_TASK.R script or
     # csv missing when we have the tasks/TASK.js script
   if (!search_where %in% c("prepare_TASK", "js")) cli::cli_abort('ONE OF "prepare_TASK", "js"')
@@ -49,12 +49,21 @@ find_missing_tasks_in_999 <- function(search_where = "prepare_TASK") {
     NEW_TASKS = paste0(JS_missing_CSV, ".js")  
   }
   
+  
+  # Remove TASKS ***
+    # DEMOGR[N] and FORM[N] # Idiosyncratic tasks
+    # SCGT uses mic (mic not available in docker container browser)
+  blacklist_tasks = "DEMOGR[0-9]{1,3}|FORM[0-9]{1,3}|SCGT|PPD"
+  cli::cli_alert_info("Not including tasks: {blacklist_tasks}")
+  NEW_TASKS = NEW_TASKS[!grepl(blacklist_tasks, NEW_TASKS)]
+  
 
 # Get last version from SERVER --------------------------------------------
 
   invisible(lapply(list.files("./R", full.names = TRUE, pattern = ".R$"), source))
   DF_missing = check_missing_prepare_TASK(sync_protocols = TRUE) # Download to ../CSCN-server/
-
+  DF_missing
+  
   
 # COPY a clean protocol and the new tasks to NEW_TASKS --------------------
   
@@ -80,17 +89,18 @@ find_missing_tasks_in_999 <- function(search_where = "prepare_TASK") {
   
   destination_folder = "../CSCN-server/protocols/test/protocols_DEV/NEW_TASKS/"
   
+  # canonical_protocol_clean files
   canonical_folder = "/home/emrys/gorkang@gmail.com/RESEARCH/PROYECTOS-Code/jsPsychR/CSCN-server/protocols/test/canonical_protocol_clean/"
   canonical_files = list.files(canonical_folder, full.names = FALSE, recursive = TRUE)
   
-  dir.create(paste0(destination_folder, "tasks/"), recursive = TRUE)
-  
-  file.copy(paste0("../CSCN-server/", PATHS_NEW_TASKS), paste0(destination_folder, "tasks/"), overwrite = TRUE)
+  # Copy canonical_protocol_clean files to NEW_TASKS
   folders_to_create = unique(paste0(destination_folder, dirname(canonical_files)))
-  
   walk(folders_to_create, dir.create, recursive = TRUE)
   file.copy(paste0(canonical_folder, canonical_files), paste0(destination_folder, canonical_files), overwrite = TRUE)
 
+  # Copy NEW tasks
+  dir.create(paste0(destination_folder, "tasks/"), recursive = TRUE)
+  file.copy(paste0("../CSCN-server/", PATHS_NEW_TASKS), paste0(destination_folder, "tasks/"), overwrite = TRUE)
   
   
 # INCLUDE NEW TASKS IN config.js -----------------------------------
