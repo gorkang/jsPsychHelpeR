@@ -5,8 +5,7 @@
   # 1) FULLY AUTOMATIC (works on linux computers with FTP credentials)
     # REPLACE 'pid = 999' with your project ID
     invisible(lapply(list.files("./R", full.names = TRUE, pattern = ".R$"), source))
-    run_initial_setup(pid = "999", download_files = FALSE, download_task_script = FALSE)
-    run_initial_setup(pid = "test/protocols_DEV/NEW_TASKS", download_files = TRUE, download_task_script = FALSE)
+    run_initial_setup(pid = "999", download_files = TRUE, download_task_script = TRUE)
     
     
   # 2) SEMI AUTOMATIC
