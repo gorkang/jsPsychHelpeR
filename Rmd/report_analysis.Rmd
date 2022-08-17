@@ -25,9 +25,13 @@ Descripción del proceso de preparación de datos.
 
 DF =
  DF_analysis %>% 
-  select(id, AIM_DIRt, BNT_DIRt, WEBEXEC_DIRt)
-#   filter() %>% 
-#   drop_na()
+  
+  # Update with your variable names
+  select(id, AIM_DIRt, BART_totalMoney_DIRd, WEBEXEC_DIRt)
+  
+  # Continue your data preparation, if needed
+  #   filter() %>% 
+  #   drop_na()
 
 
 ```
@@ -38,13 +42,14 @@ Tabla 1. Descripción de la tabla 1. Tabla 2. ...
 
 ```{r descriptive-table}
 
-DF_table1 =
-  DF %>%
-  group_by(AIM_DIRt) %>%
-  summarize(mean(WEBEXEC_DIRt))
+table1 = DF %>% 
+  select(-id) %>% 
+  gtsummary::tbl_summary(
+    by = AIM_DIRt,
+    type = list(everything() ~ 'continuous')
+    )
 
-DF_table1 %>%
-DT::datatable()
+table1
 
 ```
 
@@ -56,9 +61,32 @@ Figura 1. Descripción de la Figura 1. Figura 2. ...
 
 plot1 =
   DF %>%
-  ggplot(aes(BNT_DIRt, WEBEXEC_DIRt)) +
-  geom_jitter()
+  ggplot(aes(BART_totalMoney_DIRd, WEBEXEC_DIRt)) +
+  geom_jitter() +
+  geom_smooth(method = "lm")
 
 plot1
+
+```
+
+
+## Analysis
+
+```{r analysis}
+
+model1 = lm(WEBEXEC_DIRt ~ AIM_DIRt * BART_totalMoney_DIRd, DF)
+
+table_model = gtsummary::tbl_regression(model1, intercept = TRUE) %>% 
+  # add_global_p() %>%
+  bold_labels() %>% 
+  italicize_levels() %>% 
+  add_glance_table(include = c("nobs", "df.residual", "r.squared", "adj.r.squared"))
+
+table_model
+
+# report::report(model1)
+
+paste0("Socio economic level was not asignificant predictor of WEBEXEC_DIRt, beta = ", 
+       gtsummary::inline_text(table_model, variable = AIM_DIRt))
 
 ```
