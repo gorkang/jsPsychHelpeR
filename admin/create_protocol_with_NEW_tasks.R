@@ -1,3 +1,6 @@
+
+# Create NEW_TASKS protocol -----------------------------------------------
+
 # In this script we:
   # - Detect tasks for which we do not have CSV's in 999.zip (but have a prepare_TASK.R)
   # - Sync server protocols to local

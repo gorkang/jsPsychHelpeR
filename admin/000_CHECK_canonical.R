@@ -1,3 +1,20 @@
+# CHECK canonical_protocol ------------------------------------------------
+
+# Help checks all tasks in canonical_protocol work as expected
+
+  # 1. Creates a config.js file with all the tasks in ../jsPsychMaker/canonical_protocol/ 
+  # 2. Uploads ../jsPsychMaker/canonical_protocol/ to the 999 protocol in the server
+  # 3. Deletes the contents of .data/
+  # 4. Open Mysql-workbech to delete all 999 tables
+  # 5. Opens jsPsychMonkeys to simulate the 5 standard participants
+  # 6. Opens jsPsychHelpeR to prepare data (deletes data/999, downloads, renames...)
+  # 7. TODO: Compare new RUN with old RUN
+
+# REMEMBER to:
+  # test NEW TASKS with admin/create_protocol_with_NEW_tasks.R before moving them to canonical_protocol
+  # MOVE SHARED-FONDECYT-Faridy/jsPsychR/NEW_scales-docs to docs and to jsPsychmaker/docs
+
+
 ### TODO --
   # - Unzip snapshots to 'tests/testthat/_snaps/snapshots' before running the pipeline
   # - Are we using tests/manual_correction?
@@ -10,8 +27,7 @@
 # Scripts -----------------------------------------------------------------
 
   targets::tar_load_globals()
-  source("admin/extract_tasks_from_protocol.R")
-  source("admin/replace_tasks_config_js.R")
+  source("admin/helper-scripts-admin.R")
   source("../jsPsychMaker/R/sync_server_local.R")
 
 # prepare config.js -------------------------------------------------------
