@@ -1,0 +1,202 @@
+---
+title: 
+output: 
+  pdf_document: 
+    fig_width: 12
+    fig_height: 9
+    fig_caption: yes
+  html_document: 
+    toc: no
+editor_options: 
+  chunk_output_type: console
+params:
+  input_files_vector: ""
+  id: 0
+fontsize: 12pt
+
+---
+
+\includegraphics{`r here::here("img/Logo_CSCN_mini.png")`}  
+
+\vspace*{10pt}
+
+## Informe personalizado  
+
+\vspace*{8pt}
+
+```{r setup, include=FALSE}
+
+# DEBUG
+# params = list(id = "932komfr7o")
+
+knitr::opts_chunk$set(echo = TRUE)
+
+DF_analysis = readr::read_rds(here::here("outputs/data/DF_analysis.rds"))
+
+DF_global =
+  DF_analysis %>% 
+  select(id, Report_informe_DIRd, Report_alias_DIRd, Report_SoloContacto_DIRd,
+         CAS_DIRt, DASS21_depresion_DIRd, DASS21_ansiedad_DIRd, DASS21_estres_DIRd, PSS_DIRt) %>% 
+  
+    # Insert max and min possible so the percentiles referr to the total possible range
+  bind_rows(
+    tibble(id = "deleteme_MIN", 
+           Report_informe_DIRd = NA_character_, Report_alias_DIRd = NA_character_, Report_SoloContacto_DIRd = NA_character_,
+           CAS_DIRt = 0, DASS21_depresion_DIRd = 0, DASS21_ansiedad_DIRd = 0, DASS21_estres_DIRd = 0, PSS_DIRt = 0)) %>% 
+  bind_rows(
+    tibble(id = "deleteme_MAX", 
+           Report_informe_DIRd = NA_character_, Report_alias_DIRd = NA_character_, Report_SoloContacto_DIRd = NA_character_,
+           CAS_DIRt = 21, DASS21_depresion_DIRd = 42, DASS21_ansiedad_DIRd = 42, DASS21_estres_DIRd = 42, PSS_DIRt = 40)) %>% 
+  
+  
+  mutate(`Ansiedad-COVID` = ntile(CAS_DIRt, 100),
+         `Depresión` = ntile(DASS21_depresion_DIRd, 100),
+         `Ansiedad` = ntile(DASS21_ansiedad_DIRd, 100),
+         `Estrés` = ntile(DASS21_estres_DIRd, 100),
+         `Estrés-percibido` = ntile(PSS_DIRt, 100),
+         )
+
+DF = 
+  DF_global %>% 
+  filter(Report_informe_DIRd == 1 & id == params$id) %>%
+  mutate(CAS = 
+           case_when(
+             CAS_DIRt < 7 ~ "**bajo**",
+             CAS_DIRt < 14 ~ "**medio**",
+             CAS_DIRt < 22 ~ "**alto**",
+             TRUE ~ NA_character_),
+         depresion = 
+           case_when(
+             DASS21_depresion_DIRd < 10 ~ "**normal**",
+             DASS21_depresion_DIRd < 14 ~ "**leve**",
+             DASS21_depresion_DIRd < 21 ~ "**moderada**",
+             DASS21_depresion_DIRd < 28 ~ "**severa**. Por favor lee la “Nota importante” al final del informe",
+             DASS21_depresion_DIRd > 27 ~ "**extremadamente severa**. Por favor lee la “Nota importante” al final del informe",
+             TRUE ~ NA_character_),
+         ansiedad = 
+           case_when(
+             DASS21_ansiedad_DIRd < 8 ~  "**normal**",
+             DASS21_ansiedad_DIRd < 10 ~ "**leve**",
+             DASS21_ansiedad_DIRd < 15 ~ "**moderado**",
+             DASS21_ansiedad_DIRd < 20 ~ "**severo**. Por favor lee la “Nota importante” al final del informe",
+             DASS21_ansiedad_DIRd > 19 ~ "**extremadamente severo**. Por favor lee la “Nota importante” al final del informe",
+             TRUE ~ NA_character_),
+         estres = 
+           case_when(
+             DASS21_estres_DIRd < 15 ~ "**normal**",
+             DASS21_estres_DIRd < 19 ~ "**leve**",
+             DASS21_estres_DIRd < 26 ~ "**moderado**",
+             DASS21_estres_DIRd < 34 ~ "**severo**. Por favor lee la “Nota importante” al final del informe",
+             DASS21_estres_DIRd > 33 ~ "**extremadamente severo**. Por favor lee la “Nota importante” al final del informe",
+             TRUE ~ NA_character_),
+         PSS = 
+           case_when(
+             PSS_DIRt < 14 ~ "**bajo**",
+             PSS_DIRt < 27 ~ "**moderado**",
+             PSS_DIRt > 26 ~ "**alto**. Por favor lee la “Nota importante” al final del informe",
+             TRUE ~ NA_character_)
+         )
+
+     PLOT =  
+       DF %>% 
+       pivot_longer(`Ansiedad-COVID`:`Estrés-percibido`) %>% 
+       mutate(name = factor(name, levels=c("Estrés-percibido", "Estrés", "Ansiedad", "Depresión", "Ansiedad-COVID"))) %>%
+       ggplot(aes(value, name, color = value)) +
+       geom_point(size = 4) +
+       theme(legend.position = "right") +
+       scale_x_continuous(limits = c(0, 100)) +
+       theme_minimal(base_size = 14) +
+       theme(legend.position = "right",
+             legend.title = element_blank()) +
+       labs(subtitle = "Puntajes de 0 a 100",
+            y = "",
+            x = "") +
+       scale_color_continuous(type = "viridis", limits = c(0, 100))
+     
+     # PLOT
+
+```
+
+**IMPORTANTE**: Al leer este informe recuerda que la información aquí provista es orientativa y de ninguna manera puede ser considerada como un análisis exhaustivo ni diagnóstico de tu salud mental, por tanto, este informe NO representa un diagnóstico clínico y solo es una aproximación al registro de sintomatología asociado a cada cuadro. 
+
+**Información general**: Del total de escalas que has respondido, hemos seleccionado aquellas asociadas con tu estado emocional, no hemos incluido aquellas relacionadas con tus creencias personales. Aquí encontrarás tus resultados para:
+
+1. CAS: Por sus siglas en inglés (Covid Anxiety Stress) es una escala que evalúa el nivel de ansiedad relacionado al COVID-19. El puntaje puede interpretarse como: bajo, moderado o alto. 
+
+2. DASS-21: Por sus siglas en inglés (Depression Anxiety and Stress Scale) es una escala que mide sintomatología asociada a depresión, ansiedad y estrés general. Es decir, no relacionado al COVID-19. Aquí podrás encontrar información relacionada a tu estado emocional general, que tal vez no habías identificado o en la cual no habías reparado. Los resultados pueden variar a lo largo de tu vida ya que dependen de diversos factores y situaciones (como malestar en tu trabajo, situaciones familiares, falta de socialización, entre otros). Las respuestas a cada sub-escala darán un resultado del tipo: normal, leve, moderado, severo o extremadamente severo. 
+
+3. PSS: Por sus siglas en inglés (Perceived Stress Scale), evalúa cómo percibes tus niveles de estrés. Lo que se mide aquí entonces, es el estrés que tú puedes identificar y sentir, es decir, percibir. Tu estrés percibido puede ser bajo, moderado o alto. 
+
+Nota: debido a que estas son escalas independientes que evalúan características específicas, puede ocurrir que los puntajes no siempre coincidan entre ellas. Tus resultados pueden ser por ejemplo, baja ansiedad relacionada al COVID-19, pero alta ansiedad en el DASS-21 ya que estas dos escalas miden ansiedad en relación a una situación distinta. O podrían ser alta ansiedad en el DASS-21 y baja en el PSS, lo que significaría que tienes alta ansiedad pero no la percibes como tal.  
+
+\newpage
+
+# Tus resultados, [`r DF$Report_alias_DIRd`](mailto:`r DF$Report_SoloContacto_DIRd`)    
+
+De acuerdo con tus respuestas en las escalas mencionadas anteriormente, has obtenido los siguientes resultados: 
+
+
+## Ansiedad frente al COVID-19:
+
+- Tu nivel de ansiedad  asociado al COVID-19 es `r DF$CAS`.
+
+
+## Depresión, Ansiedad y Estrés:
+
+- Presentas sintomatología *depresiva* `r DF$depresion`. 
+
+- Presentas un grado de *ansiedad* `r DF$ansiedad`.
+
+- Presentas un grado de *estrés* `r DF$estres`.  
+
+
+## Estrés percibido: 
+
+- El nivel de estrés que percibes en ti es `r DF$PSS`. 
+
+
+---   
+
+\vspace*{10pt}
+
+
+```{r plot, echo=FALSE, fig.height=4, fig.width=8}
+PLOT
+```
+
+\newpage
+
+**Nota importante**: Si observas que tus resultados a alguna/s de las escalas son altos o severos, te recomendamos que te pongas en contacto con un profesional de la salud para que pueda atender tu caso particular. Aquí te dejamos información de contacto que puedes considerar: 
+
+\vspace*{10pt}
+
+**Chile**:  
+
+- [https://www.psiconecta.org/](https://www.psiconecta.org/)  
+- [https://www.psiconecta.org/necesito-ayuda](https://www.psiconecta.org/necesito-ayuda)  
+
+\vspace*{10pt}
+
+**Argentina**:  
+
+En Buenos Aires:  
+
+- [https://www.argentina.gob.ar/andis/lineas-de-acompanamiento-apoyo-y-orientacion-en-salud-mental-en-contextos-de-cuarentena](https://www.argentina.gob.ar/andis/lineas-de-acompanamiento-apoyo-y-orientacion-en-salud-mental-en-contextos-de-cuarentena)   
+
+Todo el país al teléfono: 5432-6767 (de lunes a viernes en el horario de 16 a 20hs)  
+
+\vspace*{10pt}
+
+**Si vives en otro país**: 
+
+- Acércate al centro de salud más cercano y pide cita con tu médico de cabecera o profesional de la salud mental de tu localidad.  
+
+\vspace*{15pt}
+
+
+
+
+Saludos,
+
+Equipo de investigación CSCN  
+[Centro de Neurociencia Social y Cognitiva](cscn.uai.cl)
