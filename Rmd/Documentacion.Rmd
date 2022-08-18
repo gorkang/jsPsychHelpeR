@@ -1,6 +1,0 @@
----
-title: "Documentation"
-output: html_document
----
-
-DOCUMENTATION IN: jsPsychHelpeR-manual/_book/index.html
