@@ -13,7 +13,16 @@ params:
 ```{r setup, include=FALSE}
 
 knitr::opts_chunk$set(echo = TRUE)
+
+# Makes sure all libraries and functions are available to work interactivelly
+targets::tar_load_globals() # Loads all libraries
+
+# Loads DF_analysis
 targets::tar_load(DF_analysis)
+
+# In this document you will find a template to run analysis, plots, and tables
+# You will need to adapt to the contents of your DF_analysis
+# names(DF_analysis) # Show variable names in DF_analysis
 
 ```
 
