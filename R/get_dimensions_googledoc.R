@@ -85,7 +85,10 @@ get_dimensions_googledoc <- function(short_name_text, google_username = "gorkang
     
     ## Items invertidos ---
     
+    cli::cli_par()
+    cli::cli_text("")
     cli::cli_h1("Items to reverse")
+    cli::cli_end()
     
     # For each of the rows in the google doc
     1:nrow(DF_items) %>% 
@@ -105,7 +108,11 @@ get_dimensions_googledoc <- function(short_name_text, google_username = "gorkang
     
     ## Conversion numerica ---
     
+    cli::cli_par()
+    cli::cli_text("")
     cli::cli_h1("Conversion numérica")
+    cli::cli_end()
+    
     
     short_name = DF_items[1,"short_name"] %>% pull(short_name)
     number_items = unlist(DF_resumen$items)
@@ -158,7 +165,12 @@ get_dimensions_googledoc <- function(short_name_text, google_username = "gorkang
   if (nrow(DF_dimensions) > 0) {
     
     
+    
+    
+    cli::cli_par()
     cli::cli_h1("Dimensiones")
+    cli::cli_end()
+    
     NAMES_dimensions_CamelCase = janitor::make_clean_names(DF_dimensions %>% pull(nombre_dimension), case = "big_camel")
     
     
@@ -176,7 +188,10 @@ get_dimensions_googledoc <- function(short_name_text, google_username = "gorkang
                   NUMBERS_formatted = create_number_series(numbers_RAW)
                   
                   # Create R vector
-                  paste0(DF_dimensions[.x,"nombre_dimension"],' = c("', paste(NUMBERS_formatted, collapse = '", "'),
+                  # paste0(DF_dimensions[.x,"nombre_dimension"],' = c("', paste(NUMBERS_formatted, collapse = '", "'),
+                  #        ifelse(.x == nrow(DF_dimensions), '")\n', '"),\n')) 
+                  
+                  paste0(NAMES_dimensions_CamelCase[.x],' = c("', paste(NUMBERS_formatted, collapse = '", "'),
                          ifelse(.x == nrow(DF_dimensions), '")\n', '"),\n')) 
                   
                 })
@@ -185,50 +200,40 @@ get_dimensions_googledoc <- function(short_name_text, google_username = "gorkang
            paste(dimensions_items, collapse = ''),
            ')') %>% cat()
     
-    # OLD TEMPLATE
     
-    # paste0('names_dimensions = c("', 
-    #        paste(NAMES_dimensions_CamelCase, collapse = '", "'),
-    #        '")') %>% cat()
-    # 
-    #   ## Items dimensiones ---
-    #   cli::cli_par()
-    #   cli::cli_text("") 
-    #   cli::cli_h2("Items Dimensiones")
-    #   cli::cli_end()
-    #   
-    #   # For each of the rows in the google doc
-    #   1:nrow(DF_dimensions) %>% 
-    #     walk(~
-    #            {
-    #              #.x = 1
-    #              numbers_RAW = DF_dimensions[.x,"numero_item_dimension_o_sub_escala"] %>% pull(numero_item_dimension_o_sub_escala)
-    #              
-    #              # Extract numbers from cell with individual numbers and intervals as (1-7)
-    #              NUMBERS_formatted = create_number_series(numbers_RAW)
-    # 
-    #              # Create R vector
-    #              paste0('items_DIRd', .x,' = c("', paste(NUMBERS_formatted, collapse = '", "'),
-    #                     '")\n') %>% cat()
-    #            })
+    Dimensions_NOT_CammelCase = DF_dimensions$nombre_dimension[DF_dimensions$nombre_dimension != NAMES_dimensions_CamelCase]
+    if (length(Dimensions_NOT_CammelCase) > 0) {
+      cli::cli_text("")  
+      cli::cli_par()
+      cli::cli_h3("ISSUES with names of dimensions")
+      cli::cli_end()
+      
+      cli::cli_alert_danger("`{Dimensions_NOT_CammelCase}` NOT in CammelCase. FIX THIS in GoogleDoc!")
+    }
     
+      
     cli::cli_par()
     cli::cli_text("")
     cli::cli_h2("Calculo Dimensiones")
-    
     cli::cli_end()
     
-    1:nrow(DF_dimensions) %>%
-      purrr::walk(~
+    
+    DF_dims_final = 
+      1:nrow(DF_dimensions) %>%
+      purrr::map_df(~
              {
                calculo_dimension_RAW = DF_dimensions[.x, "calculo_dimension"] %>% pull(calculo_dimension)
+               notas_RAW = DF_dimensions[.x, "notas"] %>% pull(notas)
+               error_text = NA
                # cli::cli_alert_info(calculo_dimension_RAW)
                if (tolower(calculo_dimension_RAW) %in% c("promedio", "media", "mean")) {
                  string_function = "rowMeans"
+                 
                } else if (tolower(calculo_dimension_RAW) %in% c("suma", "sumatorio", "sumatoria")){
                  string_function = "rowSums"
                } else {
-                 cli::cli_alert_danger("calculo_dimension is '{calculo_dimension_RAW}', but we only know how to work with either 'promedio' or 'suma'")
+                 error_text = glue::glue("calculo_dimension is '{calculo_dimension_RAW}', but we only know how to work with either 'promedio' or 'suma'")
+                 # cli::cli_alert_danger("calculo_dimension is '{calculo_dimension_RAW}', but we only know how to work with either 'promedio' or 'suma'")
                  string_function = calculo_dimension_RAW
                }
                
@@ -238,8 +243,43 @@ get_dimensions_googledoc <- function(short_name_text, google_username = "gorkang
                
                # NEW
                # !!names_list$name_DIRd[1] := rowMeans(select(., paste0(short_name_scale_str, "_", items_dimensions[[1]], "_DIR")), na.rm = TRUE), 
-               paste0('!!names_list$name_DIRd[', .x, '] := ', string_function, '(select(., paste0(short_name_scale_str, "_", items_dimensions[[', .x, ']], "_DIR")), na.rm = TRUE),\n') %>% cat()
+               tibble(calculo = paste0('!!names_list$name_DIRd[', .x, '] := ', string_function, '(select(., paste0(short_name_scale_str, "_", items_dimensions[[', .x, ']], "_DIR")), na.rm = TRUE),\n'),
+                      error_text = error_text,
+                      notas = notas_RAW)
              })
+    
+    cat(DF_dims_final$calculo)
+    
+    # IF there are important notes, show
+    if (nrow(DF_dims_final |> select(notas) |> drop_na()) > 0) {
+      cli::cli_par()
+      cli::cli_text("")
+      cli::cli_h3("Calculo Dimensiones - NOTAS IMPORTANTES")
+      cli::cli_end()
+      cli::cli_alert_warning("Hay detalles importantes sobre el cálculo de las dimensiones")
+
+      1:length(DF_dims_final$notas) |> 
+        walk(~ {
+          if (!is.na(DF_dims_final$notas[.x])) cli::cli_alert_warning("{.x}: {DF_dims_final$notas[.x]}")
+        })      
+      # cli::cli_ol(DF_dims_final$notas)
+    }
+    
+    # IF there are errors, show
+    if (nrow(DF_dims_final |> select(error_text) |> drop_na()) > 0) {
+      cli::cli_par()
+      cli::cli_text("")
+      cli::cli_h3("ERRORES - Calculo Dimensiones")
+      cli::cli_end()
+      # cli::cli_alert_warning("Hay detalles importantes sobre el cálculo de las dimensiones")
+      
+      1:length(DF_dims_final$error_text) |> 
+        walk(~ {
+          if (!is.na(DF_dims_final$error_text[.x])) cli::cli_alert_danger("{.x}: {DF_dims_final$error_text[.x]}")
+          })
+    }
+    
+      
     
   }
   
