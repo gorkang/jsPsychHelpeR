@@ -447,9 +447,15 @@ create_new_task <- function(short_name_task, overwrite = FALSE, get_info_googled
   new_task_file = paste0(destination, "/prepare_", short_name_task ,".R")
 
   if (!file.exists(new_task_file) | overwrite == TRUE) {
+    
+    # Check prepare_TEMPLATE.R exists
+    template_file = "R_tasks/prepare_TEMPLATE.R"
+    if (!file.exists(template_file)) cli::cli_abort("`{template_file}` does NOT exist! You can download from {.url https://raw.githubusercontent.com/gorkang/jsPsychHelpeR/master/R_tasks/prepare_TEMPLATE.R}")
+    
+    # Copy template
     cli::cli_alert_info(c("\nCreating new file: ", crayon::silver(new_task_file), "\n"))
-    file.copy(paste0(destination, "/prepare_TEMPLATE.R"), new_task_file, overwrite = overwrite)
-
+    file.copy(template_file, new_task_file, overwrite = overwrite)
+    
 
     # Replace lines ---
     x <- readLines(new_task_file)
