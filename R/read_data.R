@@ -28,7 +28,7 @@ read_data <- function(input_files, anonymize = FALSE, save_output = TRUE, worker
     
     # TEST and remove empty files (size < 100 bytes)
     empty_files = file.info(input_files) %>% as_tibble(rownames = "files") %>% filter(size < 100)
-    if (length(empty_files) > 0) cli::cli_alert_warning("There are {length(empty_files)} empty input files (size < 100 bytes)")
+    if (nrow(empty_files) > 0) cli::cli_alert_warning("There are {length(empty_files)} empty input files (size < 100 bytes)")
     input_files = input_files[!input_files %in% empty_files$files]
     
     DF_raw_read = purrr::map_dfr(input_files %>% set_names(basename(.)), data.table::fread, .id = "filename", colClasses = 'character', encoding = 'UTF-8', nThread = as.numeric(workers)) %>% as_tibble()
