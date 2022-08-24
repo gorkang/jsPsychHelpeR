@@ -92,15 +92,20 @@ find_missing_tasks_in_999 <- function(search_where = "prepare_TASK") {
   
   destination_folder = "../CSCN-server/protocols/test/protocols_DEV/NEW_TASKS/"
   
-  # canonical_protocol_clean files
-  canonical_folder = "/home/emrys/gorkang@gmail.com/RESEARCH/PROYECTOS-Code/jsPsychR/CSCN-server/protocols/test/canonical_protocol_clean/"
-  canonical_files = list.files(canonical_folder, full.names = FALSE, recursive = TRUE)
+  source("admin/helper-scripts-admin.R")
+  copy_canonical_clean(destination_folder = destination_folder)
   
-  # Copy canonical_protocol_clean files to NEW_TASKS
-  folders_to_create = unique(paste0(destination_folder, dirname(canonical_files)))
-  walk(folders_to_create, dir.create, recursive = TRUE)
-  file.copy(paste0(canonical_folder, canonical_files), paste0(destination_folder, canonical_files), overwrite = TRUE)
+  # # canonical_protocol_clean files
+  # canonical_folder = "/home/emrys/gorkang@gmail.com/RESEARCH/PROYECTOS-Code/jsPsychR/CSCN-server/protocols/test/canonical_protocol_clean/"
+  # canonical_files = list.files(canonical_folder, full.names = FALSE, recursive = TRUE)
+  # 
+  # # Copy canonical_protocol_clean files to NEW_TASKS
+  # folders_to_create = unique(paste0(destination_folder, dirname(canonical_files)))
+  # walk(folders_to_create, dir.create, recursive = TRUE)
+  # file.copy(paste0(canonical_folder, canonical_files), paste0(destination_folder, canonical_files), overwrite = TRUE)
 
+  
+  
   # Copy NEW tasks
   dir.create(paste0(destination_folder, "tasks/"), recursive = TRUE)
   file.copy(paste0("../CSCN-server/", PATHS_NEW_TASKS), paste0(destination_folder, "tasks/"), overwrite = TRUE)
