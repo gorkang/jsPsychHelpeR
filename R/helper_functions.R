@@ -541,9 +541,9 @@ create_number_series <- function(numbers_RAW) {
 #' @export
 #'
 #' @examples
-create_vector_items <- function(VECTOR) {
+create_vector_items <- function(VECTOR, collapse_string = "|") {
   # VECTOR = c( 5, 9, 14, 16, 18)
-  cat(paste(sprintf("%02d", VECTOR), collapse = "|"))
+  cat(paste(sprintf("%02d", VECTOR), collapse = collapse_string))
 }
 
 
