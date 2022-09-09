@@ -251,14 +251,14 @@ get_dimensions_googledoc <- function(short_name_text, google_username = "gorkang
     cat(DF_dims_final$calculo)
     
     # IF there are important notes, show
-    if (nrow(DF_dims_final |> select(notas) |> drop_na()) > 0) {
+    if (nrow(DF_dims_final %>% select(notas) %>% drop_na()) > 0) {
       cli::cli_par()
       cli::cli_text("")
       cli::cli_h3("Calculo Dimensiones - NOTAS IMPORTANTES")
       cli::cli_end()
       cli::cli_alert_warning("Hay detalles importantes sobre el cálculo de las dimensiones")
 
-      1:length(DF_dims_final$notas) |> 
+      1:length(DF_dims_final$notas) %>% 
         walk(~ {
           if (!is.na(DF_dims_final$notas[.x])) cli::cli_alert_warning("{.x}: {DF_dims_final$notas[.x]}")
         })      
@@ -266,14 +266,14 @@ get_dimensions_googledoc <- function(short_name_text, google_username = "gorkang
     }
     
     # IF there are errors, show
-    if (nrow(DF_dims_final |> select(error_text) |> drop_na()) > 0) {
+    if (nrow(DF_dims_final %>% select(error_text) %>% drop_na()) > 0) {
       cli::cli_par()
       cli::cli_text("")
       cli::cli_h3("ERRORES - Calculo Dimensiones")
       cli::cli_end()
       # cli::cli_alert_warning("Hay detalles importantes sobre el cálculo de las dimensiones")
       
-      1:length(DF_dims_final$error_text) |> 
+      1:length(DF_dims_final$error_text) %>% 
         walk(~ {
           if (!is.na(DF_dims_final$error_text[.x])) cli::cli_alert_danger("{.x}: {DF_dims_final$error_text[.x]}")
           })

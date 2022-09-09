@@ -549,7 +549,9 @@ create_vector_items <- function(VECTOR, collapse_string = "|") {
 
 #' Create _targets.R file from a protocol folder
 #'
-#' @param folder
+#' @param pid_protocol 
+#' @param folder_data 
+#' @param folder_tasks 
 #'
 #' @return
 #' @export
