@@ -242,8 +242,8 @@ prepare_fauxPasEv <- function(DF_clean, short_name_scale_str) {
     nrow_uncorrected = DF_uncorrected %>% nrow()
     
     
-    missing_rows = OUTPUT_DF |> anti_join(DF_manual_correction, by = c("id", "trialid")) |> 
-      bind_rows(DF_uncorrected |> drop_na(trialid))
+    missing_rows = OUTPUT_DF %>% anti_join(DF_manual_correction, by = c("id", "trialid")) %>% 
+      bind_rows(DF_uncorrected %>% drop_na(trialid))
     
     # Check if raw output file == manual correction input file
     if(nrow_output == nrow_input) {
@@ -383,6 +383,62 @@ prepare_fauxPasEv <- function(DF_clean, short_name_scale_str) {
   
   # [END ADAPT]: ***************************************************************
   # ****************************************************************************
+  
+  
+  
+  
+  
+  
+  # CHECK ------------------------------------------------------------------
+  
+  
+  RAW = DF_wide_RAW_DIR %>%
+    pivot_longer(starts_with("faux") & ends_with("RAW"), values_transform = as.character, values_to = "RAW") %>%
+    select(id, name, RAW) %>%
+    separate(name, into = c("task", "item", "type")) %>% 
+    select(-task, -type)
+  
+  
+  
+  DIR = DF_wide_RAW_DIR %>%
+    pivot_longer(starts_with("faux") & ends_with("DIR"), values_transform = as.character, values_to = "DIR") %>%
+    select(id, name, DIR) %>%
+    separate(name, into = c("task", "item", "type")) %>% 
+    select(-task, -type)
+  
+  RAW %>%
+    full_join(DIR, by = c("id", "item")) %>%
+    arrange(item) %>% 
+    # mutate(NA_RAW = is.na(RAW),
+    #        NA_DIR = is.na(DIR),
+    #        DIFF = NA_RAW != NA_DIR) %>%
+    # filter(DIFF == TRUE) %>%
+    # View()
+    writexl::write_xlsx("outputs/data/TEMP_LONG_fauxpas.xlsx")
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   
   
   # CHECK NAs -------------------------------------------------------------------
