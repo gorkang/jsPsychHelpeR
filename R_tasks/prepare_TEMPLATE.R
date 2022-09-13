@@ -116,7 +116,7 @@ prepare_TEMPLATE <- function(DF_clean, short_name_scale_str) {
     
   
   # [USE STANDARD NAMES FOR Scales and dimensions: names_list$name_DIRd[1], names_list$name_DIRt,...] 
-  # CHECK with: create_formulas(type = "dimensions_DIR", functions = "sum", names_dimensions)
+  # CHECK with: create_formulas(type = "dimensions_DIR", functions = "sum", names(items_dimensions))
   DF_wide_RAW_DIR =
     DF_wide_RAW %>% 
     mutate(
