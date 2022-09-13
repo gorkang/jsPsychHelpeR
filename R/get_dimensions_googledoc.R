@@ -79,7 +79,7 @@ get_dimensions_googledoc <- function(short_name_text, google_username = "gorkang
   
   
   
-  # ITEMS ---
+  # ITEMS ----------------------------------------------------------------
   
   if (nrow(DF_items) > 0) {
     
@@ -106,7 +106,7 @@ get_dimensions_googledoc <- function(short_name_text, google_username = "gorkang
     
     
     
-    ## Conversion numerica ---
+    ## Conversion numerica -------------------------------------------------
     
     cli::cli_par()
     cli::cli_text("")
@@ -160,7 +160,7 @@ get_dimensions_googledoc <- function(short_name_text, google_username = "gorkang
              })
   }
   
-  # Dimensiones ---
+  # Dimensiones -----------------------------------------------------------
   
   if (nrow(DF_dimensions) > 0) {
     
