@@ -29,13 +29,10 @@ prepare_CEL <- function(DF_clean, short_name_scale_str) {
   items_to_ignore = c("000") # Ignore these items: If nothing to ignore, keep as is
   items_to_reverse = c("000") # Reverse these items: If nothing to reverse, keep as is
   
-  ## NameDimension1, NameDimension2 should be the names of the dimensions
-  ## Inside each c() create a vector of the item numbers for the dimension
-  ## Add lines as needed. If there are no dimensions, keep as is
   items_dimensions = list(
-    Derivativo = c("CEL_01", "CEL_02", "CEL_03", "CEL_04", "CEL_05", "CEL_06"),
-    Democrático = c("CEL_01", "CEL_02", "CEL_03", "CEL_04", "CEL_05", "CEL_06"),
-    Directivo = c("CEL_01", "CEL_02", "CEL_03", "CEL_04", "CEL_05", "CEL_06")
+    Derivativo = c("01", "02", "03", "04", "05", "06"),
+    Democratico = c("01", "02", "03", "04", "05", "06"),
+    Directivo = c("01", "02", "03", "04", "05", "06")
   )
   
   # [END ADAPT 1/3]: ***********************************************************
@@ -70,26 +67,26 @@ prepare_CEL <- function(DF_clean, short_name_scale_str) {
       DIR =
         case_when(
           trialid %in% c("CEL_01") & RAW == "Espera hasta que estén listos para hablar." ~ "Derivativo",
-          trialid %in% c("CEL_01") & RAW == "Sugiere que el grupo vote qué hacer ahora." ~ "Democrático",
+          trialid %in% c("CEL_01") & RAW == "Sugiere que el grupo vote qué hacer ahora." ~ "Democratico",
           trialid %in% c("CEL_01") & RAW == "Asigna tareas específicas a diferentes personas y los ayuda a completar con sus tareas." ~ "Directivo",
           
           trialid %in% c("CEL_02") & RAW == "Reduce su liderazgo. Deja que las personas en el grupo lideren lo más posible." ~ "Derivativo",
-          trialid %in% c("CEL_02") & RAW == "Se asegura que se llegue a un acuerdo en cada punto, antes de proceder." ~ "Democrático",
+          trialid %in% c("CEL_02") & RAW == "Se asegura que se llegue a un acuerdo en cada punto, antes de proceder." ~ "Democratico",
           trialid %in% c("CEL_02") & RAW == "Mantiene al grupo bajo firme control, sino el grupo perderá su momentum." ~ "Directivo",
           
           trialid %in% c("CEL_03") & RAW == "Lo expresaría tal cual. Delinearía los cambios y observaría que éstos se lleven a cabo." ~ "Directivo",
-          trialid %in% c("CEL_03") & RAW == "Propondría los cambios. Explicaría, por qué son necesarios y luego permitiría que el grupo decida qué hacer." ~ "Democrático",
+          trialid %in% c("CEL_03") & RAW == "Propondría los cambios. Explicaría, por qué son necesarios y luego permitiría que el grupo decida qué hacer." ~ "Democratico",
           trialid %in% c("CEL_03") & RAW == "No haría nada al respecto, esto podría amenazar la productividad del grupo." ~ "Derivativo",
           
           trialid %in% c("CEL_04") & RAW == "Deja al grupo solo." ~ "Derivativo",
           trialid %in% c("CEL_04") & RAW == "Lentamente se inserta para ir dándole al grupo una mayor dirección." ~ "Directivo",
-          trialid %in% c("CEL_04") & RAW == "Le pregunta al grupo si usted debiera proveer... y luego cumple con sus deseos." ~ "Democrático",
+          trialid %in% c("CEL_04") & RAW == "Le pregunta al grupo si usted debiera proveer... y luego cumple con sus deseos." ~ "Democratico",
           
           trialid %in% c("CEL_05") & RAW == "Deja que todos en el grupo manifiesten su opinión. Sin intervenir." ~ "Derivativo",
-          trialid %in% c("CEL_05") & RAW == "Lleva a votación la sugerencia sobre el receso." ~ "Democrático",
+          trialid %in% c("CEL_05") & RAW == "Lleva a votación la sugerencia sobre el receso." ~ "Democratico",
           trialid %in% c("CEL_05") & RAW == "Propone un nuevo curso de acción para el grupo. Si nadie se opone firmemente, designa tareas y luego observa que estas se lleven a cabo." ~ "Directivo",
           
-          trialid %in% c("CEL_06") & RAW == "Sugiere que el grupo avance hacia otro tema. Y si nadie se opone, hace un listado de los posibles temas." ~ "Democrático",
+          trialid %in% c("CEL_06") & RAW == "Sugiere que el grupo avance hacia otro tema. Y si nadie se opone, hace un listado de los posibles temas." ~ "Democratico",
           trialid %in% c("CEL_06") & RAW == "Elige una actividad para el grupo y asigna tareas." ~ "Directivo",
           trialid %in% c("CEL_06") & RAW == "Se mantiene en silencio hasta que el grupo tome una decisión." ~ "Derivativo",
           is.na(RAW) ~ NA_character_,
@@ -98,15 +95,6 @@ prepare_CEL <- function(DF_clean, short_name_scale_str) {
         )
     ) 
     
-    # # Invert items
-    # mutate(
-    #   DIR = 
-    #     case_when(
-    #       DIR == "9999" ~ DIR, # To keep the missing values unchanged
-    #       trialid %in% paste0(short_name_scale_str, "_", items_to_reverse) ~ (6 - DIR),
-    #       TRUE ~ DIR
-    #     )
-    # )
     
   # [END ADAPT 2/3]: ***********************************************************
   # ****************************************************************************
@@ -135,7 +123,7 @@ prepare_CEL <- function(DF_clean, short_name_scale_str) {
     
   
   # [USE STANDARD NAMES FOR Scales and dimensions: names_list$name_DIRd[1], names_list$name_DIRt,...] 
-  # CHECK with: create_formulas(type = "dimensions_DIR", functions = "sum", names_dimensions)
+  # CHECK with: create_formulas(type = "dimensions_DIR", functions = "sum", names(items_dimensions))
   DF_wide_RAW_DIR =
     DF_wide_RAW %>% 
     mutate(
@@ -143,9 +131,10 @@ prepare_CEL <- function(DF_clean, short_name_scale_str) {
       # [CHECK] Using correct formula? rowMeans() / rowSums()
       
       # Score Dimensions (see standardized_names(help_names = TRUE) for instructions)
-      !!names_list$name_DIRd[1] := rowSums(select(., paste0(items_dimensions[[1]], "_DIR")) == names(items_dimensions[1]), na.rm = TRUE), 
-      !!names_list$name_DIRd[2] := rowSums(select(., paste0(items_dimensions[[2]], "_DIR")) == names(items_dimensions[2]), na.rm = TRUE), 
-      !!names_list$name_DIRd[3] := rowSums(select(., paste0(items_dimensions[[3]], "_DIR")) == names(items_dimensions[3]), na.rm = TRUE)
+      !!names_list$name_DIRd[1] := rowSums(select(., paste0(short_name_scale_str, "_", items_dimensions[[1]], "_DIR")) == names(items_dimensions[1]), na.rm = TRUE),
+      !!names_list$name_DIRd[2] := rowSums(select(., paste0(short_name_scale_str, "_", items_dimensions[[2]], "_DIR")) == names(items_dimensions[2]), na.rm = TRUE),
+      !!names_list$name_DIRd[3] := rowSums(select(., paste0(short_name_scale_str, "_", items_dimensions[[3]], "_DIR")) == names(items_dimensions[3]), na.rm = TRUE),
+      
     )
     
   # [END ADAPT 3/3]: ***********************************************************
