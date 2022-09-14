@@ -20,6 +20,8 @@ prepare_fauxPasEv <- function(DF_clean, short_name_scale_str) {
   # targets::tar_load_globals()
   # debug_function(prepare_fauxPasEv)
   
+  
+  
   # [ADAPT]: Items to ignore and reverse ---------------------------------------
   # ****************************************************************************
   
@@ -48,15 +50,8 @@ prepare_fauxPasEv <- function(DF_clean, short_name_scale_str) {
   
   
 
-  # TEMP --------------------------------------------------------------------
-  
-  # Cálculo puntajes totales
-  # En primer lugar se corrigen las preguntas de comprensión 7 y 8. Se da un punto solo si las dos preguntas control se han respondido correctamente. 
-    # La puntuación obtenida se divide entre 20.
-  # Solo se consideraran para el calculo de puntaje total aquellas  historias en las que se haya respondido bien las preguntas 7 y 8.
-  # Calculo puntaje total:  Sumatoria de preguntas 1 a 6 (para historias con fauxpas) y  pregunta 1 (para historias sin fauxpas). 
-    # la sumatoria de las preguntas control (7 y 8) se hace aparte.
-  
+  # Preparacion items  ------------------------------------------------------
+
   stories_noFP = c(1, 3, 5, 6, 8, 9, 10, 17, 19, 20)
   stories_FP = c(2, 4, 7, 11, 12, 13, 14, 15, 16, 18)
 
@@ -81,7 +76,16 @@ prepare_fauxPasEv <- function(DF_clean, short_name_scale_str) {
   numbers_noFP_Q8_Q9 = (9 - 8:9) |> map(~ (stories_noFP * 9) - .x) |> unlist()
   items_noFP_Q8_Q9 = paste0("fauxPasEv_", sprintf("%03d", numbers_noFP_Q8_Q9))
   
+
+  # Items Q2 to Q7, for final score
+  numbers_Q2_Q7 = (9 - 2:7) |> map(~ (1:20 * 9) - .x) |> unlist()
+  items_Q2_Q7 = paste0("fauxPasEv_", sprintf("%03d", numbers_Q2_Q7))
   
+  # Items Q8 and Q9, for final score
+  numbers_noFP_Q8_Q9 = (9 - 8:9) |> map(~ (stories_noFP * 9) - .x) |> unlist()
+  items_noFP_Q8_Q9 = paste0("fauxPasEv_", sprintf("%03d", numbers_noFP_Q8_Q9))
+  
+    
 
   
   # Create long DIR ------------------------------------------------------------
@@ -367,6 +371,90 @@ prepare_fauxPasEv <- function(DF_clean, short_name_scale_str) {
   
   
   
+  
+  
+  
+  
+  
+  
+  # Cálculo puntajes totales ----------------------------------------------
+  
+  # En primer lugar se corrigen las preguntas de comprensión 7 y 8. Se da un punto solo si las dos preguntas control se han respondido correctamente. 
+  # La puntuación obtenida se divide entre 20.
+  
+  # Solo se consideraran para el calculo de puntaje total aquellas  historias en las que se haya respondido bien las preguntas 7 y 8.
+  # Calculo puntaje total:  Sumatoria de preguntas 1 a 6 (para historias con fauxpas) y  pregunta 1 (para historias sin fauxpas). 
+  # la sumatoria de las preguntas control (7 y 8) se hace aparte.
+  
+  
+  
+  # Create a diccionary with stories and trialid's
+  DICC_story_items = tibble(story = rep(1:20, each = 9),
+                            trialid = paste0("fauxPasEv_", sprintf("%03d", rep(1:180))))
+  
+  # Items key questions 8 and 9 (old 7 and 8)
+  items_Q8_Q9 = c(items_FP_Q8_Q9, items_noFP_Q8_Q9)
+  
+  # Join stories dictionary
+  DF_long_DIR_manually_corrected_DICT = DF_long_DIR_manually_corrected |> 
+    left_join(DICC_story_items, by = "trialid") |> 
+    mutate(KEY = paste0(id, "_", story))
+  
+  # Stories where participants have items 8 and 9 OK
+  # En primer lugar se corrigen las preguntas de comprensión 7 y 8. 
+  # Se da un punto solo si las dos preguntas control se han respondido correctamente. 
+  DF_stories_OK = 
+    DF_long_DIR_manually_corrected_DICT |> 
+    filter(trialid %in% items_Q8_Q9) |> 
+    group_by(id, story) |> 
+    summarise(Q8_Q9 = sum(DIR), 
+              KEY = unique(KEY), 
+              .groups = "drop") |> 
+    filter(Q8_Q9 == 2) |> 
+    mutate(Q8_Q9 = Q8_Q9/2) # Only 1 point when Q8_Q9 of a story are OK
+  
+  
+  # Points of only 
+  # La puntuación obtenida se divide entre 20.
+  DF_points_Q8Q9 = 
+    DF_stories_OK |> 
+    group_by(id) |> 
+    summarise(Q8_Q9 = sum(Q8_Q9)/20, .groups = "drop") 
+  
+  
+  
+  # Solo se consideraran para el calculo de puntaje total aquellas  historias en las que se haya respondido bien las preguntas 7 y 8.
+  # Calculo puntaje total:  Sumatoria de preguntas 1 a 6 (para historias con fauxpas) y  pregunta 1 (para historias sin fauxpas). 
+  # la sumatoria de las preguntas control (7 y 8) se hace aparte.
+  
+  DF_points_Q2Q7 = 
+    DF_long_DIR_manually_corrected_DICT |>
+    filter(trialid %in% items_Q2_Q7) |> # Only items 2 to 7
+    filter(KEY %in% DF_stories_OK$KEY) |> # Only if Q8_Q9 are both OK
+    group_by(id) |> 
+    summarise(Q2_Q7 = sum(DIR), 
+              .groups = "drop")
+  
+  DF_points_final_non_0 = 
+    DF_points_Q8Q9 |> 
+    full_join(DF_points_Q2Q7, by = "id") %>% 
+    mutate(!!names_list$name_DIRt := rowSums(select(., starts_with("Q")), na.rm = TRUE)) |> 
+    select(id, !!names_list$name_DIRt)
+  
+  # id's with 0 points
+  DF_points_final_0 = 
+    DF_long_DIR_manually_corrected_DICT |> 
+    distinct(id) |> 
+    filter(!id %in% DF_points_final$id) |> 
+    mutate(!!names_list$name_DIRt := 0)
+  
+  # Join all id's and scores
+  DF_points_final = 
+    DF_points_final_non_0 |> 
+    bind_rows(DF_points_final_0)
+  
+  
+  
   # Create DF_wide_RAW_DIR -----------------------------------------------------
   DF_wide_RAW =
     DF_long_DIR_manually_corrected %>% 
@@ -380,11 +468,6 @@ prepare_fauxPasEv <- function(DF_clean, short_name_scale_str) {
            !!names_list$name_DIR_NA := rowSums(is.na(select(., -matches(paste0(short_name_scale_str, "_", items_to_ignore, "_DIR")) & matches("_DIR$")))))
   
   
-  # Reliability -------------------------------------------------------------
-  
-  # REL1 = auto_reliability(DF_wide_RAW, short_name_scale = short_name_scale_str, items = items_DIRd1)
-  # items_RELd1 = REL1$item_selection_string
-  
   
   # [ADAPT]: Scales and dimensions calculations --------------------------------
   # ****************************************************************************
@@ -392,22 +475,8 @@ prepare_fauxPasEv <- function(DF_clean, short_name_scale_str) {
   
   DF_wide_RAW_DIR =
     DF_wide_RAW %>% 
-    mutate(
-      
-      # Make sure to use the correct formula: rowMeans() / rowSums()
-      
-      # Score Dimensions (see standardized_names(help_names = TRUE) for instructions)
-      # !!names_list$name_DIRd[1] := rowMeans(select(., paste0(short_name_scale_str, "_", items_DIRd1, "_DIR")), na.rm = TRUE), 
-      # !!names_list$name_DIRd[2] := rowMeans(select(., paste0(short_name_scale_str, "_", items_DIRd2, "_DIR")), na.rm = TRUE),
-      
-      # Reliability Dimensions (see standardized_names(help_names = TRUE) for instructions)
-      # !!names_list$name_RELd[1] := rowMeans(select(., paste0(short_name_scale_str, "_", items_RELd1, "_DIR")), na.rm = TRUE), 
-      
-      # Score Scale
-      # !!names_list$name_DIRt := rowSums(select(., matches("_DIR$")), na.rm = TRUE)
-      
-    )
-  
+    left_join(DF_points_final, by = "id")
+    
   # [END ADAPT]: ***************************************************************
   # ****************************************************************************
   
@@ -417,7 +486,7 @@ prepare_fauxPasEv <- function(DF_clean, short_name_scale_str) {
   
   
   # CHECK ------------------------------------------------------------------
-  
+  # TODO: Delete/comment this after checking all is well
   
   RAW = DF_wide_RAW_DIR %>%
     pivot_longer(starts_with("faux") & ends_with("RAW"), values_transform = as.character, values_to = "RAW") %>%
@@ -436,32 +505,13 @@ prepare_fauxPasEv <- function(DF_clean, short_name_scale_str) {
   RAW %>%
     full_join(DIR, by = c("id", "item")) %>%
     arrange(item) %>% 
-    # mutate(NA_RAW = is.na(RAW),
-    #        NA_DIR = is.na(DIR),
-    #        DIFF = NA_RAW != NA_DIR) %>%
-    # filter(DIFF == TRUE) %>%
-    # View()
     writexl::write_xlsx("outputs/data/TEMP_LONG_fauxpas.xlsx")
   
+  DF_wide_RAW_DIR |> writexl::write_xlsx("outputs/data/TEMP_DF_wide_RAW_DIR_fauxpas.xlsx")
   
   
   cli::cli_h1(text = "CHECK DATA SAVED IN: outputs/data/TEMP_LONG_fauxpas.xlsx")
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+  cli::cli_h1(text = "FINAL DF SAVED IN: outputs/data/TEMP_DF_wide_RAW_DIR_fauxpas.xlsx")
   
   
   
