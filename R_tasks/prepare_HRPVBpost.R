@@ -18,8 +18,8 @@ prepare_HRPVBpost <- function(DF_clean, short_name_scale_str) {
 
   # DEBUG
   # debug_function(prepare_HRPVBpost)
-
-  # [ADAPT]: Items to ignore, reverse and dimensions ---------------------------------------
+  
+  # [ADAPT 1/3]: Items to ignore and reverse, dimensions -----------------------
   # ****************************************************************************
   
   description_task = "HRPVBpost description"
@@ -27,27 +27,32 @@ prepare_HRPVBpost <- function(DF_clean, short_name_scale_str) {
   items_to_ignore = c("00") # Ignore these items
   items_to_reverse = c("00") # Reverse these items
   
-  names_dimensions = c("Cesarean", "Vaginal")
-  description_dimensions = c("Cesarean responses", "Vaginal responses")
+  items_dimensions = list(
+    Cesarean = c("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11") |> paste0("_01"),
+    Vaginal = c("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11") |> paste0("_02"),
+    CesareanMother = c("05", "06", "07", "08", "09", "10", "11") |> paste0("_01"),
+    CesareanBaby = c("01", "02", "03", "04") |> paste0("_01"),
+    VaginalMother = c("05", "06", "07", "08", "09", "10", "11") |> paste0("_02"),
+    VaginalBaby = c("01", "02", "03", "04") |> paste0("_02")
+  )
   
-  items_DIRd1 = c("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11")
-  items_DIRd2 = c("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11")
   
-  
-  # [END ADAPT]: ***************************************************************
+  # [END ADAPT 1/3]: ***********************************************************
   # ****************************************************************************
+  
   
   
   # Standardized names ------------------------------------------------------
   names_list = standardized_names(short_name_scale = short_name_scale_str, 
-                     dimensions = names_dimensions, 
-                     help_names = FALSE) # help_names = FALSE once the script is ready
+                                  dimensions = names(items_dimensions),
+                                  help_names = FALSE) # [KEEP as FALSE]
   
   # Create long -------------------------------------------------------------
-  DF_long_RAW = create_raw_long(DF_clean, short_name_scale = short_name_scale_str, numeric_responses = TRUE)
-  
-  # Show number of items, responses, etc. [uncomment to help prepare the test] 
-  # prepare_helper(DF_long_RAW, show_trialid_questiontext = TRUE)
+  DF_long_RAW = create_raw_long(DF_clean, 
+                                short_name_scale = short_name_scale_str, 
+                                numeric_responses = TRUE, 
+                                is_experiment = FALSE, 
+                                help_prepare = FALSE) # Show n of items, responses,... [CHANGE to FALSE] 
   
   
   # Create long DIR ------------------------------------------------------------
@@ -57,13 +62,13 @@ prepare_HRPVBpost <- function(DF_clean, short_name_scale_str) {
     select(id, trialid, RAW) %>%
     
     
-  # [ADAPT]: RAW to DIR for individual items -----------------------------------
+    # [ADAPT 2/3]: RAW to DIR for individual items -------------------------------
   # ****************************************************************************
   
-    # Transformations
-    mutate(
-      DIR = RAW
-    ) %>% 
+  # Transformations
+  mutate(
+    DIR = RAW
+  ) %>% 
     
     # Invert items
     mutate(
@@ -74,11 +79,11 @@ prepare_HRPVBpost <- function(DF_clean, short_name_scale_str) {
           TRUE ~ DIR
         )
     )
-    
-  # [END ADAPT]: ***************************************************************
+  
+  # [END ADAPT 2/3]: ***********************************************************
   # ****************************************************************************
-    
-
+  
+  
   # Create DF_wide_RAW_DIR -----------------------------------------------------
   DF_wide_RAW =
     DF_long_DIR %>% 
@@ -90,23 +95,30 @@ prepare_HRPVBpost <- function(DF_clean, short_name_scale_str) {
     # NAs for RAW and DIR items
     mutate(!!names_list$name_RAW_NA := rowSums(is.na(select(., -matches(items_to_ignore) & matches("_RAW")))),
            !!names_list$name_DIR_NA := rowSums(is.na(select(., -matches(items_to_ignore) & matches("_DIR")))))
-      
-    
-  # [ADAPT]: Scales and dimensions calculations --------------------------------
+  
+  
+  
+  # [ADAPT 3/3]: Scales and dimensions calculations ----------------------------
   # ****************************************************************************
   
+  # [USE STANDARD NAMES FOR Scales and dimensions: names_list$name_DIRd[1], names_list$name_DIRt,...] 
+  # CHECK with: create_formulas(type = "dimensions_DIR", functions = "sum", names(items_dimensions))
   DF_wide_RAW_DIR = 
     DF_wide_RAW %>% 
     mutate(
-      # Score Dimensions (see standardized_names(help_names = TRUE) for instructions)
-      !!names_list$name_DIRd[1] := rowMeans(select(., paste0(short_name_scale_str, "_", items_DIRd1, "_01_DIR")), na.rm = TRUE),
-      !!names_list$name_DIRd[2] := rowMeans(select(., paste0(short_name_scale_str, "_", items_DIRd2, "_02_DIR")), na.rm = TRUE)
+      !!names_list$name_DIRd[1] := rowMeans(select(., paste0(short_name_scale_str, "_", items_dimensions[[1]], "_DIR")), na.rm = TRUE), 
+      !!names_list$name_DIRd[2] := rowMeans(select(., paste0(short_name_scale_str, "_", items_dimensions[[2]], "_DIR")), na.rm = TRUE),
+      !!names_list$name_DIRd[3] := rowMeans(select(., paste0(short_name_scale_str, "_", items_dimensions[[3]], "_DIR")), na.rm = TRUE), 
+      !!names_list$name_DIRd[4] := rowMeans(select(., paste0(short_name_scale_str, "_", items_dimensions[[4]], "_DIR")), na.rm = TRUE),
+      !!names_list$name_DIRd[5] := rowMeans(select(., paste0(short_name_scale_str, "_", items_dimensions[[5]], "_DIR")), na.rm = TRUE), 
+      !!names_list$name_DIRd[6] := rowMeans(select(., paste0(short_name_scale_str, "_", items_dimensions[[6]], "_DIR")), na.rm = TRUE)
+      
     )
-    
-  # [END ADAPT]: ***************************************************************
+  
+  # [END ADAPT 3/3]: ***********************************************************
   # ****************************************************************************
-
-
+  
+  
   # CHECK NAs -------------------------------------------------------------------
   check_NAs(DF_wide_RAW_DIR)
   
@@ -115,5 +127,6 @@ prepare_HRPVBpost <- function(DF_clean, short_name_scale_str) {
   
   # Output of function ---------------------------------------------------------
   return(DF_wide_RAW_DIR) 
+  
  
 }
