@@ -25,16 +25,22 @@
   # Read all prepare_TASK in jsPSychHelpeR/R_tasks/
   # DOWNLOADS ALL protocols from server to ../CSCN-server/
   # Modify config.js to adapt to new tasks
+
+create_protocol_with_missing_in_999 <- function(search_where = "prepare_TASK", destination_folder) {
   
-create_protocol_with_missing_in_999 <- function(search_where = "prepare_TASK") {
-  
-  targets::tar_load_globals()
+  cli::cli_alert_info("Loading necessary packages")
+  suppressPackageStartupMessages(targets::tar_load_globals())
   
   # We can find csv missing when we have the prepare_TASK.R script or
     # csv missing when we have the tasks/TASK.js script
   if (!search_where %in% c("prepare_TASK", "js")) cli::cli_abort('ONE OF "prepare_TASK", "js"')
   
-  # For tasks with a prepare_TASK script
+  
+  
+
+  # READ all files ----------------------------------------------------------
+
+  cli::cli_alert_info("Read all `999.zip`, `jsPsychMaker/protocols_DEV/.js` and `R_tasks/prepare_*.R` files")
   
   # Read csv's in 999.zip
   input_files = list.files("data/999", recursive = TRUE, full.names = TRUE) 
@@ -80,6 +86,8 @@ create_protocol_with_missing_in_999 <- function(search_where = "prepare_TASK") {
   
 # COPY a clean protocol and the new tasks to NEW_TASKS --------------------
   
+  cli::cli_alert_info("Create new protocol in /CSCN-server/")
+  
   ALL_js = 
     list.files("../CSCN-server/", recursive = TRUE, pattern = "\\.js") %>% as_tibble() %>% 
     filter(!grepl("NEW_TASKS", value)) %>% # Do not look into NEW_TASKS to avoid circularity
@@ -100,7 +108,6 @@ create_protocol_with_missing_in_999 <- function(search_where = "prepare_TASK") {
     pull(value)
   
   
-  destination_folder = "../CSCN-server/protocols/test/protocols_DEV/NEW_TASKS/"
 
   # DELETE OLD NEW_TASKS
   unlink(destination_folder, recursive = TRUE)
@@ -131,8 +138,15 @@ create_protocol_with_missing_in_999 <- function(search_where = "prepare_TASK") {
 }
 
 
-# find_missing_tasks_in_999(search_where = "prepare_TASK")
-create_protocol_with_missing_in_999(search_where = "js")
+# Using the missing prepare_tasks()
+# create_protocol_with_missing_in_999(search_where = "prepare_TASK")
+
+
+
+# CREATE PROTOCOL ---------------------------------------------------------
+
+FOLDER_PROTOCOL = "../CSCN-server/protocols/test/protocols_DEV/NEW_TASKS/"
+create_protocol_with_missing_in_999(search_where = "js", destination_folder = FOLDER_PROTOCOL)
 
 
 
@@ -143,8 +157,12 @@ create_protocol_with_missing_in_999(search_where = "js")
     # - pid
   rstudioapi::navigateToFile("../CSCN-server/protocols/test/protocols_DEV/NEW_TASKS/config.js")
 
+# TASKS protocolo Colombia-Chile
+  # 'CTT', 'CIT', 'CRQ', 'ICvsID', 'LSNS', 'MDDF', 'PSC', 'UCLA'
+  # //'SCGT', ESTA USA MICRO. CORRER MANUALMENTE (no funciona en Docker)
   
-  
+
+
 # UPLOAD NEW_TASKS to server --------------------------------------------------
 
   source("../jsPsychMaker/admin/sync_server_local.R")
@@ -159,7 +177,7 @@ create_protocol_with_missing_in_999(search_where = "js")
 
 # DELETE .data in server --------------------------------------------------
 
-  # DELETE SERVER .data/ files
+  # DELETE SERVER "test/protocols_DEV/NEW_TASKS/" .data/ files
   list_credentials = source(".vault/.credentials") # Get server credentials
   system(paste0('sshpass -p ', list_credentials$value$password, ' ssh ', list_credentials$value$user, '@', list_credentials$value$IP, ' rm ', list_credentials$value$main_FOLDER, "test/protocols_DEV/NEW_TASKS/", '/.data/*'))
   
@@ -186,7 +204,7 @@ create_protocol_with_missing_in_999(search_where = "js")
 
 # DELETE protocol 999 MYSQL rows
   system("mysql-workbench")
-  system("mysql-workbench-community")
+  # system("mysql-workbench-community")
   
 # Launch monkeys! # Go to jsPsychMonkeys and use the following in _targets.R
 rstudioapi::openProject(path = "../jsPsychMonkeys/", newSession = TRUE)
@@ -204,8 +222,14 @@ parameters_monkeys_minimal = list(uid = 100:105, uid_URL = TRUE,
 
 
 
-# RENAME CSVs -------------------------------------------------------------
 
-run_initial_setup(pid = "test/protocols_DEV/NEW_TASKS/", 
-                  download_files = TRUE, 
-                  download_task_script = TRUE)
+# SETUP HELPER ------------------------------------------------------------
+
+  # Delete OLD data
+  OLD_data = list.files("data/test/protocols_DEV/NEW_TASKS/", full.names = TRUE)
+  file.remove(OLD_data)
+  
+  # Download new data and setup Helper
+  run_initial_setup(pid = "test/protocols_DEV/NEW_TASKS/", 
+                    download_files = TRUE, 
+                    download_task_script = TRUE)
