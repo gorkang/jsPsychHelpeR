@@ -16,9 +16,8 @@ _targets/meta/
 .vault/.credentials
 .vault/*/
 
-# Do not upload dev and data
+# Do not upload dev
 dev/
-data/*.csv
 
 # Do not upload output files
 outputs/
@@ -28,6 +27,9 @@ outputs/
 # Manual correction
 tests/manual_correction
 
+# All data except 999/999.zip
+data/
+!data/999/999.zip
+
 # Uncomment if don't want to upload data and targets cache
-# data/
 # _targets/objects/ ## SHOULD UPLOAD 
