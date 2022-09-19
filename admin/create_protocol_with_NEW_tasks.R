@@ -1,4 +1,3 @@
-
 # Create NEW_TASKS protocol -----------------------------------------------
 
 # In this script we:
@@ -7,7 +6,9 @@
   # - Create a NEW_TASKS protocol with all the new tasks
 
 
-# ALGUNAS TAREAS PUEDEN DAR ERRORES. IMPORTANTE COMPROBAR QUE TODO OK ANTES DE PASAR A CANONICAL
+# SOME TASKS CAN GIVE ERRORS. 
+# - IMPORTANT TO CHECK EVERYTHING OK BEFORE MOVE TO CANONICAL
+
 
 
 # LAST RUN ----------------------------------------------------------------
@@ -17,10 +18,18 @@
   # NOT OK: "FORM6", "PATTI","DEMOGR3", "FORM4","CEL","MLQ"
 
 
-# Missing CSV's in 999.zip -----------------------------------------------------
+# create_protocol_with_missing_in_999.zip ----------------------------------
+
+  # Reads task results in 999.zip
+  # Reads ANY tasks available in jsPsychMaker/protocols_DEV/
+  # Read all prepare_TASK in jsPSychHelpeR/R_tasks/
+  # DOWNLOADS ALL protocols from server to ../CSCN-server/
+  # Modify config.js to adapt to new tasks
   
-find_missing_tasks_in_999 <- function(search_where = "prepare_TASK") {
+create_protocol_with_missing_in_999 <- function(search_where = "prepare_TASK") {
+  
   targets::tar_load_globals()
+  
   # We can find csv missing when we have the prepare_TASK.R script or
     # csv missing when we have the tasks/TASK.js script
   if (!search_where %in% c("prepare_TASK", "js")) cli::cli_abort('ONE OF "prepare_TASK", "js"')
@@ -56,15 +65,16 @@ find_missing_tasks_in_999 <- function(search_where = "prepare_TASK") {
   # Remove TASKS ***
     # DEMOGR[N] and FORM[N] # Idiosyncratic tasks
     # SCGT uses mic (mic not available in docker container browser)
-  blacklist_tasks = "DEMOGR[0-9]{1,3}|FORM[0-9]{1,3}|SCGT|PPD"
-  cli::cli_alert_info("Not including tasks: {blacklist_tasks}")
+  blacklist_tasks = "^DEMOGR|^FORM[0-9]{1,3}|^SCGT|^PPD"
+  cli::cli_alert_info("Not including tasks (e.g. SCGT uses mic): {blacklist_tasks}")
   NEW_TASKS = NEW_TASKS[!grepl(blacklist_tasks, NEW_TASKS)]
   
 
 # Get last version from SERVER --------------------------------------------
 
+  # Download to ../CSCN-server/
   invisible(lapply(list.files("./R", full.names = TRUE, pattern = ".R$"), source))
-  DF_missing = check_missing_prepare_TASK(sync_protocols = TRUE) # Download to ../CSCN-server/
+  DF_missing = check_missing_prepare_TASK(sync_protocols = TRUE) 
   DF_missing
   
   
@@ -91,87 +101,101 @@ find_missing_tasks_in_999 <- function(search_where = "prepare_TASK") {
   
   
   destination_folder = "../CSCN-server/protocols/test/protocols_DEV/NEW_TASKS/"
+
+  # DELETE OLD NEW_TASKS
+  unlink(destination_folder, recursive = TRUE)
+  cli::cli_alert_info("Deleted {destination_folder}")
   
   source("admin/helper-scripts-admin.R")
   copy_canonical_clean(destination_folder = destination_folder)
   
-  # # canonical_protocol_clean files
-  # canonical_folder = "/home/emrys/gorkang@gmail.com/RESEARCH/PROYECTOS-Code/jsPsychR/CSCN-server/protocols/test/canonical_protocol_clean/"
-  # canonical_files = list.files(canonical_folder, full.names = FALSE, recursive = TRUE)
-  # 
-  # # Copy canonical_protocol_clean files to NEW_TASKS
-  # folders_to_create = unique(paste0(destination_folder, dirname(canonical_files)))
-  # walk(folders_to_create, dir.create, recursive = TRUE)
-  # file.copy(paste0(canonical_folder, canonical_files), paste0(destination_folder, canonical_files), overwrite = TRUE)
-
-  
+  # Remove non essential tasks from canonical_clean
+  TASKS_CLEAN = list.files(paste0(destination_folder, "/tasks/"))
+  file.remove(paste0(destination_folder, "/tasks/", TASKS_CLEAN[!TASKS_CLEAN %in% c("Consent.js", "Goodbye.js")]))
   
   # Copy NEW tasks
-  dir.create(paste0(destination_folder, "tasks/"), recursive = TRUE)
+  # dir.create(paste0(destination_folder, "tasks/"), recursive = TRUE)
   file.copy(paste0("../CSCN-server/", PATHS_NEW_TASKS), paste0(destination_folder, "tasks/"), overwrite = TRUE)
   
   
-# INCLUDE NEW TASKS IN config.js -----------------------------------
+  # INCLUDE NEW TASKS IN config.js -----------------------------------
   
-  TASKS_vector = paste0("randomly_ordered_tasks_1 = ['", paste(gsub("\\.js", "", NEW_TASKS), collapse = "', '"), "'];")
-  CONFIG = readLines("../CSCN-server/protocols/test/protocols_DEV/NEW_TASKS/config.js")
+  TASKS_NEW_PROTOCOL = extract_tasks_from_protocol(destination_folder)
   
-  # Replace
-  final_file = gsub("randomly_ordered_tasks_1 = \\['DEMOGR', 'AIM'\\]; // Block of tasks in random order",
-                    TASKS_vector, CONFIG)
+  replace_tasks_config_js(folder_protocol = destination_folder,
+                          tasks = TASKS_NEW_PROTOCOL, 
+                          block_tasks = "randomly_ordered_tasks_1") 
 
-  # Write file
-  cat(final_file, file = "../CSCN-server/protocols/test/protocols_DEV/NEW_TASKS/config.js", sep = "\n")
+  cli::cli_alert_success("ALL DONE \nProtocol in `{destination_folder}` \nRemember to CHECK config.js")
   
-
 }
 
+
 # find_missing_tasks_in_999(search_where = "prepare_TASK")
-find_missing_tasks_in_999(search_where = "js")
+create_protocol_with_missing_in_999(search_where = "js")
 
 
 
+# CHECK CONFIG ------------------------------------------------------------
+
+  # CHECK config.js
+    # - online
+    # - pid
+  rstudioapi::navigateToFile("../CSCN-server/protocols/test/protocols_DEV/NEW_TASKS/config.js")
+
+  
+  
 # UPLOAD NEW_TASKS to server --------------------------------------------------
 
-# CHECK config.js first
-rstudioapi::navigateToFile("../CSCN-server/protocols/test/protocols_DEV/NEW_TASKS/config.js")
+  source("../jsPsychMaker/admin/sync_server_local.R")
+  
+  # UPLOAD CSCN-server/.../NEW_TASKS to server
+  sync_server_local(direction = "local_to_server", 
+                    local_folder = FOLDER_PROTOCOL,
+                    server_folder = "test/protocols_DEV/NEW_TASKS/", only_test = FALSE)
+  
+  
+  
 
-source("../jsPsychMaker/R/sync_server_local.R")
+# DELETE .data in server --------------------------------------------------
 
-# UPLOAD CSCN-server/.../NEW_TASKS to server
-sync_server_local(direction = "local_to_server", 
-                  local_folder = "../CSCN-server/protocols/test/protocols_DEV/NEW_TASKS/",
-                  server_folder = "test/protocols_DEV/NEW_TASKS/", only_test = FALSE)
+  # DELETE SERVER .data/ files
+  list_credentials = source(".vault/.credentials") # Get server credentials
+  system(paste0('sshpass -p ', list_credentials$value$password, ' ssh ', list_credentials$value$user, '@', list_credentials$value$IP, ' rm ', list_credentials$value$main_FOLDER, "test/protocols_DEV/NEW_TASKS/", '/.data/*'))
+  
 
-
-# TODO: Can just copy instead of download
-  # FROM: ../CSCN-server/protocols/test/protocols_DEV/NEW_TASKS/
-  # TO: ../jsPsychMaker/protocols_DEV/NEW_TASKS/
-    
-# DOWNLOAD to NEW_TASKS to ../jsPsychMaker/protocols_DEV/NEW_TASKS/
-# To make sure the Github jsPsychMaker/protocols_DEV/NEW_TASKS is up to date
-sync_server_local(direction = "server_to_local", 
-                  server_folder = "test/protocols_DEV/NEW_TASKS/",
-                  local_folder = "../jsPsychMaker/protocols_DEV/NEW_TASKS/", 
-                  only_test = FALSE)
-
-cli::cli_h1("REMEMBER")
-cli::cli_alert_info("Commit and PUSH NEW_TASKS changes in jsPsychMaker!!!")
-rstudioapi::openProject(path = "../jsPsychMaker/", newSession = TRUE)
+# DOWNLOAD to protocols_DEV -----------------------------------------------
+  
+  # TODO: Can just copy instead of download
+    # FROM: ../CSCN-server/protocols/test/protocols_DEV/NEW_TASKS/
+    # TO: ../jsPsychMaker/protocols_DEV/NEW_TASKS/
+      
+  # DOWNLOAD to NEW_TASKS to ../jsPsychMaker/protocols_DEV/NEW_TASKS/
+  # To make sure the Github jsPsychMaker/protocols_DEV/NEW_TASKS is up to date
+  sync_server_local(direction = "server_to_local", 
+                    server_folder = "test/protocols_DEV/NEW_TASKS/",
+                    local_folder = "../jsPsychMaker/protocols_DEV/NEW_TASKS/", 
+                    only_test = FALSE)
+  
+  cli::cli_h1("REMEMBER")
+  cli::cli_alert_info("Commit and PUSH NEW_TASKS changes in jsPsychMaker!!!")
+  rstudioapi::openProject(path = "../jsPsychMaker/", newSession = TRUE)
 
 
 # MONKEYS -----------------------------------------------------------------
 
 # DELETE protocol 999 MYSQL rows
-system("mysql-workbench-community")
-
+  system("mysql-workbench")
+  system("mysql-workbench-community")
+  
 # Launch monkeys! # Go to jsPsychMonkeys and use the following in _targets.R
 rstudioapi::openProject(path = "../jsPsychMonkeys/", newSession = TRUE)
 
-parameters_monkeys_minimal = list(uid = 100:105, uid_URL = TRUE, forced_seed = 11,
+parameters_monkeys_minimal = list(uid = 100:105, uid_URL = TRUE, 
+                                  forced_seed = 11, # Reproducible. Comment for random
                                   forced_random_wait = TRUE, forced_refresh = TRUE,
                                   initial_wait = 5,
-                                  wait_retry = 10,
+                                  wait_retry = 5, # Increase if fails
                                   server_folder_tasks = "test/protocols_DEV/NEW_TASKS/",
                                   big_container = TRUE, debug_file = FALSE, console_logs = TRUE, debug = TRUE, 
                                   open_VNC = TRUE, keep_alive = TRUE,
@@ -182,8 +206,6 @@ parameters_monkeys_minimal = list(uid = 100:105, uid_URL = TRUE, forced_seed = 1
 
 # RENAME CSVs -------------------------------------------------------------
 
-# Renombrar zips
-# FILES_IN = list.files("data/999", full.names = TRUE)
-# FILES_OUT = gsub("[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{6}", "2222-02-22T222222", FILES_IN)
-# file.rename(from = FILES_IN, FILES_OUT)
-
+run_initial_setup(pid = "test/protocols_DEV/NEW_TASKS/", 
+                  download_files = TRUE, 
+                  download_task_script = TRUE)
