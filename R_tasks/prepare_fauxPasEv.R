@@ -95,7 +95,7 @@ prepare_fauxPasEv <- function(DF_clean, short_name_scale_str) {
     select(id, trialid, RAW) %>%
     
     
-    # [ADAPT]: RAW to DIR for individual items -----------------------------------
+  # RAW to DIR for individual items --------------------------------------------
   # ****************************************************************************
   
   # Transformations
@@ -226,14 +226,15 @@ prepare_fauxPasEv <- function(DF_clean, short_name_scale_str) {
   
   # MANUAL CORRECTION -------------------------------------------------------
   
-  manual_correction_output = "outputs/data/manual_correction/fauxPasEv_manual_correction.xlsx"
-  manual_correction_input = "data/manual_correction/fauxPasEv_manual_correction.xlsx"
+  manual_correction_output = "outputs/manual_correction/fauxPasEv_manual_correction.xlsx"
+  manual_correction_input = paste0("data/", gsub("/", "", pid_target), "_manual_correction/fauxPasEv_manual_correction.xlsx")
   
   
   # Save DF with OPEN responses for manual correction ---
   
   if (!file.exists(dirname(here::here(manual_correction_output)))) dir.create(dirname(here::here(manual_correction_output)))
   
+  cli::cli_h1("FauxPas correction")
   # CHECK output file
   if (file.exists(here::here(manual_correction_output))) {
     cli::cli_alert_info(cli::col_none(c("OVERWIRITING '{manual_correction_output}'")))
@@ -255,22 +256,24 @@ prepare_fauxPasEv <- function(DF_clean, short_name_scale_str) {
   
   # CHECK FILES EXIST!!! IF NOT, JUMP ALL and give message
   
-  
   # Read manual correction file ---
   if (file.exists(manual_correction_input)) {
     # cli::cli_par()
     cli::cli_alert_success(cli::col_none("CHECK 1 OK | Manual correction of fauxPas already exists in '{manual_correction_input}'"))
     # cli::cli_end()
     
-    DF_manual_correction = readxl::read_excel(here::here("data/manual_correction/fauxPasEv_manual_correction.xlsx")) 
-    nrow_output = nrow(readxl::read_excel(manual_correction_output))
+    # Read manual correction
+    DF_manual_correction = readxl::read_excel(here::here(manual_correction_input)) 
     
+    # Number of rows of input and output
+    nrow_output = nrow(readxl::read_excel(manual_correction_output))
     nrow_input = nrow(DF_manual_correction)
     
+    # Count uncorrected rows
     DF_uncorrected = DF_manual_correction %>% filter(DIR == 123456789 | is.na(DIR))
     nrow_uncorrected = DF_uncorrected %>% nrow()
     
-    
+    # Count missing rows
     missing_rows = OUTPUT_DF %>% anti_join(DF_manual_correction, by = c("id", "trialid")) %>% 
       bind_rows(DF_uncorrected %>% drop_na(trialid))
     
@@ -282,6 +285,7 @@ prepare_fauxPasEv <- function(DF_clean, short_name_scale_str) {
       # Show n of uncorrected rows
       if (nrow_uncorrected > 0) cli::cli_alert_danger(paste0("CHECK 2 WARNING | manual correction has {nrow_uncorrected} uncorrected rows (DIR == 123456789 or NA) || ", cli::bg_green('YOU NEED TO FIX THIS'), " ||"))
       cli::cli_end()
+      
       
       # CHECKS ---
       
@@ -302,17 +306,18 @@ prepare_fauxPasEv <- function(DF_clean, short_name_scale_str) {
                                 paste0(capture.output(as.data.frame(missing_rows)), collapse = "\n")))
           cli::cli_h1(text = "")
         }
-        
-        
-        cli::cli_abort(c("{nrow_uncorrected} responses not corrected: follow the INSTRUCTIONS alert in the Console\n",
+
+        # Instructions
+        cli::cli_abort(c("{nrow_uncorrected} responses not corrected: follow the ℹ INSTRUCTIONS alert in the Console\n",
                          "- In the meantime, for the pipeline to run, you can go to _targets.R and comment the following lines:\n",
                          "- line starting with: tar_target(df_fauxPasEv, prepare_fauxPasEv(...\n",
                          "- df_fauxPasEv line in create_joined() function"))
+      # All corrected
       } else {
         cli::cli_alert_success(cli::col_none("CHECK 3 OK | All rows have been corrected"))
       }
       
-      
+    # Different number of rows input/output
     } else {
       
       cli::cli_par()
@@ -334,7 +339,7 @@ prepare_fauxPasEv <- function(DF_clean, short_name_scale_str) {
     }
     
     
-    
+  # Manual correction DOES NOT exist ---
   } else {
     cli::cli_par()
     cli::cli_alert_danger(c("ERROR | manual correction file '{manual_correction_input}' DOES NOT EXIST || {cli::bg_green('You need to FIX THIS')} ||"))
@@ -349,6 +354,8 @@ prepare_fauxPasEv <- function(DF_clean, short_name_scale_str) {
     cli::cli_end()
     cli::cli_h1(text = "")
     
+    # Create folder, show in File pane
+    if (!dir.exists(here::here(dirname(manual_correction_input)))) dir.create(here::here(dirname(manual_correction_input)))
     
     cli::cli_abort(c("Correction file NOT found!: follow the INSTRUCTIONS alert in the Console"))
     
@@ -412,7 +419,7 @@ prepare_fauxPasEv <- function(DF_clean, short_name_scale_str) {
     mutate(Q8_Q9 = Q8_Q9/2) # Only 1 point when Q8_Q9 of a story are OK
   
   
-  # Points of only 
+  # Points of Questions 8 and 9 (out of 1)
   # La puntuación obtenida se divide entre 20.
   DF_points_Q8Q9 = 
     DF_stories_OK |> 
@@ -420,11 +427,11 @@ prepare_fauxPasEv <- function(DF_clean, short_name_scale_str) {
     summarise(Q8_Q9 = sum(Q8_Q9)/20, .groups = "drop") 
   
   
-  
   # Solo se consideraran para el calculo de puntaje total aquellas  historias en las que se haya respondido bien las preguntas 7 y 8.
-  # Calculo puntaje total:  Sumatoria de preguntas 1 a 6 (para historias con fauxpas) y  pregunta 1 (para historias sin fauxpas). 
+  # Calculo puntaje total:  Sumatoria de preguntas 1 a 6 (para historias con fauxpas) y pregunta 1 (para historias sin fauxpas). 
   # la sumatoria de las preguntas control (7 y 8) se hace aparte.
   
+  # Points in trialid's 2 to 7, only when Q8_Q9 are OK 
   DF_points_Q2Q7 = 
     DF_long_DIR_manually_corrected_DICT |>
     filter(trialid %in% items_Q2_Q7) |> # Only items 2 to 7
@@ -433,17 +440,19 @@ prepare_fauxPasEv <- function(DF_clean, short_name_scale_str) {
     summarise(Q2_Q7 = sum(DIR), 
               .groups = "drop")
   
+  # DF with participants whose final score is > 0
   DF_points_final_non_0 = 
     DF_points_Q8Q9 |> 
     full_join(DF_points_Q2Q7, by = "id") %>% 
     mutate(!!names_list$name_DIRt := rowSums(select(., starts_with("Q")), na.rm = TRUE)) |> 
     select(id, !!names_list$name_DIRt)
   
-  # id's with 0 points
+  # DF with participants whose final score is 0
+    # Create this so in the final DF all participants have a row
   DF_points_final_0 = 
     DF_long_DIR_manually_corrected_DICT |> 
     distinct(id) |> 
-    filter(!id %in% DF_points_final$id) |> 
+    filter(!id %in% DF_points_final_non_0$id) |> 
     mutate(!!names_list$name_DIRt := 0)
   
   # Join all id's and scores
@@ -500,16 +509,25 @@ prepare_fauxPasEv <- function(DF_clean, short_name_scale_str) {
     separate(name, into = c("task", "item", "type")) %>% 
     select(-task, -type)
   
+  
+  # RAW %>%
+  #   full_join(DIR, by = c("id", "item")) %>%
+  #   arrange(item) |>  
+  #   select(-DIR) |>
+  #   pivot_wider(names_from = id, names_prefix ="RAW_", values_from = RAW) |>
+  #   writexl::write_xlsx("outputs/manual_correction/TEMP_WIDE_fauxpas.xlsx")
+  
+  
   RAW %>%
     full_join(DIR, by = c("id", "item")) %>%
     arrange(item) %>% 
-    writexl::write_xlsx("outputs/data/TEMP_LONG_fauxpas.xlsx")
+    writexl::write_xlsx("outputs/manual_correction/TEMP_LONG_fauxpas.xlsx")
   
-  DF_wide_RAW_DIR |> writexl::write_xlsx("outputs/data/TEMP_DF_wide_RAW_DIR_fauxpas.xlsx")
+  DF_wide_RAW_DIR |> writexl::write_xlsx("outputs/manual_correction/TEMP_DF_wide_RAW_DIR_fauxpas.xlsx")
   
   
-  cli::cli_h1(text = "CHECK DATA SAVED IN: outputs/data/TEMP_LONG_fauxpas.xlsx")
-  cli::cli_h1(text = "FINAL DF SAVED IN: outputs/data/TEMP_DF_wide_RAW_DIR_fauxpas.xlsx")
+  cli::cli_h1(text = "CHECK DATA SAVED IN: outputs/manual_correction/TEMP_LONG_fauxpas.xlsx")
+  cli::cli_h1(text = "FINAL DF SAVED IN: outputs/manual_correction/TEMP_DF_wide_RAW_DIR_fauxpas.xlsx")
   
   
   
