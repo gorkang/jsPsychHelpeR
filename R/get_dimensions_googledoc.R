@@ -164,9 +164,6 @@ get_dimensions_googledoc <- function(short_name_text, google_username = "gorkang
   
   if (nrow(DF_dimensions) > 0) {
     
-    
-    
-    
     cli::cli_par()
     cli::cli_h1("Dimensiones")
     cli::cli_end()
@@ -243,7 +240,7 @@ get_dimensions_googledoc <- function(short_name_text, google_username = "gorkang
                
                # NEW
                # !!names_list$name_DIRd[1] := rowMeans(select(., paste0(short_name_scale_str, "_", items_dimensions[[1]], "_DIR")), na.rm = TRUE), 
-               tibble(calculo = paste0('!!names_list$name_DIRd[', .x, '] := ', string_function, '(select(., paste0(short_name_scale_str, "_", items_dimensions[[', .x, ']], "_DIR")), na.rm = TRUE),\n'),
+               tibble(calculo = paste0('!!names_list$name_DIRd[', .x, '] := ', cli::col_yellow(string_function), '(select(., paste0(short_name_scale_str, "_", items_dimensions[[', .x, ']], "_DIR")), na.rm = TRUE),\n'),
                       error_text = error_text,
                       notas = notas_RAW)
              })
