@@ -49,7 +49,7 @@ prepare_TEMPLATE <- function(DF_clean, short_name_scale_str) {
   # Create long -------------------------------------------------------------
   DF_long_RAW = create_raw_long(DF_clean, 
                                 short_name_scale = short_name_scale_str, 
-                                numeric_responses = FALSE, 
+                                numeric_responses = FALSE, # [TRUE or FALSE]
                                 is_experiment = FALSE, 
                                 help_prepare = TRUE) # Show n of items, responses,... [CHANGE to FALSE] 
   
@@ -73,8 +73,8 @@ prepare_TEMPLATE <- function(DF_clean, short_name_scale_str) {
           RAW == "Medianamente" ~ 3,
           RAW == "Bastante" ~ 4,
           RAW == "Mucho" ~ 5,
-          is.na(RAW) ~ NA_real_, # OR NA_character_
-          grepl(items_to_ignore, trialid) ~ NA_real_, # OR NA_character_
+          is.na(RAW) ~ NA_real_, # OR NA_character_,
+          grepl(items_to_ignore, trialid) ~ NA_real_, # OR NA_character_,
           TRUE ~ 9999 # OR "9999"
         )
     ) %>% 
