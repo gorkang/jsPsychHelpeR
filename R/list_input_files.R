@@ -9,13 +9,8 @@
 #' @examples
 list_input_files <- function(pid_target) {
   
-  # DEBUG
-  # pid_target = 9999
-  # pid_target = 999
-  # list.files(path = paste0("data/", pid_target), full.names = TRUE)
-  
+  # List csv and zip files in folder data/[pid]
   pid_folder = paste0("data/", pid_target)
-  
   files_raw = list.files(path = pid_folder, pattern = "*.csv|*.zip", full.names = TRUE)
   
 
@@ -23,7 +18,6 @@ list_input_files <- function(pid_target) {
   all_csvs = all(grepl("\\.csv", files_raw))
   length_files = length(files_raw)
   all_zips = all(grepl("\\.zip", files_raw))
-  
   
 
   # Message -----------------------------------------------------------------
