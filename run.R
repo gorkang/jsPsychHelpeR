@@ -21,7 +21,7 @@
   targets::tar_visnetwork(targets_only = TRUE, label = "time")
 
   # First time, and if needed, clean up old targets (deletes _targets/)
-  # targets::tar_destroy()
+  targets::tar_destroy()
   
   # Run data preparation 
   targets::tar_make()
