@@ -5,7 +5,7 @@
 
 # Make sure all packages are present --------------------------------------
 
-  if (!require('rlang')) install.packages('rlang'); library('rlang')
+  if (!suppressMessages(require('rlang'))) install.packages('rlang'); suppressPackageStartupMessages(suppressWarnings(library('rlang')))
   rlang::check_installed(c("targets", "tarchetypes", "rmarkdown"), reason = "to run the initial {jsPsychHelpeR} setup")
 
   # Create _targets_packages and read all dependencies

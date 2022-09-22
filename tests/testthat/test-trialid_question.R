@@ -6,7 +6,7 @@ testthat::test_that('Check if the trialid question_text are unique', {
   # Name of test (should reflect the name of the file) ----------------------
   
   name_of_test = "trialid_question"
-  cat(crayon::underline(crayon::yellow(paste0("\n\nRunning: ", crayon::silver(name_of_test, paste(rep(" ", 40), collapse = " ")),"\n\n"))))
+  cat(cli::style_underline(cli::col_yellow(paste0("\n\nRunning: ", cli::col_silver(name_of_test, paste(rep(" ", 40), collapse = " ")),"\n\n"))))
 
   
   # Test --------------------------------------------------------------------
@@ -37,10 +37,10 @@ testthat::test_that('Check if the trialid question_text are unique', {
     
     write_csv(non_unique_trialid %>% as_tibble(), here::here(paste0("outputs/tests_outputs/test-", name_of_test, ".csv")))
     
-    cat(crayon::red("\nERROR in", paste0("test-", name_of_test), "\n"),
-        crayon::red("  - Some of the trialid's are not unique:"), non_unique_trialid, "\n",
-        crayon::green("  - # of Issues: "), crayon::red(length(non_unique_trialid)), "\n",
-        crayon::silver("  - DF with details stored in:", paste0("'outputs/tests_outputs/test-", name_of_test, ".csv'"), "\n\n"))
+    cat(cli::col_red("\nERROR in", paste0("test-", name_of_test), "\n"),
+        cli::col_red("  - Some of the trialid's are not unique:"), non_unique_trialid, "\n",
+        cli::col_green("  - # of Issues: "), cli::col_red(length(non_unique_trialid)), "\n",
+        cli::col_silver("  - DF with details stored in:", paste0("'outputs/tests_outputs/test-", name_of_test, ".csv'"), "\n\n"))
   }
   
 

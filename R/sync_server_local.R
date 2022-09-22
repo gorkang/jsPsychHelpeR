@@ -23,11 +23,19 @@ sync_server_local <-
            dont_ask = FALSE) {
     
   # DEBUG
-  # server_folder = "test/FONDECYT2021/"
-  # local_folder = "canonical_protocol_DEV/"
-  # direction = "server_to_local"
-  # only_test = TRUE
-  # exclude_csv = TRUE
+    # pid = "999"
+    # project_folder = getwd()
+    # TEMP_DIR = tempdir(check = TRUE)
+    # server_folder = pid
+    # local_folder = TEMP_DIR
+    # direction = "server_to_local"
+    # only_test = FALSE
+    # exclude_csv = TRUE
+    # delete_nonexistent = TRUE
+    # dont_ask = TRUE
+    
+    
+    
   
 
   # Parameters --------------------------------------------------------------
@@ -68,7 +76,7 @@ sync_server_local <-
   if (credentials_exist) {
     # sshpass and rsync installed (?)
     if (SSHPASS != "" & RSYNC != "") { 
-      # cli::cli_text(cli::col_green("{cli::symbol$tick} "), "All is well.")
+      cli::cli_text(cli::col_green("{cli::symbol$tick} "), "rsync installed and credentials exist")
     } else {
       cli::cli_alert_danger("'sshpass' or 'rsync' not installed. Can't use `sync_server_local()`")
       # cli::cli_text(cli::col_red("{cli::symbol$cross} "), "'sshpass' or 'rsync' not installed. Can't use `sync_server_local()`")
@@ -96,7 +104,11 @@ sync_server_local <-
   
   if (dont_ask == TRUE) {
     out = 1
-    cat(paste0(cli::col_yellow("BACKUP of full protocol without data: "), cli::col_silver("cscn.uai.cl/", server_folder, " -->> data/protocol_", server_folder, ".zip"), "\n", extra_message))
+    
+    cli::cli_par()
+    cli::cli_end()
+    cli_text(paste0(cli::col_yellow("BACKUP of full protocol WITHOUT data: "), 
+                    cli::col_silver("cscn.uai.cl/", server_folder, " -->> data/protocol_", server_folder, ".zip"), "\n", extra_message))
   } else {
     out <- utils::menu(c("yes", "no"), title = cat(message_text))  
   }
@@ -114,30 +126,29 @@ sync_server_local <-
     if (direction == "server_to_local") {
       
       # DOWNLOAD server to local
-      system(
+      OUT = system(
         paste0('sshpass -p ', list_credentials$value$password, ' rsync -av ', dry_run, ' --rsh=ssh ', 
                delete_nonexistent_files, # Delete files from destination if they are NOT in origin anymore
                exclude_files, # exclude CSV files
                list_credentials$value$user, "@", list_credentials$value$IP, ":", list_credentials$value$main_FOLDER, server_folder, '/ ',
                here::here(local_folder_terminal), '/ '
-        )
+        ), intern = TRUE
       )
       
       
     } else if (direction == "local_to_server") {
       
       # UPLOAD local to server
-      system(
+      OUT = system(
         paste0('sshpass -p ', list_credentials$value$password, ' rsync -av ', dry_run, ' --rsh=ssh ', 
                here::here(local_folder_terminal), '/ ',
                list_credentials$value$user, "@", list_credentials$value$IP, ":", list_credentials$value$main_FOLDER, server_folder, '/ '
-        )
+        ), intern = TRUE
       )
       
     }
     
   } else {
-    # cat(crayon::green("Not doing anything..."))
     cli::cli_alert_success("Not doing anything...")
   }
   

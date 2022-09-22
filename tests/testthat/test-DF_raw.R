@@ -6,7 +6,7 @@ testthat::test_that('Check if DF_raw', {
   # Name of test (should reflect the name of the file) ----------------------
   
   name_of_test = "DF_raw"
-  cat(crayon::underline(crayon::yellow(paste0("\n\nRunning: ", crayon::silver(name_of_test, paste(rep(" ", 40), collapse = " ")),"\n\n"))))
+  cat(cli::style_underline(cli::col_yellow(paste0("\n\nRunning: ", cli::col_silver(name_of_test, paste(rep(" ", 40), collapse = " ")),"\n\n"))))
   
   # Test: trialids are correctly build  ----------------------------------------------------------------
   
@@ -45,22 +45,22 @@ testthat::test_that('Check if DF_raw', {
     
     write_csv(DF_problematic_trialids, here::here(paste0("outputs/tests_outputs/test-", name_of_test, ".csv")))
     
-    cat(crayon::red("\nERROR in", paste0("test-", name_of_test), "\n"),
-        crayon::red("  - Some of the items have non-supported trialids:"), offenders, "\n",
-        crayon::yellow("  - # of Issues: "), crayon::red(length(offenders)), "\n",
-        crayon::green("  - trialid should be: "), crayon::black("SHORTNAMESCALE_DD or Instructions or Instructions_DD; e.g. CRT7_01, Instructions, Instructions_01"), "\n",
-        crayon::silver("  - DF with details stored in:", paste0("'outputs/tests_outputs/test-", name_of_test, ".csv'"), "\n\n"))
+    cat(cli::col_red("\nERROR in", paste0("test-", name_of_test), "\n"),
+        cli::col_red("  - Some of the items have non-supported trialids:"), offenders, "\n",
+        cli::col_yellow("  - # of Issues: "), cli::col_red(length(offenders)), "\n",
+        cli::col_green("  - trialid should be: "), cli::col_black("SHORTNAMESCALE_DD or Instructions or Instructions_DD; e.g. CRT7_01, Instructions, Instructions_01"), "\n",
+        cli::col_silver("  - DF with details stored in:", paste0("'outputs/tests_outputs/test-", name_of_test, ".csv'"), "\n\n"))
   }
   
   if (length(non_canonical_names) > 0) {
     
     # write_csv(non_canonical_names, here::here(paste0("outputs/tests_outputs/test-", name_of_test, ".csv")))
     
-    cat(crayon::red("\nERROR in", paste0("test-", name_of_test), "\n"),
-        crayon::red("  - Some of the items have non-canonical names:"), non_canonical_names, "\n",
-        crayon::yellow("  - # of Issues: "), crayon::red(length(non_canonical_names)), "\n"
-        # crayon::green("  - trialid should be: "), crayon::black("SHORTNAMESCALE_DD or Instructions or Instructions_DD; e.g. CRT7_01, Instructions, Instructions_01"), "\n"
-        # crayon::silver("  - DF with details stored in:", paste0("'outputs/tests_outputs/test-", name_of_test, ".csv'"), "\n\n")
+    cat(cli::col_red("\nERROR in", paste0("test-", name_of_test), "\n"),
+        cli::col_red("  - Some of the items have non-canonical names:"), non_canonical_names, "\n",
+        cli::col_yellow("  - # of Issues: "), cli::col_red(length(non_canonical_names)), "\n"
+        # cli::col_green("  - trialid should be: "), cli::col_black("SHORTNAMESCALE_DD or Instructions or Instructions_DD; e.g. CRT7_01, Instructions, Instructions_01"), "\n"
+        # cli::col_silver("  - DF with details stored in:", paste0("'outputs/tests_outputs/test-", name_of_test, ".csv'"), "\n\n")
     )
     
   }

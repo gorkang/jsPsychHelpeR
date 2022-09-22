@@ -19,20 +19,20 @@ test_testhat <- function(...) { # input_files_automatic_tests_str
   
   # Print
   num_tests = list.files("tests/testthat/", pattern = ".R") %>% length()
-  cat(crayon::blue(crayon::underline(crayon::bold(paste0("\n\n[Running ", num_tests, " tests]:", paste(rep(" ", 60), collapse = " ")), " \n"))))
+  cat(cli::col_blue(cli::style_underline(cli::style_bold(paste0("\n\n[Running ", num_tests, " tests]:", paste(rep(" ", 60), collapse = " ")), " \n"))))
 
   # TODO: ADAPT to new test-snapshots.R
     # Check we have automatic tests for all tasks (each task should have a df_[SHORT_NAME_OF_TASK]) in _targets/outputs
     # automatic_tests_raw = list.files(path = "tests/testthat/", pattern="df_.*snapshot", full.names = FALSE, ignore.case = FALSE)
     # automatic_tests = gsub("test-(.*)_snapshot.R", "\\1", automatic_tests_raw)
     # missing_tests = input_files_automatic_tests_str[!input_files_automatic_tests_str %in% automatic_tests]
-    # if (length(missing_tests) > 0)  cat(crayon::red(paste0("\n\n[WARNING]: Missing snapshot tests: ")), paste(missing_tests, collapse = ","), "\n")
+    # if (length(missing_tests) > 0)  cat(cli::col_red(paste0("\n\n[WARNING]: Missing snapshot tests: ")), paste(missing_tests, collapse = ","), "\n")
 
 
   # Run all the tests ------------------------------------------------------
 
   testthat::test_dir(path = here::here("tests/testthat/"), env = .GlobalEnv, stop_on_failure = FALSE, reporter = ProgressReporter)# ProgressReporter StopReporter
   
-  cat(crayon::blue(crayon::underline(crayon::bold(paste0("\n\n[END tests]:", paste(rep(" ", 65), collapse = " ")), " \n\n\n"))))
+  cat(cli::col_blue(cli::style_underline(cli::style_bold(paste0("\n\n[END tests]:", paste(rep(" ", 65), collapse = " ")), " \n\n\n"))))
   
 }

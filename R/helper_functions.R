@@ -306,11 +306,11 @@ debug_function <- function(name_function) {
 
     # For each of the parameters, applies the load_parameters() function
     TEMP = seq_along(parameters_function_separated) %>% map(~ load_parameters(parameters_function_separated, NUM = .x))
-    cat(crayon::green("Loaded: "), gsub(",", ", ", parameters_function_raw), "\n")
+    cat(cli::col_green("Loaded: "), gsub(",", ", ", parameters_function_raw), "\n")
 
   } else {
 
-    cat(crayon::red(paste0("'", name_function, "'", "not found in _targets.R")), "\n")
+    cat(cli::col_red(paste0("'", name_function, "'", "not found in _targets.R")), "\n")
 
   }
 }
@@ -398,8 +398,8 @@ prepare_helper <- function(DF_long_RAW, show_trialid_questiontext = FALSE) {
               .groups = "drop") 
 
   cli::cli_h1("Items and responses")
-  cat(crayon::blue("\n", length(vector_items), "Items: "), crayon::silver(paste("'", vector_items[c(1,length(vector_items))], "'", collapse = " to ")), "\n")
-  cat(crayon::blue("\n", length(vector_responses), "Responses:\n"), crayon::silver(paste(vector_responses, collapse = "\n ")), "\n")
+  cat(cli::col_blue("\n", length(vector_items), "Items: "), cli::col_silver(paste("'", vector_items[c(1,length(vector_items))], "'", collapse = " to ")), "\n")
+  cat(cli::col_blue("\n", length(vector_responses), "Responses:\n"), cli::col_silver(paste(vector_responses, collapse = "\n ")), "\n")
 
   # Pause 1s to help see the first part of the output
   Sys.sleep(1)
@@ -412,7 +412,7 @@ prepare_helper <- function(DF_long_RAW, show_trialid_questiontext = FALSE) {
 
   if (nrow(DF_check_responses) > 1) {
     cli::cli_h1("Responses per item")
-    cat("\n", crayon::blue(nrow(DF_check_responses), "Different number of responses per item: \n"))
+    cat("\n", cli::col_blue(nrow(DF_check_responses), "Different number of responses per item: \n"))
     print(DF_check_responses)
   }
   
@@ -453,7 +453,7 @@ create_new_task <- function(short_name_task, overwrite = FALSE, get_info_googled
     if (!file.exists(template_file)) cli::cli_abort("`{template_file}` does NOT exist! You can download from {.url https://raw.githubusercontent.com/gorkang/jsPsychHelpeR/master/R_tasks/prepare_TEMPLATE.R}")
     
     # Copy template
-    cli::cli_alert_info(c("\nCreating new file: ", crayon::silver(new_task_file), "\n"))
+    cli::cli_alert_info(c("\nCreating new file: ", cli::col_silver(new_task_file), "\n"))
     file.copy(template_file, new_task_file, overwrite = overwrite)
     
 
@@ -463,7 +463,7 @@ create_new_task <- function(short_name_task, overwrite = FALSE, get_info_googled
     cat(y, file = new_task_file, sep = "\n")
 
   } else {
-    cat(crayon::yellow("\nFile ", crayon::silver(new_task_file), " already exists. Not overwriting\n"))
+    cat(cli::col_yellow("\nFile ", cli::col_silver(new_task_file), " already exists. Not overwriting\n"))
   }
 
 
@@ -486,7 +486,7 @@ create_new_task <- function(short_name_task, overwrite = FALSE, get_info_googled
   # Output messages ---
   cli::cli_h1("ADD the following lines to _targets.R")
   cat(paste0('tar_target(df_', short_name_task, ', prepare_', short_name_task, '(DF_clean, short_name_scale_str = "', short_name_old, '")),\n'))
-  cat(crayon::green("\nDON'T FORGET TO ADD", crayon::silver(paste0("df_", short_name_task)), "to create_joined() in _targets.R:", crayon::silver("create_joined(..., ", paste0("df_", short_name_task, ")\n\n"))))
+  cat(cli::col_green("\nDON'T FORGET TO ADD", cli::col_silver(paste0("df_", short_name_task)), "to create_joined() in _targets.R:", cli::col_silver("create_joined(..., ", paste0("df_", short_name_task, ")\n\n"))))
 
 }
 
@@ -656,12 +656,12 @@ create_targets_file <- function(pid_protocol = 0, folder_data = NULL, folder_tas
   # If previous step was successful
   if (file.exists("_targets_automatic_file.R")) {
 
-    response_prompt = menu(choices = c("Yes", "No"), 
+    response_prompt = menu(choices = c("YES", "No"), 
                            title = 
                              cli::cli(
                                {
                                  cli::cli_par()
-                                 cli::cli_alert_info("Overwrite file '_targets.R' to include the following tasks?")
+                                 cli::cli_alert_info("{cli::style_bold((cli::col_yellow('Overwrite')))} file '_targets.R' to include the following tasks?")
                                  cli::cli_end()
                                  cli::cli_text("{.pkg {files}}")
                                 }
@@ -679,11 +679,11 @@ create_targets_file <- function(pid_protocol = 0, folder_data = NULL, folder_tas
       # DELETE UNUSED tasks
       TASKS_TO_DELETE = list.files("R_tasks/") %>% as_tibble() %>% mutate(task = gsub("prepare_(.*)\\.R", "\\1", value)) %>% filter(!task %in% files & !grepl("\\.csv", value)) %>% pull(value) %>% paste0("R_tasks/", .)
       
-      delete_prompt = menu(choices = c("Yes", "No"), 
+      delete_prompt = menu(choices = c("Yes", "NO"), 
                            title = cli::cli(
                              {
                                cli::cli_par()
-                               cli::cli_alert_info("{cli::col_red('Delete')} the following {length(TASKS_TO_DELETE)} unused tasks from 'R_tasks/'?:")
+                               cli::cli_alert_info("{cli::style_bold((cli::col_red('DELETE')))} the following {length(TASKS_TO_DELETE)} unused tasks from 'R_tasks/'?:")
                                cli::cli_end()
                                cli::cli_text("{.pkg {basename(TASKS_TO_DELETE)}}")
                              }
@@ -707,7 +707,7 @@ create_targets_file <- function(pid_protocol = 0, folder_data = NULL, folder_tas
           cli::cli_end()
     
           cli::cli_par()
-          cli::cli_alert_info("NEW '_targets.R' created")
+          cli::cli_alert_success("NEW '_targets.R' created")
           cli::cli_end()
           
           cli::cli_text(cli::col_grey("Use the following commands to start the data preparation:"))
@@ -724,7 +724,7 @@ create_targets_file <- function(pid_protocol = 0, folder_data = NULL, folder_tas
     
   }
     
-  # cat(crayon::green("\n_targets_automatic_file.R created."), crayon::yellow("Manually rename it as _targets.R\n"))
+  # cat(cli::col_green("\n_targets_automatic_file.R created."), cli::col_yellow("Manually rename it as _targets.R\n"))
 
 }
 
@@ -781,7 +781,7 @@ auto_reliability = function(DF, short_name_scale = short_name_scale_str, items =
   
   # deleted_items_NAs
   deleted_items_NAs = paste(names(temp_clean_RAW)[!names(temp_clean_RAW) %in% names(temp_clean)])
-  if (length(deleted_items_NAs) > 0) cat(crayon::red("x DELETED VARS (have NA's)", paste(deleted_items_NAs, collapse = ", "), "\n"))
+  if (length(deleted_items_NAs) > 0) cat(cli::col_red("x DELETED VARS (have NA's)", paste(deleted_items_NAs, collapse = ", "), "\n"))
 
   # Filter items where r.drop < min_rdrop
   delete_items_raw = suppressMessages(safely_alpha_table(temp_clean))
@@ -805,7 +805,7 @@ auto_reliability = function(DF, short_name_scale = short_name_scale_str, items =
     delete_items = NULL
     keep_items = names(temp_clean)
 
-    cat(crayon::green("No items with r.drop <= ", min_rdrop), "|| alpha: ", alpha_initial, "\n")
+    cat(cli::col_green("No items with r.drop <= ", min_rdrop), "|| alpha: ", alpha_initial, "\n")
 
   } else {
 
@@ -830,7 +830,7 @@ auto_reliability = function(DF, short_name_scale = short_name_scale_str, items =
       alpha_final = NULL
     }
     
-    cat(crayon::yellow("Filtered", paste0(length(delete_items), "/", ncol(temp_clean_RAW)), "items with r.drop <= ", min_rdrop), "|| alpha: ", alpha_initial , "->", alpha_final, "\n")
+    cat(cli::col_yellow("Filtered", paste0(length(delete_items), "/", ncol(temp_clean_RAW)), "items with r.drop <= ", min_rdrop), "|| alpha: ", alpha_initial , "->", alpha_final, "\n")
 
 
   }
@@ -871,7 +871,7 @@ check_progress_pid <- function(pid = 3) {
   # Get filenames data from server ---
   
   # CHECK .credentials file exists
-  if (!file.exists(".vault/.credentials")) cat(crayon::red("The .vault/.credentials file does not exist. RUN: \n"), crayon::silver("rstudioapi::navigateToFile('setup/setup_server_credentials.R')\n"))
+  if (!file.exists(".vault/.credentials")) cat(cli::col_red("The .vault/.credentials file does not exist. RUN: \n"), cli::col_silver("rstudioapi::navigateToFile('setup/setup_server_credentials.R')\n"))
   
   list_credentials = source(".vault/.credentials")
   files_server = threadr::list_files_scp(host = list_credentials$value$IP,
@@ -982,7 +982,7 @@ show_progress_pid <- function(pid = 3, files_vector, last_task = "Goodbye", goal
   
   if (DEBUG == TRUE) {
     
-    cat(crayon::green(
+    cat(cli::col_green(
       paste0("Data collection started in ", min(DF_progress$fecha_registro), ". Our goal is ", goal, " participants.\n",
              "In the last [1 / 7 / ", DAYS, "] days we got [+", DIFF_yesterday, " / +", DIFF_lastweek, " / +", suma_total_ahora, "] new people.\n",
              "In the last [1 / 7 / ", DAYS, "] days we got [", rate_yesterday, " / ", rate_lastweek ," / ", rate_per_day, "] people per day.\n",
@@ -1429,7 +1429,7 @@ read_zips = function(input_files, workers = 1, unzip_dir = file.path(dirname(inp
 get_zip_protocol <- function(pid) {
   
   # DEBUG
-  # pid = 22
+  # pid = "23"
   
   # Get project's folder to be able ro reset it after zipping
   project_folder = getwd()
@@ -1449,7 +1449,7 @@ get_zip_protocol <- function(pid) {
   setwd(TEMP_DIR)
   FILES_ZIP = list.files(TEMP_DIR, recursive = TRUE, full.names = FALSE, all.files = TRUE, include.dirs = TRUE)
   
-  cli::cli_h2("ZIP protocol files to {paste0('/data/protocol_', pid, '.zip')}")
+  # cli::cli_h2("ZIP protocol files to {paste0('/data/protocol_', pid, '.zip')}")
   # Create safely version so an error won't avoid resetting the project's wd
   zip_safely = purrr::safely(zip)
   
@@ -1463,6 +1463,7 @@ get_zip_protocol <- function(pid) {
 
   # Reset the project's WD
   setwd(project_folder)
+  cli::cli_alert_success("ZIPED protocol files to {paste0('/data/protocol_', pid, '.zip')}")
 }
 
 
@@ -1557,7 +1558,7 @@ check_trialids <- function(local_folder_protocol, show_all_messages = FALSE) {
     if (nrow(DF_problematic_trialids) > 0) {
       
       cli::cli_h1("Checking /{basename(local_folder_protocol)}")
-      cat(crayon::red(nrow(DF_problematic_trialids), "ISSUES:\n"), 
+      cat(cli::col_red(nrow(DF_problematic_trialids), "ISSUES:\n"), 
           "- experiment:", paste(DF_problematic_trialids %>% pull(experiment) %>% unique(.), collapse = ", "), "\n",
           "- trialid:   ", paste(DF_problematic_trialids %>% pull(trialid) %>% unique(.), collapse = ", "), "\n")
       

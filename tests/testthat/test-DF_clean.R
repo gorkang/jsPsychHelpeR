@@ -19,7 +19,7 @@ testthat::test_that('Check if any of the items appear more or less than the othe
                  "Report_001_1", "Report_001_2",
                  "SASS_02", "SASS_03", "SDG_05", "SDG_07", "SDG_08"
                  ) # Items where there is a conditional controlling if the question is shown
-  cat(crayon::underline(crayon::yellow(paste0("\n\nRunning: ", crayon::silver(name_of_test, paste(rep(" ", 40), collapse = " ")),"\n\n"))))
+  cat(cli::style_underline(cli::col_yellow(paste0("\n\nRunning: ", cli::col_silver(name_of_test, paste(rep(" ", 40), collapse = " ")),"\n\n"))))
   
   # Test --------------------------------------------------------------------
   
@@ -49,10 +49,10 @@ testthat::test_that('Check if any of the items appear more or less than the othe
     
     write_csv(checks_DF, here::here(paste0("outputs/tests_outputs/test-", name_of_test, ".csv")))
     
-    cat(crayon::red("\nERROR in", paste0("test-", name_of_test), "\n"),
-        crayon::red("  - Some of the items appear more than others in the same tests:"), DF_clean_offender_tests, "\n",
-        crayon::green("  - # of Issues: "), crayon::red(length(DF_clean_offender_tests)), "\n",
-        crayon::silver("  - DF with details stored in:", paste0("'outputs/tests_outputs/test-", name_of_test, ".csv'"), "\n\n"))
+    cat(cli::col_red("\nERROR in", paste0("test-", name_of_test), "\n"),
+        cli::col_red("  - Some of the items appear more than others in the same tests:"), DF_clean_offender_tests, "\n",
+        cli::col_green("  - # of Issues: "), cli::col_red(length(DF_clean_offender_tests)), "\n",
+        cli::col_silver("  - DF with details stored in:", paste0("'outputs/tests_outputs/test-", name_of_test, ".csv'"), "\n\n"))
     
   }
   

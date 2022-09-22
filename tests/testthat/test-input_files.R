@@ -7,7 +7,7 @@ testthat::test_that('Check all input files have the essential columns', {
   # Name of test (should reflect the name of the file) ----------------------
   
   name_of_test = "input_files"
-  cat(crayon::underline(crayon::yellow(paste0("\n\nRunning: ", crayon::silver(name_of_test, paste(rep(" ", 40), collapse = " ")),"\n\n"))))
+  cat(cli::style_underline(cli::col_yellow(paste0("\n\nRunning: ", cli::col_silver(name_of_test, paste(rep(" ", 40), collapse = " ")),"\n\n"))))
   
   
   # Test --------------------------------------------------------------------
@@ -58,7 +58,7 @@ testthat::test_that('Check all input files have the essential columns', {
   # Buscamos en que archivos NO aparecen determinadas columnas
   wich_files_missing_columns <- function(name_missing_column, DF_final) {
     
-    # cat(crayon::green("\n - Missing column: "), name_missing_column)
+    # cat(cli::col_green("\n - Missing column: "), name_missing_column)
     DF_final %>% 
       group_by(name_file) %>% 
       # filter(!"responses" %in% value) %>%
@@ -92,10 +92,10 @@ testthat::test_that('Check all input files have the essential columns', {
     
     write_csv(check_input_files_DF, here::here(paste0("outputs/tests_outputs/test-", name_of_test, ".csv")))
     
-    cat(crayon::red("\nERROR in", paste0("test-", name_of_test), "\n"),
-        crayon::red("  - Some of the essential columns are not in all input_files:"), names_missing_columns, "\n",
-        crayon::green("  - # of Issues: "), crayon::red(nrow(check_input_files_DF)), "\n",
-        crayon::silver("  - DF with details stored in:", paste0("'outputs/tests_outputs/test-", name_of_test, ".csv'"), "\n\n"))
+    cat(cli::col_red("\nERROR in", paste0("test-", name_of_test), "\n"),
+        cli::col_red("  - Some of the essential columns are not in all input_files:"), names_missing_columns, "\n",
+        cli::col_green("  - # of Issues: "), cli::col_red(nrow(check_input_files_DF)), "\n",
+        cli::col_silver("  - DF with details stored in:", paste0("'outputs/tests_outputs/test-", name_of_test, ".csv'"), "\n\n"))
     
   }
   

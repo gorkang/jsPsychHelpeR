@@ -23,7 +23,7 @@ tests_DF_raw <- function(DF_raw) {
     DF_raw %>% 
     count(project)
   
-  if (nrow(test_projects) > 1) cat(crayon::red(paste0("\n\n[WARNING]: More than 1 project\n")))
+  if (nrow(test_projects) > 1) cat(cli::col_red(paste0("\n\n[WARNING]: More than 1 project\n")))
   
   
   # All tasks same version!
@@ -34,7 +34,7 @@ tests_DF_raw <- function(DF_raw) {
     arrange(desc(n)) %>% 
     filter(n > 1)
   
-  if (nrow(test_version_tasks) > 0) cat(crayon::red(paste0("\n\n[WARNING]: Some of the tasks have data from different versions\n")))
+  if (nrow(test_version_tasks) > 0) cat(cli::col_red(paste0("\n\n[WARNING]: Some of the tasks have data from different versions\n")))
   
     
   # No repeated id's per experimento!
@@ -47,8 +47,8 @@ tests_DF_raw <- function(DF_raw) {
   
   
   if (nrow(repeated_id) > 0) {
-    cat(crayon::red(paste0("\n\n[WARNING]: We have repeated id's in: ")), paste(repeated_id$experimento, collapse = ", "), "\n")
-    cat(crayon::red(paste0("\t\t      Offending IDs: ")), paste(repeated_id %>% distinct(id) %>% pull(id), collapse = ", "), "\n")
+    cat(cli::col_red(paste0("\n\n[WARNING]: We have repeated id's in: ")), paste(repeated_id$experimento, collapse = ", "), "\n")
+    cat(cli::col_red(paste0("\t\t      Offending IDs: ")), paste(repeated_id %>% distinct(id) %>% pull(id), collapse = ", "), "\n")
     stop("FIX this error before proceeding")
     
   }

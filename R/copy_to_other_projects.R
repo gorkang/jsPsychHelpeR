@@ -14,14 +14,14 @@ copy_to_other_projects <- function(file_name, overwrite_str = FALSE, check = TRU
   
   if (check == TRUE) {
     
-    cat(crayon::green("Would copy", gsub(getwd(), "", file_to_copy), "to: \n"), crayon::silver(paste("-", destinations, collapse = "\n")))
+    cat(cli::col_green("Would copy", gsub(getwd(), "", file_to_copy), "to: \n"), cli::col_silver(paste("-", destinations, collapse = "\n")))
     
   } else {
 
     file.copy(from = file_to_copy, 
               to = destinations, overwrite = overwrite_str)
     
-    cat(crayon::yellow("Copied", gsub(getwd(), "", file_to_copy), "to: \n"), if (overwrite_str == FALSE) {"overwrite_str parameter is FALSE\n"}, crayon::silver(paste("-", destinations, collapse = "\n")))
+    cat(cli::col_yellow("Copied", gsub(getwd(), "", file_to_copy), "to: \n"), if (overwrite_str == FALSE) {"overwrite_str parameter is FALSE\n"}, cli::col_silver(paste("-", destinations, collapse = "\n")))
 
   }
   

@@ -25,10 +25,10 @@ create_joined <- function(...) {
   
   # Check if we are not loading all targets
   not_loaded = existing_targets[!existing_targets %in% arguments]
-  if (length(not_loaded > 0)) cat(crayon::yellow(paste0("\n[WARNING]: Not joining some of the df: '", paste(not_loaded, collapse = ", "), "'. Did you forgot to include them in the create_joined() target?\n\n")))
+  if (length(not_loaded > 0)) cat(cli::col_yellow(paste0("\n[WARNING]: Not joining some of the df: '", paste(not_loaded, collapse = ", "), "'. Did you forgot to include them in the create_joined() target?\n\n")))
   
   # Warning if any of the files do no exist
-  if (length(final_prepared_files) != length(arguments)) cat(crayon::yellow(paste0("\n[WARNING]: Can't find ", paste(arguments[!arguments %in% existing_targets], collapse = ", "), " in the '_targets/objects' folder\n\n")))
+  if (length(final_prepared_files) != length(arguments)) cat(cli::col_yellow(paste0("\n[WARNING]: Can't find ", paste(arguments[!arguments %in% existing_targets], collapse = ", "), " in the '_targets/objects' folder\n\n")))
 
   
   # Loads and gets all the targets in a single list -------------------------

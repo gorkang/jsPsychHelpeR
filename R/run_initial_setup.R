@@ -10,11 +10,11 @@ run_initial_setup <- function(pid, download_files = FALSE, download_task_script 
   
   # CHECK if NO files in project's folder & NO credentials to download
   if (length(files_pid) == 0 & credentials_exist == FALSE) {
-    cat(crayon::red(
+    cat(cli::col_red(
     paste0("Can't access protocol csv files:
     - No files in data/", pid), " 
     - .vault/credentials file not present\n"),
-    crayon::silver("You can either:
+    cli::col_silver("You can either:
     - manually download files to", paste0("data/", pid), "
     - edit .vault/credentials_TEMPLATE and rename it to .vault/credentials"))
   }
@@ -29,9 +29,12 @@ run_initial_setup <- function(pid, download_files = FALSE, download_task_script 
                            cli::cli(
                              {
                                cli::cli_par()
-                               cli::cli_alert_info("Do you want to run the initial setup?")
+                               cli::cli_alert_info("Do you want to run the {.pkg initial setup}?")
                                cli::cli_end()
-                               cli::cli_text("This will delete the _targets/ folder, install necessary packages, copy configuration files, create a new _targets.R file using the input files, etc.")
+                               cli::cli_text("This will {cli::style_bold((cli::col_red('DELETE')))} the _targets/ folder, 
+                                             {cli::style_bold((cli::col_green('install')))} necessary packages, 
+                                             {cli::style_bold((cli::col_green('copy')))} configuration files, 
+                                             {cli::style_bold((cli::col_yellow('replace')))} the _targets.R, etc.")
                              }
                            )
   )

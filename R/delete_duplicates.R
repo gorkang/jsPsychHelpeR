@@ -65,7 +65,7 @@ delete_duplicates <- function(folder, check = TRUE, keep_which = "older") {
       KEEP = DF_files %>% group_by(id, experimento) %>% filter(datetime == max(datetime))
       
     } else {
-      cat(crayon::red("keep_which should be either 'older' or 'newer'"))
+      cat(cli::col_red("keep_which should be either 'older' or 'newer'"))
       stop("Error in the keep_which parameter")
     }
     
@@ -82,12 +82,12 @@ delete_duplicates <- function(folder, check = TRUE, keep_which = "older") {
     if (check == FALSE) {
       
       file.remove(paste0(folder, "/", DELETE))
-      cat(crayon::yellow(length(DELETE), "duplicates deleted: "), "\n -", crayon::silver(paste(DELETE, collapse = "\n - ")))
+      cat(cli::col_yellow(length(DELETE), "duplicates deleted: "), "\n -", cli::col_silver(paste(DELETE, collapse = "\n - ")))
       if (file.exists("_targets/objects/input_files")) targets::tar_delete("input_files")
       
     } else {
       
-      cat(crayon::green(length(DELETE), "duplicates found. Use check = FALSE to DELETE: "), "\n -", crayon::silver(paste(DELETE, collapse = "\n - ")), "\n\n")
+      cat(cli::col_green(length(DELETE), "duplicates found. Use check = FALSE to DELETE: "), "\n -", cli::col_silver(paste(DELETE, collapse = "\n - ")), "\n\n")
       
       DF_dups_clean = 
         DUPLICATES %>% 
@@ -147,7 +147,7 @@ delete_duplicates <- function(folder, check = TRUE, keep_which = "older") {
       #
       # # SERVER
       # CHECK .credentials file exists
-      # if (!file.exists(".vault/.credentials")) cat(crayon::red("The .vault/.credentials file does not exist. RUN: \n"), crayon::silver("rstudioapi::navigateToFile('setup/setup_server_credentials.R')\n"))
+      # if (!file.exists(".vault/.credentials")) cat(cli::col_red("The .vault/.credentials file does not exist. RUN: \n"), cli::col_silver("rstudioapi::navigateToFile('setup/setup_server_credentials.R')\n"))
       # list_credentials = source(".vault/.credentials")
       # 1:length(SAFE_DELETE) %>%
       #   walk(~ {
@@ -159,7 +159,7 @@ delete_duplicates <- function(folder, check = TRUE, keep_which = "older") {
       
       
       # SAFE DELETE commands
-      if (!file.exists(".vault/.credentials")) cat(crayon::red("The .vault/.credentials file does not exist. RUN: \n"), crayon::silver("rstudioapi::navigateToFile('setup/setup_server_credentials.R')\n"))
+      if (!file.exists(".vault/.credentials")) cat(cli::col_red("The .vault/.credentials file does not exist. RUN: \n"), cli::col_silver("rstudioapi::navigateToFile('setup/setup_server_credentials.R')\n"))
       list_credentials = source(".vault/.credentials")
       SAFE_DELETE = 1:length(SAFE_DELETE) %>%
         map(~ {
@@ -170,7 +170,7 @@ delete_duplicates <- function(folder, check = TRUE, keep_which = "older") {
         })
       
       # UNSAFE DELETE commands
-      if (!file.exists(".vault/.credentials")) cat(crayon::red("The .vault/.credentials file does not exist. RUN: \n"), crayon::silver("rstudioapi::navigateToFile('setup/setup_server_credentials.R')\n"))
+      if (!file.exists(".vault/.credentials")) cat(cli::col_red("The .vault/.credentials file does not exist. RUN: \n"), cli::col_silver("rstudioapi::navigateToFile('setup/setup_server_credentials.R')\n"))
       list_credentials = source(".vault/.credentials")
       ALL_DELETE = 1:length(DELETE) %>%
         map(~ {
@@ -184,7 +184,7 @@ delete_duplicates <- function(folder, check = TRUE, keep_which = "older") {
     }
     
   } else {
-    cat(crayon::green("No duplicates in data!\n"))
+    cat(cli::col_green("No duplicates in data!\n"))
   }
   
   if (!exists("LIST_differences_diff")) LIST_differences_diff = NA

@@ -7,7 +7,7 @@ testthat::test_that('Tests if participants that completed the protocol are missi
   # Name of test (should reflect the name of the file) ----------------------
   
   name_of_test = "missing_data"
-  cat(crayon::underline(crayon::yellow(paste0("\n\nRunning: ", crayon::silver(name_of_test, paste(rep(" ", 40), collapse = " ")),"\n\n"))))
+  cat(cli::style_underline(cli::col_yellow(paste0("\n\nRunning: ", cli::col_silver(name_of_test, paste(rep(" ", 40), collapse = " ")),"\n\n"))))
   
   white_list = c("AIM_01", "AIM_02", "AIM_04", "AIM_05", "AIM_06", "AIM_07", "AIM_08", "AIM_09", "AIM_10", "AIM_TramoIngreso_DIRd", "AIM_DIRt", "Report_001_1", "Report_001_2", "Report_alias_DIRd", "Report_SoloContacto_DIRd", "Report_EmailFuturo_DIRd")
   
@@ -85,12 +85,12 @@ testthat::test_that('Tests if participants that completed the protocol are missi
     write_csv(missing_DF, here::here(paste0("outputs/tests_outputs/test-", name_of_test, ".csv")))
     write_csv(missingall_DF, here::here(paste0("outputs/tests_outputs/test-", name_of_test, "_ALL.csv")))
     
-    cat(crayon::red("\n", crayon::underline("ERROR"), "in", paste0("test-", name_of_test), "\n"),
-        crayon::red("  - Some of the participants are", crayon::underline("missing test results:")), missing_ids, "\n",
-        crayon::red("  - In the following vars:"), missing_vars, "\n",
+    cat(cli::col_red("\n", cli::style_underline("ERROR"), "in", paste0("test-", name_of_test), "\n"),
+        cli::col_red("  - Some of the participants are", cli::style_underline("missing test results:")), missing_ids, "\n",
+        cli::col_red("  - In the following vars:"), missing_vars, "\n",
         
-        crayon::green("  - # of Issues: "), crayon::red(length(missing_ids)), "\n",
-        crayon::silver("  - DF with details stored in:", paste0("'outputs/tests_outputs/test-", name_of_test, ".csv'"), "\n\n"))
+        cli::col_green("  - # of Issues: "), cli::col_red(length(missing_ids)), "\n",
+        cli::col_silver("  - DF with details stored in:", paste0("'outputs/tests_outputs/test-", name_of_test, ".csv'"), "\n\n"))
     
   }
   

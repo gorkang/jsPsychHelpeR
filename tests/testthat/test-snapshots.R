@@ -27,7 +27,7 @@ testthat::test_that('Check if the snapshots do not change', {
   # Name of test (should reflect the name of the file) ----------------------
   
   name_of_test = "snapshots"
-  cat(crayon::underline(crayon::yellow(paste0("\n\nRunning: ", crayon::silver(name_of_test, paste(rep(" ", 40), collapse = " ")),"\n\n"))))
+  cat(cli::style_underline(cli::col_yellow(paste0("\n\nRunning: ", cli::col_silver(name_of_test, paste(rep(" ", 40), collapse = " ")),"\n\n"))))
   
   
   # Actual expectation -------------------------------------------------------------

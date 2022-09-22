@@ -18,10 +18,10 @@ run_sensitive_data <- function(df_SDG, run_online_FORM = FALSE) {
   # Activate API: https://console.cloud.google.com/apis/credentials
   # See .vault/config/gs4_TEMPLATE.R
   if (run_online_FORM == TRUE) {
-    cat(crayon::yellow("Fetching online FORM Google sheet...\n"))
+    cat(cli::col_yellow("Fetching online FORM Google sheet...\n"))
     df_FORM = prepare_FORM(df_SDG, short_name_scale_str = "FORM")  
   } else {
-    cat(crayon::yellow("Reading offline FORM Google sheet...\n"))
+    cat(cli::col_yellow("Reading offline FORM Google sheet...\n"))
     df_FORM = read_rds(".vault/data/df_FORM_RAW.rds")
   }
   
@@ -29,7 +29,7 @@ run_sensitive_data <- function(df_SDG, run_online_FORM = FALSE) {
   
   
   # Report ------------------------------------------------------------------
-  cat(crayon::yellow("Preparando report_candidatos...\n"))
+  cat(cli::col_yellow("Preparando report_candidatos...\n"))
   rmarkdown::render(".vault/Rmd/report_candidatos.Rmd", "html_document", quiet = TRUE, clean = TRUE, envir = new.env())
   
  return(df_AIM)
