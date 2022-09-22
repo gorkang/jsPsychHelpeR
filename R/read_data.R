@@ -58,8 +58,25 @@ read_data <- function(input_files, anonymize = FALSE, save_output = TRUE, worker
            id = gsub("(*.)\\.csv", "\\1", id)) # userID
   
   
+
+  # Wide version ------------------------------------------------------------
+
+  DF_raw_wide = 
+    DF_raw |> 
+    filter(!grepl("Instructions", trialid)) |>
+    filter(trialid != "") |> 
+    rename(RAW = response) %>%
+    select(id, trialid, RAW) %>%
+    pivot_wider(
+      names_from = trialid, 
+      values_from = c(RAW),
+      names_glue = "{trialid}_{.value}") 
+  
+  
+  
   # Save files --------------------------------------------------------------
   if (save_output == TRUE) save_files(DF_raw, short_name_scale = "raw", is_scale = FALSE)
+  if (save_output == TRUE) save_files(DF_raw_wide, short_name_scale = "raw_wide", is_scale = FALSE)
   
   
   # Output of function ---------------------------------------------------------

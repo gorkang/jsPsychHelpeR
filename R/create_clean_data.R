@@ -85,8 +85,34 @@ create_clean_data <- function(DF_raw, save_output = TRUE) {
   DF_duplicate_trialids = DF_duplicate_trialids_raw %>% count(id)
   if (nrow(DF_duplicate_trialids) > 0) rlang::abort(message = paste0("There are duplicate trialid's: \n", paste("-", duplicate_trialids, collapse = "\n"), "\n\nFor more details check `create_clean_data()`"))
   
+  
+
+  # Wide version ------------------------------------------------------------
+
+  DF_clean_wide = 
+    DF_clean |> 
+    rename(RAW = response) %>%
+    select(id, trialid, RAW) %>%
+    pivot_wider(
+      names_from = trialid, 
+      values_from = c(RAW),
+      names_glue = "{trialid}_{.value}")
+  
+  
+  # DF_clean_wide_rt = 
+  #   DF_clean |> 
+  #   select(id, trialid, rt) %>%
+  #   pivot_wider(
+  #     names_from = trialid, 
+  #     values_from = c(rt),
+  #     names_glue = "{trialid}_{.value}")
+  
+  
+  
+  
   # Save files --------------------------------------------------------------
   if (save_output == TRUE) save_files(DF_clean, short_name_scale = "clean", is_scale = FALSE)
+  if (save_output == TRUE) save_files(DF_clean_wide, short_name_scale = "clean_wide", is_scale = FALSE)
   
   
   # Output of function ---------------------------------------------------------
