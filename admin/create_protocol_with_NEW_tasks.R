@@ -113,8 +113,9 @@ create_protocol_with_missing_in_999 <- function(search_where = "prepare_TASK", d
   unlink(destination_folder, recursive = TRUE)
   cli::cli_alert_info("Deleted {destination_folder}")
   
-  source("admin/helper-scripts-admin.R")
-  copy_canonical_clean(destination_folder = destination_folder)
+  # copy_canonical_clean/
+  jsPsychMaker::list_unzip(location = "jsPsychMaker", zip_file = "canonical_protocol_clean.zip",
+                           action = "unzip", destination_folder = destination_folder, silent = TRUE)
   
   # Remove non essential tasks from canonical_clean
   TASKS_CLEAN = list.files(paste0(destination_folder, "/tasks/"))
@@ -127,11 +128,11 @@ create_protocol_with_missing_in_999 <- function(search_where = "prepare_TASK", d
   
   # INCLUDE NEW TASKS IN config.js -----------------------------------
   
-  TASKS_NEW_PROTOCOL = extract_tasks_from_protocol(destination_folder)
+  TASKS_NEW_PROTOCOL = jsPsychMaker::extract_tasks_from_protocol(destination_folder)
   
-  replace_tasks_config_js(folder_protocol = destination_folder,
-                          tasks = TASKS_NEW_PROTOCOL, 
-                          block_tasks = "randomly_ordered_tasks_1") 
+  jsPsychMaker::update_config_js(folder_protocol = destination_folder,
+                                 tasks = TASKS_NEW_PROTOCOL, 
+                                 block_tasks = "randomly_ordered_tasks_1") 
 
   cli::cli_alert_success("ALL DONE \nProtocol in `{destination_folder}` \nRemember to CHECK config.js")
   

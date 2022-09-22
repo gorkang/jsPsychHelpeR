@@ -27,18 +27,20 @@
 # Scripts -----------------------------------------------------------------
 
   targets::tar_load_globals()
-  source("admin/helper-scripts-admin.R")
+  # source("admin/helper-scripts-admin.R")
   source("../jsPsychMaker/R/sync_server_local.R")
 
 # prepare config.js -------------------------------------------------------
 
   # Use all available tasks in canonical_protocol to create a new config.js
-  tasks_canonical = extract_tasks_from_protocol(folder_protocol = "../jsPsychMaker/canonical_protocol/")
+
+  tasks_canonical = jsPsychMaker::extract_tasks_from_protocol(folder_protocol = "../jsPsychMaker/canonical_protocol/")
   
-  replace_tasks_config_js(folder_protocol = "../jsPsychMaker/canonical_protocol/",
-                          tasks = tasks_canonical, 
-                          block_tasks = "randomly_ordered_tasks_1") 
+  jsPsychMaker::update_config_js(folder_protocol = "../jsPsychMaker/canonical_protocol/",
+                                 tasks = tasks_canonical, 
+                                 block_tasks = "randomly_ordered_tasks_1")
   
+
   rstudioapi::navigateToFile("../jsPsychMaker/canonical_protocol/config.js")
 
 
