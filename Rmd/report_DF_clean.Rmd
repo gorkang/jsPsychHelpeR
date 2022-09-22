@@ -97,24 +97,44 @@ DT::datatable(summary_table, filter = 'top', options = list(dom = 'ltip', pageLe
 
 ```{r summary-table2, echo=FALSE}
 
-summary_table2 =
-  DF_raw %>% 
+# Using time_elapsed overestimates time by a lot. NOT sure why
+# summary_table2 =
+#   DF_raw %>% 
+#     group_by(id, experimento) %>% 
+#     summarise(
+#       n_participants = n_distinct(id),
+#       time = max(time_elapsed) / 60000,
+#       .groups = "drop"
+#     ) %>% #View
+#   
+#     group_by(experimento) %>% 
+#     summarise(
+#       n_participants = n(),
+#       mean_time = round(mean(time), 1),
+#       time_elapsed_min = round(min(time), 1),
+#       time_elapsed_max = round(max(time), 1),
+#       .groups = "keep"
+#     )
+ 
+
+ summary_table2 =
+   DF_raw %>% 
+    select(id, experimento, rt) %>% 
+    mutate(rt = as.numeric(rt)) %>% 
     group_by(id, experimento) %>% 
-    summarise(
-      n_participants = n_distinct(id),
-      time = max(time_elapsed) / 60000,
-      .groups = "drop"
-    ) %>% #View
-  
+    summarise(TIME = round(sum(rt, na.rm = TRUE)/60000, 2), # TIME = round(max(time_elapsed)/60000, 2), # time_elapsed is cumulative!
+              N = n(), 
+              .groups = "drop") %>% 
     group_by(experimento) %>% 
-    summarise(
+summarise(
       n_participants = n(),
-      mean_time = round(mean(time), 1),
-      time_elapsed_min = round(min(time), 1),
-      time_elapsed_max = round(max(time), 1),
+      mean_time = round(mean(TIME), 1),
+      time_elapsed_min = round(min(TIME), 1),
+      time_elapsed_max = round(max(TIME), 1),
       .groups = "keep"
     )
- 
+
+
 DT::datatable(summary_table2, filter = 'top', options = list(dom = 'ltip', pageLength = 10))
 
 ```
@@ -124,14 +144,26 @@ DT::datatable(summary_table2, filter = 'top', options = list(dom = 'ltip', pageL
 
 ```{r summary-table3, echo=FALSE}
 
-summary_table3 =
+# Using time_elapsed overestimates time by a lot. NOT sure why
+# summary_table3 =
+#   DF_raw %>% 
+#     group_by(id, experimento) %>% 
+#     summarise(
+#       # n_participants = n_distinct(id),
+#       time = round(max(time_elapsed) / 60000, 2),
+#       .groups = "drop"
+#     ) 
+
+summary_table3 = 
   DF_raw %>% 
-    group_by(id, experimento) %>% 
-    summarise(
-      # n_participants = n_distinct(id),
-      time = round(max(time_elapsed) / 60000, 2),
-      .groups = "drop"
-    ) 
+  select(id, experimento, rt) %>% 
+  mutate(rt = as.numeric(rt)) %>% 
+  group_by(id, experimento) %>% 
+  summarise(TIME = round(sum(rt, na.rm = TRUE)/60000, 2), # TIME = round(max(time_elapsed)/60000, 2), # time_elapsed is cumulative!
+            items = n(), 
+            .groups = "drop")
+
+
 
 DT::datatable(summary_table3, filter = 'top', options = list(dom = 'ltip', pageLength = 10))
 ```
