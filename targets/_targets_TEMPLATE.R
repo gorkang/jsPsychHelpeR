@@ -96,7 +96,7 @@ JOINS_HERE
   # tar_target(table1_model_E1, analysis_model_E1_table(model_E1)),
 
   # Plots
-  tar_target(plots_descriptive, analysis_descriptive_plots(DF_joined, DF_raw)),
+  tar_target(plots_descriptive, analysis_descriptive_plots(DF_joined, DF_raw, DF_clean, save_plots = FALSE)),
   # tar_target(plot1_model_E1, analysis_model_E1_plot(model_E1)),
   
   

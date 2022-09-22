@@ -7,7 +7,7 @@
 ##' @return
 ##' @author gorkang
 ##' @export
-analysis_descriptive_plots <- function(DF_joined, DF_raw) {
+analysis_descriptive_plots <- function(DF_joined, DF_raw, DF_clean, save_plots = FALSE) {
   
   # DEBUG
   # debug_function(analysis_descriptive_plots)
@@ -16,11 +16,12 @@ analysis_descriptive_plots <- function(DF_joined, DF_raw) {
   all_scales = grep(".*_DIRt$|.*_STDt$|.*_RELt$|.*_REdt$|.*_DIRd$|.*STDd$", names(DF_joined), value = TRUE, perl = TRUE)
   
   
-  # Puntajes ----------------------------------------------------------------
+  # Scores ----------------------------------------------------------------
   
   DF_plot = DF_joined %>% 
     select(id, all_of(all_scales))
   
+  # NUMERIC values
   d <- 
     DF_plot %>% 
     select_if(is.numeric) %>% 
@@ -35,9 +36,8 @@ analysis_descriptive_plots <- function(DF_joined, DF_raw) {
     geom_histogram(bins = 15) +
     theme_minimal()
   
-  # ggsave("outputs/plots/plot_descriptive_numeric.png", plot1, dpi = 150, height = 12, width = 20)
   
-  
+  # CHARACTER values
   d2 <- 
     DF_plot %>% 
     select_if(is.character) %>% 
@@ -56,39 +56,67 @@ analysis_descriptive_plots <- function(DF_joined, DF_raw) {
       coord_flip() +
       theme_minimal()
     
-    # ggsave("outputs/plots/plot_descriptive_categorical.png", plot2, dpi = 150, height = 12, width = 20)
+    
   } else {
     plot2 = NULL
   }
   
   
   
-  # Tiempos -----------------------------------------------------------------
+  # Times -----------------------------------------------------------------
   
   options(scipen = 999)
   
-  plot_tiempos = DF_raw %>% 
-    select(id, experimento, time_elapsed) %>% 
+  plot_time_participants = DF_raw %>% 
+    select(id, experimento, rt) %>% 
+    mutate(rt = as.numeric(rt)/60000) |> 
     group_by(id, experimento) %>% 
-    summarise(TIME = round(max(time_elapsed)/60000, 2), 
+    summarise(TIME = round(max(rt), 2), 
               N = n(), 
               .groups = "keep") %>% 
     ggplot(aes(TIME)) +
     geom_histogram(bins = 30) +
-    facet_wrap(~experimento, scales = "free", ncol = 7) + 
+    facet_wrap(~experimento, scales = "free") + 
     theme_minimal() +
-    scale_x_log10(n.breaks = 10)
-  
-  # ggsave("outputs/plots/plot_tiempos.png", plot_tiempos, dpi = 150, height = 12, width = 20)
-  
-  
-  
+    labs(title = "time of participants by task",
+         x = "time (in minutes)",
+         y = "number of participants") 
+    # scale_x_log10(n.breaks = 10)
   
   
+  plot_time_responses = DF_clean |> 
+    mutate(rt = as.numeric(rt)/1000) |> 
+    ggplot(aes(rt)) +
+    geom_histogram() +
+    theme_minimal() +
+    labs(title = "rt of all the responses by task",
+         x = "rt (in seconds)",
+         y = "number of responses") +
+    facet_wrap(~ experimento, scales = "free")
   
+  
+
+  # SAVE --------------------------------------------------------------------
+
+  if (save_plots == TRUE) {
+    
+    cli::cli_alert_info("Saving descriptive plots")
+    ggsave(paste0("outputs/plots/plot_", pid_target, "_descriptive_numeric.png"), plot1, dpi = 150, height = 12, width = 20, bg = "white")
+    ggsave(paste0("outputs/plots/plot_", pid_target, "_descriptive_categorical.png"), plot2, dpi = 150, height = 12, width = 20, bg = "white")
+    ggsave(paste0("outputs/plots/plot_", pid_target, "_time_participants.png"), plot_time_participants, dpi = 150, height = 12, width = 20, bg = "white")
+    ggsave(paste0("outputs/plots/plot_", pid_target, "_time_responses.png"), plot_time_responses, dpi = 150, height = 12, width = 20, bg = "white")
+  
+  }
+  
+  
+  
+
+  # Output ------------------------------------------------------------------
+
   plots_descriptive = list(plot_descriptive_numeric = plot1, 
                            plot_descriptive_categorical = plot2,
-                           plot_tiempos = plot_tiempos)
+                           plot_time_participants = plot_time_participants,
+                           plot_time_responses = plot_time_responses)
   
   return(plots_descriptive)
   
