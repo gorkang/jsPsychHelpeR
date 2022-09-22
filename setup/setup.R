@@ -19,12 +19,14 @@
   # If you have issues with DT::datables()
   if (webshot::is_phantomjs_installed() == FALSE) webshot::install_phantomjs()
 
+  cli::cli_alert_success("All the necessary packages are present\n")
+  
 
 # Clean up ----------------------------------------------------------------
 
   # Clean up _targets folder  
-  cli::cli_alert_warning("Destroying OLD _targets/* files\n")
   targets::tar_destroy(ask = FALSE)
+  cli::cli_alert_success("OLD _targets/* files deleted\n")
   
   # Delete content of outputs
   invisible(file.remove(list.files("outputs", pattern = "*", full.names = TRUE, recursive = TRUE)))
@@ -72,8 +74,8 @@
   # Control+L: targets::rstudio_addin_tar_load()
   
   if (Sys.info()["sysname"] %in% c("Linux")) {
-    cli::cli_alert_warning("Setting up shortcuts [only Linux]\n")
     source("setup/setup_shortcuts.R")
     setup_shortcuts(overwrite = FALSE)
+    cli::cli_alert_success("Shortcuts [only Linux] ready\n")
   }
   
