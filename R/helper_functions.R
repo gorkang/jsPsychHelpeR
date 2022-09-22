@@ -563,7 +563,7 @@ create_targets_file <- function(pid_protocol = 0, folder_data = NULL, folder_tas
   # folder_tasks = "/home/emrys/Downloads/COURSE/gorkang-jsPsychMaker-d94788a/canonical_protocol/tasks/"
   # folder_data = "data/999"
   # folder_tasks = NULL
-  # pid_protocol = 999
+  # pid_protocol = "999"
 
   suppressPackageStartupMessages(library(dplyr))
   
@@ -586,27 +586,38 @@ create_targets_file <- function(pid_protocol = 0, folder_data = NULL, folder_tas
     
   } else if (!is.null(folder_data) & is.null(folder_tasks)) {
     
-    input_files = list.files(folder_data, recursive = TRUE, full.names = TRUE) 
+    # input_files = list.files(folder_data, recursive = TRUE, full.names = TRUE) 
+    input_files = list.files(path = folder_data, pattern = "*.csv|*.zip", full.names = TRUE)
+
+    # CHECKS ------------------------------------------------------------------
     all_csvs = all(grepl("\\.csv", input_files))
+    length_files = length(input_files)
     all_zips = all(grepl("\\.zip", input_files))
     
     # If folder contains csv files
     if (all_csvs) {
       
-      files = list.files(folder_data, recursive = TRUE) %>% 
+      files = 
+        input_files |> 
+        # list.files(folder_data, recursive = TRUE) %>% 
         as_tibble() %>% 
         tidyr::separate(col = value, into = c("project", "experimento", "version", "datetime", "id"), sep = c("_"), remove = TRUE) %>% 
         distinct(experimento) %>% 
         pull(experimento)
       
     # If folder contains single zip
-    } else if (all_zips) {
+    } else if (length_files == 1 & all_zips) {
       
       # Unzips to temp folder, reads files and deletes temp folder
       files = read_zips(input_files) %>% distinct(procedure) %>% pull(procedure)
       
     } else {
-      cli::cli_abort("Something wrong. {folder_data} should contain all csv files or a single zip file")
+      
+      # Other issues
+      if (length_files == 0) cli::cli_abort("NO files in '{pid_folder}'")
+      if (length_files != 1 & all_zips) cli::cli_abort("Multiple ZIP files detected in '{pid_folder}'")
+      if (length_files != 0 & !all_zips & !all_csvs) cli::cli_abort("Multiple types of files detected in '{pid_folder}'")
+      # cli::cli_abort("Something wrong. {folder_data} should contain all csv files or a single zip file")
     }
     
   }
@@ -1380,8 +1391,10 @@ read_zips = function(input_files, workers = 1, unzip_dir = file.path(dirname(inp
     cat(paste0("The file extension is '.", tools::file_ext(input_files), "' but needs to be either '.zip' or '.tar.xz'\n"))
   }
   
-  fns = list.files(unzip_dir, recursive = TRUE) %>% setNames(file.path(unzip_dir, .), .)
-
+  # Read only the csv's inside the zip
+  fns = list.files(path = unzip_dir, pattern = "*.csv", full.names = TRUE, recursive = TRUE) # Recursive because sometimes the csv's will be inside a folder with the pid, but maybe not always?
+  # %>% setNames(file.path(.), .) 
+  
   # TEST and remove empty files (size < 100 bytes)
   empty_files = file.info(fns) %>% as_tibble(rownames = "files") %>% filter(size < 100)
   if (nrow(empty_files) > 0) cli::cli_alert_warning("There are {nrow(empty_files)} empty input files (size < 100 bytes)")
