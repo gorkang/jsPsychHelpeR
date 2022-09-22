@@ -50,9 +50,13 @@ create_joined <- function(...) {
     input_list %>% 
     reduce(full_join, by = "id")
   
+  # Only RAW
+  DF_joined_RAW = DF_joined |> select(id, ends_with("RAW"))
+  
   
   # Save files --------------------------------------------------------------
   save_files(DF_joined, short_name_scale = "joined", is_scale = FALSE)
+  save_files(DF_joined_RAW, short_name_scale = "joined_RAW", is_scale = FALSE)
 
   
   # Output of function ---------------------------------------------------------
