@@ -586,7 +586,6 @@ create_targets_file <- function(pid_protocol = 0, folder_data = NULL, folder_tas
     
   } else if (!is.null(folder_data) & is.null(folder_tasks)) {
     
-    # input_files = list.files(folder_data, recursive = TRUE, full.names = TRUE) 
     input_files = list.files(path = folder_data, pattern = "*.csv|*.zip", full.names = TRUE)
 
     # CHECKS ------------------------------------------------------------------
@@ -598,8 +597,7 @@ create_targets_file <- function(pid_protocol = 0, folder_data = NULL, folder_tas
     if (all_csvs) {
       
       files = 
-        input_files |> 
-        # list.files(folder_data, recursive = TRUE) %>% 
+        basename(input_files) |> 
         as_tibble() %>% 
         tidyr::separate(col = value, into = c("project", "experimento", "version", "datetime", "id"), sep = c("_"), remove = TRUE) %>% 
         distinct(experimento) %>% 
