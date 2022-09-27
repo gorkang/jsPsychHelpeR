@@ -18,6 +18,7 @@ prepare_sProQOL <- function(DF_clean, short_name_scale_str) {
 
   # DEBUG
   # debug_function(prepare_sProQOL)
+  # targets::tar_load_globals()
 
   # [ADAPT]: Items to ignore and reverse ---------------------------------------
   # ****************************************************************************
@@ -25,11 +26,11 @@ prepare_sProQOL <- function(DF_clean, short_name_scale_str) {
   items_to_ignore = c("000") # Ignore these items: If nothing to ignore, keep items_to_ignore = c("00")
   items_to_reverse = c("000") # Reverse these items: If nothing to reverse, keep  items_to_reverse = c("00")
   
-  names_dimensions = c("Burnout", "CompassionFatigue", "CompassionSatisfaction")
-  
-  items_DIRd1 = c("02", "06", "07")
-  items_DIRd2 = c("01", "04", "08")
-  items_DIRd3 = c("03", "05", "09")
+  items_dimensions = list(
+    Burnout = c("02", "06", "07"),
+    CompassionFatigue = c("01", "04", "08"),
+    CompassionSatisfaction = c("03", "05", "09")
+  )
   
   # [END ADAPT]: ***************************************************************
   # ****************************************************************************
@@ -37,14 +38,15 @@ prepare_sProQOL <- function(DF_clean, short_name_scale_str) {
   
   # Standardized names ------------------------------------------------------
   names_list = standardized_names(short_name_scale = short_name_scale_str, 
-                     dimensions = names_dimensions, # Use names of dimensions, "" or comment out line
-                     help_names = FALSE) # help_names = FALSE once the script is ready
+                                  dimensions = names(items_dimensions),
+                                  help_names = FALSE) # [KEEP as FALSE]
   
   # Create long -------------------------------------------------------------
-  DF_long_RAW = create_raw_long(DF_clean, short_name_scale = short_name_scale_str, numeric_responses = FALSE, is_experiment = FALSE)
-  
-  # Show number of items, responses, etc. [uncomment to help prepare the test] 
-  # prepare_helper(DF_long_RAW, show_trialid_questiontext = TRUE)
+  DF_long_RAW = create_raw_long(DF_clean, 
+                                short_name_scale = short_name_scale_str, 
+                                numeric_responses = FALSE, # [TRUE or FALSE]
+                                is_experiment = FALSE, 
+                                help_prepare = FALSE) # Show n of items, responses,... [CHANGE to FALSE] 
   
   
   # Create long DIR ------------------------------------------------------------
@@ -61,13 +63,12 @@ prepare_sProQOL <- function(DF_clean, short_name_scale_str) {
     mutate(
       DIR =
         case_when(
-          trialid %in% c("sProQOL_01", "sProQOL_02", "sProQOL_03", "sProQOL_04", "sProQOL_05", "sProQOL_06", "sProQOL_07", "sProQOL_08", "sProQOL_09") & RAW == "Nunca" ~ 0,
-          trialid %in% c("sProQOL_01", "sProQOL_02", "sProQOL_03", "sProQOL_04", "sProQOL_05", "sProQOL_06", "sProQOL_07", "sProQOL_08", "sProQOL_09") & RAW == "Rara Vez" ~ 1,
-          trialid %in% c("sProQOL_01", "sProQOL_02", "sProQOL_03", "sProQOL_04", "sProQOL_05", "sProQOL_06", "sProQOL_07", "sProQOL_08", "sProQOL_09") & RAW == "Algunas veces" ~ 2,
-          trialid %in% c("sProQOL_01", "sProQOL_02", "sProQOL_03", "sProQOL_04", "sProQOL_05", "sProQOL_06", "sProQOL_07", "sProQOL_08", "sProQOL_09") & RAW == "Con alguna frecuencia" ~ 3,
-          trialid %in% c("sProQOL_01", "sProQOL_02", "sProQOL_03", "sProQOL_04", "sProQOL_05", "sProQOL_06", "sProQOL_07", "sProQOL_08", "sProQOL_09") & RAW == "Casi siempre" ~ 4,
-          trialid %in% c("sProQOL_01", "sProQOL_02", "sProQOL_03", "sProQOL_04", "sProQOL_05", "sProQOL_06", "sProQOL_07", "sProQOL_08", "sProQOL_09") & RAW == "Siempre" ~ 5,
-          
+          RAW == "Nunca" ~ 0,
+          RAW == "Rara Vez" ~ 1,
+          RAW == "Algunas veces" ~ 2,
+          RAW == "Con alguna frecuencia" ~ 3,
+          RAW == "Casi siempre" ~ 4,
+          RAW == "Siempre" ~ 5,
           is.na(RAW) ~ NA_real_,
           grepl(items_to_ignore, trialid) ~ NA_real_,
           TRUE ~ 9999
@@ -103,7 +104,7 @@ prepare_sProQOL <- function(DF_clean, short_name_scale_str) {
   
   # Reliability -------------------------------------------------------------
   
-  # REL1 = auto_reliability(DF_wide_RAW, short_name_scale = short_name_scale_str, items = items_DIRd1)
+  # REL1 = auto_reliability(DF_wide_RAW, short_name_scale = short_name_scale_str, items = items_dimensions[[1]])
   # items_RELd1 = REL1$item_selection_string
     
   
@@ -118,9 +119,9 @@ prepare_sProQOL <- function(DF_clean, short_name_scale_str) {
       # Make sure to use the correct formula: rowMeans() / rowSums()
       
       # Score Dimensions (see standardized_names(help_names = TRUE) for instructions)
-      !!names_list$name_DIRd[1] := rowMeans(select(., paste0(short_name_scale_str, "_", items_DIRd1, "_DIR")), na.rm = TRUE),
-      !!names_list$name_DIRd[2] := rowMeans(select(., paste0(short_name_scale_str, "_", items_DIRd2, "_DIR")), na.rm = TRUE),
-      !!names_list$name_DIRd[3] := rowMeans(select(., paste0(short_name_scale_str, "_", items_DIRd3, "_DIR")), na.rm = TRUE),
+      !!names_list$name_DIRd[1] := rowMeans(select(., paste0(short_name_scale_str, "_", items_dimensions[[1]], "_DIR")), na.rm = TRUE),
+      !!names_list$name_DIRd[2] := rowMeans(select(., paste0(short_name_scale_str, "_", items_dimensions[[2]], "_DIR")), na.rm = TRUE),
+      !!names_list$name_DIRd[3] := rowMeans(select(., paste0(short_name_scale_str, "_", items_dimensions[[3]], "_DIR")), na.rm = TRUE),
       
       # Reliability Dimensions (see standardized_names(help_names = TRUE) for instructions)
       # !!names_list$name_RELd[1] := rowMeans(select(., paste0(short_name_scale_str, "_", items_RELd1, "_DIR")), na.rm = TRUE), 
