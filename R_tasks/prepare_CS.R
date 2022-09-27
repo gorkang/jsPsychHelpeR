@@ -18,6 +18,8 @@ prepare_CS <- function(DF_clean, short_name_scale_str) {
 
   # DEBUG
   # debug_function(prepare_CS)
+  # targets::tar_load_globals()
+  
 
   # [ADAPT]: Items to ignore and reverse ---------------------------------------
   # ****************************************************************************
@@ -25,14 +27,14 @@ prepare_CS <- function(DF_clean, short_name_scale_str) {
   items_to_ignore = c("000") # Ignore these items: If nothing to ignore, keep items_to_ignore = c("00")
   
   # IMPORTANT: in CS, the items are reversed ONLY for the TOTAL score calculation. SEE COLUMNS CS_[ItemNumber]_total_DIR
-  items_to_reverse = c("03", "07", "11", "15") # Reverse these items
+  items_to_reverse = c("03", "07", "11", "15")
   
-  names_dimensions = c("Kindness", "Indiference", "CommonHumanity", "Mindfulness")
-  
-  items_DIRd1 = c("02", "06", "10", "14")
-  items_DIRd2 = c("03", "15", "07", "11")
-  items_DIRd3 = c("04", "08", "16", "12")
-  items_DIRd4 = c("01", "05", "09", "13")
+  items_dimensions = list(
+    Kindness = c("02", "06", "10", "14"),
+    Indiference = c("03", "07", "11", "15"),
+    CommonHumanity = c("04", "08", "12", "16"),
+    Mindfulness = c("01", "05", "09", "13")
+  )
   
   
   # [END ADAPT]: ***************************************************************
@@ -41,14 +43,15 @@ prepare_CS <- function(DF_clean, short_name_scale_str) {
   
   # Standardized names ------------------------------------------------------
   names_list = standardized_names(short_name_scale = short_name_scale_str, 
-                     dimensions = names_dimensions, # Use names of dimensions, "" or comment out line
-                     help_names = FALSE) # help_names = FALSE once the script is ready
+                                  dimensions = names(items_dimensions),
+                                  help_names = FALSE) # [KEEP as FALSE]
   
   # Create long -------------------------------------------------------------
-  DF_long_RAW = create_raw_long(DF_clean, short_name_scale = short_name_scale_str, numeric_responses = TRUE, is_experiment = FALSE)
-  
-  # Show number of items, responses, etc. [uncomment to help prepare the test] 
-  # prepare_helper(DF_long_RAW, show_trialid_questiontext = TRUE)
+  DF_long_RAW = create_raw_long(DF_clean, 
+                                short_name_scale = short_name_scale_str, 
+                                numeric_responses = TRUE, # [TRUE or FALSE]
+                                is_experiment = FALSE, 
+                                help_prepare = FALSE) # Show n of items, responses,... [CHANGE to FALSE] 
   
   
   # Create long DIR ------------------------------------------------------------
@@ -72,7 +75,7 @@ prepare_CS <- function(DF_clean, short_name_scale_str) {
     ) %>% 
     
     # Invert items
-    # Only invert items for calculation of global score
+    # Only invert items for calculation of global score ---
     mutate(
       total_DIR =
         case_when(
@@ -101,7 +104,7 @@ prepare_CS <- function(DF_clean, short_name_scale_str) {
   
   # Reliability -------------------------------------------------------------
   
-  # REL1 = auto_reliability(DF_wide_RAW, short_name_scale = short_name_scale_str, items = items_DIRd1)
+  # REL1 = auto_reliability(DF_wide_RAW, short_name_scale = short_name_scale_str, items = items_dimensions[[1]])
   # items_RELd1 = REL1$item_selection_string
     
   
@@ -116,10 +119,10 @@ prepare_CS <- function(DF_clean, short_name_scale_str) {
       # Make sure to use the correct formula: rowMeans() / rowSums()
       
       # Score Dimensions (see standardized_names(help_names = TRUE) for instructions)
-      !!names_list$name_DIRd[1] := rowMeans(select(., paste0(short_name_scale_str, "_", items_DIRd1, "_DIR")), na.rm = TRUE), 
-      !!names_list$name_DIRd[2] := rowMeans(select(., paste0(short_name_scale_str, "_", items_DIRd2, "_DIR")), na.rm = TRUE),      
-      !!names_list$name_DIRd[3] := rowMeans(select(., paste0(short_name_scale_str, "_", items_DIRd1, "_DIR")), na.rm = TRUE), 
-      !!names_list$name_DIRd[4] := rowMeans(select(., paste0(short_name_scale_str, "_", items_DIRd2, "_DIR")), na.rm = TRUE),
+      !!names_list$name_DIRd[1] := rowMeans(select(., paste0(short_name_scale_str, "_", items_dimensions[[1]], "_DIR")), na.rm = TRUE),
+      !!names_list$name_DIRd[2] := rowMeans(select(., paste0(short_name_scale_str, "_", items_dimensions[[2]], "_DIR")), na.rm = TRUE),
+      !!names_list$name_DIRd[3] := rowMeans(select(., paste0(short_name_scale_str, "_", items_dimensions[[3]], "_DIR")), na.rm = TRUE),
+      !!names_list$name_DIRd[4] := rowMeans(select(., paste0(short_name_scale_str, "_", items_dimensions[[4]], "_DIR")), na.rm = TRUE),
       
       # Reliability Dimensions (see standardized_names(help_names = TRUE) for instructions)
       # !!names_list$name_RELd[1] := rowMeans(select(., paste0(short_name_scale_str, "_", items_RELd1, "_DIR")), na.rm = TRUE), 
