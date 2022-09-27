@@ -19,31 +19,37 @@ prepare_ESZ <- function(DF_clean, short_name_scale_str) {
   # DEBUG
   # debug_function(prepare_ESZ)
 
-  # [ADAPT]: Items to ignore and reverse ---------------------------------------
+  # [ADAPT 1/3]: Items to ignore and reverse, dimensions -----------------------
   # ****************************************************************************
   
-  items_to_ignore = c("000") # Ignore these items: If nothing to ignore, keep items_to_ignore = c("00")
-  items_to_reverse = c("000") # Reverse these items: If nothing to reverse, keep  items_to_reverse = c("00")
+  description_task = "" # Brief description here
   
-  names_dimensions = c("") # If no dimensions, keep names_dimensions = c("")
+  items_to_ignore = c("000") # Ignore these items: If nothing to ignore, keep as is
+  items_to_reverse = c("000") # Reverse these items: If nothing to reverse, keep as is
   
-  items_DIRd1 = c("")
+  ## NameDimension1, NameDimension2 should be the names of the dimensions
+  ## Inside each c() create a vector of the item numbers for the dimension
+  ## Add lines as needed. If there are no dimensions, keep as is
+  items_dimensions = list(
+    NameDimension1 = c("000"),
+    NameDimension2 = c("000")
+  )
   
-  
-  # [END ADAPT]: ***************************************************************
+  # [END ADAPT 1/3]: ***********************************************************
   # ****************************************************************************
   
   
   # Standardized names ------------------------------------------------------
   names_list = standardized_names(short_name_scale = short_name_scale_str, 
-                     dimensions = names_dimensions, # Use names of dimensions, "" or comment out line
-                     help_names = FALSE) # help_names = FALSE once the script is ready
+                                  dimensions = names(items_dimensions),
+                                  help_names = FALSE) # [KEEP as FALSE]
   
   # Create long -------------------------------------------------------------
-  DF_long_RAW = create_raw_long(DF_clean, short_name_scale = short_name_scale_str, numeric_responses = FALSE, is_experiment = FALSE)
-  
-  # Show number of items, responses, etc. [uncomment to help prepare the test] 
-  # prepare_helper(DF_long_RAW, show_trialid_questiontext = TRUE)
+  DF_long_RAW = create_raw_long(DF_clean, 
+                                short_name_scale = short_name_scale_str, 
+                                numeric_responses = FALSE, # [TRUE or FALSE]
+                                is_experiment = FALSE, 
+                                help_prepare = FALSE) # Show n of items, responses,... [CHANGE to FALSE] 
   
   
   # Create long DIR ------------------------------------------------------------
@@ -60,18 +66,17 @@ prepare_ESZ <- function(DF_clean, short_name_scale_str) {
     mutate(
       DIR =
         case_when(
-          trialid %in% c("ESZ_01", "ESZ_02", "ESZ_03", "ESZ_04", "ESZ_05", "ESZ_06") & RAW == "Nunca" ~ 1,
-          trialid %in% c("ESZ_01", "ESZ_02", "ESZ_03", "ESZ_04", "ESZ_05", "ESZ_06") & RAW == "Rara Vez" ~ 2,
-          trialid %in% c("ESZ_01", "ESZ_02", "ESZ_03", "ESZ_04", "ESZ_05", "ESZ_06") & RAW == "Algunas veces" ~ 3,
-          trialid %in% c("ESZ_01", "ESZ_02", "ESZ_03", "ESZ_04", "ESZ_05", "ESZ_06") & RAW == "Casi siempre" ~ 4,
-          trialid %in% c("ESZ_01", "ESZ_02", "ESZ_03", "ESZ_04", "ESZ_05", "ESZ_06") & RAW == "Siempre" ~ 5,
-          
-          trialid %in% c("ESZ_07") ~ as.numeric(RAW),
-          
-          is.na(RAW) ~ NA_real_,
-          grepl(items_to_ignore, trialid) ~ NA_real_,
-          TRUE ~ 9999
-        )
+          trialid %in% c("ESZ_01", "ESZ_02", "ESZ_03", "ESZ_04", "ESZ_05", "ESZ_06") & RAW == "Nunca" ~ "1",
+          trialid %in% c("ESZ_01", "ESZ_02", "ESZ_03", "ESZ_04", "ESZ_05", "ESZ_06") & RAW == "Rara Vez" ~ "2",
+          trialid %in% c("ESZ_01", "ESZ_02", "ESZ_03", "ESZ_04", "ESZ_05", "ESZ_06") & RAW == "Algunas veces" ~ "3",
+          trialid %in% c("ESZ_01", "ESZ_02", "ESZ_03", "ESZ_04", "ESZ_05", "ESZ_06") & RAW == "Casi siempre" ~ "4",
+          trialid %in% c("ESZ_01", "ESZ_02", "ESZ_03", "ESZ_04", "ESZ_05", "ESZ_06") & RAW == "Siempre" ~ "5",
+          trialid %in% c("ESZ_07") ~ RAW,
+          is.na(RAW) ~ NA_character_,
+          grepl(items_to_ignore, trialid) ~ NA_character_,
+          TRUE ~ "9999"
+        ),
+      DIR = as.numeric(DIR)
     ) %>% 
     
     # Invert items
@@ -114,13 +119,6 @@ prepare_ESZ <- function(DF_clean, short_name_scale_str) {
   DF_wide_RAW_DIR =
     DF_wide_RAW %>% 
     mutate(
-
-      # Make sure to use the correct formula: rowMeans() / rowSums()
-      
-      # Score Dimensions (see standardized_names(help_names = TRUE) for instructions)
-      # !!names_list$name_DIRd[1] := rowMeans(select(., paste0(short_name_scale_str, "_", items_DIRd1, "_DIR")), na.rm = TRUE), 
-      # !!names_list$name_DIRd[2] := rowMeans(select(., paste0(short_name_scale_str, "_", items_DIRd2, "_DIR")), na.rm = TRUE),
-      
       # Reliability Dimensions (see standardized_names(help_names = TRUE) for instructions)
       # !!names_list$name_RELd[1] := rowMeans(select(., paste0(short_name_scale_str, "_", items_RELd1, "_DIR")), na.rm = TRUE), 
 
