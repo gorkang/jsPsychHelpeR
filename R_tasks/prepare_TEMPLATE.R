@@ -17,6 +17,7 @@
 prepare_TEMPLATE <- function(DF_clean, short_name_scale_str) {
 
   # DEBUG
+  # targets::tar_load_globals()
   # debug_function(prepare_TEMPLATE)
 
   
