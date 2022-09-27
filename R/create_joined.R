@@ -51,7 +51,7 @@ create_joined <- function(...) {
     reduce(full_join, by = "id")
   
   # Only RAW
-  DF_joined_RAW = DF_joined |> select(id, ends_with("RAW"))
+  DF_joined_RAW = DF_joined %>% select(id, ends_with("RAW"))
   
   
   # Save files --------------------------------------------------------------

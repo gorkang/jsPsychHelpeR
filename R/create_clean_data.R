@@ -90,7 +90,7 @@ create_clean_data <- function(DF_raw, save_output = TRUE) {
   # Wide version ------------------------------------------------------------
 
   DF_clean_wide = 
-    DF_clean |> 
+    DF_clean %>% 
     rename(RAW = response) %>%
     select(id, trialid, RAW) %>%
     pivot_wider(
@@ -100,7 +100,7 @@ create_clean_data <- function(DF_raw, save_output = TRUE) {
   
   
   # DF_clean_wide_rt = 
-  #   DF_clean |> 
+  #   DF_clean %>% 
   #   select(id, trialid, rt) %>%
   #   pivot_wider(
   #     names_from = trialid, 

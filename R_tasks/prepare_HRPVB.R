@@ -29,12 +29,12 @@ prepare_HRPVB <- function(DF_clean, short_name_scale_str) {
   items_to_reverse = c("00") # Reverse these items
 
   items_dimensions = list(
-    Cesarean = c("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11") |> paste0("_01"),
-    Vaginal = c("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11") |> paste0("_02"),
-    CesareanMother = c("05", "06", "07", "08", "09", "10", "11") |> paste0("_01"),
-    CesareanBaby = c("01", "02", "03", "04") |> paste0("_01"),
-    VaginalMother = c("05", "06", "07", "08", "09", "10", "11") |> paste0("_02"),
-    VaginalBaby = c("01", "02", "03", "04") |> paste0("_02")
+    Cesarean = c("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11") %>% paste0("_01"),
+    Vaginal = c("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11") %>% paste0("_02"),
+    CesareanMother = c("05", "06", "07", "08", "09", "10", "11") %>% paste0("_01"),
+    CesareanBaby = c("01", "02", "03", "04") %>% paste0("_01"),
+    VaginalMother = c("05", "06", "07", "08", "09", "10", "11") %>% paste0("_02"),
+    VaginalBaby = c("01", "02", "03", "04") %>% paste0("_02")
   )
   
   

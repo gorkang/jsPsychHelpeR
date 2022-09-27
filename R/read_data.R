@@ -62,9 +62,9 @@ read_data <- function(input_files, anonymize = FALSE, save_output = TRUE, worker
   # Wide version ------------------------------------------------------------
 
   DF_raw_wide = 
-    DF_raw |> 
-    filter(!grepl("Instructions", trialid)) |>
-    filter(trialid != "") |> 
+    DF_raw %>% 
+    filter(!grepl("Instructions", trialid)) %>%
+    filter(trialid != "") %>% 
     rename(RAW = response) %>%
     select(id, trialid, RAW) %>%
     pivot_wider(

@@ -69,7 +69,7 @@ analysis_descriptive_plots <- function(DF_joined, DF_raw, DF_clean, save_plots =
   
   plot_time_participants = DF_raw %>% 
     select(id, experimento, rt) %>% 
-    mutate(rt = as.numeric(rt)/60000) |> 
+    mutate(rt = as.numeric(rt)/60000) %>% 
     group_by(id, experimento) %>% 
     summarise(TIME = round(max(rt), 2), 
               N = n(), 
@@ -84,8 +84,8 @@ analysis_descriptive_plots <- function(DF_joined, DF_raw, DF_clean, save_plots =
     # scale_x_log10(n.breaks = 10)
   
   
-  plot_time_responses = DF_clean |> 
-    mutate(rt = as.numeric(rt)/1000) |> 
+  plot_time_responses = DF_clean %>% 
+    mutate(rt = as.numeric(rt)/1000) %>% 
     ggplot(aes(rt)) +
     geom_histogram() +
     theme_minimal() +

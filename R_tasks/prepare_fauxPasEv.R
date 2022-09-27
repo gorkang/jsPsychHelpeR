@@ -65,24 +65,24 @@ prepare_fauxPasEv <- function(DF_clean, short_name_scale_str) {
   items_noFP_Q2 = paste0("fauxPasEv_", sprintf("%03d", numbers_noFP_Q2))
   items_FP_Q2 = paste0("fauxPasEv_", sprintf("%03d", numbers_FP_Q2))
   
-  numbers_noFP_Q3_Q7 = (9 - 3:7) |> map(~ (stories_noFP * 9) - .x) |> unlist()
+  numbers_noFP_Q3_Q7 = (9 - 3:7) %>% map(~ (stories_noFP * 9) - .x) %>% unlist()
   items_noFP_Q3_Q7 = paste0("fauxPasEv_", sprintf("%03d", numbers_noFP_Q3_Q7))
   
   
   # Items 8 and 9 (old Questions 7 and 8)
-  numbers_FP_Q8_Q9 = (9 - 8:9) |> map(~ (stories_FP * 9) - .x) |> unlist()
+  numbers_FP_Q8_Q9 = (9 - 8:9) %>% map(~ (stories_FP * 9) - .x) %>% unlist()
   items_FP_Q8_Q9 = paste0("fauxPasEv_", sprintf("%03d", numbers_FP_Q8_Q9))
   
-  numbers_noFP_Q8_Q9 = (9 - 8:9) |> map(~ (stories_noFP * 9) - .x) |> unlist()
+  numbers_noFP_Q8_Q9 = (9 - 8:9) %>% map(~ (stories_noFP * 9) - .x) %>% unlist()
   items_noFP_Q8_Q9 = paste0("fauxPasEv_", sprintf("%03d", numbers_noFP_Q8_Q9))
   
 
   # Items Q2 to Q7, for final score
-  numbers_Q2_Q7 = (9 - 2:7) |> map(~ (1:20 * 9) - .x) |> unlist()
+  numbers_Q2_Q7 = (9 - 2:7) %>% map(~ (1:20 * 9) - .x) %>% unlist()
   items_Q2_Q7 = paste0("fauxPasEv_", sprintf("%03d", numbers_Q2_Q7))
   
   # Items Q8 and Q9, for final score
-  numbers_noFP_Q8_Q9 = (9 - 8:9) |> map(~ (stories_noFP * 9) - .x) |> unlist()
+  numbers_noFP_Q8_Q9 = (9 - 8:9) %>% map(~ (stories_noFP * 9) - .x) %>% unlist()
   items_noFP_Q8_Q9 = paste0("fauxPasEv_", sprintf("%03d", numbers_noFP_Q8_Q9))
   
     
@@ -401,29 +401,29 @@ prepare_fauxPasEv <- function(DF_clean, short_name_scale_str) {
   items_Q8_Q9 = c(items_FP_Q8_Q9, items_noFP_Q8_Q9)
   
   # Join stories dictionary
-  DF_long_DIR_manually_corrected_DICT = DF_long_DIR_manually_corrected |> 
-    left_join(DICC_story_items, by = "trialid") |> 
+  DF_long_DIR_manually_corrected_DICT = DF_long_DIR_manually_corrected %>% 
+    left_join(DICC_story_items, by = "trialid") %>% 
     mutate(KEY = paste0(id, "_", story))
   
   # Stories where participants have items 8 and 9 OK
   # En primer lugar se corrigen las preguntas de comprensión 7 y 8. 
   # Se da un punto solo si las dos preguntas control se han respondido correctamente. 
   DF_stories_OK = 
-    DF_long_DIR_manually_corrected_DICT |> 
-    filter(trialid %in% items_Q8_Q9) |> 
-    group_by(id, story) |> 
+    DF_long_DIR_manually_corrected_DICT %>% 
+    filter(trialid %in% items_Q8_Q9) %>% 
+    group_by(id, story) %>% 
     summarise(Q8_Q9 = sum(DIR), 
               KEY = unique(KEY), 
-              .groups = "drop") |> 
-    filter(Q8_Q9 == 2) |> 
+              .groups = "drop") %>% 
+    filter(Q8_Q9 == 2) %>% 
     mutate(Q8_Q9 = Q8_Q9/2) # Only 1 point when Q8_Q9 of a story are OK
   
   
   # Points of Questions 8 and 9 (out of 1)
   # La puntuación obtenida se divide entre 20.
   DF_points_Q8Q9 = 
-    DF_stories_OK |> 
-    group_by(id) |> 
+    DF_stories_OK %>% 
+    group_by(id) %>% 
     summarise(Q8_Q9 = sum(Q8_Q9)/20, .groups = "drop") 
   
   
@@ -433,31 +433,31 @@ prepare_fauxPasEv <- function(DF_clean, short_name_scale_str) {
   
   # Points in trialid's 2 to 7, only when Q8_Q9 are OK 
   DF_points_Q2Q7 = 
-    DF_long_DIR_manually_corrected_DICT |>
-    filter(trialid %in% items_Q2_Q7) |> # Only items 2 to 7
-    filter(KEY %in% DF_stories_OK$KEY) |> # Only if Q8_Q9 are both OK
-    group_by(id) |> 
+    DF_long_DIR_manually_corrected_DICT %>%
+    filter(trialid %in% items_Q2_Q7) %>% # Only items 2 to 7
+    filter(KEY %in% DF_stories_OK$KEY) %>% # Only if Q8_Q9 are both OK
+    group_by(id) %>% 
     summarise(Q2_Q7 = sum(DIR), 
               .groups = "drop")
   
   # DF with participants whose final score is > 0
   DF_points_final_non_0 = 
-    DF_points_Q8Q9 |> 
+    DF_points_Q8Q9 %>% 
     full_join(DF_points_Q2Q7, by = "id") %>% 
-    mutate(!!names_list$name_DIRt := rowSums(select(., starts_with("Q")), na.rm = TRUE)) |> 
+    mutate(!!names_list$name_DIRt := rowSums(select(., starts_with("Q")), na.rm = TRUE)) %>% 
     select(id, !!names_list$name_DIRt)
   
   # DF with participants whose final score is 0
     # Create this so in the final DF all participants have a row
   DF_points_final_0 = 
-    DF_long_DIR_manually_corrected_DICT |> 
-    distinct(id) |> 
-    filter(!id %in% DF_points_final_non_0$id) |> 
+    DF_long_DIR_manually_corrected_DICT %>% 
+    distinct(id) %>% 
+    filter(!id %in% DF_points_final_non_0$id) %>% 
     mutate(!!names_list$name_DIRt := 0)
   
   # Join all id's and scores
   DF_points_final = 
-    DF_points_final_non_0 |> 
+    DF_points_final_non_0 %>% 
     bind_rows(DF_points_final_0)
   
   
@@ -512,9 +512,9 @@ prepare_fauxPasEv <- function(DF_clean, short_name_scale_str) {
   
   # RAW %>%
   #   full_join(DIR, by = c("id", "item")) %>%
-  #   arrange(item) |>  
-  #   select(-DIR) |>
-  #   pivot_wider(names_from = id, names_prefix ="RAW_", values_from = RAW) |>
+  #   arrange(item) %>%  
+  #   select(-DIR) %>%
+  #   pivot_wider(names_from = id, names_prefix ="RAW_", values_from = RAW) %>%
   #   writexl::write_xlsx("outputs/manual_correction/TEMP_WIDE_fauxpas.xlsx")
   
   
@@ -523,7 +523,7 @@ prepare_fauxPasEv <- function(DF_clean, short_name_scale_str) {
     arrange(item) %>% 
     writexl::write_xlsx("outputs/manual_correction/TEMP_LONG_fauxpas.xlsx")
   
-  DF_wide_RAW_DIR |> writexl::write_xlsx("outputs/manual_correction/TEMP_DF_wide_RAW_DIR_fauxpas.xlsx")
+  DF_wide_RAW_DIR %>% writexl::write_xlsx("outputs/manual_correction/TEMP_DF_wide_RAW_DIR_fauxpas.xlsx")
   
   
   cli::cli_h1(text = "CHECK DATA SAVED IN: outputs/manual_correction/TEMP_LONG_fauxpas.xlsx")

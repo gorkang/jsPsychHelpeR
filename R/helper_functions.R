@@ -597,7 +597,7 @@ create_targets_file <- function(pid_protocol = 0, folder_data = NULL, folder_tas
     if (all_csvs) {
       
       files = 
-        basename(input_files) |> 
+        basename(input_files) %>% 
         as_tibble() %>% 
         tidyr::separate(col = value, into = c("project", "experimento", "version", "datetime", "id"), sep = c("_"), remove = TRUE) %>% 
         distinct(experimento) %>% 
