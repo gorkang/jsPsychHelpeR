@@ -73,34 +73,36 @@ prepare_MDDF <- function(DF_clean, short_name_scale_str) {
       DIR =
         case_when(
           
-          # TODO: DE LA 36 en adelante, se corre 1 en el protocolo colombia
-          
-          trialid %in% c("MDDF_01", "MDDF_04", "MDDF_07", "MDDF_10", "MDDF_13", "MDDF_16", "MDDF_19", "MDDF_22", "MDDF_25", "MDDF_28", "MDDF_31", "MDDF_34", "MDDF_37", "MDDF_40", "MDDF_43", "MDDF_46", "MDDF_49", "MDDF_52", "MDDF_55", "MDDF_58", "MDDF_61") & RAW == "Muy inadecuado" ~ 0,
-          trialid %in% c("MDDF_01", "MDDF_04", "MDDF_07", "MDDF_10", "MDDF_13", "MDDF_16", "MDDF_19", "MDDF_22", "MDDF_25", "MDDF_28", "MDDF_31", "MDDF_34", "MDDF_37", "MDDF_40", "MDDF_43", "MDDF_46", "MDDF_49", "MDDF_52", "MDDF_55", "MDDF_58", "MDDF_61") & RAW == "Medianamente inadecuado" ~ 1,
-          trialid %in% c("MDDF_01", "MDDF_04", "MDDF_07", "MDDF_10", "MDDF_13", "MDDF_16", "MDDF_19", "MDDF_22", "MDDF_25", "MDDF_28", "MDDF_31", "MDDF_34", "MDDF_37", "MDDF_40", "MDDF_43", "MDDF_46", "MDDF_49", "MDDF_52", "MDDF_55", "MDDF_58", "MDDF_61") & RAW == "Poco inadecuado" ~ 2,
-          trialid %in% c("MDDF_01", "MDDF_04", "MDDF_07", "MDDF_10", "MDDF_13", "MDDF_16", "MDDF_19", "MDDF_22", "MDDF_25", "MDDF_28", "MDDF_31", "MDDF_34", "MDDF_37", "MDDF_40", "MDDF_43", "MDDF_46", "MDDF_49", "MDDF_52", "MDDF_55", "MDDF_58", "MDDF_61") & RAW == "Sin opinion" ~ 3,
-          trialid %in% c("MDDF_01", "MDDF_04", "MDDF_07", "MDDF_10", "MDDF_13", "MDDF_16", "MDDF_19", "MDDF_22", "MDDF_25", "MDDF_28", "MDDF_31", "MDDF_34", "MDDF_37", "MDDF_40", "MDDF_43", "MDDF_46", "MDDF_49", "MDDF_52", "MDDF_55", "MDDF_58", "MDDF_61") & RAW == "Un poco adecuado" ~ 4,
-          trialid %in% c("MDDF_01", "MDDF_04", "MDDF_07", "MDDF_10", "MDDF_13", "MDDF_16", "MDDF_19", "MDDF_22", "MDDF_25", "MDDF_28", "MDDF_31", "MDDF_34", "MDDF_37", "MDDF_40", "MDDF_43", "MDDF_46", "MDDF_49", "MDDF_52", "MDDF_55", "MDDF_58", "MDDF_61") & RAW == "Medianamente adecuado" ~ 5,
-          trialid %in% c("MDDF_01", "MDDF_04", "MDDF_07", "MDDF_10", "MDDF_13", "MDDF_16", "MDDF_19", "MDDF_22", "MDDF_25", "MDDF_28", "MDDF_31", "MDDF_34", "MDDF_37", "MDDF_40", "MDDF_43", "MDDF_46", "MDDF_49", "MDDF_52", "MDDF_55", "MDDF_58", "MDDF_61") & RAW == "Altamente adecuado" ~ 6,
-          
-          trialid %in% c("MDDF_02", "MDDF_05", "MDDF_08", "MDDF_11", "MDDF_14", "MDDF_17", "MDDF_20", "MDDF_23", "MDDF_26", "MDDF_29", "MDDF_32", "MDDF_35", "MDDF_38", "MDDF_41", "MDDF_44", "MDDF_47", "MDDF_50", "MDDF_53", "MDDF_56", "MDDF_59", "MDDF_62") & RAW == "Si" ~ 1,
-          trialid %in% c("MDDF_02", "MDDF_05", "MDDF_08", "MDDF_11", "MDDF_14", "MDDF_17", "MDDF_20", "MDDF_23", "MDDF_26", "MDDF_29", "MDDF_32", "MDDF_35", "MDDF_38", "MDDF_41", "MDDF_44", "MDDF_47", "MDDF_50", "MDDF_53", "MDDF_56", "MDDF_59", "MDDF_62") & RAW == "No" ~ 0,
-
-          # RAW == "Muy inadecuado" ~ 0,
-          # RAW == "Medianamente inadecuado" ~ 1,
-          # RAW == "Poco inadecuado" ~ 2,
-          # RAW == "Sin opinion" ~ 3,
-          # RAW == "Un poco adecuado" ~ 4,
-          # RAW == "Medianamente adecuado" ~ 5,
-          # RAW == "Altamente adecuado" ~ 6,
+          # CORRECCION TEST COMPLETO
           # 
-          # RAW == "Si" ~ 1,
-          # RAW == "No" ~ 0,
+          # trialid %in% c("MDDF_01", "MDDF_04", "MDDF_07", "MDDF_10", "MDDF_13", "MDDF_16", "MDDF_19", "MDDF_22", "MDDF_25", "MDDF_28", "MDDF_31", "MDDF_34", "MDDF_37", "MDDF_40", "MDDF_43", "MDDF_46", "MDDF_49", "MDDF_52", "MDDF_55", "MDDF_58", "MDDF_61") & RAW == "Muy inadecuado" ~ "0",
+          # trialid %in% c("MDDF_01", "MDDF_04", "MDDF_07", "MDDF_10", "MDDF_13", "MDDF_16", "MDDF_19", "MDDF_22", "MDDF_25", "MDDF_28", "MDDF_31", "MDDF_34", "MDDF_37", "MDDF_40", "MDDF_43", "MDDF_46", "MDDF_49", "MDDF_52", "MDDF_55", "MDDF_58", "MDDF_61") & RAW == "Medianamente inadecuado" ~ "1",
+          # trialid %in% c("MDDF_01", "MDDF_04", "MDDF_07", "MDDF_10", "MDDF_13", "MDDF_16", "MDDF_19", "MDDF_22", "MDDF_25", "MDDF_28", "MDDF_31", "MDDF_34", "MDDF_37", "MDDF_40", "MDDF_43", "MDDF_46", "MDDF_49", "MDDF_52", "MDDF_55", "MDDF_58", "MDDF_61") & RAW == "Poco inadecuado" ~ "2",
+          # trialid %in% c("MDDF_01", "MDDF_04", "MDDF_07", "MDDF_10", "MDDF_13", "MDDF_16", "MDDF_19", "MDDF_22", "MDDF_25", "MDDF_28", "MDDF_31", "MDDF_34", "MDDF_37", "MDDF_40", "MDDF_43", "MDDF_46", "MDDF_49", "MDDF_52", "MDDF_55", "MDDF_58", "MDDF_61") & RAW == "Sin opinion" ~ "3",
+          # trialid %in% c("MDDF_01", "MDDF_04", "MDDF_07", "MDDF_10", "MDDF_13", "MDDF_16", "MDDF_19", "MDDF_22", "MDDF_25", "MDDF_28", "MDDF_31", "MDDF_34", "MDDF_37", "MDDF_40", "MDDF_43", "MDDF_46", "MDDF_49", "MDDF_52", "MDDF_55", "MDDF_58", "MDDF_61") & RAW == "Un poco adecuado" ~ "4",
+          # trialid %in% c("MDDF_01", "MDDF_04", "MDDF_07", "MDDF_10", "MDDF_13", "MDDF_16", "MDDF_19", "MDDF_22", "MDDF_25", "MDDF_28", "MDDF_31", "MDDF_34", "MDDF_37", "MDDF_40", "MDDF_43", "MDDF_46", "MDDF_49", "MDDF_52", "MDDF_55", "MDDF_58", "MDDF_61") & RAW == "Medianamente adecuado" ~ "5",
+          # trialid %in% c("MDDF_01", "MDDF_04", "MDDF_07", "MDDF_10", "MDDF_13", "MDDF_16", "MDDF_19", "MDDF_22", "MDDF_25", "MDDF_28", "MDDF_31", "MDDF_34", "MDDF_37", "MDDF_40", "MDDF_43", "MDDF_46", "MDDF_49", "MDDF_52", "MDDF_55", "MDDF_58", "MDDF_61") & RAW == "Altamente adecuado" ~ "6",
+          # 
+          # trialid %in% c("MDDF_02", "MDDF_05", "MDDF_08", "MDDF_11", "MDDF_14", "MDDF_17", "MDDF_20", "MDDF_23", "MDDF_26", "MDDF_29", "MDDF_32", "MDDF_35", "MDDF_38", "MDDF_41", "MDDF_44", "MDDF_47", "MDDF_50", "MDDF_53", "MDDF_56", "MDDF_59", "MDDF_62") & RAW == "Si" ~ "1",
+          # trialid %in% c("MDDF_02", "MDDF_05", "MDDF_08", "MDDF_11", "MDDF_14", "MDDF_17", "MDDF_20", "MDDF_23", "MDDF_26", "MDDF_29", "MDDF_32", "MDDF_35", "MDDF_38", "MDDF_41", "MDDF_44", "MDDF_47", "MDDF_50", "MDDF_53", "MDDF_56", "MDDF_59", "MDDF_62") & RAW == "No" ~ "0",
+
+          # CORRECCION PROTOCOLO 23
+          RAW == "Muy inadecuado" ~ "0",
+          RAW == "Medianamente inadecuado" ~ "1",
+          RAW == "Poco inadecuado" ~ "2",
+          RAW == "Sin opinion" ~ "3",
+          RAW == "Un poco adecuado" ~ "4",
+          RAW == "Medianamente adecuado" ~ "5",
+          RAW == "Altamente adecuado" ~ "6",
+
+          RAW == "Si" ~ "1",
+          RAW == "No" ~ "0",
           
-          is.na(RAW) ~ NA_real_, # OR NA_character_,
-          grepl(items_to_ignore, trialid) ~ NA_real_, # OR NA_character_,
-          TRUE ~ as.numeric(RAW) # OR "9999"
-        )
+          is.na(RAW) ~ NA_character_,
+          grepl(items_to_ignore, trialid) ~ NA_character_,
+          TRUE ~ RAW 
+        ),
+      DIR = as.numeric(DIR)
     ) %>% 
     
     # Invert items [CAN BE DELETED IF NOT USED or DIR is non-numeric]
