@@ -20,7 +20,8 @@ sync_server_local <-
            only_test = TRUE,
            exclude_csv = FALSE,
            delete_nonexistent = FALSE,
-           dont_ask = FALSE) {
+           dont_ask = FALSE,
+           all_messages = TRUE) {
     
   # DEBUG
     # pid = "999"
@@ -33,10 +34,9 @@ sync_server_local <-
     # exclude_csv = TRUE
     # delete_nonexistent = TRUE
     # dont_ask = TRUE
+    # all_messages = TRUE
     
     
-    
-  
 
   # Parameters --------------------------------------------------------------
 
@@ -76,12 +76,12 @@ sync_server_local <-
   if (credentials_exist) {
     # sshpass and rsync installed (?)
     if (SSHPASS != "" & RSYNC != "") { 
-      cli::cli_text(cli::col_green("{cli::symbol$tick} "), "rsync installed and credentials exist")
+      # cli::cli_text(cli::col_green("{cli::symbol$tick} "), "rsync installed and credentials exist")
     } else {
-      cli::cli_alert_danger("'sshpass' or 'rsync' not installed. Can't use `sync_server_local()`")
+      cli::cli_abort("'sshpass' or 'rsync' not installed. Can't use `sync_server_local()`")
     }
   } else {
-    cli::cli_alert_danger("Can't find server credentials in '.vault/.credentials'")
+    cli::cli_abort("Can't find server credentials in '.vault/.credentials'")
   }
   
   
@@ -93,20 +93,20 @@ sync_server_local <-
   } else if (direction == "local_to_server") {
     message_text = paste0(cli::col_yellow("Will sync: "), cli::col_silver(local_folder, " -->> ", "cscn.uai.cl/", server_folder), "\n", extra_message)
   } else {
-    cli::cli_text(cli::col_red("{cli::symbol$cross} "), "direction should be either 'server_to_local' or 'local_to_server'")
-    stop()
+    cli::cli_abort("`direction` should be either 'server_to_local' or 'local_to_server'")
   }
   
-  
-  cli::cli_h1("sync {direction} | delete_nonexistent {delete_nonexistent}")
+  if (all_messages == TRUE) cli::cli_h1("sync {direction} | delete_nonexistent {delete_nonexistent}")
   
   if (dont_ask == TRUE) {
     out = 1
     
-    cli::cli_par()
-    cli::cli_end()
-    cli_text(paste0(cli::col_yellow("BACKUP of full protocol WITHOUT data: "), 
-                    cli::col_silver("cscn.uai.cl/", server_folder, " -->> data/protocol_", server_folder, ".zip"), "\n", extra_message))
+    if (all_messages == TRUE) {
+      cli::cli_par()
+      cli::cli_end()
+      cli::cli_text(paste0(cli::col_yellow("BACKUP of full protocol WITHOUT data: "), cli::col_silver("cscn.uai.cl/", server_folder, " -->> data/protocol_", server_folder, ".zip"), "\n", extra_message))
+    }
+    
   } else {
     out <- utils::menu(c("yes", "no"), title = cat(message_text))  
   }
@@ -147,7 +147,7 @@ sync_server_local <-
     }
     
   } else {
-    cli::cli_alert_success("Not doing anything...")
+    cli::cli_alert_info("Not doing anything...")
   }
   
 }
