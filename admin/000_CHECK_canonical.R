@@ -27,8 +27,9 @@
 # Scripts -----------------------------------------------------------------
 
   targets::tar_load_globals()
-  # source("admin/helper-scripts-admin.R")
-  source("../jsPsychMaker/R/sync_server_local.R")
+  source("admin/helper-scripts-admin.R")
+  source("../jsPsychMaker/admin/sync_server_local.R")
+
 
 # prepare config.js -------------------------------------------------------
 
@@ -67,9 +68,11 @@
                       only_test = FALSE)
     
     # DELETE SERVER 999/.data/ files
-    list_credentials = source(".vault/.credentials") # Get server credentials
-    system(paste0('sshpass -p ', list_credentials$value$password, ' ssh ', list_credentials$value$user, '@', list_credentials$value$IP, ' rm ', list_credentials$value$main_FOLDER, 999, '/.data/*'))
+    DELETE_data_server(pid = "999")
+    # list_credentials = source(".vault/.credentials") # Get server credentials
+    # system(paste0('sshpass -p ', list_credentials$value$password, ' ssh ', list_credentials$value$user, '@', list_credentials$value$IP, ' rm ', list_credentials$value$main_FOLDER, 999, '/.data/*'))
 
+    
   
   # 2) jPsychMonkeys: Run 5 monkeys... same ID's, same responses per task (only if no randomization in jsPsych) ----------------------
     

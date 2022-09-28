@@ -79,11 +79,9 @@ sync_server_local <-
       cli::cli_text(cli::col_green("{cli::symbol$tick} "), "rsync installed and credentials exist")
     } else {
       cli::cli_alert_danger("'sshpass' or 'rsync' not installed. Can't use `sync_server_local()`")
-      # cli::cli_text(cli::col_red("{cli::symbol$cross} "), "'sshpass' or 'rsync' not installed. Can't use `sync_server_local()`")
     }
   } else {
     cli::cli_alert_danger("Can't find server credentials in '.vault/.credentials'")
-    # cli::cli_text(cli::col_red("{cli::symbol$cross} "), "Can't find server credentials in '.vault/.credentials'")
   }
   
   
