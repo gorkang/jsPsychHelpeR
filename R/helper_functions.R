@@ -1450,7 +1450,8 @@ get_zip_protocol <- function(pid) {
                     only_test = FALSE, 
                     exclude_csv = TRUE, # DO NOT INCLUDE DATA
                     delete_nonexistent = TRUE,
-                    dont_ask = TRUE)
+                    dont_ask = TRUE, 
+                    all_messages = FALSE)
   
   # Set Temp folder as working folder so the files in zip WONT have the temp path
   setwd(TEMP_DIR)
