@@ -46,7 +46,8 @@ run_initial_setup <- function(pid, download_files = FALSE, download_task_script 
     cli::cli_par()
     cli::cli_h1("Setup")
     cli::cli_end()
-    source("setup/setup.R")
+    run_setup()
+    
     
     
     # 2) Make sure the folder "data/[YOUR_PROJECT_ID]/" exists -----------------
