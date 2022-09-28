@@ -28,7 +28,7 @@ run_setup <- function() {
   
     # Clean up _targets folder  
     targets::tar_destroy(ask = FALSE)
-    cli::cli_alert_success("OLD _targets/* files deleted\n")
+    cli::cli_alert_success("OLD `_targets/*` files deleted\n")
     
     # Delete content of outputs
     invisible(file.remove(list.files("outputs", pattern = "*", full.names = TRUE, recursive = TRUE)))
@@ -45,12 +45,10 @@ run_setup <- function() {
       
     } else {
       
-      cli::cli_alert_warning("Creating necessary folders: \n")
-      cli::cli_li(paste(necessary_folders, collapse = ", "), "\n")
       invisible(purrr::map(necessary_folders, dir.create, recursive = TRUE, showWarnings = FALSE))
       system("chmod 700 -R .vault/")
-  
-      
+      cli::cli_alert_success("Created necessary folders: {.pkg {necessary_folders}}\n")
+
     }
   
   
