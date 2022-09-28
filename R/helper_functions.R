@@ -588,7 +588,7 @@ create_targets_file <- function(pid_protocol = 0, folder_data = NULL, folder_tas
     
     input_files = list.files(path = folder_data, pattern = "*.csv|*.zip", full.names = TRUE)
 
-    # CHECKS ------------------------------------------------------------------
+    # CHECKS ---
     all_csvs = all(grepl("\\.csv", input_files))
     length_files = length(input_files)
     all_zips = all(grepl("\\.zip", input_files))
@@ -675,25 +675,34 @@ create_targets_file <- function(pid_protocol = 0, folder_data = NULL, folder_tas
       file.rename(from = "_targets_automatic_file.R", to = "_targets.R")
       
       # DELETE UNUSED tasks
-      TASKS_TO_DELETE = list.files("R_tasks/") %>% as_tibble() %>% mutate(task = gsub("prepare_(.*)\\.R", "\\1", value)) %>% filter(!task %in% files & !grepl("\\.csv", value)) %>% pull(value) %>% paste0("R_tasks/", .)
+      TASKS_TO_DELETE_raw = 
+        list.files("R_tasks/") %>% 
+        as_tibble() %>% 
+        mutate(task = gsub("prepare_(.*)\\.R", "\\1", value)) %>% 
+        filter(!task %in% files & !grepl("\\.csv", value)) %>% 
+        pull(value) 
       
-      delete_prompt = menu(choices = c("Yes", "NO"), 
-                           title = cli::cli(
-                             {
-                               cli::cli_par()
-                               cli::cli_alert_info("{cli::style_bold((cli::col_red('DELETE')))} the following {length(TASKS_TO_DELETE)} unused tasks from 'R_tasks/'?:")
-                               cli::cli_end()
-                               cli::cli_text("{.pkg {basename(TASKS_TO_DELETE)}}")
-                             }
+      if(length(TASKS_TO_DELETE_raw) > 0) {
+        
+        TASKS_TO_DELETE = TASKS_TO_DELETE_raw %>% paste0("R_tasks/", .)
+        
+        delete_prompt = menu(choices = c("Yes", "NO"), 
+                             title = cli::cli(
+                               {
+                                 cli::cli_par()
+                                 cli::cli_alert_info("{cli::style_bold((cli::col_red('DELETE')))} the following {length(TASKS_TO_DELETE)} unused tasks from 'R_tasks/'?:")
+                                 cli::cli_end()
+                                 cli::cli_text("{.pkg {basename(TASKS_TO_DELETE)}}")
+                               }
                              )
-                           )
-      
-      
-      if (delete_prompt == 1) {
-        cli::cli_alert_info("Zipping unused tasks to create backup")
-        zip(zipfile = "outputs/backup/deleted_tasks.zip", files = TASKS_TO_DELETE)
-        file.remove(TASKS_TO_DELETE)
-        cli::cli_alert_warning(paste0("Deleted ", length(TASKS_TO_DELETE), " unused tasks. Backup in `outputs/backup/deleted_tasks.zip`"))
+        )
+        
+        if (delete_prompt == 1) {
+          cli::cli_alert_info("Zipping unused tasks to create backup")
+          zip(zipfile = "outputs/backup/deleted_tasks.zip", files = TASKS_TO_DELETE, flags = "-q") # Silent flags = "-q"
+          file.remove(TASKS_TO_DELETE)
+          cli::cli_alert_success(paste0("Deleted ", length(TASKS_TO_DELETE), " unused tasks. Backup in `outputs/backup/deleted_tasks.zip`"))
+        }
       }
       
       # END Messages
@@ -1456,8 +1465,8 @@ get_zip_protocol <- function(pid) {
   pid_safe = str_replace_all(string = pid, pattern = "/", replacement = "_")
   zip_name = paste0(project_folder, "/data/protocol_", pid_safe, ".zip")
   
-  # ZIP zilently (flags="-q")
-  RESULT = zip_safely(zipfile = zip_name, files = FILES_ZIP, flags="-q")
+  # ZIP zilently (flags = "-q")
+  RESULT = zip_safely(zipfile = zip_name, files = FILES_ZIP, flags = "-q")
 
   # Reset the project's WD
   setwd(project_folder)
