@@ -15,10 +15,10 @@
 ##' @author gorkang
 ##' @export
 prepare_ESV <- function(DF_clean, short_name_scale_str) {
-
+  
   # DEBUG
   # debug_function(prepare_ESV)
-
+  # get_dimensions_googledoc("ESV")
   
   
   # [ADAPT 1/3]: Items to ignore and reverse, dimensions -----------------------
@@ -33,8 +33,11 @@ prepare_ESV <- function(DF_clean, short_name_scale_str) {
   ## Inside each c() create a vector of the item numbers for the dimension
   ## Add lines as needed. If there are no dimensions, keep as is
   items_dimensions = list(
-    NameDimension1 = c("000"),
-    NameDimension2 = c("000")
+    Intensidad = c("01"),
+    Emocion = c("02"),
+    Compasion = c("03"),
+    Angustia = c("04"),
+    Frialdad = c("05")
   )
   
   # [END ADAPT 1/3]: ***********************************************************
@@ -61,19 +64,19 @@ prepare_ESV <- function(DF_clean, short_name_scale_str) {
     
     
     
-  # [ADAPT 2/3]: RAW to DIR for individual items -------------------------------
+    # [ADAPT 2/3]: RAW to DIR for individual items -------------------------------
   # ****************************************************************************
   
-    # Transformations
-    mutate(
-      DIR =
-        case_when(
-          is.na(RAW) ~ NA_real_, # OR NA_character_
-          grepl(items_to_ignore, trialid) ~ NA_real_, # OR NA_character_
-          !is.na(RAW) ~ RAW,
-          TRUE ~ 9999 # OR "9999"
-        )
-    ) %>% 
+  # Transformations
+  mutate(
+    DIR =
+      case_when(
+        is.na(RAW) ~ NA_real_, # OR NA_character_
+        grepl(items_to_ignore, trialid) ~ NA_real_, # OR NA_character_
+        !is.na(RAW) ~ RAW,
+        TRUE ~ 9999 # OR "9999"
+      )
+  ) %>% 
     
     # Invert items [CAN BE DELETED IF NOT USED or DIR is non-numeric]
     mutate(
@@ -84,11 +87,11 @@ prepare_ESV <- function(DF_clean, short_name_scale_str) {
           TRUE ~ DIR
         )
     )
-    
+  
   # [END ADAPT 2/3]: ***********************************************************
   # ****************************************************************************
-    
-
+  
+  
   # Create DF_wide_RAW_DIR -----------------------------------------------------
   DF_wide_RAW =
     DF_long_DIR %>% 
@@ -100,8 +103,8 @@ prepare_ESV <- function(DF_clean, short_name_scale_str) {
     # NAs for RAW and DIR items
     mutate(!!names_list$name_RAW_NA := rowSums(is.na(select(., -matches(paste0(short_name_scale_str, "_", items_to_ignore, "_RAW")) & matches("_RAW$")))),
            !!names_list$name_DIR_NA := rowSums(is.na(select(., -matches(paste0(short_name_scale_str, "_", items_to_ignore, "_DIR")) & matches("_DIR$")))))
-
-
+  
+  
   
   # [ADAPT 3/3]: Scales and dimensions calculations ----------------------------
   # ****************************************************************************
@@ -109,32 +112,35 @@ prepare_ESV <- function(DF_clean, short_name_scale_str) {
   # Reliability -------------------------------------------------------------
   # REL1 = auto_reliability(DF_wide_RAW, short_name_scale = short_name_scale_str, items = items_DIRd1)
   # items_RELd1 = REL1$item_selection_string
-    
+  
   
   # [USE STANDARD NAMES FOR Scales and dimensions: names_list$name_DIRd[1], names_list$name_DIRt,...] 
   # CHECK with: create_formulas(type = "dimensions_DIR", functions = "sum", names_dimensions)
   DF_wide_RAW_DIR =
     DF_wide_RAW %>% 
     mutate(
-
+      
       # [CHECK] Using correct formula? rowMeans() / rowSums()
       
       # Score Dimensions (see standardized_names(help_names = TRUE) for instructions)
-      # !!names_list$name_DIRd[1] := rowMeans(select(., paste0(short_name_scale_str, "_", items_dimensions[[1]], "_DIR")), na.rm = TRUE), 
-      # !!names_list$name_DIRd[2] := rowSums(select(., paste0(short_name_scale_str, "_", items_dimensions[[2]], "_DIR")), na.rm = TRUE),
+      !!names_list$name_DIRd[1] := rowSums(select(., paste0(short_name_scale_str, "_", items_dimensions[[1]], "_DIR")), na.rm = TRUE),
+      !!names_list$name_DIRd[2] := rowSums(select(., paste0(short_name_scale_str, "_", items_dimensions[[2]], "_DIR")), na.rm = TRUE),
+      !!names_list$name_DIRd[3] := rowSums(select(., paste0(short_name_scale_str, "_", items_dimensions[[3]], "_DIR")), na.rm = TRUE),
+      !!names_list$name_DIRd[4] := rowSums(select(., paste0(short_name_scale_str, "_", items_dimensions[[4]], "_DIR")), na.rm = TRUE),
+      !!names_list$name_DIRd[5] := rowSums(select(., paste0(short_name_scale_str, "_", items_dimensions[[5]], "_DIR")), na.rm = TRUE),
       
       # Reliability Dimensions (see standardized_names(help_names = TRUE) for instructions)
       # !!names_list$name_RELd[1] := rowMeans(select(., paste0(short_name_scale_str, "_", items_RELd1, "_DIR")), na.rm = TRUE), 
-
+      
       # Score Scale
       !!names_list$name_DIRt := rowSums(select(., matches("_DIR$")), na.rm = TRUE)
       
     )
-    
+  
   # [END ADAPT 3/3]: ***********************************************************
   # ****************************************************************************
-
-
+  
+  
   # CHECK NAs -------------------------------------------------------------------
   check_NAs(DF_wide_RAW_DIR)
   
@@ -143,5 +149,5 @@ prepare_ESV <- function(DF_clean, short_name_scale_str) {
   
   # Output of function ---------------------------------------------------------
   return(DF_wide_RAW_DIR) 
- 
+  
 }
