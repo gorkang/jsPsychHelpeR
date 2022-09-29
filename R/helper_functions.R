@@ -659,7 +659,7 @@ create_targets_file <- function(pid_protocol = 0, folder_data = NULL, folder_tas
                              cli::cli(
                                {
                                  cli::cli_par()
-                                 cli::cli_alert_info("{cli::style_bold((cli::col_yellow('Overwrite')))} file '_targets.R' to include the following tasks?")
+                                 cli::cli_alert_info("{cli::style_bold((cli::col_yellow('Overwrite')))} file '_targets.R' to include the following {length(files)} tasks?")
                                  cli::cli_end()
                                  cli::cli_text("{.pkg {files}}")
                                 }
