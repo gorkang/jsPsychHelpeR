@@ -639,31 +639,24 @@ create_targets_file <- function(pid_protocol = 0, folder_data = NULL, folder_tas
     final_joins[line_pid_target] = paste0("pid_target = '", pid_protocol, "'")
     final_file = final_joins
     # final_file = gsub("pid_target = '999'", paste0("pid_target = '", pid_protocol, "'"), final_joins) # OLD method
-    
     # cat(final_joins, sep = "\n")
   
     # Create final file
     cat(final_file, file = "_targets_automatic_file.R", sep = "\n")
     
   } else {
-    
-    cli_text(col_red("{symbol$cross} "), "0 tasks found for protocol '", pid_protocol, "'. NOT creating _targets.R file")
   
+    cli::cli_alert_danger("0 tasks found for protocol '{pid_protocol}'. NOT creating `_targets.R` file")  
+
   }
   
   # If previous step was successful
   if (file.exists("_targets_automatic_file.R")) {
 
     response_prompt = menu(choices = c("YES", "No"), 
-                           title = 
-                             cli::cli(
-                               {
-                                 cli::cli_par()
-                                 cli::cli_alert_info("{cli::style_bold((cli::col_yellow('Overwrite')))} file '_targets.R' to include the following {length(files)} tasks?")
-                                 cli::cli_end()
-                                 cli::cli_text("{.pkg {files}}")
-                                }
-                               )
+                           title = cli_message(var_used = files,
+                                               info = "{cli::style_bold((cli::col_yellow('Overwrite')))} file '_targets.R' to include the following {length(files)} tasks?", 
+                                               details = "{.pkg {files}}")
                            )
     
     if (response_prompt == 1) {
@@ -687,14 +680,10 @@ create_targets_file <- function(pid_protocol = 0, folder_data = NULL, folder_tas
         TASKS_TO_DELETE = TASKS_TO_DELETE_raw %>% paste0("R_tasks/", .)
         
         delete_prompt = menu(choices = c("Yes", "NO"), 
-                             title = cli::cli(
-                               {
-                                 cli::cli_par()
-                                 cli::cli_alert_info("{cli::style_bold((cli::col_red('DELETE')))} the following {length(TASKS_TO_DELETE)} unused tasks from 'R_tasks/'?:")
-                                 cli::cli_end()
-                                 cli::cli_text("{.pkg {basename(TASKS_TO_DELETE)}}")
-                               }
-                             )
+                             title = cli_message(var_used = TASKS_TO_DELETE,
+                                                 h1_title = "Clean up",
+                                                 info = "{cli::style_bold((cli::col_red('DELETE')))} the following {length(TASKS_TO_DELETE)} unused tasks from 'R_tasks/'?:",
+                                                 details = "{.pkg {basename(TASKS_TO_DELETE)}}")
         )
         
         if (delete_prompt == 1) {
@@ -706,32 +695,19 @@ create_targets_file <- function(pid_protocol = 0, folder_data = NULL, folder_tas
       }
       
       # END Messages
-      
-      cli::cli(
-        {
-          cli::cli_par()
-          cli::cli_h1("All done\n\n")
-          cli::cli_end()
-    
-          cli::cli_par()
-          cli::cli_alert_success("NEW '_targets.R' created")
-          cli::cli_end()
-          
-          cli::cli_text(cli::col_grey("Use the following commands to start the data preparation:"))
-          cli::cli_li(c("Visualize pipeline: {.code targets::tar_visnetwork()}",
-                        "Delete cache: {.code targets::tar_destroy()}", 
-                        "Start data preparation: {.code targets::tar_make()}"))
-          
-        }
-      )
+      cli_message(h1_title = "All done", 
+                  success = "NEW '_targets.R' created",
+                  details = cli::col_grey("Use the following commands to start the data preparation:"),
+                  list = c("Visualize pipeline: {.code targets::tar_visnetwork()}",
+                           "Delete cache: {.code targets::tar_destroy()}", 
+                           "Start data preparation: {.code targets::tar_make()}")
+                  )
     
     } else {
       cli::cli_alert_warning("OK, nothing done\n")
     }
     
   }
-    
-  # cat(cli::col_green("\n_targets_automatic_file.R created."), cli::col_yellow("Manually rename it as _targets.R\n"))
 
 }
 
@@ -1364,8 +1340,6 @@ check_project_and_results <- function(participants, folder_protocol, folder_resu
 }
 
 
-
-
 #' read_zips
 #' Function to unzip and read csv files
 #'
@@ -1583,3 +1557,65 @@ check_trialids <- function(local_folder_protocol, show_all_messages = FALSE) {
 }
 
 
+
+#' cli_message
+#' Create standardize cli messages
+#'
+#' @param var_used if using a {variable}, need to include it here
+#' @param h1_title 
+#' @param success 
+#' @param details 
+#' @param info 
+#' @param list 
+#'
+#' @return
+#' @export
+#'
+#' @examples
+cli_message <- function(var_used = NULL, h1_title = NULL, info = NULL, success = NULL, details = NULL, list = NULL) {
+  
+  # Prepare var_used to be used internally
+  # TODO: Should map() through var_used to be able to use multiple vars
+  if (!is.null(var_used)) {
+    names_vars = deparse(substitute(var_used))
+    vars_list = list()
+    vars_list[[names_vars]] = var_used
+    list2env(vars_list, environment())
+  }
+
+  number_non_nulls = sum(c(!is.null(h1_title),  !is.null(info), !is.null(success), !is.null(details), !is.null(list)))
+
+  cli::cli(
+    {
+      # If it's a lonely message, create space with previous Console content
+      if (number_non_nulls == 1) {
+        cli::cli_par()
+        cli::cli_text("")
+        cli::cli_end()
+      }
+      
+      if (!is.null(h1_title)) {
+        cli::cli_par()
+        cli::cli_h1(h1_title)
+        cli::cli_end()
+      }
+      if (!is.null(info)) {
+        cli::cli_par()
+        cli::cli_alert_info(info)
+        cli::cli_end()
+      }
+      if (!is.null(success)) {
+        cli::cli_par()
+        cli::cli_alert_success(success)
+        cli::cli_end()
+      }
+      if (!is.null(details)) {
+        cli::cli_text(details)
+      }
+      if (!is.null(list)) {
+        cli::cli_li(list)
+      }  
+    }
+  )
+  
+}
