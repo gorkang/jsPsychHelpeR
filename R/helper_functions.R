@@ -1563,7 +1563,8 @@ check_trialids <- function(local_folder_protocol, show_all_messages = FALSE) {
 #'
 #' @param var_used if using a {variable}, need to include it here
 #' @param h1_title 
-#' @param success 
+#' @param success
+#' @param danger 
 #' @param details 
 #' @param info 
 #' @param list 
@@ -1572,7 +1573,7 @@ check_trialids <- function(local_folder_protocol, show_all_messages = FALSE) {
 #' @export
 #'
 #' @examples
-cli_message <- function(var_used = NULL, h1_title = NULL, info = NULL, success = NULL, details = NULL, list = NULL) {
+cli_message <- function(var_used = NULL, h1_title = NULL, info = NULL, success = NULL, danger = NULL, details = NULL, list = NULL) {
   
   # Prepare var_used to be used internally
   # TODO: Should map() through var_used to be able to use multiple vars
@@ -1583,7 +1584,7 @@ cli_message <- function(var_used = NULL, h1_title = NULL, info = NULL, success =
     list2env(vars_list, environment())
   }
 
-  number_non_nulls = sum(c(!is.null(h1_title),  !is.null(info), !is.null(success), !is.null(details), !is.null(list)))
+  number_non_nulls = sum(c(!is.null(h1_title),  !is.null(info), !is.null(success), !is.null(danger), !is.null(details), !is.null(list)))
 
   cli::cli(
     {
@@ -1597,6 +1598,11 @@ cli_message <- function(var_used = NULL, h1_title = NULL, info = NULL, success =
       if (!is.null(h1_title)) {
         cli::cli_par()
         cli::cli_h1(h1_title)
+        cli::cli_end()
+      }
+      if (!is.null(danger)) {
+        cli::cli_par()
+        cli::cli_alert_danger(danger)
         cli::cli_end()
       }
       if (!is.null(info)) {

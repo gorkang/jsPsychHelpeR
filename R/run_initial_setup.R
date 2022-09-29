@@ -3,30 +3,26 @@ run_initial_setup <- function(pid, download_files = FALSE, download_task_script 
   # DEBUG
   # pid = "999"
   
+  # Load all functions
+  invisible(lapply(list.files("./R", full.names = TRUE, pattern = ".R$"), source))
+  
+  # CHECKS
   files_pid = list.files(paste0("data/", pid))
   credentials_exist = file.exists(".vault/.credentials")
   
   # CHECK if NO files in project's folder & NO credentials to download
   if (length(files_pid) == 0 & credentials_exist == FALSE) {
     
-    cli::cli_par()
-    cli::cli_h1("ERROR")
-    cli::cli_end()
-    cli::cli_par()
-    cli::cli_alert_danger("Can't access .csv files for protocol `{pid}`:\n- No files in `data/{pid}`\n- `.vault/credentials` file not present")
-    cli::cli_end()
-    cli::cli_par()
-    cli::cli_alert_info("You can either:\n- manually download files to `data/{pid}`\n- edit `.vault/credentials_TEMPLATE` and rename it to `.vault/credentials`")
-    cli::cli_end()
+    cli_message(var_used = pid, 
+                h1_title = "ERROR", 
+                danger = "Can't access .csv files for protocol `{pid}`:\n- No files in `data/{pid}`\n- `.vault/credentials` file not present",
+                info = "You can either:\n- manually download files to `data/{pid}`\n- edit `.vault/credentials_TEMPLATE` and rename it to `.vault/credentials`")
     
     cli::cli_abort("No way to get the protocol's .csv files")
     
   }
   
-  # Load all functions
-  invisible(lapply(list.files("./R", full.names = TRUE, pattern = ".R$"), source))
-  
-  
+
   
   response_prompt = menu(choices = c("Yes", "No"), 
                          title = 
