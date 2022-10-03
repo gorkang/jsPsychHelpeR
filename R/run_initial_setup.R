@@ -73,7 +73,7 @@ run_initial_setup <- function(pid, download_files = FALSE, download_task_script 
         cli_message(h1_title = "Download task script")
         
         # Get protocol without data and zip it in data/protocol_PID.zip
-        get_zip_protocol(pid)
+        get_zip(pid, what = "protocol")
           
         
       } else if (download_task_script == FALSE) {

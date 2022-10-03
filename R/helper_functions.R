@@ -1396,33 +1396,57 @@ read_zips = function(input_files, workers = 1, unzip_dir = file.path(dirname(inp
 
 
 
-#' get_zip_protocol
-#' Get and zip a full jsPsychMakeR protocol without the data to keep it as a backup
+#' get_zip
+#' Get and zip a the data or a full jsPsychMakeR protocol without the data to keep it as a backup
 #'
 #' @param pid 
-#' @param sync_protocols 
-#' @param delete_nonexistent Delete local files not existent in server
+#' @param what data/protocol
 #'
 #' @return
 #' @export
 #'
 #' @examples
-get_zip_protocol <- function(pid) {
+get_zip <- function(pid, what) {
   
   # DEBUG
   # pid = "23"
+  # what = "data"
+  
+  if (!exists("what")) cli::cli_abort("parameter `what` missing. Should be `data` or `protocol`" )
+  if (!what %in% c("data", "protocol")) cli::cli_abort("`what` should be `data` or `protocol`" )
   
   # Get project's folder to be able ro reset it after zipping
   project_folder = getwd()
   
+  # Save version of name (if it is in a subfolder, replace / by _)
+  # REVIEW: Works in Windows?
+  pid_safe = stringr::str_replace_all(string = pid, pattern = "/", replacement = "_")
+  
+  
+  if (what == "data") {
+    
+    server_folder = paste0(pid, "/.data")
+    exclude_csv = FALSE
+    zip_name = here::here(paste0("../SHARED-data/", pid, "/", pid_safe, ".zip"))
+    dir.create(dirname(zip_name), recursive = TRUE, showWarnings = FALSE)
+    
+  } else if (what == "protocol") {
+    
+    server_folder = pid
+    exclude_csv = TRUE
+    zip_name = paste0(project_folder, "/data/protocol_", pid_safe, ".zip")
+    
+  }
+  
+  
   # Create temp dir to download the protocol
   TEMP_DIR = tempdir(check = TRUE)
   
-  sync_server_local(server_folder = pid, 
+  sync_server_local(server_folder = server_folder, 
                     local_folder = TEMP_DIR,
                     direction = "server_to_local", 
                     only_test = FALSE, 
-                    exclude_csv = TRUE, # DO NOT INCLUDE DATA
+                    exclude_csv = exclude_csv,
                     delete_nonexistent = TRUE,
                     dont_ask = TRUE, 
                     all_messages = FALSE)
@@ -1431,21 +1455,21 @@ get_zip_protocol <- function(pid) {
   setwd(TEMP_DIR)
   FILES_ZIP = list.files(TEMP_DIR, recursive = TRUE, full.names = FALSE, all.files = TRUE, include.dirs = TRUE)
   
-  # cli::cli_h2("ZIP protocol files to {paste0('/data/protocol_', pid, '.zip')}")
   # Create safely version so an error won't avoid resetting the project's wd
   zip_safely = purrr::safely(zip)
   
-  # Save version of name (if it is in a subfolder, replace / by _)
-  # REVIEW: Works in Windows?
-  pid_safe = str_replace_all(string = pid, pattern = "/", replacement = "_")
-  zip_name = paste0(project_folder, "/data/protocol_", pid_safe, ".zip")
-  
   # ZIP zilently (flags = "-q")
   RESULT = zip_safely(zipfile = zip_name, files = FILES_ZIP, flags = "-q")
-
+  # Show error
+  if (!is.null(RESULT$error)) cli::cli_text(RESULT$error)
+  
+  # Remove temp dir and content
+  unlink(TEMP_DIR, recursive = TRUE)
+  
   # Reset the project's WD
   setwd(project_folder)
-  cli::cli_alert_success("ZIPED protocol files to {paste0('/data/protocol_', pid, '.zip')}")
+  cli::cli_alert_success("ZIPED protocol files to {gsub(project_folder, '', zip_name)}")
+  
 }
 
 
@@ -1624,4 +1648,62 @@ cli_message <- function(var_used = NULL, h1_title = NULL, info = NULL, success =
     }
   )
   
+}
+
+
+
+#' set_permissions_google_drive
+#'
+#' @param pid pid of project
+#' @param email_IP email of Principal Researcher to give reading permissions to data in google drive
+#'
+#' @return
+#' @export
+#'
+#' @examples
+set_permissions_google_drive <- function(pid, email_IP) {
+  
+  ADMIN_emails = c("gorkang@gmail.com", "herman.valencia.13@sansano.usm.cl")
+  
+  # If email_IP is not that of an admin
+  if (!email_IP %in% ADMIN_emails) {
+    
+    # Get all folders in SHARED-data
+    SHARED_data_folder = googledrive::drive_ls(googledrive::as_id("1ZNiCILmpq_ZvjX0mkyhXM0M3IHJijJdL"), recursive = FALSE, type = "folder")
+    
+    # Get id of folder == pid
+    ID = SHARED_data_folder |> dplyr::filter(name == pid) |> dplyr::pull(id)
+    
+    # Present permissions
+    permissions_ID = ID |> googledrive::drive_reveal("permissions")
+    list_permissions = permissions_ID$drive_resource[[1]]$permissions
+    DF_permissions = 1:length(list_permissions) |> 
+      purrr::map_df(~{
+        tibble::tibble(email = list_permissions[[.x]]$emailAddress,
+               role = list_permissions[[.x]]$role)
+        })
+    
+    # IF email_IP does not already have permissions
+    if (!email_IP %in% DF_permissions$email) {
+      
+      # Change permissions for email_IP
+      ID |> 
+        googledrive::drive_share(
+          role = "reader",
+          type = "user",
+          emailAddress = email_IP,
+          emailMessage = paste0("La carpeta de datos del proyecto ", pid, " ha sido compartida contigo. Si es un error o tienes alguna duda, avisa a gorkang@gmail.com")
+        )
+      cli::cli_alert_success("Granted View permissions to {email_IP}")
+      
+    # email_IP already has permissions  
+    } else {
+      cli::cli_alert_info("{email_IP} already has permissions")
+    }
+    
+  # Admins
+  } else {
+    cli::cli_alert_info("{email_IP} is an ADMIN and already has permissions")
+  }
+
 }
