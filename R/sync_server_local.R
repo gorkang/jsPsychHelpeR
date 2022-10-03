@@ -61,15 +61,14 @@ sync_server_local <-
     delete_nonexistent_files = ""
   }
   
-  
-  
-  
+  # Check and prepare local folder and path
+  if (!file.exists(local_folder)) dir.create(local_folder)
   local_folder = normalizePath(here::here(local_folder))
   local_folder_terminal = gsub(" ", "\\\\ ", local_folder)
   
   # CHECKS we have credentials and necessary software ------------------------
   
-  credentials_exist = file.exists(".vault/.credentials")
+  credentials_exist = file.exists(here::here(".vault/.credentials"))
   SSHPASS = Sys.which("sshpass") # Check if sshpass is installed
   RSYNC = Sys.which("rsync") # Check if rsync is installed
   
@@ -104,7 +103,8 @@ sync_server_local <-
     if (all_messages == TRUE) {
       cli::cli_par()
       cli::cli_end()
-      cli::cli_text(paste0(cli::col_yellow("BACKUP of full protocol WITHOUT data: "), cli::col_silver("cscn.uai.cl/", server_folder, " -->> data/protocol_", server_folder, ".zip"), "\n", extra_message))
+      # cli::cli_text(paste0(cli::col_yellow("BACKUP of full protocol WITHOUT data: "), cli::col_silver("cscn.uai.cl/", server_folder, " -->> data/protocol_", local_folder), "\n", extra_message))
+      cli::cli_text(paste0(cli::col_yellow("Will sync: "), cli::col_silver("cscn.uai.cl/", server_folder, " -->> ", local_folder), "\n", extra_message))
     }
     
   } else {
@@ -116,7 +116,7 @@ sync_server_local <-
   # SYNC --------------------------------------------------------------------
   
   # Get server credentials
-  list_credentials = source(".vault/.credentials")
+  list_credentials = source(here::here(".vault/.credentials"))
   
   
   if (out == 1) {
