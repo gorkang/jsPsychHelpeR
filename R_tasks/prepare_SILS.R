@@ -21,7 +21,6 @@ prepare_SILS <- function(DF_clean, short_name_scale_str) {
   # debug_function(prepare_SILS)
 
   
-  
   # [ADAPT 1/3]: Items to ignore and reverse, dimensions -----------------------
   # ****************************************************************************
   
@@ -57,7 +56,7 @@ prepare_SILS <- function(DF_clean, short_name_scale_str) {
                                 short_name_scale = short_name_scale_str, 
                                 numeric_responses = FALSE, # [TRUE or FALSE]
                                 is_experiment = FALSE, 
-                                help_prepare = TRUE) # Show n of items, responses,... [CHANGE to FALSE] 
+                                help_prepare = FALSE) # Show n of items, responses,... [CHANGE to FALSE] 
   
   
   # Create long DIR ------------------------------------------------------------
@@ -75,9 +74,9 @@ prepare_SILS <- function(DF_clean, short_name_scale_str) {
       DIR =
         case_when(
           RAW == "Nunca" ~ 0,
-          RAW == "Raras veces" ~ 1,
-          RAW == "Algunas veces" ~ 2,
-          RAW == "Bastante a menudo" ~ 3,
+          RAW == "Rarasveces" ~ 1,
+          RAW == "Algunasveces" ~ 2,
+          RAW == "Bastantea menudo" ~ 3,
           RAW == "Siempre" ~ 4,
           is.na(RAW) ~ NA_real_, # OR NA_character_,
           grepl(items_to_ignore, trialid) ~ NA_real_, # OR NA_character_,
@@ -137,7 +136,7 @@ prepare_SILS <- function(DF_clean, short_name_scale_str) {
       !!names_list$name_DIRd[5] := rowMeans(select(., paste0(short_name_scale_str, "_", items_dimensions[[5]], "_DIR")), na.rm = TRUE),
       !!names_list$name_DIRd[6] := rowMeans(select(., paste0(short_name_scale_str, "_", items_dimensions[[6]], "_DIR")), na.rm = TRUE),
       !!names_list$name_DIRd[7] := rowMeans(select(., paste0(short_name_scale_str, "_", items_dimensions[[7]], "_DIR")), na.rm = TRUE),
-      !!names_list$name_DIRd[8] := rowMeans(select(., paste0(short_name_scale_str, "_", items_dimensions[[8]], "_DIR")), na.rm = TRUE),
+      
       
       # Reliability Dimensions (see standardized_names(help_names = TRUE) for instructions)
       # !!names_list$name_RELd[1] := rowMeans(select(., paste0(short_name_scale_str, "_", items_RELd1, "_DIR")), na.rm = TRUE), 

@@ -80,7 +80,7 @@ prepare_CEL <- function(DF_clean, short_name_scale_str) {
           
           trialid %in% c("CEL_04") & RAW == "Deja al grupo solo." ~ "Derivativo",
           trialid %in% c("CEL_04") & RAW == "Lentamente se inserta para ir dándole al grupo una mayor dirección." ~ "Directivo",
-          trialid %in% c("CEL_04") & RAW == "Le pregunta al grupo si usted debiera proveer... y luego cumple con sus deseos." ~ "Democratico",
+          trialid %in% c("CEL_04") & RAW == "Le pregunta al grupo si usted debiera proveer y luego cumple con sus deseos." ~ "Democratico",
           
           trialid %in% c("CEL_05") & RAW == "Deja que todos en el grupo manifiesten su opinión. Sin intervenir." ~ "Derivativo",
           trialid %in% c("CEL_05") & RAW == "Lleva a votación la sugerencia sobre el receso." ~ "Democratico",

@@ -68,11 +68,10 @@ prepare_DEMOGR27 <- function(DF_clean, short_name_scale_str) {
     mutate(
       DIR =
         case_when(
-          trialid %in% c("DEMOGR_02", "DEMOGR_03", "DEMOGR_04", "DEMOGR_05", "DEMOGR_06") ~ RAW,
+          trialid %in% c("DEMOGR27_02", "DEMOGR27_03", "DEMOGR27_04", "DEMOGR27_05", "DEMOGR27_06") ~ RAW,
           
-          trialid == "DEMOGR_01" & RAW == "Masculino" ~ "0",
-          trialid == "DEMOGR_01" & RAW == "Femenino" ~ "1",
-          trialid == "DEMOGR_01" & RAW == "No binario" ~ "2",
+          trialid == "DEMOGR27_01" & RAW == "Mujer" ~ "0",
+          trialid == "DEMOGR27_01" & RAW == "Hombre" ~ "1",
           is.na(RAW) ~ NA_character_,
           grepl(items_to_ignore, trialid) ~ NA_character_,
           TRUE ~ "9999"
