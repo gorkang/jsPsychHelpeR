@@ -1,5 +1,7 @@
 # Sync and zip data folder of active protocols
 
+### THIS DOCUMENT RUNS DAILY: /etc/cron.daily/gorka-sync_data_jspsychHelpeR ###
+
 # CHECKS active folders: https://docs.google.com/spreadsheets/d/13xX8aGhKmfz8zVvNuCMDnS6L6Dy6T1NlA6nTOqZuErA/edit#gid=0
 # ZIPS to jsPsychR/SHARED-data/
 # Individual project folders will be shared with the IP for each project
@@ -10,7 +12,8 @@
   source(here::here("R/helper_functions.R"))
   source(here::here("R/sync_server_local.R"))
   
-  google_sheet_ID = "13xX8aGhKmfz8zVvNuCMDnS6L6Dy6T1NlA6nTOqZuErA" 
+
+  google_sheet_ID = "1eE0xrk_DGIOShhWjqKaKhk0NIeb-7k0eoFG93822-Ho" 
   cli::cli_h1("Reading https://docs.google.com/spreadsheets/d/{google_sheet_ID}/edit#gid=0")
   googlesheets4::gs4_auth("gorkang@gmail.com")
   googlesheets4::local_gs4_quiet() # No googlesheets4::read_sheet messages
@@ -49,14 +52,13 @@
 
 # PERMISOS ----------------------------------------------------------------
   
-  # FOR NOW, do this manually. ANYONE CAN EDIT THE SOURCE GOOGLE DRIVE
+  # TODO: FOR NOW, do this manually. Make sure all emails are OK
   
   # DF_resumen_clean
   
   # 1:length(PIDs) |>
   #   purrr::walk( ~ {
   # 
-  #     # .x = 1
   #     DF_permisos = DF_resumen_clean |> dplyr::filter(ID == PIDs[.x])
   # 
   #     IS_EMAIL_regex = "^[[:alnum:].-_]+@[[:alnum:].-]+$"
