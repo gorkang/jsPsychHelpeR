@@ -1406,11 +1406,15 @@ read_zips = function(input_files, workers = 1, unzip_dir = file.path(dirname(inp
 #' @export
 #'
 #' @examples
-get_zip <- function(pid, what) {
+get_zip <- function(pid, what, where = NULL) {
   
   # DEBUG
-  # pid = "23"
+  # pid = "230"
   # what = "data"
+  # where = NULL
+  
+  # TODO: parameters for download location?
+  # TODO: If no data, do not download!
   
   if (!exists("what")) cli::cli_abort("parameter `what` missing. Should be `data` or `protocol`" )
   if (!what %in% c("data", "protocol")) cli::cli_abort("`what` should be `data` or `protocol`" )
@@ -1425,16 +1429,22 @@ get_zip <- function(pid, what) {
   
   if (what == "data") {
     
+    download_folder = "../SHARED-data/"
+    if (!is.null(where)) download_folder = where
+
     server_folder = paste0(pid, "/.data")
     exclude_csv = FALSE
-    zip_name = here::here(paste0("../SHARED-data/", pid, "/", pid_safe, ".zip"))
+    zip_name = here::here(paste0(download_folder, pid, "/", pid_safe, ".zip"))
     dir.create(dirname(zip_name), recursive = TRUE, showWarnings = FALSE)
     
   } else if (what == "protocol") {
     
+    download_folder = "/data/protocol_"
+    if (!is.null(where)) download_folder = where
+    
     server_folder = pid
     exclude_csv = TRUE
-    zip_name = paste0(project_folder, "/data/protocol_", pid_safe, ".zip")
+    zip_name = paste0(project_folder, download_folder, pid_safe, ".zip")
     
   }
   
@@ -1450,7 +1460,7 @@ get_zip <- function(pid, what) {
                     delete_nonexistent = TRUE,
                     dont_ask = TRUE, 
                     all_messages = FALSE)
-  
+
   # Set Temp folder as working folder so the files in zip WONT have the temp path
   setwd(TEMP_DIR)
   FILES_ZIP = list.files(TEMP_DIR, recursive = TRUE, full.names = FALSE, all.files = TRUE, include.dirs = TRUE)
@@ -1458,17 +1468,23 @@ get_zip <- function(pid, what) {
   # Create safely version so an error won't avoid resetting the project's wd
   zip_safely = purrr::safely(zip)
   
-  # ZIP zilently (flags = "-q")
-  RESULT = zip_safely(zipfile = zip_name, files = FILES_ZIP, flags = "-q")
-  # Show error
-  if (!is.null(RESULT$error)) cli::cli_text(RESULT$error)
-  
+  if (length(FILES_ZIP) == 0) {
+    cli::cli_alert_danger("NO files found")
+  } else {
+    # ZIP zilently (flags = "-q")
+    RESULT = zip_safely(zipfile = zip_name, files = FILES_ZIP, flags = "-q")
+    # Show error
+    if (!is.null(RESULT$error)) {
+      cli::cli_text(RESULT$error)
+    } else {
+      cli::cli_alert_success("ZIPED protocol files to {gsub(project_folder, '', zip_name)}")
+    }
+  }
   # Remove temp dir and content
   unlink(TEMP_DIR, recursive = TRUE)
   
   # Reset the project's WD
   setwd(project_folder)
-  cli::cli_alert_success("ZIPED protocol files to {gsub(project_folder, '', zip_name)}")
   
 }
 
@@ -1662,6 +1678,8 @@ cli_message <- function(var_used = NULL, h1_title = NULL, info = NULL, success =
 #'
 #' @examples
 set_permissions_google_drive <- function(pid, email_IP) {
+  
+  googledrive::drive_auth("gorkang@gmail.com")
   
   ADMIN_emails = c("gorkang@gmail.com", "herman.valencia.13@sansano.usm.cl")
   
