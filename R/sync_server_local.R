@@ -124,24 +124,29 @@ sync_server_local <-
     if (direction == "server_to_local") {
       
       # DOWNLOAD server to local
-      OUT = system(
-        paste0('sshpass -p ', list_credentials$value$password, ' rsync -av ', dry_run, ' --rsh=ssh ', 
-               delete_nonexistent_files, # Delete files from destination if they are NOT in origin anymore
-               exclude_files, # exclude CSV files
-               list_credentials$value$user, "@", list_credentials$value$IP, ":", list_credentials$value$main_FOLDER, server_folder, '/ ',
-               here::here(local_folder_terminal), '/ '
-        ), intern = TRUE
-      )
+      OUT = 
+        suppressWarnings(
+          system(
+            paste0('sshpass -p ', list_credentials$value$password, ' rsync -av ', dry_run, ' --rsh=ssh ', 
+                  delete_nonexistent_files, # Delete files from destination if they are NOT in origin anymore
+                  exclude_files, # exclude CSV files
+                  list_credentials$value$user, "@", list_credentials$value$IP, ":", list_credentials$value$main_FOLDER, server_folder, '/ ',
+                  here::here(local_folder_terminal), '/ '
+                  ), intern = TRUE
+            )
+        )
       
       
     } else if (direction == "local_to_server") {
       
       # UPLOAD local to server
-      OUT = system(
-        paste0('sshpass -p ', list_credentials$value$password, ' rsync -av ', dry_run, ' --rsh=ssh ', 
-               here::here(local_folder_terminal), '/ ',
-               list_credentials$value$user, "@", list_credentials$value$IP, ":", list_credentials$value$main_FOLDER, server_folder, '/ '
-        ), intern = TRUE
+      OUT = 
+        suppressWarnings(
+          system(
+            paste0('sshpass -p ', list_credentials$value$password, ' rsync -av ', dry_run, ' --rsh=ssh ', 
+                   here::here(local_folder_terminal), '/ ',
+                   list_credentials$value$user, "@", list_credentials$value$IP, ":", list_credentials$value$main_FOLDER, server_folder, '/ '
+          ), intern = TRUE)
       )
       
     }
