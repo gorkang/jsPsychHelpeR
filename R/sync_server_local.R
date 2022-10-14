@@ -21,7 +21,8 @@ sync_server_local <-
            exclude_csv = FALSE,
            delete_nonexistent = FALSE,
            dont_ask = FALSE,
-           all_messages = TRUE) {
+           all_messages = TRUE,
+           list_credentials = NULL) {
     
   # DEBUG
     # pid = "999"
@@ -68,7 +69,16 @@ sync_server_local <-
   
   # CHECKS we have credentials and necessary software ------------------------
   
-  credentials_exist = file.exists(here::here(".vault/.credentials"))
+  # Get server credentials
+  if (is.null(list_credentials)) {
+    list_credentials = source(here::here(".vault/.credentials")) 
+    credentials_exist = file.exists(here::here(".vault/.credentials"))
+  } else {
+    credentials_exist = TRUE
+  }
+  
+  
+  # credentials_exist = file.exists(here::here(".vault/.credentials"))
   SSHPASS = Sys.which("sshpass") # Check if sshpass is installed
   RSYNC = Sys.which("rsync") # Check if rsync is installed
   
@@ -114,10 +124,6 @@ sync_server_local <-
   
   
   # SYNC --------------------------------------------------------------------
-  
-  # Get server credentials
-  list_credentials = source(here::here(".vault/.credentials"))
-  
   
   if (out == 1) {
     
