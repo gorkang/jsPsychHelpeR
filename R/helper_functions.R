@@ -1396,6 +1396,54 @@ read_zips = function(input_files, workers = 1, unzip_dir = file.path(dirname(inp
 
 
 
+#' zip_files
+#' zip files of a folder
+#'
+#' @param folder_files 
+#' @param zip_name 
+#' @param remove_files 
+#'
+#' @return
+#' @export
+#'
+#' @examples
+zip_files <- function(folder_files, zip_name, remove_files = FALSE) {
+  
+  project_folder = getwd()
+  
+  # Set Temp folder as working folder so the files in zip WONT have the temp path
+  setwd(folder_files)
+  
+  # List all files to zip (exclude zip_name)
+  FILES_ZIP_raw = list.files(folder_files, recursive = TRUE, full.names = FALSE, all.files = TRUE, include.dirs = TRUE)
+  FILES_ZIP = FILES_ZIP_raw[!grepl(basename(zip_name), FILES_ZIP_raw)]
+  
+  # Create safely version so an error won't avoid resetting the project's wd
+  zip_safely = purrr::safely(zip)
+  
+  if (length(FILES_ZIP) == 0) {
+    cli::cli_alert_danger("NO files found")
+  } else {
+    # ZIP zilently (flags = "-q")
+    RESULT = zip_safely(zipfile = zip_name, files = FILES_ZIP, flags = "-q")
+    # Show error
+    if (!is.null(RESULT$error)) {
+      cli::cli_text(RESULT$error)
+    } else {
+      cli::cli_alert_success("ZIPED protocol files to {gsub(project_folder, '', zip_name)}")
+    }
+  }
+  # Remove temp dir and content
+  # unlink(TEMP_DIR, recursive = TRUE)
+  if (remove_files == TRUE) file.remove(FILES_ZIP)
+  
+  # Reset the project's WD
+  setwd(project_folder)
+  
+}
+
+
+
 #' get_zip
 #' Get and zip a the data or a full jsPsychMakeR protocol without the data to keep it as a backup
 #'
@@ -1406,14 +1454,15 @@ read_zips = function(input_files, workers = 1, unzip_dir = file.path(dirname(inp
 #' @export
 #'
 #' @examples
-get_zip <- function(pid, what, where = NULL) {
+get_zip <- function(pid, what, where = NULL, list_credentials = NULL) {
   
   # DEBUG
   # pid = "230"
   # what = "data"
   # where = NULL
+  # list_credentials = source(".vault/.credentials")
+  # setwd("/home/emrys/gorkang@gmail.com/RESEARCH/PROYECTOS-Code/jsPsychR/jsPsychHelpeR/")
   
-  # TODO: parameters for download location?
   # TODO: If no data, do not download!
   
   if (!exists("what")) cli::cli_abort("parameter `what` missing. Should be `data` or `protocol`" )
@@ -1459,32 +1508,43 @@ get_zip <- function(pid, what, where = NULL) {
                     exclude_csv = exclude_csv,
                     delete_nonexistent = TRUE,
                     dont_ask = TRUE, 
-                    all_messages = FALSE)
+                    all_messages = FALSE, 
+                    list_credentials = list_credentials)
 
-  # Set Temp folder as working folder so the files in zip WONT have the temp path
-  setwd(TEMP_DIR)
-  FILES_ZIP = list.files(TEMP_DIR, recursive = TRUE, full.names = FALSE, all.files = TRUE, include.dirs = TRUE)
   
-  # Create safely version so an error won't avoid resetting the project's wd
-  zip_safely = purrr::safely(zip)
   
-  if (length(FILES_ZIP) == 0) {
-    cli::cli_alert_danger("NO files found")
-  } else {
-    # ZIP zilently (flags = "-q")
-    RESULT = zip_safely(zipfile = zip_name, files = FILES_ZIP, flags = "-q")
-    # Show error
-    if (!is.null(RESULT$error)) {
-      cli::cli_text(RESULT$error)
-    } else {
-      cli::cli_alert_success("ZIPED protocol files to {gsub(project_folder, '', zip_name)}")
-    }
-  }
-  # Remove temp dir and content
-  unlink(TEMP_DIR, recursive = TRUE)
+  # ZIP ---------------------------------------------------------------------
   
-  # Reset the project's WD
-  setwd(project_folder)
+  
+  zip_files(folder_files = TEMP_DIR, 
+            zip_name = zip_name, 
+            remove_files = TRUE)
+  
+  
+  # # Set Temp folder as working folder so the files in zip WONT have the temp path
+  # setwd(TEMP_DIR)
+  # FILES_ZIP = list.files(TEMP_DIR, recursive = TRUE, full.names = FALSE, all.files = TRUE, include.dirs = TRUE)
+  # 
+  # # Create safely version so an error won't avoid resetting the project's wd
+  # zip_safely = purrr::safely(zip)
+  # 
+  # if (length(FILES_ZIP) == 0) {
+  #   cli::cli_alert_danger("NO files found")
+  # } else {
+  #   # ZIP zilently (flags = "-q")
+  #   RESULT = zip_safely(zipfile = zip_name, files = FILES_ZIP, flags = "-q")
+  #   # Show error
+  #   if (!is.null(RESULT$error)) {
+  #     cli::cli_text(RESULT$error)
+  #   } else {
+  #     cli::cli_alert_success("ZIPED protocol files to {gsub(project_folder, '', zip_name)}")
+  #   }
+  # }
+  # # Remove temp dir and content
+  # unlink(TEMP_DIR, recursive = TRUE)
+  # 
+  # # Reset the project's WD
+  # setwd(project_folder)
   
 }
 
