@@ -222,13 +222,13 @@ delete_MySQL_tables_pid <- function(pid) {
   
   if (out == 1) {
     
+    DB_credentials = decrypt_data(key_public = readLines(".vault/data_public_key.txt"), data_encrypted = ".vault/data_encrypted.rds", mysupersecretpassword = rstudioapi::askForPassword(prompt = "Enter the SERVER password"))
+
     cli::cli_h1("Connecting to Mysql DB")
-    
-    ssh_tunnel = check_start_ssh_tunnel(list_credentials)
+    ssh_tunnel = check_start_ssh_tunnel(DB_credentials)
     # PID_ssh_tunnel = ssh_tunnel$result$get_pid()
     
     # Connect to mysql DB
-    DB_credentials = decrypt_data(key_public = readLines(".vault/data_public_key.txt"), data_encrypted = ".vault/data_encrypted.rds", mysupersecretpassword = rstudioapi::askForPassword())
     db_con = openDBconnection(list_credentials = DB_credentials)
     
     cli::cli_h1("DELETE all tables for pid {pid}")
