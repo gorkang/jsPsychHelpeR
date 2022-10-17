@@ -2,12 +2,14 @@
 
   # PARAMETERS --------------------------------
   # Debe estar en test/protocols_DEV/!!!
-  PROTOCOLID = "test/protocols_DEV/25"
+  PROTOCOLID = "test/protocols_DEV/999"
   # -------------------------------------------
   
   # Sources and credentials
   invisible(lapply(list.files("./R", full.names = TRUE, pattern = ".R$"), source))
   source("admin/helper-scripts-admin.R")
+  pid = gsub("test/protocols_DEV/", "", PROTOCOLID)
+  cli::cli_h1("PROTOCOL {pid}")
   
   
   # 1) Pilotaje final on Monkeys! -------------------------------------------
@@ -26,7 +28,11 @@
   # 2) Limpiar la base de datos --------------------------------------------
   
     # Delete the XYZ protocol rows in all the MYSQL tables
-    system("mysql-workbench")
+    source("admin/mysql_helper_functions.R")
+    # list_credentials = decrypt_data(key_public = readLines(".vault/data_public_key.txt"), data_encrypted = ".vault/data_encrypted.rds", mysupersecretpassword = rstudioapi::askForPassword())
+    delete_MySQL_tables_pid(pid)
+    
+    # system("mysql-workbench")
     # system("mysql-workbench-community")
     
   
@@ -43,11 +49,16 @@
     -[] debug_mode = false
     - ETC...
     
-    
-  # 5) Copiar protocolo a protocols/ ----------------------------------------
-    
-    
-  # 6) Copiar protocolo ZIPeado a test/protocols_DEV/OLD_TESTS/ -------------
   
+  # 5) Copiar protocolo ZIPeado a test/protocols_DEV/OLD_TESTS/ -------------  
     
+    # TODO: automatico!
+    
+  # 6) Copiar protocolo a protocols/ ----------------------------------------
+    
+    # TODO: automatico!
+  
   # 7) BORRAR protocolo de test/protocols_DEV/OLD_TESTS/ --------------------
+    
+    # TODO: automatico!
+    
