@@ -12,7 +12,7 @@
 
 # REMEMBER to:
   # test NEW TASKS with admin/create_protocol_with_NEW_tasks.R before moving them to canonical_protocol
-  # MOVE SHARED-FONDECYT-Faridy/jsPsychR/NEW_scales-docs to docs and to jsPsychmaker/docs
+  # MOVE SHARED-FONDECYT-Faridy/jsPsychR/NEW_scales-docs to jsPsychR/SHARED-docs/docs/ and to jsPsychR/jsPsychmaker/docs
 
 
 ### TODO --
