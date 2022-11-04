@@ -52,7 +52,7 @@ prepare_LSNS <- function(DF_clean, short_name_scale_str) {
                                 short_name_scale = short_name_scale_str, 
                                 numeric_responses = FALSE, # [TRUE or FALSE]
                                 is_experiment = FALSE, 
-                                help_prepare = TRUE) # Show n of items, responses,... [CHANGE to FALSE] 
+                                help_prepare = FALSE) # Show n of items, responses,... [CHANGE to FALSE] 
   
   
   # Create long DIR ------------------------------------------------------------

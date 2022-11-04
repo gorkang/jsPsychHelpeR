@@ -18,7 +18,8 @@ prepare_CTT <- function(DF_clean, short_name_scale_str) {
 
   # DEBUG
   # debug_function(prepare_CTT)
-
+  # get_dimensions_googledoc(short_name_text = "CTT")
+  
   
   
   # [ADAPT 1/3]: Items to ignore and reverse, dimensions -----------------------
@@ -33,8 +34,8 @@ prepare_CTT <- function(DF_clean, short_name_scale_str) {
   ## Inside each c() create a vector of the item numbers for the dimension
   ## Add lines as needed. If there are no dimensions, keep as is
   items_dimensions = list(
-    Decision = c("01"),
-    Correcta = c("02")
+    AciertoError = c("01"),
+    DecisionCorrecta = c("02")
   )
   
   # [END ADAPT 1/3]: ***********************************************************
@@ -68,25 +69,24 @@ prepare_CTT <- function(DF_clean, short_name_scale_str) {
     mutate(
       DIR =
         case_when(
-          trialid %in% c("CTT_01") & RAW == "Iría a la entrevista" ~ 0,
-          trialid %in% c("CTT_01") & RAW == "se devolvería a revisar la puerta del carro (auto)" ~ 1,
-          trialid %in% c("CTT_02") ~ as.numeric(RAW),
+          trialid %in% c("CTT_01") & condition_between == 1 & RAW == "Iría a la entrevista" ~ "1",
+          trialid %in% c("CTT_01") & condition_between == 1 & RAW == "se devolvería a revisar la puerta del carro (auto)" ~ "1",
           
-          is.na(RAW) ~ NA_real_, # OR NA_character_,
-          grepl(items_to_ignore, trialid) ~ NA_real_, # OR NA_character_,
-          TRUE ~ 9999 # OR "9999"
+          trialid %in% c("CTT_01") & condition_between == 2 & RAW == "Iría a la entrevista" ~ "0",
+          trialid %in% c("CTT_01") & condition_between == 2 & RAW == "se devolvería a revisar la puerta del carro (auto)" ~ "1",
+          
+          trialid %in% c("CTT_01") & condition_between == 3 & RAW == "Iría a la entrevista" ~ "1",
+          trialid %in% c("CTT_01") & condition_between == 3 & RAW == "se devolvería a revisar la puerta del carro (auto)" ~ "0",
+          
+          trialid %in% c("CTT_02") ~ RAW,
+          
+          is.na(RAW) ~ NA_character_, # OR NA_character_,
+          grepl(items_to_ignore, trialid) ~ NA_character_, # OR NA_character_,
+          TRUE ~ "9999" # OR "9999"
         )
     ) %>% 
     
-    # Invert items [CAN BE DELETED IF NOT USED or DIR is non-numeric]
-    mutate(
-      DIR = 
-        case_when(
-          DIR == 9999 ~ DIR, # To keep the missing values unchanged
-          trialid %in% paste0(short_name_scale_str, "_", items_to_reverse) ~ (6 - DIR), # REVIEW and replace 6 by MAX + 1
-          TRUE ~ DIR
-        )
-    )
+    mutate(DIR = as.numeric(DIR))
     
   # [END ADAPT 2/3]: ***********************************************************
   # ****************************************************************************

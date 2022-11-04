@@ -18,7 +18,8 @@ prepare_CRQ <- function(DF_clean, short_name_scale_str) {
 
   # DEBUG
   # debug_function(prepare_CRQ)
-
+  # get_dimensions_googledoc(short_name_text = "CRQ")
+  
   
   
   # [ADAPT 1/3]: Items to ignore and reverse, dimensions -----------------------
@@ -32,23 +33,26 @@ prepare_CRQ <- function(DF_clean, short_name_scale_str) {
   ## NameDimension1, NameDimension2 should be the names of the dimensions
   ## Inside each c() create a vector of the item numbers for the dimension
   ## Add lines as needed. If there are no dimensions, keep as is
+
   items_dimensions = list(
-    ActividadesVidaDiariaJuventud = c("09", "10", "11", "12"),
-    ActividadesVidaDiariaAdultez = c("09", "10", "11", "12"),
-    ActividadesVidaDiariaMadurez = c("09", "10", "11", "12"),
+    # Demograficos = c("01", "02", "03", "04", "05", "06", "07", "08"), # NO ES UNA DIMENSION
+    JuventudEstimul = c("09", "10", "11", "12"),
+    AdultezEstimul = c("09", "10", "11", "12"),
+    RecienteEstimul = c("09", "10", "11", "12"),
     
-    FormacionInformacionJuventud = c("13", "14", "15", "16"),
-    FormacionInformacionAdultez = c("13", "14", "15", "16"),
-    FormacionInformacionMadurez = c("13", "14", "15", "16"),
+    JuventudFormacion = c("13", "14", "15", "16"),
+    AdultezFormacion = c("13", "14", "15", "16"),
+    RecienteFormacion = c("13", "14", "15", "16"),
     
-    HobbiesAficcionesJuventud = c("17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29"),
-    HobbiesAficcionesAdultez = c("17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29"),
-    HobbiesAficcionesMadurez = c("17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29"),
+    JuventudHobbies = c("17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29"),
+    AdultezHobbies = c("17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29"),
+    RecienteHobbies = c("17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29"),
     
-    VidaSocialJuventud = c("30", "31", "32"),
-    VidaSocialAdultez = c("30", "31", "32"),
-    VidaSocialMadurez = c("30", "31", "32")
+    JuventudVSocial = c("30", "31", "32"),
+    AdultezVSocial = c("30", "31", "32"),
+    RecienteVSocial = c("30", "31", "32")
   )
+  
   
   # All items and their questions
   questions_per_item = c("", "_Q1", "_Q2")

@@ -20,7 +20,7 @@ prepare_MDDF <- function(DF_clean, short_name_scale_str) {
   # targets::tar_load_globals()
   # debug_function(prepare_MDDF)
   # get_dimensions_googledoc("MDDF")
-
+  # Conditional questions: "MDDF_03" "MDDF_06" "MDDF_09" "MDDF_12" "MDDF_18" "MDDF_21" "MDDF_24" "MDDF_27" "MDDF_30" "MDDF_36" "MDDF_47" "MDDF_53" "MDDF_56" "MDDF_59"
   
   
   # [ADAPT 1/3]: Items to ignore and reverse, dimensions -----------------------
@@ -55,7 +55,7 @@ prepare_MDDF <- function(DF_clean, short_name_scale_str) {
                                 short_name_scale = short_name_scale_str, 
                                 numeric_responses = FALSE, # [TRUE or FALSE]
                                 is_experiment = FALSE, 
-                                help_prepare = TRUE) # Show n of items, responses,... [CHANGE to FALSE] 
+                                help_prepare = FALSE) # Show n of items, responses,... [CHANGE to FALSE] 
   
   
   # Create long DIR ------------------------------------------------------------
@@ -86,7 +86,7 @@ prepare_MDDF <- function(DF_clean, short_name_scale_str) {
           # trialid %in% c("MDDF_02", "MDDF_05", "MDDF_08", "MDDF_11", "MDDF_14", "MDDF_17", "MDDF_20", "MDDF_23", "MDDF_26", "MDDF_29", "MDDF_32", "MDDF_35", "MDDF_38", "MDDF_41", "MDDF_44", "MDDF_47", "MDDF_50", "MDDF_53", "MDDF_56", "MDDF_59", "MDDF_62") & RAW == "Si" ~ "1",
           # trialid %in% c("MDDF_02", "MDDF_05", "MDDF_08", "MDDF_11", "MDDF_14", "MDDF_17", "MDDF_20", "MDDF_23", "MDDF_26", "MDDF_29", "MDDF_32", "MDDF_35", "MDDF_38", "MDDF_41", "MDDF_44", "MDDF_47", "MDDF_50", "MDDF_53", "MDDF_56", "MDDF_59", "MDDF_62") & RAW == "No" ~ "0",
 
-          # CORRECCION PROTOCOLO 23
+          # CORRECCION PROTOCOLO 23 ## Se excluyen varios items para reducir la duracion de la prueba
           RAW == "Muy inadecuado" ~ "0",
           RAW == "Medianamente inadecuado" ~ "1",
           RAW == "Poco inadecuado" ~ "2",

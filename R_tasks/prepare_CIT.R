@@ -18,7 +18,7 @@ prepare_CIT <- function(DF_clean, short_name_scale_str) {
 
   # DEBUG
   # debug_function(prepare_CIT)
-
+  # get_dimensions_googledoc(short_name_text = "CIT")
   
   
   # [ADAPT 1/3]: Items to ignore and reverse, dimensions -----------------------
@@ -33,8 +33,7 @@ prepare_CIT <- function(DF_clean, short_name_scale_str) {
   ## Inside each c() create a vector of the item numbers for the dimension
   ## Add lines as needed. If there are no dimensions, keep as is
   items_dimensions = list(
-    NameDimension1 = c("000"),
-    NameDimension2 = c("000")
+    InferenciaContrafactual = c("01", "02", "03", "04")
   )
   
   # [END ADAPT 1/3]: ***********************************************************
@@ -68,6 +67,7 @@ prepare_CIT <- function(DF_clean, short_name_scale_str) {
     mutate(
       DIR =
         case_when(
+
           trialid %in% c("CIT_01") & RAW == "Juana" ~ 1,
           trialid %in% c("CIT_01") & RAW == "Susana" ~ 0,
           trialid %in% c("CIT_01") & RAW == "Ambas están igualmente molestas" ~ 0,
@@ -78,8 +78,8 @@ prepare_CIT <- function(DF_clean, short_name_scale_str) {
           trialid %in% c("CIT_02") & RAW == "Ambas están igualmente molestas" ~ 0,
           trialid %in% c("CIT_02") & RAW == "No lo sé" ~ 0,
           
-          trialid %in% c("CIT_03") & RAW == "Eduardo" ~ 1,
-          trialid %in% c("CIT_03") & RAW == "Juan" ~ 0,
+          trialid %in% c("CIT_03") & RAW == "Eduardo" ~ 0,
+          trialid %in% c("CIT_03") & RAW == "Juan" ~ 1,
           trialid %in% c("CIT_03") & RAW == "Ambas están igualmente molestas" ~ 0,
           trialid %in% c("CIT_03") & RAW == "No lo sé" ~ 0,
           
@@ -87,6 +87,7 @@ prepare_CIT <- function(DF_clean, short_name_scale_str) {
           trialid %in% c("CIT_04") & RAW == "Pedro" ~ 0,
           trialid %in% c("CIT_04") & RAW == "Ambas están igualmente molestas" ~ 0,
           trialid %in% c("CIT_04") & RAW == "No lo sé" ~ 0,
+          
           
           is.na(RAW) ~ NA_real_, # OR NA_character_
           grepl(items_to_ignore, trialid) ~ NA_real_, # OR NA_character_
@@ -139,14 +140,7 @@ prepare_CIT <- function(DF_clean, short_name_scale_str) {
       # [CHECK] Using correct formula? rowMeans() / rowSums()
       
       # Score Dimensions (see standardized_names(help_names = TRUE) for instructions)
-      # !!names_list$name_DIRd[1] := rowMeans(select(., paste0(short_name_scale_str, "_", items_dimensions[[1]], "_DIR")), na.rm = TRUE), 
-      # !!names_list$name_DIRd[2] := rowSums(select(., paste0(short_name_scale_str, "_", items_dimensions[[2]], "_DIR")), na.rm = TRUE),
-      
-      # Reliability Dimensions (see standardized_names(help_names = TRUE) for instructions)
-      # !!names_list$name_RELd[1] := rowMeans(select(., paste0(short_name_scale_str, "_", items_RELd1, "_DIR")), na.rm = TRUE), 
-
-      # Score Scale
-      !!names_list$name_DIRt := rowSums(select(., matches("_DIR$")), na.rm = TRUE)
+      !!names_list$name_DIRd[1] := rowSums(select(., paste0(short_name_scale_str, "_", items_dimensions[[1]], "_DIR")), na.rm = TRUE)
       
     )
     

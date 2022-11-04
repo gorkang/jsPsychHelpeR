@@ -58,6 +58,10 @@ prepare_AIM23 <- function(DF_clean, short_name_scale_str) {
   mutate(
     DIR =
       case_when(
+        
+        trialid == "AIM_00" & RAW == "Colombia" ~ "1",
+        trialid == "AIM_000" ~ as.character(RAW),
+        
         # Adaptado a Colombia ----------
         RAW == "Sin estudios formales." ~ "1",
         RAW == "Primaria incompleta; primaria o preparatoria incompleta." ~ "2",

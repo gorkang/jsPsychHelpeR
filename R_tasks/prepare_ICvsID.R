@@ -18,7 +18,7 @@ prepare_ICvsID <- function(DF_clean, short_name_scale_str) {
 
   # DEBUG
   # debug_function(prepare_ICvsID)
-  get_dimensions_googledoc(short_name_text = "ICvsID")
+  # get_dimensions_googledoc(short_name_text = "ICvsID")
   
   
   # [ADAPT 1/3]: Items to ignore and reverse, dimensions -----------------------
@@ -33,8 +33,12 @@ prepare_ICvsID <- function(DF_clean, short_name_scale_str) {
   ## Inside each c() create a vector of the item numbers for the dimension
   ## Add lines as needed. If there are no dimensions, keep as is
   items_dimensions = list(
-    DanoInstrumental = c("01", "02", "03", "04", "05", "06", "07", "08"),
-    BeneficienciaImparcial = c("09", "10", "11", "12")
+    DanoInstrumentalAccionAdecuada = c("01", "04", "07", "13"),
+    DanoInstrumentalRealizarMismaAccion = c("02", "05", "08", "14"),
+    DanoInstrumentalNivelDano = c("03", "06", "09", "15"),
+    BeneficenciaImparcialAccionAdecuada = c("10", "16", "19", "22"),
+    BeneficienciaImparcialRealizarMismaAccion = c("11", "17", "20", "23"),
+    BeneficenciaImparcialNivelDano = c("12", "18", "21", "24")
   )
   
   # [END ADAPT 1/3]: ***********************************************************
@@ -51,7 +55,7 @@ prepare_ICvsID <- function(DF_clean, short_name_scale_str) {
                                 short_name_scale = short_name_scale_str, 
                                 numeric_responses = TRUE, # [TRUE or FALSE]
                                 is_experiment = FALSE, 
-                                help_prepare = TRUE) # Show n of items, responses,... [CHANGE to FALSE] 
+                                help_prepare = FALSE) # Show n of items, responses,... [CHANGE to FALSE] 
   
   
   # Create long DIR ------------------------------------------------------------
@@ -121,8 +125,12 @@ prepare_ICvsID <- function(DF_clean, short_name_scale_str) {
       # [CHECK] Using correct formula? rowMeans() / rowSums()
       
       # Score Dimensions (see standardized_names(help_names = TRUE) for instructions)
-      !!names_list$name_DIRd[1] := rowMeans(select(., paste0(short_name_scale_str, "_", items_dimensions[[1]], "_DIR")), na.rm = TRUE), 
+      !!names_list$name_DIRd[1] := rowMeans(select(., paste0(short_name_scale_str, "_", items_dimensions[[1]], "_DIR")), na.rm = TRUE),
       !!names_list$name_DIRd[2] := rowMeans(select(., paste0(short_name_scale_str, "_", items_dimensions[[2]], "_DIR")), na.rm = TRUE),
+      !!names_list$name_DIRd[3] := rowMeans(select(., paste0(short_name_scale_str, "_", items_dimensions[[3]], "_DIR")), na.rm = TRUE),
+      !!names_list$name_DIRd[4] := rowMeans(select(., paste0(short_name_scale_str, "_", items_dimensions[[4]], "_DIR")), na.rm = TRUE),
+      !!names_list$name_DIRd[5] := rowMeans(select(., paste0(short_name_scale_str, "_", items_dimensions[[5]], "_DIR")), na.rm = TRUE),
+      !!names_list$name_DIRd[6] := rowMeans(select(., paste0(short_name_scale_str, "_", items_dimensions[[6]], "_DIR")), na.rm = TRUE)
       
       # Reliability Dimensions (see standardized_names(help_names = TRUE) for instructions)
       # !!names_list$name_RELd[1] := rowMeans(select(., paste0(short_name_scale_str, "_", items_RELd1, "_DIR")), na.rm = TRUE), 

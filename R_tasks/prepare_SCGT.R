@@ -18,9 +18,9 @@ prepare_SCGT <- function(DF_clean, short_name_scale_str) {
 
   # DEBUG
   # debug_function(prepare_SCGT)
+  # get_dimensions_googledoc(short_name_text = "SCGT")
 
-  
-  
+    
   # [ADAPT 1/3]: Items to ignore and reverse, dimensions -----------------------
   # ****************************************************************************
   
@@ -33,7 +33,8 @@ prepare_SCGT <- function(DF_clean, short_name_scale_str) {
   ## Inside each c() create a vector of the item numbers for the dimension
   ## Add lines as needed. If there are no dimensions, keep as is
   items_dimensions = list(
-    Evento = c("01")
+    Evento = c("01"),
+    Total = c("03")
   )
   
   # [END ADAPT 1/3]: ***********************************************************
