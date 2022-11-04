@@ -34,7 +34,10 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r summary, include=FALSE}
 
-DF = show_progress_pid(pid = params$pid_report, files_vector = params$input_files_vector, last_task = params$last_task, goal = params$goal)
+DF = show_progress_pid(pid = params$pid_report, 
+                       files_vector = params$input_files_vector, 
+                       last_task = params$last_task, 
+                       goal = params$goal)
 
 number_participants = DF$DF_progress$suma_total %>%  first()
 DIFF_days = DF$DF_progress$days_since_start %>% first()
