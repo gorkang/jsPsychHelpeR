@@ -588,36 +588,9 @@ create_targets_file <- function(pid_protocol = 0, folder_data = NULL, folder_tas
     
     input_files = list.files(path = folder_data, pattern = "*.csv|*.zip", full.names = TRUE)
 
-    # CHECKS ---
-    all_csvs = all(grepl("\\.csv", input_files))
-    length_files = length(input_files)
-    all_zips = all(grepl("\\.zip", input_files))
-    
-    # If folder contains csv files
-    if (all_csvs) {
-      
-      files = 
-        basename(input_files) %>% 
-        as_tibble() %>% 
-        tidyr::separate(col = value, into = c("project", "experimento", "version", "datetime", "id"), sep = c("_"), remove = TRUE) %>% 
-        distinct(experimento) %>% 
-        pull(experimento)
-      
-    # If folder contains single zip
-    } else if (length_files == 1 & all_zips) {
-      
-      # Unzips to temp folder, reads files and deletes temp folder
-      files = read_zips(input_files) %>% distinct(procedure) %>% pull(procedure)
-      
-    } else {
-      
-      # Other issues
-      if (length_files == 0) cli::cli_abort("NO files in '{pid_folder}'")
-      if (length_files != 1 & all_zips) cli::cli_abort("Multiple ZIP files detected in '{pid_folder}'")
-      if (length_files != 0 & !all_zips & !all_csvs) cli::cli_abort("Multiple types of files detected in '{pid_folder}'")
-      # cli::cli_abort("Something wrong. {folder_data} should contain all csv files or a single zip file")
-    }
-    
+    # Extract all unique tasks
+    files = read_csv_or_zip(input_files) %>% distinct(procedure) %>% pull(procedure)
+
   }
   
   if (length(files) > 0) {
@@ -887,26 +860,19 @@ show_progress_pid <- function(pid = 3, files_vector, last_task = "Goodbye", goal
   # DEBUG
   # pid = 3
   # files_vector = files_3
-  # last_task = "COVIDCONTROL"
-  # goal = 850
+  # last_task = "Goodbye"
+  # goal = 100
   # DEBUG = TRUE
-  
-  # pid = params$pid_report
-  # files_vector = params$input_files_vector
-  # last_task = params$last_task
-  # goal = params$goal
-  
   
   # Prepare data ---
   
-  files_csv = basename(files_vector)
-  
-  DF_files =
-    tibble(filename = files_csv) %>%
+  # Read files in csv or zip
+  DF_files = read_csv_or_zip(files_vector) |> 
     tidyr::separate(col = filename,
                     into = c("project", "experimento", "version", "datetime", "id"),
                     sep = c("_"), remove = FALSE) %>%
     mutate(id = gsub("(*.)\\.csv", "\\1", id))
+  
   
   DF_progress =
     DF_files %>%
@@ -923,6 +889,13 @@ show_progress_pid <- function(pid = 3, files_vector, last_task = "Goodbye", goal
   
   
   # Plot ---
+  days = difftime(max(DF_progress$fecha_registro), min(DF_progress$fecha_registro), units = "days")
+  if (days > 20) {
+    date_breaks = "weeks"
+  } else {
+    date_breaks = "days"
+  }
+  
   
   PLOT_progress =
     DF_progress %>%
@@ -932,7 +905,7 @@ show_progress_pid <- function(pid = 3, files_vector, last_task = "Goodbye", goal
     geom_point() +
     geom_hline(yintercept = goal, linetype = "dashed", color = "grey") +
     theme_minimal(base_size = 16) +
-    scale_x_date(date_breaks = "1 day", guide = guide_axis(angle = 90)) +
+    scale_x_date(date_breaks = date_breaks, guide = guide_axis(angle = 90)) +
     scale_y_continuous(n.breaks = 10) +
     labs(title = paste0("Protocolo " , pid, " completado"),
          subtitle = paste0("Ultimo dato: ", as.Date(max(DF_files$datetime))),
@@ -1340,6 +1313,56 @@ check_project_and_results <- function(participants, folder_protocol, folder_resu
 }
 
 
+
+
+#' read_csv_or_zip
+#' Read input files, adapting to multiple csv's or a single zip
+#'
+#' @param input_files multiple csv's or a single zip
+#' @param workers how many cores to use
+#'
+#' @return
+#' @export
+#'
+#' @examples
+read_csv_or_zip <- function(input_files, workers = 1) {
+  
+  length_files = length(input_files)
+  input_folder = unique(dirname(input_files))
+  all_csvs = all(grepl("\\.csv", input_files))
+  all_zips = all(grepl("\\.zip", input_files))
+  
+  
+  # Read file/s
+  if (all_csvs) {
+    
+    # TEST and remove empty files (size < 100 bytes)
+    empty_files = file.info(input_files) %>% as_tibble(rownames = "files") %>% filter(size < 100)
+    if (nrow(empty_files) > 0) cli::cli_alert_warning("There are {length(empty_files)} empty input files (size < 100 bytes)")
+    input_files = input_files[!input_files %in% empty_files$files]
+    
+    DF_raw_read = purrr::map_dfr(input_files %>% set_names(basename(.)), data.table::fread, .id = "filename", colClasses = 'character', encoding = 'UTF-8', nThread = as.numeric(workers)) %>% as_tibble()
+    # colClasses = c(response = "character")
+    
+  } else if (length_files == 1 & all_zips) {
+    
+    # Unzips to temp folder, reads files and deletes temp folder
+    DF_raw_read = read_zips(input_files)  
+    
+  } else {
+    # Other issues
+    if (length_files == 0) cli::cli_abort("NO files in '{input_folder}'")
+    if (length_files != 1 & all_zips) cli::cli_abort("Multiple ZIP files detected in '{input_folder}'")
+    if (length_files != 0 & !all_zips & !all_csvs) cli::cli_abort("Multiple types of files detected in '{input_folder}'")
+    cli::cli_abort("Something wrong in read_csv_or_zip(). Are input files all csv files or a single zip file?")
+  }
+  
+  return(DF_raw_read)
+  
+}
+
+
+
 #' read_zips
 #' Function to unzip and read csv files
 #'
@@ -1434,8 +1457,7 @@ zip_files <- function(folder_files, zip_name, remove_files = FALSE) {
     }
   }
   # Remove temp dir and content
-  # unlink(TEMP_DIR, recursive = TRUE)
-  if (remove_files == TRUE) file.remove(FILES_ZIP)
+  if (remove_files == TRUE) unlink(folder_files, recursive = TRUE)
   
   # Reset the project's WD
   setwd(project_folder)
@@ -1510,41 +1532,11 @@ get_zip <- function(pid, what, where = NULL, list_credentials = NULL) {
                     dont_ask = TRUE, 
                     all_messages = FALSE, 
                     list_credentials = list_credentials)
-
   
-  
-  # ZIP ---------------------------------------------------------------------
-  
-  
+  # ZIP ---
   zip_files(folder_files = TEMP_DIR, 
             zip_name = zip_name, 
             remove_files = TRUE)
-  
-  
-  # # Set Temp folder as working folder so the files in zip WONT have the temp path
-  # setwd(TEMP_DIR)
-  # FILES_ZIP = list.files(TEMP_DIR, recursive = TRUE, full.names = FALSE, all.files = TRUE, include.dirs = TRUE)
-  # 
-  # # Create safely version so an error won't avoid resetting the project's wd
-  # zip_safely = purrr::safely(zip)
-  # 
-  # if (length(FILES_ZIP) == 0) {
-  #   cli::cli_alert_danger("NO files found")
-  # } else {
-  #   # ZIP zilently (flags = "-q")
-  #   RESULT = zip_safely(zipfile = zip_name, files = FILES_ZIP, flags = "-q")
-  #   # Show error
-  #   if (!is.null(RESULT$error)) {
-  #     cli::cli_text(RESULT$error)
-  #   } else {
-  #     cli::cli_alert_success("ZIPED protocol files to {gsub(project_folder, '', zip_name)}")
-  #   }
-  # }
-  # # Remove temp dir and content
-  # unlink(TEMP_DIR, recursive = TRUE)
-  # 
-  # # Reset the project's WD
-  # setwd(project_folder)
   
 }
 
