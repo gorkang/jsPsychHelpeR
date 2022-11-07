@@ -1138,6 +1138,10 @@ update_data <- function(id_protocol, sensitive_tasks = c(""), folder_to_download
         cli::cli_alert_info("All files already in 'data/{id_protocol}'")
       } else {
         cli::cli_alert_success("Downloaded {length(result) - 5} files to 'data/{id_protocol}'")
+        
+        destination_folder = paste0(WD, '/', folder_to_download, '/' , id_protocol, '/')
+        files_destination = list.files(destination_folder)
+        cli::cli_alert_info("{length(files_destination)} files in 'data/{id_protocol}'")
       }
       
     
