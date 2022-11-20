@@ -11,8 +11,9 @@
 
 # DOWNLOAD AND CHECK -----------------------------------------------------
 
+  # Download protocols WITHOUT data
   invisible(lapply(list.files("./R", full.names = TRUE, pattern = ".R$"), source))
-  
+
   DF_missing = 
     check_missing_prepare_TASK(
       sync_protocols = TRUE,

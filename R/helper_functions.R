@@ -329,7 +329,7 @@ debug_function <- function(name_function) {
 ##' @return
 ##' @author gorkang
 ##' @export
-save_files <- function(DF, short_name_scale, is_scale = TRUE, is_sensitive = FALSE) {
+save_files <- function(DF, short_name_scale, is_scale = TRUE, is_sensitive = FALSE, output_formats = "csv") {
 
   # Select path based on nature of the data
   if (is_sensitive == TRUE) {
@@ -337,17 +337,23 @@ save_files <- function(DF, short_name_scale, is_scale = TRUE, is_sensitive = FAL
   } else {
     data_path = "outputs/data/"
   }
+  
 
+  implemented_formats = c("csv", "csv2", "rds")
+  if (!all(output_formats %in% implemented_formats)) cli::cli_abort("output_formats should be one of {.code {implemented_formats}}")
+  
   # Save data. Use "df_" if it's a scale otherwise use "DF_"
   if (is_scale == TRUE) {
 
-    write_csv(DF, here::here(paste0(data_path, "df_", short_name_scale , ".csv")))
-    write_rds(DF, here::here(paste0(data_path, "df_", short_name_scale , ".rds")))
+    if ("csv" %in% output_formats) write_csv(DF, here::here(paste0(data_path, "df_", short_name_scale , ".csv")))
+    if ("csv2" %in% output_formats) write_csv2(DF, here::here(paste0(data_path, "df_", short_name_scale , ".csv")))
+    if ("rds" %in% output_formats) write_rds(DF, here::here(paste0(data_path, "df_", short_name_scale , ".rds")))
 
   } else {
 
-    write_csv(DF, here::here(paste0(data_path, "DF_", short_name_scale , ".csv")))
-    write_rds(DF, here::here(paste0(data_path, "DF_", short_name_scale , ".rds")))
+    if ("csv" %in% output_formats) write_csv(DF, here::here(paste0(data_path, "DF_", short_name_scale , ".csv")))
+    if ("csv2" %in% output_formats) write_csv2(DF, here::here(paste0(data_path, "DF_", short_name_scale , ".csv")))
+    if ("rds" %in% output_formats) write_rds(DF, here::here(paste0(data_path, "DF_", short_name_scale , ".rds")))
 
   }
 
@@ -1461,7 +1467,10 @@ zip_files <- function(folder_files, zip_name, remove_files = FALSE) {
     }
   }
   # Remove temp dir and content
-  if (remove_files == TRUE) unlink(folder_files, recursive = TRUE)
+  if (remove_files == TRUE) {
+    cli::cli_alert_info("Source files to REMOVE: {length(FILES_ZIP)}")
+    file.remove(FILES_ZIP)
+  }
   
   # Reset the project's WD
   setwd(project_folder)

@@ -86,24 +86,28 @@
       
         # Process data (DF_raw and DF_clean)
         cli::cli_h2("Processing data for project {PIDs[.x]}")
-    
-        DF_raw = read_data(input_files = zip_name)
-        DF_clean = create_clean_data(DF_raw)
+        
+        read_data_safely = purrr::safely(read_data)
+        
+        DF_raw = read_data_safely(input_files = zip_name)
+        
+        if (is.null(DF_raw$error)) {
+            
+          DF_clean = create_clean_data(DF_raw$result)
           
+          # Copy processed files to destination folder
+          cli::cli_h2("Copy output processed files for project {PIDs[.x]}")
+          FILES_processed = list.files(here::here("outputs/data/"), full.names = TRUE, pattern = "DF_clean|DF_raw")
+          destination = paste0(dirname(zip_name), "/processed/")
+          if (!dir.exists(destination)) dir.create(destination)
+          file.copy(from = FILES_processed, to = paste0(destination, basename(FILES_processed)), overwrite = TRUE)
+          
+          # Create zip with process data
+          zip_files(folder_files = destination, 
+                    zip_name = paste0(destination, "", "processed.zip"), 
+                    remove_files = TRUE)
         
-  
-        # Copy processed files to destination folder
-        cli::cli_h2("Copy output processed files for project {PIDs[.x]}")
-        FILES = list.files(here::here("outputs/data/"), full.names = TRUE, pattern = "DF_clean|DF_raw")
-        destination = paste0(dirname(zip_name), "/processed/")
-        if (!dir.exists(destination)) dir.create(destination)
-        file.copy(from = FILES, to = paste0(destination, basename(FILES)), overwrite = TRUE)
-        
-        # Create zip with process data
-        zip_files(folder_files = destination, 
-                  zip_name = paste0(destination, "/", "processed.zip"), 
-                  remove_files = TRUE)
-      
+        }
       }
       
     })

@@ -7,7 +7,7 @@
 ##' @return
 ##' @author gorkang
 ##' @export
-create_clean_data <- function(DF_raw, save_output = TRUE) {
+create_clean_data <- function(DF_raw, save_output = TRUE, check_duplicates = TRUE) {
   
   # targets::tar_load_globals()
   # debug_function("create_clean_data")
@@ -69,7 +69,7 @@ create_clean_data <- function(DF_raw, save_output = TRUE) {
     summarize(duplicate_tasks = paste(unique(experimento), collapse = ", ")) %>% 
     transmute(message = paste0(id, ": ", duplicate_tasks ))
   
-  if (nrow(DF_message) > 0) rlang::abort(message = paste0("There are duplicate trialid's for: \n['participant: tasks']\n", paste("-", str_sort(DF_message$message, numeric = TRUE), collapse = "\n"), "\n\nFor more details check `create_clean_data()`"))
+  if (check_duplicates == TRUE & nrow(DF_message) > 0) rlang::abort(message = paste0("There are duplicate trialid's for: \n['participant: tasks']\n", paste("-", str_sort(DF_message$message, numeric = TRUE), collapse = "\n"), "\n\nFor more details check `create_clean_data()`"))
   
   # To get full detail, with filenames: 
   # DF_message = DF_clean %>% 
@@ -83,7 +83,7 @@ create_clean_data <- function(DF_raw, save_output = TRUE) {
   
   duplicate_trialids = DF_duplicate_trialids_raw %>% count(trialid) %>% pull(trialid) %>% paste(., collapse = "; ")
   DF_duplicate_trialids = DF_duplicate_trialids_raw %>% count(id)
-  if (nrow(DF_duplicate_trialids) > 0) rlang::abort(message = paste0("There are duplicate trialid's: \n", paste("-", duplicate_trialids, collapse = "\n"), "\n\nFor more details check `create_clean_data()`"))
+  if (check_duplicates == TRUE & nrow(DF_duplicate_trialids) > 0) rlang::abort(message = paste0("There are duplicate trialid's: \n", paste("-", duplicate_trialids, collapse = "\n"), "\n\nFor more details check `create_clean_data()`"))
   
   
 
