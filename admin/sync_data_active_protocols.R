@@ -6,10 +6,14 @@
   # Individual project folders will be shared with the IP for each project
 
 
+########################################################################
+################# THIS DOCUMENT RUNS DAILY via anacron #################
+########################################################################
 
-### THIS DOCUMENT RUNS DAILY via anacron ###
+
 
 # FILE: /etc/cron.daily/gorka-sync_data_jspsychHelpeR -----------------------
+# ---------------------------------------------------------------------------
 
   # #!/bin/sh
   # 
@@ -24,13 +28,19 @@
   # exit 0;
 
 # END FILE /etc/cron.daily/gorka-sync_data_jspsychHelpeR --------------------
+# ---------------------------------------------------------------------------
 
 
 # TO TEST THIS WILL WORK WHEN RUN DAILY: 
 # system("cd /home/emrys/gorkang@gmail.com/RESEARCH/PROYECTOS-Code/jsPsychR/jsPsychHelpeR/admin/ && Rscript sync_data_active_protocols.R")
 
 
+
+
 # Sources and parameters --------------------------------------------------
+
+  output_formats = c("csv", "csv2") # csv2 for Spanish locale csv
+
   
   suppressPackageStartupMessages(source(here::here("_targets_packages.R")))
   invisible(lapply(list.files(here::here("./R"), full.names = TRUE, pattern = ".R$"), source))
@@ -124,24 +134,29 @@
   # grepl(pattern = "^[[:alnum:].-_]+@[[:alnum:].-]+$", EMAIL)
   
   
+  cli::cli_h1("CHECK permissions")
+  
+  
   1:length(PIDs) |>
     purrr::walk( ~ {
-
+      
+      cli::cli_h3("Check permissions for pid: {PIDs[.x]}")
+      
       DF_permisos = DF_resumen_clean |> dplyr::filter(ID == PIDs[.x])
 
       IS_EMAIL_regex = "\\b[-A-Za-z0-9_.%]+\\@[-A-Za-z0-9_.%]+\\.[A-Za-z]+"
       
       # CHECK if contacto looks like a single well formed email
       if (grepl(pattern = IS_EMAIL_regex, DF_permisos$contacto)) {
-        
+
         # Set permissions, only if not ADMIN and does not already have permissions
         set_permissions_google_drive(pid = DF_permisos$ID, email_IP = DF_permisos$contacto)
         
-        cli::cli_alert_success("Asignados permisos sobre pid: {DF_permisos$ID} a {DF_permisos$contacto}")
+        # cli::cli_alert_success("Asignados permisos sobre pid: {DF_permisos$ID} a {DF_permisos$contacto}")
         
         
       } else {
-        cli::cli_alert_danger("{DF_permisos$contacto} does NOT look like a proper email")
+        cli::cli_alert_danger("pid {PIDs[.x]}: {DF_permisos$contacto} does NOT look like a proper email")
       }
 
     })

@@ -37,3 +37,8 @@ if(paste(sodium::pubkey(key_private), collapse = " ") == key_public) {
 }
 
 DF_table_clean
+
+# Total online participants in MySQL DB
+DF_table_clean |> 
+  dplyr::ungroup() |> 
+  dplyr::summarize(TOTAL_completed = sum(completed))
