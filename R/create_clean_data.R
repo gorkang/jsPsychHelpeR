@@ -61,10 +61,11 @@ create_clean_data <- function(DF_raw, save_output = TRUE, check_duplicates = TRU
   
   
   # CHECK duplicate trialid's -----------------------------------------------
-  DF_duplicate_trialids_raw = DF_clean %>% count(id, trialid) %>% arrange(desc(n)) %>% filter(n > 1)
+  DF_duplicate_trialids_raw = DF_clean %>% count(id, experimento, trialid) %>% arrange(desc(n)) %>% filter(n > 1)
   
   DF_message = DF_duplicate_trialids_raw %>% 
-    mutate(experimento = gsub("(.*)_[0-9]{2,3}", "\\1", trialid)) %>% 
+    # filter(experimento != "Consent") |> 
+    # mutate(experimento = gsub("(.*)_[0-9]{2,3}", "\\1", trialid)) %>% 
     group_by(id) %>% 
     summarize(duplicate_tasks = paste(unique(experimento), collapse = ", ")) %>% 
     transmute(message = paste0(id, ": ", duplicate_tasks ))
