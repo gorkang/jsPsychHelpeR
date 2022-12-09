@@ -1,5 +1,9 @@
+library(dplyr)
+library(ggplot2)
+library(readr)
 library(shiny)
-suppressPackageStartupMessages(library(tidyverse))
+library(tidyr)
+
 DF_analysis = read_csv(here::here("outputs/data/DF_analysis.csv"),
                        col_types =
                          cols(

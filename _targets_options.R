@@ -14,8 +14,8 @@ options(pillar.sigfig = 5)
 
 # Packages to load
 main_packages = c("cli", "furrr", "patchwork", "renv", "tarchetypes", "targets", "testthat")
-data_preparation_packages = c("dplyr", "forcats", "here", "janitor", "purrr", "readr", "stringr", "tibble", "tidyr", "writexl") #"safer", 
-data_analysis_packages = c("broom", "broom.mixed", "emmeans", "gt", "gtsummary", "irr", "lme4", "parameters", "performance", "psych", "sjPlot") #"report" "gmodels"
+data_preparation_packages = c("dplyr", "forcats", "here", "janitor", "purrr", "readr", "stringr", "tibble", "tidyr", "writexl")
+data_analysis_packages = c("broom", "broom.mixed", "emmeans", "gt", "gtsummary", "irr", "lme4", "parameters", "performance", "psych")
 data_visualization_packages = c("DT", "ggalluvial", "ggridges")
 non_declared_dependencies = c("qs", "visNetwork", "webshot", "performance", "shinyWidgets", "diffviewer")
 extra_packages = ifelse (Sys.info()["sysname"] %in% c("Linux"), c("shrtcts"), NA)

@@ -815,39 +815,6 @@ auto_reliability = function(DF, short_name_scale = short_name_scale_str, items =
 }
 
 
-#' check_progress_pid
-#' 
-#' Get list of files for a project
-#'
-#' @param pid 
-#'
-#' @return
-#' @export
-#'
-#' @examples
-check_progress_pid <- function(pid = 3) {
-
-  # remotes::install_github("skgrange/threadr")
-  # sudo apt install sshpass
-
-  # Get filenames data from server ---
-  
-  # CHECK .credentials file exists
-  if (!file.exists(".vault/.credentials")) cat(cli::col_red("The .vault/.credentials file does not exist. RUN: \n"), cli::col_silver("rstudioapi::navigateToFile('setup/setup_server_credentials.R')\n"))
-  
-  list_credentials = source(".vault/.credentials")
-  files_server = threadr::list_files_scp(host = list_credentials$value$IP,
-                                directory_remote = paste0(list_credentials$value$main_FOLDER, pid, "/.data"), 
-                                user = list_credentials$value$user,
-                                password = list_credentials$value$password)
-  
-  files_csv = grep("csv", basename(files_server), value = TRUE)
-  
-  return(files_csv)
-  
-}
-
-
 #' show_progress_pid
 #'
 #' Show progress of data collection of a project
@@ -1647,7 +1614,7 @@ check_trialids <- function(local_folder_protocol, show_all_messages = FALSE) {
     if (nrow(DF_problematic_trialids) > 0) {
       
       cli::cli_h1("Checking /{basename(local_folder_protocol)}")
-      cat(cli::col_red(nrow(DF_problematic_trialids), "ISSUES:\n"), 
+      cat(cli::col_red(nrow(DF_problematic_trialids), " ISSUES:\n"), 
           "- experiment:", paste(DF_problematic_trialids %>% pull(experiment) %>% unique(.), collapse = ", "), "\n",
           "- trialid:   ", paste(DF_problematic_trialids %>% pull(trialid) %>% unique(.), collapse = ", "), "\n")
       
