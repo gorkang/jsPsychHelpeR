@@ -32,13 +32,13 @@ targets <- list(
   
   # Use R/prepare_template.R to create new preparation_scripts
 
-TARGETS_HERE
+#TARGETS_HERE
   
   ## Join tasks --------------------------------------------------------------
   
   tar_target(DF_joined, 
              create_joined(
-JOINS_HERE
+#JOINS_HERE
              )),
   
 

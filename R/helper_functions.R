@@ -609,13 +609,13 @@ create_targets_file <- function(pid_protocol = 0, folder_data = NULL, folder_tas
     joins = paste0("\t\t\t\t\t\t\t df_", files, ",\n") %>% paste(., collapse = "") %>% gsub(",\n$", "", .)
   
     # Replace targets and joins sections 
-    final_targets = gsub("TARGETS_HERE", targets, template)
-    final_joins = gsub("JOINS_HERE", joins, final_targets)
+    final_targets = gsub("#TARGETS_HERE", targets, template)
+    final_joins = gsub("#JOINS_HERE", joins, final_targets)
     
     # Find and replace pid_target
     line_pid_target = which(grepl("pid_target = '999'", final_joins))
     if (length(line_pid_target) == 0) cli::cli_abort("Can´t find `pid_target = '999'` in _targets_TEMPLATE.R") # Check we find the string to replace
-    final_joins[line_pid_target] = paste0("pid_target = '", pid_protocol, "'")
+    final_joins[line_pid_target] = paste0("\tpid_target = '", pid_protocol, "'")
     final_file = final_joins
     # final_file = gsub("pid_target = '999'", paste0("pid_target = '", pid_protocol, "'"), final_joins) # OLD method
     # cat(final_joins, sep = "\n")
