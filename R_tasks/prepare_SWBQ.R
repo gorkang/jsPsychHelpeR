@@ -45,7 +45,7 @@ prepare_SWBQ <- function(DF_clean, short_name_scale_str) {
   # Standardized names ------------------------------------------------------
   names_list = standardized_names(short_name_scale = short_name_scale_str, 
                                   dimensions = names_dimensions,
-                                  help_names = TRUE) # help_names = FALSE once the script is ready
+                                  help_names = FALSE) # help_names = FALSE once the script is ready
   
   # Create long -------------------------------------------------------------
   DF_long_RAW = create_raw_long(DF_clean, short_name_scale = short_name_scale_str, numeric_responses = TRUE)
