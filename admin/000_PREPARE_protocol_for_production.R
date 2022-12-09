@@ -44,10 +44,10 @@
     
   # 4) Revisar el config.js para pasar el experimento a produccion ----------
     
-    -[] online = true
-    -[] pid OK?
-    -[] debug_mode = false
-    - ETC...
+    # -[] online = true
+    # -[] pid OK?
+    # -[] debug_mode = false
+    # - ETC...
     
   
   # 5) Copiar protocolo ZIPeado a test/protocols_DEV/OLD_TESTS/ -------------  
