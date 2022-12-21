@@ -743,7 +743,7 @@ auto_reliability = function(DF, short_name_scale = short_name_scale_str, items =
   
   # deleted_items_NAs
   deleted_items_NAs = paste(names(temp_clean_RAW)[!names(temp_clean_RAW) %in% names(temp_clean)])
-  if (length(deleted_items_NAs) > 0) cat(cli::col_red("x DELETED VARS (have NA's)", paste(deleted_items_NAs, collapse = ", "), "\n"))
+  if (length(deleted_items_NAs) > 0) cat(cli::col_red("x DELETED VARS (have NA's): ", paste(deleted_items_NAs, collapse = ", "), "\n"))
 
   # Filter items where r.drop < min_rdrop
   delete_items_raw = suppressMessages(safely_alpha_table(temp_clean))
@@ -792,7 +792,7 @@ auto_reliability = function(DF, short_name_scale = short_name_scale_str, items =
       alpha_final = NULL
     }
     
-    cat(cli::col_yellow("Filtered", paste0(length(delete_items), "/", ncol(temp_clean_RAW)), "items with r.drop <= ", min_rdrop), "|| alpha: ", alpha_initial , "->", alpha_final, "\n")
+    cat(cli::col_yellow("Filtered ", paste0(length(delete_items), "/", ncol(temp_clean_RAW)), " items with r.drop <= ", min_rdrop), "|| alpha: ", alpha_initial , "->", alpha_final, "\n")
 
 
   }

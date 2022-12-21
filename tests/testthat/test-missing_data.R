@@ -85,12 +85,12 @@ testthat::test_that('Tests if participants that completed the protocol are missi
     write_csv(missing_DF, here::here(paste0("outputs/tests_outputs/test-", name_of_test, ".csv")))
     write_csv(missingall_DF, here::here(paste0("outputs/tests_outputs/test-", name_of_test, "_ALL.csv")))
     
-    cat(cli::col_red("\n", cli::style_underline("ERROR"), "in", paste0("test-", name_of_test), "\n"),
-        cli::col_red("  - Some of the participants are", cli::style_underline("missing test results:")), missing_ids, "\n",
+    cat(cli::col_red("\n", cli::style_underline("ERROR"), " in ", paste0("test-", name_of_test), "\n"),
+        cli::col_red("  - Some of the participants are ", cli::style_underline("missing test results:")), missing_ids, "\n",
         cli::col_red("  - In the following vars:"), missing_vars, "\n",
         
         cli::col_green("  - # of Issues: "), cli::col_red(length(missing_ids)), "\n",
-        cli::col_silver("  - DF with details stored in:", paste0("'outputs/tests_outputs/test-", name_of_test, ".csv'"), "\n\n"))
+        cli::col_silver("  - DF with details stored in: ", paste0("'outputs/tests_outputs/test-", name_of_test, ".csv'"), "\n\n"))
     
   }
   
