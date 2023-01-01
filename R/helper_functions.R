@@ -72,7 +72,7 @@ standardized_names <- function(short_name_scale, dimensions = "", help_names = F
   if (help_names == TRUE){
     cli::cli_alert_info(
       c('To create the code to calculate dimensions or total scores you can use:\n', 
-        cli::code_highlight('create_formulas(type = "dimensions_DIR", functions = "sum", names_dimensions)'))
+        cli::code_highlight('create_formulas(type = "dimensions_DIR", functions = "sum", items_dimensions)'))
     )
   }
   
@@ -403,13 +403,6 @@ prepare_helper <- function(DF_long_RAW, show_trialid_questiontext = FALSE) {
               trialid = paste(trialid, collapse = ", "),
               .groups = "drop") 
 
-  cli::cli_h1("Items and responses")
-  cat(cli::col_blue("\n", length(vector_items), "Items: "), cli::col_silver(paste("'", vector_items[c(1,length(vector_items))], "'", collapse = " to ")), "\n")
-  cat(cli::col_blue("\n", length(vector_responses), "Responses:\n"), cli::col_silver(paste(vector_responses, collapse = "\n ")), "\n")
-
-  # Pause 1s to help see the first part of the output
-  Sys.sleep(1)
-  
   if (show_trialid_questiontext == TRUE) {
     cli::cli_h1("trialid and stimulus")
     # cli::cli_alert_info("Showing trialid and stimulus for all the items: ")
@@ -418,10 +411,14 @@ prepare_helper <- function(DF_long_RAW, show_trialid_questiontext = FALSE) {
 
   if (nrow(DF_check_responses) > 1) {
     cli::cli_h1("Responses per item")
-    cat("\n", cli::col_blue(nrow(DF_check_responses), "Different number of responses per item: \n"))
+    cat("\n", cli::col_blue(nrow(DF_check_responses), " Different number of responses per item: \n"))
     print(DF_check_responses)
   }
   
+  cli::cli_h1("Items and responses")
+  cat(cli::col_blue("\n", length(vector_items), " Items:"), cli::col_silver(paste0("'", vector_items[c(1,length(vector_items))], "'", collapse = " to ")), "\n")
+  cat(cli::col_blue("\n", length(vector_responses), " distinct Responses:"), cli::col_silver("See Viewer pane..."), "\n")
+
   # Output the DT table (need to print because this function is called inside another function)
   DF_responses %>% DT::datatable() %>% print()
 
