@@ -46,7 +46,7 @@ targets <- list(
   ## Analysis ----------------------------------------------------------------- 
   
   # Prepare a DF ready for the analysis
-  tar_target(DF_analysis, create_DF_analysis(DF_joined, last_task = "Goodbye_DIRt", save_output = TRUE)),
+  tar_target(DF_analysis, create_DF_analysis(DF_joined, last_task = "Goodbye_DIRt", save_output = TRUE, DVars = c(""))),
   
   # Descriptive Table 1
   # tar_render(descriptives_table1, "Rmd/descriptives_table1.Rmd", deployment = "main"),
@@ -57,7 +57,7 @@ targets <- list(
 
 
   # Models
-  # tar_target(model_E1, analysis_model_E1(DF_analysis)),
+  # tar_target(model_E1, analysis_model_E1(DF_analysis$DF_analysis)),
 
 
   # Tables and plots use the model (e.g. model_XXX) as input.  
@@ -103,7 +103,7 @@ targets <- list(
 
   # Progress report by group
   tar_render(report_grouped_PROGRESS, path = "Rmd/grouped_PROGRESS.Rmd", 
-             params = list(input_DF = DF_analysis, 
+             params = list(input_DF = DF_analysis$DF_analysis, 
                            last_scale = "Goodbye_DIRt",
                            goal = 500,
                            group_vars = c("DEMOGR_genero_DIRd"),
