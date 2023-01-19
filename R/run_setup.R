@@ -2,7 +2,7 @@
 
   # You might need to run it twice and restart the RStudio session afterwards: Control + Shift + F10
 
-run_setup <- function() {
+run_setup <- function(dont_ask = FALSE) {
   
   
   # Make sure all packages are present --------------------------------------
@@ -15,11 +15,24 @@ run_setup <- function() {
     targets::tar_renv()
     packages_renv = gsub("library\\(|\\)", "", readLines("_targets_packages.R")[-1])
     
-    # Asks user before installing all packages missing (if any)
-    rlang::check_installed(packages_renv, reason = "for {jsPsychHelpeR} to work") 
+    if (dont_ask == FALSE) {
+      # Asks user before installing all packages missing (if any)
+      rlang::check_installed(packages_renv, reason = "for {jsPsychHelpeR} to work") 
+    } else {
+      info <- rlang:::pkg_version_info(packages_renv)
+      needs_install <- !rlang:::detect_installed(info)
+      missing_pkgs = packages_renv[needs_install]
+      
+      if (length(missing_pkgs) != 0) {
+        cli::cli_alert_info("Will install {.pkg {missing_pkgs}}. Use `dont_ask = FALSE` if you don't want automatic installation of dependencies")
+        utils::install.packages(missing_pkgs, dependencies = TRUE)
+      }
+    }
+    
     
     # If you have issues with DT::datables()
-    if (webshot::is_phantomjs_installed() == FALSE) webshot::install_phantomjs()
+    
+    # if (webshot::is_phantomjs_installed() == FALSE) webshot::install_phantomjs()
   
     cli::cli_alert_success("All the necessary packages are present\n")
     

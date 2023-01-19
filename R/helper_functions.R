@@ -560,7 +560,7 @@ create_vector_items <- function(VECTOR, collapse_string = "|") {
 #' @export
 #'
 #' @examples
-create_targets_file <- function(pid_protocol = 0, folder_data = NULL, folder_tasks = NULL) {
+create_targets_file <- function(pid_protocol = 0, folder_data = NULL, folder_tasks = NULL, dont_ask = FALSE) {
 
   # DEBUG
   # folder_tasks = "/home/emrys/Downloads/COURSE/gorkang-jsPsychMaker-d94788a/canonical_protocol/tasks/"
@@ -628,12 +628,18 @@ create_targets_file <- function(pid_protocol = 0, folder_data = NULL, folder_tas
   
   # If previous step was successful
   if (file.exists("_targets_automatic_file.R")) {
+    
+    if (dont_ask == FALSE) {
 
     response_prompt = menu(choices = c("YES", "No"), 
                            title = cli_message(var_used = files,
                                                info = "{cli::style_bold((cli::col_yellow('Overwrite')))} file '_targets.R' to include the following {length(files)} tasks?", 
-                                               details = "{.pkg {files}}")
-                           )
+                                               details = "{.pkg {files}}"))
+    } else {
+      
+      response_prompt = 1
+      
+    }
     
     if (response_prompt == 1) {
       
@@ -644,31 +650,32 @@ create_targets_file <- function(pid_protocol = 0, folder_data = NULL, folder_tas
       file.rename(from = "_targets_automatic_file.R", to = "_targets.R")
       
       # DELETE UNUSED tasks
-      TASKS_TO_DELETE_raw = 
-        list.files("R_tasks/") %>% 
-        as_tibble() %>% 
-        mutate(task = gsub("prepare_(.*)\\.R", "\\1", value)) %>% 
-        filter(!task %in% files & !grepl("\\.csv", value)) %>% 
-        pull(value) 
-      
-      if(length(TASKS_TO_DELETE_raw) > 0) {
-        
-        TASKS_TO_DELETE = TASKS_TO_DELETE_raw %>% paste0("R_tasks/", .)
-        
-        delete_prompt = menu(choices = c("Yes", "NO"), 
-                             title = cli_message(var_used = TASKS_TO_DELETE,
-                                                 h1_title = "Clean up",
-                                                 info = "{cli::style_bold((cli::col_red('DELETE')))} the following {length(TASKS_TO_DELETE)} unused tasks from 'R_tasks/'?:",
-                                                 details = "{.pkg {basename(TASKS_TO_DELETE)}}")
-        )
-        
-        if (delete_prompt == 1) {
-          cli::cli_alert_info("Zipping unused tasks to create backup")
-          zip(zipfile = "outputs/backup/deleted_tasks.zip", files = TASKS_TO_DELETE, flags = "-q") # Silent flags = "-q"
-          file.remove(TASKS_TO_DELETE)
-          cli::cli_alert_success(paste0("Deleted ", length(TASKS_TO_DELETE), " unused tasks. Backup in `outputs/backup/deleted_tasks.zip`"))
-        }
-      }
+      # COMMENT Temporarily. Probably will add specific parameter for this (different than dont_ask)
+        # TASKS_TO_DELETE_raw = 
+        #   list.files("R_tasks/") %>% 
+        #   as_tibble() %>% 
+        #   mutate(task = gsub("prepare_(.*)\\.R", "\\1", value)) %>% 
+        #   filter(!task %in% files & !grepl("\\.csv", value)) %>% 
+        #   pull(value) 
+        # 
+        # if(length(TASKS_TO_DELETE_raw) > 0) {
+        #   
+        #   TASKS_TO_DELETE = TASKS_TO_DELETE_raw %>% paste0("R_tasks/", .)
+        #   
+        #   delete_prompt = menu(choices = c("Yes", "NO"), 
+        #                        title = cli_message(var_used = TASKS_TO_DELETE,
+        #                                            h1_title = "Clean up",
+        #                                            info = "{cli::style_bold((cli::col_red('DELETE')))} the following {length(TASKS_TO_DELETE)} unused tasks from 'R_tasks/'?:",
+        #                                            details = "{.pkg {basename(TASKS_TO_DELETE)}}")
+        #   )
+        #   
+        #   if (delete_prompt == 1) {
+        #     cli::cli_alert_info("Zipping unused tasks to create backup")
+        #     zip(zipfile = "outputs/backup/deleted_tasks.zip", files = TASKS_TO_DELETE, flags = "-q") # Silent flags = "-q"
+        #     file.remove(TASKS_TO_DELETE)
+        #     cli::cli_alert_success(paste0("Deleted ", length(TASKS_TO_DELETE), " unused tasks. Backup in `outputs/backup/deleted_tasks.zip`"))
+        #   }
+        # }
       
       # END Messages
       cli_message(h1_title = "All done", 
@@ -1455,12 +1462,13 @@ zip_files <- function(folder_files, zip_name, remove_files = FALSE) {
 #' @export
 #'
 #' @examples
-get_zip <- function(pid, what, where = NULL, list_credentials = NULL) {
+get_zip <- function(pid, what, where = NULL, list_credentials = NULL, dont_ask = TRUE) {
   
   # DEBUG
   # pid = "230"
   # what = "data"
   # where = NULL
+  # dont_ask = TRUE
   # list_credentials = source(".vault/.credentials")
   # setwd("/home/emrys/gorkang@gmail.com/RESEARCH/PROYECTOS-Code/jsPsychR/jsPsychHelpeR/")
   
@@ -1508,7 +1516,7 @@ get_zip <- function(pid, what, where = NULL, list_credentials = NULL) {
                     only_test = FALSE, 
                     exclude_csv = exclude_csv,
                     delete_nonexistent = TRUE,
-                    dont_ask = TRUE, 
+                    dont_ask = dont_ask, 
                     all_messages = FALSE, 
                     list_credentials = list_credentials)
   

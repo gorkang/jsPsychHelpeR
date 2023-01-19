@@ -1,3 +1,16 @@
+create_dockerfile <- function(PID = 999) {
+  
+  # Read template
+  template = readLines("admin/Dockerfile_TEMPLATE")
+  
+  # Replace PID
+  final_file = gsub("999", PID, template)
+  
+  # Create final file
+  cat(final_file, file = "Dockerfile", sep = "\n")
+}
+
+
 DELETE_data_server <- function(pid = NULL) {
   
   # CHECKS  ------------------------

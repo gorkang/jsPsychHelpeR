@@ -1,4 +1,16 @@
-run_initial_setup <- function(pid, download_files = FALSE, download_task_script = FALSE) {
+#' run_initial_setup
+#' Run initial setup for a specific project
+#'
+#' @param pid project id
+#' @param download_files should download the data files? (requires server credentials) [TRUE/FALSE] 
+#' @param download_task_script should download the task scripts? (requires server credentials) [TRUE/FALSE]
+#' @param dont_ask answer YES to all questions
+#'
+#' @return
+#' @export
+#'
+#' @examples
+run_initial_setup <- function(pid, download_files = FALSE, download_task_script = FALSE, dont_ask = FALSE) {
   
   # DEBUG
   # pid = "999"
@@ -23,24 +35,31 @@ run_initial_setup <- function(pid, download_files = FALSE, download_task_script 
   }
   
 
-  
-  response_prompt = menu(choices = c("Yes", "No"), 
-                         title = 
-                           cli_message(h1_title = "Initial SETUP", 
-                                       info = "Do you want to run the {.pkg initial setup}?",
-                                       details = "This will {cli::style_bold((cli::col_red('DELETE')))} the _targets/ folder, 
+  if (dont_ask == FALSE) {
+    
+    response_prompt = menu(choices = c("Yes", "No"), 
+                           title = 
+                             cli_message(h1_title = "Initial SETUP", 
+                                         info = "Do you want to run the {.pkg initial setup}?",
+                                         details = "This will {cli::style_bold((cli::col_red('DELETE')))} the _targets/ folder, 
                                                    {cli::style_bold((cli::col_green('install')))} necessary packages, 
                                                    {cli::style_bold((cli::col_green('copy')))} configuration files, 
                                                    {cli::style_bold((cli::col_yellow('replace')))} the _targets.R, etc."
-                           )
-  )
+                             )
+    )
+    
+    
+  } else {
+    response_prompt = 1
+  }
+  
   
   if (response_prompt == 1) {
   
     # 1) Run to make sure you have all the necessary packages and folders -------
     
     cli_message(h1_title = "Setup")
-    run_setup()
+    run_setup(dont_ask = dont_ask)
     
     
     
@@ -73,7 +92,7 @@ run_initial_setup <- function(pid, download_files = FALSE, download_task_script 
         cli_message(h1_title = "Download task script")
         
         # Get protocol without data and zip it in data/protocol_PID.zip
-        get_zip(pid, what = "protocol")
+        get_zip(pid, what = "protocol", dont_ask = dont_ask)
           
         
       } else if (download_task_script == FALSE) {
@@ -91,12 +110,14 @@ run_initial_setup <- function(pid, download_files = FALSE, download_task_script 
     # 4) Create a _targets.R file for your data -------------------------------
     
     cli_message(h1_title = "Create _targets.R file")
-    create_targets_file(pid_protocol = pid, folder_data = paste0("data/", pid, "/"))
+    create_targets_file(pid_protocol = pid, folder_data = paste0("data/", pid, "/"), dont_ask = dont_ask)
     
     # Open _targets.R and run.R
-    cli_message(info = "Opening `_targets.R` and `run.R`")
-    invisible(rstudioapi::navigateToFile("_targets.R"))
-    invisible(rstudioapi::navigateToFile("run.R"))
+    if (Sys.getenv("RSTUDIO") == "1") {
+      cli_message(info = "Opening `_targets.R` and `run.R`")
+      invisible(rstudioapi::navigateToFile("_targets.R"))
+      invisible(rstudioapi::navigateToFile("run.R"))
+    }
     
     
   } else {
