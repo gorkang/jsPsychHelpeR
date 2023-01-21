@@ -1,4 +1,6 @@
-create_dockerfile <- function(PID = 999) {
+create_docker_container <- function(PID = 999) {
+
+  cli::cli_h1("Building container for pid {PID}")
   
   # Read template
   template = readLines("admin/Dockerfile_TEMPLATE")
@@ -8,6 +10,9 @@ create_dockerfile <- function(PID = 999) {
   
   # Create final file
   cat(final_file, file = "Dockerfile", sep = "\n")
+
+  system(paste0("docker build -t pid", PID, " ."))
+  
 }
 
 

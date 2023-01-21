@@ -8,8 +8,8 @@ library(tarchetypes)
 # Set options, load packages -----------------------------------------------
 
 # Source all /R files
-lapply(list.files("./R", full.names = TRUE, pattern = ".R$"), source)
-lapply(list.files("./R_tasks/", full.names = TRUE, pattern = ".R$"), source)
+targets::tar_source("R")
+suppressWarnings(targets::tar_source("R_tasks"))
 options(pillar.sigfig = 5)
 
 # Packages to load
