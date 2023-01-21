@@ -10,14 +10,13 @@ PID = 999
 tictoc::tic()
 create_docker_container(PID = PID)
 tictoc::toc()
-#133 sec elapsed from CLEAN cache
+#60 sec elapsed from CLEAN cache
 
 
-# Run project inside a docker container
+# Run project inside a docker container. Output in Downloads/jsPsychHelpeR/pid[PID]/
 tictoc::tic()
-file.remove(paste0("~/Downloads/jsPsychHelpeR", PID))
+file.remove(list.files(paste0("~/Downloads/jsPsychHelpeR", PID, "/outputs"), recursive = TRUE, full.names = TRUE))
 system(paste0("docker run --rm -d --name jspsychhelper -v ~/Downloads/jsPsychHelpeR", PID, "/outputs:/home/project/jsPsychHelpeR/outputs:rw pid", PID))
-# list.files(paste0("~/Downloads/jsPsychHelpeR", PID, "/outputs"), recursive = TRUE)
 tictoc::toc()
 
 
