@@ -9,7 +9,7 @@ RUN mkdir /home/project/jsPsychHelpeR
 
 # Add relevant folders
 ADD .vault /home/project/jsPsychHelpeR/.vault
-ADD admin /home/project/jsPsychHelpeR/admin
+#ADD admin /home/project/jsPsychHelpeR/admin
 ADD data/999 /home/project/jsPsychHelpeR/data/999
 ADD outputs  /home/project/jsPsychHelpeR/outputs 
 ADD outputs/plots  /home/project/jsPsychHelpeR/outputs/plots
@@ -25,28 +25,27 @@ ADD tests /home/project/jsPsychHelpeR/tests
 
 # Add relevant files
 COPY _targets_options.R /home/project/jsPsychHelpeR/_targets_options.R
-COPY _targets_packages.R /home/project/jsPsychHelpeR/_targets_packages.R
+#COPY _targets_packages.R /home/project/jsPsychHelpeR/_targets_packages.R
 COPY _targets.R  /home/project/jsPsychHelpeR/_targets.R 
-COPY app.R  /home/project/jsPsychHelpeR/app.R 
+#COPY app.R  /home/project/jsPsychHelpeR/app.R 
 COPY DESCRIPTION /home/project/jsPsychHelpeR/DESCRIPTION
 COPY NEWS.md /home/project/jsPsychHelpeR/NEWS.md
 COPY README.md /home/project/jsPsychHelpeR/README.md
 COPY renv.lock /home/project/jsPsychHelpeR/renv.lock
-COPY run.R /home/project/jsPsychHelpeR/run.R
+#COPY run.R /home/project/jsPsychHelpeR/run.R
 
-#CMD grep NAME /etc/*-release
 
+# Install all dependencies with renv AND run initial setup for the specific pid
+WORKDIR /home/project/jsPsychHelpeR
+RUN R -e "options(Ncpus = 4); source('renv/activate.R'); renv::restore(prompt = FALSE); invisible(lapply(list.files('./R', full.names = TRUE, pattern = '.R$'), source)); run_initial_setup(pid = '999', dont_ask = TRUE)"
+
+# BEFORE UNCOMMENTING, MAKE SURE ALL PACKAGES INSTALLED IN STEP BEFORE
 # TODO: CHANGE USER to avoid running as root
 # SEE 4: https://hosting.analythium.io/best-practices-for-r-with-docker/
 #RUN addgroup --system project \
 #    && adduser --system --ingroup project project
 #RUN chown project:project -R /home/project
 #USER project
-
-
-# Install all dependencies with renv AND run initial setup for the specific pid
-WORKDIR /home/project/jsPsychHelpeR
-RUN R -e "options(Ncpus = 4); source('renv/activate.R'); renv::restore(prompt = FALSE); invisible(lapply(list.files('./R', full.names = TRUE, pattern = '.R$'), source)); run_initial_setup(pid = '999', dont_ask = TRUE)"
 
 # run_setup in local folder AND tar_make()
 WORKDIR /home/project/jsPsychHelpeR
