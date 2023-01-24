@@ -12,7 +12,10 @@ run_setup <- function(dont_ask = FALSE) {
   
     # Create _targets_packages and read all dependencies
     targets::tar_destroy(ask = FALSE) # To avoid tar_renv() error
-    targets::tar_renv()
+    # targets::tar_renv()
+    targets::tar_renv(extras = c("clustermq", "future", "gt", "markdown", "pingr", "rstudioapi",
+                                 "shiny", "shinybusy", "visNetwork"))
+    
     packages_renv = gsub("library\\(|\\)", "", readLines("_targets_packages.R")[-1])
     
     if (dont_ask == FALSE) {
@@ -25,7 +28,7 @@ run_setup <- function(dont_ask = FALSE) {
       
       if (length(missing_pkgs) != 0) {
         cli::cli_alert_info("Will install {.pkg {missing_pkgs}}. Use `dont_ask = FALSE` if you don't want automatic installation of dependencies")
-        utils::install.packages(missing_pkgs, dependencies = TRUE)
+        utils::install.packages(missing_pkgs, dependencies = FALSE)
       }
     }
     
