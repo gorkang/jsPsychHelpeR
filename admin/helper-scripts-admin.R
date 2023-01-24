@@ -11,7 +11,9 @@ create_docker_container <- function(PID = 999) {
   # Create final file
   cat(final_file, file = "Dockerfile", sep = "\n")
 
-  system(paste0("docker build -t pid", PID, " ."))
+  # system(paste0("docker build -t pid", PID, " ."))
+  system(paste0("docker build -t gorkang/jspsychhelper:pid", PID, " ."))
+  
   
 }
 
