@@ -17,7 +17,7 @@ main_packages = c("cli", "furrr", "patchwork", "renv", "tarchetypes", "targets",
 data_preparation_packages = c("dplyr", "forcats", "here", "janitor", "purrr", "readr", "stringr", "tibble", "tidyr", "writexl")
 data_analysis_packages = c("broom", "broom.mixed", "emmeans", "gt", "gtsummary", "irr", "lme4", "parameters", "performance", "psych")
 data_visualization_packages = c("DT", "ggalluvial", "ggridges")
-non_declared_dependencies = c("diffviewer", "qs", "visNetwork", "webshot", "performance", "shinyWidgets", "xml2", "jquerylib")
+non_declared_dependencies = c("diffviewer", "qs", "visNetwork", "webshot", "performance", "xml2", "jquerylib") #shinyWidgets
 # extra_packages = ifelse (Sys.info()["sysname"] %in% c("Linux"), c("shrtcts"), NA)
 packages_to_load = purrr::discard(c(main_packages, data_preparation_packages, data_analysis_packages, data_visualization_packages, non_declared_dependencies), is.na) #extra_packages
 
