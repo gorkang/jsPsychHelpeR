@@ -403,6 +403,18 @@ prepare_helper <- function(DF_long_RAW, show_trialid_questiontext = FALSE) {
               trialid = paste(trialid, collapse = ", "),
               .groups = "drop") 
 
+  
+
+  # OUTPUTS -----------------------------------------------------------------
+
+  # PRINT OUTPUT (used inside another function)
+  count_responses(DF_long_RAW |> 
+                    select(id, trialid, RAW) |> 
+                    pivot_wider(names_from = trialid,
+                                values_from = RAW)) |> 
+    print()
+  
+  
   if (show_trialid_questiontext == TRUE) {
     cli::cli_h1("trialid and stimulus")
     # cli::cli_alert_info("Showing trialid and stimulus for all the items: ")
@@ -419,8 +431,11 @@ prepare_helper <- function(DF_long_RAW, show_trialid_questiontext = FALSE) {
   cat(cli::col_blue("\n", length(vector_items), " Items:"), cli::col_silver(paste0("'", vector_items[c(1,length(vector_items))], "'", collapse = " to ")), "\n")
   cat(cli::col_blue("\n", length(vector_responses), " distinct Responses:"), cli::col_silver("See Viewer pane..."), "\n")
 
+
+
   # Output the DT table (need to print because this function is called inside another function)
   DF_responses %>% DT::datatable() %>% print()
+  
 
 }
 
@@ -1763,4 +1778,93 @@ set_permissions_google_drive <- function(pid, email_IP) {
     cli::cli_alert_info("{email_IP} is an ADMIN and already has permissions")
   }
 
+}
+
+
+
+
+
+count_responses <- function(DF, max_length_strings = 50) { #, n_unique = 20
+  
+  # Bar plot ---
+  
+  DF_out = 
+    DF |> 
+    pivot_longer(2:ncol(DF), values_transform = list(value = as.character)) |> 
+    count(value) |> 
+    mutate(value = as.character(ifelse(is.na(value), "Unknown", value))) |>
+    mutate(value = as.character(ifelse(value == "", "Empty", value))) |> 
+    mutate(value = stringr::str_trunc(value, max_length_strings)) |> 
+    
+    mutate(PCT = (n/(ncol(DF) * nrow(DF))) * 100) |> 
+    arrange(desc(n))
+  
+  PLOT =
+    DF_out |> 
+    ggplot(aes(value, n, fill = value)) +
+    geom_bar(stat = "identity", na.rm = FALSE, show.legend = FALSE) +
+    # scale_x_discrete() +
+    theme_minimal() +
+    scale_fill_manual(values = c(Unknown = "darkred", Empty = "darkred")) +
+    scale_x_discrete(labels = factor(gtools::mixedsort(unique(DF_out$value)))) +
+    # WARNING: Vectorized input to `element_text()` is not officially supported.
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1,
+                                     color = ifelse(factor(gtools::mixedsort(unique(DF_out$value))) %in% c("Unknown", "Empty"), "darkred", "black"))) +
+    labs(title = "Number of unique values across all variables")
+  
+  
+  # Heatmap ---
+  
+  DF_wide_temp =
+    DF |> 
+    pivot_longer(2:ncol(DF), values_transform = list(value = as.character)) |> 
+    count(name, value) |> 
+    mutate(value = as.character(ifelse(is.na(value), "Unknown", value))) |> 
+    mutate(value = as.character(ifelse(value == "", "Empty", value))) |> 
+    mutate(value = stringr::str_trunc(value, max_length_strings))
+  
+  
+  DF_wide = 
+    DF_wide_temp |> 
+    mutate(value = factor(DF_wide_temp$value, levels = gtools::mixedsort(unique(as.character(DF_wide_temp$value))))) 
+  # mutate(color_x = ifelse(value %in% c("Unknown", "Empty"), "darkred", "black"))
+  
+  # colors_nas <- ifelse(factor(gtools::mixedsort(unique(DF_wide$value))) %in% c("Unknown", "Empty"), "red", "black")
+  
+  Paleta_DV = c("grey90", "grey80", "grey70", "grey60", "grey50", "gray40", "gray30", "gray20", "gray10", "black")
+  
+  MIN = min(DF_wide$n)
+  MAX = max(DF_wide$n)
+  
+  PLOT_all =
+    DF_wide |> 
+    ggplot(aes(value, name, fill = n, labels = value)) +
+    geom_tile() +
+    theme_test() +
+    
+    # scale_x_discrete(labels = factor(gtools::mixedsort(unique(DF_wide$value)))) +
+    
+    # Legend
+    scale_fill_gradientn(colours = Paleta_DV, 
+                         na.value = "transparent", 
+                         limits = c(MIN, MAX),
+                         breaks = round(seq(MIN, MAX, length.out = 5), 0)) +
+    # WARNING: Vectorized input to `element_text()` is not officially supported.
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1, 
+                                     color = ifelse(factor(gtools::mixedsort(unique(DF_wide$value))) %in% c("Unknown", "Empty"), "darkred", "black"))) +
+    labs(title = "Values per variable")
+  
+  
+  
+  # Skimr ---
+  
+  
+  
+  OUT = list(DF_out = DF_out,
+             PLOT = PLOT_all / PLOT,
+             DF |> skimr::skim()  
+             # PLOT_all = PLOT_all
+  )
+  
+  return(OUT)
 }
