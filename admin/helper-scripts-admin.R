@@ -18,6 +18,21 @@ create_docker_container <- function(PID = 999) {
 }
 
 
+clean_renv_cache <- function() {
+  
+  LIB = list.files("renv/lib/R-4.2/x86_64-pc-linux-gnu/")
+  CACHE = list.files("renv/cache/v5/R-4.2/x86_64-pc-linux-gnu", full.names = TRUE) |> tibble::as_tibble() |> dplyr::mutate(name = basename(value))
+  
+  DELETE = CACHE |> dplyr::filter(!CACHE$name %in% LIB)
+  # LIB[!LIB %in% CACHE$name]
+  
+  cli::cli_alert_info("Will delete {nrow(DELETE)} unused packages from cache: {DELETE$name}")
+  
+  unlink(DELETE$value, recursive = TRUE)
+  
+}
+
+
 DELETE_data_server <- function(pid = NULL) {
   
   # CHECKS  ------------------------

@@ -7,9 +7,14 @@
   # DELETE ALL CACHE
   # docker builder prune
   # Clean renv cache: renv::clean()
+
   
   source("admin/helper-scripts-admin.R")
   PID = 999
+  
+  # Clean unused cache libraries
+  renv::clean()
+  clean_renv_cache()
   
   create_docker_container(PID = PID)
   #60 sec elapsed from CLEAN cache
