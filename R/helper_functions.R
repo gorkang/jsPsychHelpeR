@@ -600,7 +600,7 @@ create_targets_file <- function(pid = 0, folder_data = NULL, folder_tasks = NULL
   if (is.null(folder_data) & !is.null(folder_tasks)) {
     
     files = gsub(".js", "", basename(list.files(folder_tasks, recursive = FALSE, pattern = ".js")))
-    files_targets = gsub("-", "_", files)
+    # files_targets = gsub("-", "_", files)
     
   } else if (!is.null(folder_data) & is.null(folder_tasks)) {
     
@@ -608,7 +608,7 @@ create_targets_file <- function(pid = 0, folder_data = NULL, folder_tasks = NULL
 
     # Extract all unique tasks
     files = read_csv_or_zip(input_files) %>% distinct(procedure) %>% pull(procedure)
-    files_targets = gsub("-", "_", files)
+    # files_targets = gsub("-", "_", files)
   }
   
   if (length(files) > 0) {
@@ -617,8 +617,8 @@ create_targets_file <- function(pid = 0, folder_data = NULL, folder_tasks = NULL
     template = readLines("targets/_targets_TEMPLATE.R")
     
     # Prepare targets section and joins section
-    targets = paste0("   tar_target(df_", files_targets, ", prepare_", files_targets, "(DF_clean, short_name_scale_str = '", files,"')),\n") %>% paste(., collapse = "")
-    joins = paste0("\t\t\t\t\t\t\t df_", files_targets, ",\n") %>% paste(., collapse = "") %>% gsub(",\n$", "", .)
+    targets = paste0("   tar_target(df_", files, ", prepare_", files, "(DF_clean, short_name_scale_str = '", files,"')),\n") %>% paste(., collapse = "")
+    joins = paste0("\t\t\t\t\t\t\t df_", files, ",\n") %>% paste(., collapse = "") %>% gsub(",\n$", "", .)
   
     # Replace targets and joins sections 
     final_targets = gsub("#TARGETS_HERE", targets, template)
