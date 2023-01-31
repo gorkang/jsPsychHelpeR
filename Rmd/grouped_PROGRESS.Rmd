@@ -46,9 +46,10 @@ if (all(params$group_vars %in% names(params$input_DF))) {
     #           AIM_DIRt %in% c("c2", "c3") ~ "CONc",
     #           AIM_DIRt %in% c("c1a", "c1b", "ab") ~ "CONa",
     #           TRUE ~ NA_character_)) %>% 
+  
     # rename(group = AIM_DIRt)
 } else {
-  cat("Check if the group_vars are in DF_analysis")
+  cli::cli_alert_danger("group_vars NOT in DF_analysis")
 }
 
 
@@ -70,7 +71,7 @@ We create the groups crossing the variables: `r paste(params$group_vars, collaps
 ```{r summary, echo=FALSE}
 
 DT_analysis = 
-  DF_analysis %>% 
+  params$input_DF %>% 
   DT::datatable(options = list(dom = 'ti'), rownames = FALSE) 
 
 if (all(params$group_vars %in% names(DF_analysis))) {
