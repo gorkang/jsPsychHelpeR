@@ -80,10 +80,9 @@ run_initial_setup <- function(pid, download_files = FALSE, download_task_script 
         update_data(id_protocol = pid) 
           
       } else if (download_files == FALSE) {
-          
-        cli::cli_alert_danger("Will NOT download files")
-        cli::cli_alert_info("You may need to manually download the files to '{paste0('data/', pid, '/')}'")
-          
+        
+        cli::cli_alert_info("Will NOT download files. {length(files_pid)} files found in `{paste0('data/', pid, '/')}`")
+
       }
       
       
@@ -97,7 +96,7 @@ run_initial_setup <- function(pid, download_files = FALSE, download_task_script 
         
       } else if (download_task_script == FALSE) {
         
-        cli::cli_alert_danger("Will NOT download task script")
+        cli::cli_alert_info("Will NOT download task script")
         
       }
       
@@ -110,7 +109,7 @@ run_initial_setup <- function(pid, download_files = FALSE, download_task_script 
     # 4) Create a _targets.R file for your data -------------------------------
     
     cli_message(h1_title = "Create _targets.R file")
-    create_targets_file(pid_protocol = pid, folder_data = paste0("data/", pid, "/"), dont_ask = dont_ask)
+    create_targets_file(pid = pid, folder_data = paste0("data/", pid, "/"), dont_ask = dont_ask)
     
     # Open _targets.R and run.R
     if (Sys.getenv("RSTUDIO") == "1") {

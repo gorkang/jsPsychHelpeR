@@ -567,7 +567,7 @@ create_vector_items <- function(VECTOR, collapse_string = "|") {
 
 #' Create _targets.R file from a protocol folder
 #'
-#' @param pid_protocol 
+#' @param pid 
 #' @param folder_data 
 #' @param folder_tasks 
 #'
@@ -575,13 +575,12 @@ create_vector_items <- function(VECTOR, collapse_string = "|") {
 #' @export
 #'
 #' @examples
-create_targets_file <- function(pid_protocol = 0, folder_data = NULL, folder_tasks = NULL, dont_ask = FALSE) {
+create_targets_file <- function(pid = 0, folder_data = NULL, folder_tasks = NULL, dont_ask = FALSE) {
 
   # DEBUG
-  # folder_tasks = "/home/emrys/Downloads/COURSE/gorkang-jsPsychMaker-d94788a/canonical_protocol/tasks/"
   # folder_data = "data/999"
   # folder_tasks = NULL
-  # pid_protocol = "999"
+  # pid = "999"
 
   suppressPackageStartupMessages(library(dplyr))
   
@@ -601,6 +600,7 @@ create_targets_file <- function(pid_protocol = 0, folder_data = NULL, folder_tas
   if (is.null(folder_data) & !is.null(folder_tasks)) {
     
     files = gsub(".js", "", basename(list.files(folder_tasks, recursive = FALSE, pattern = ".js")))
+    files_targets = gsub("-", "_", files)
     
   } else if (!is.null(folder_data) & is.null(folder_tasks)) {
     
@@ -608,7 +608,7 @@ create_targets_file <- function(pid_protocol = 0, folder_data = NULL, folder_tas
 
     # Extract all unique tasks
     files = read_csv_or_zip(input_files) %>% distinct(procedure) %>% pull(procedure)
-
+    files_targets = gsub("-", "_", files)
   }
   
   if (length(files) > 0) {
@@ -617,8 +617,8 @@ create_targets_file <- function(pid_protocol = 0, folder_data = NULL, folder_tas
     template = readLines("targets/_targets_TEMPLATE.R")
     
     # Prepare targets section and joins section
-    targets = paste0("   tar_target(df_", files, ", prepare_", files, "(DF_clean, short_name_scale_str = '", files,"')),\n") %>% paste(., collapse = "")
-    joins = paste0("\t\t\t\t\t\t\t df_", files, ",\n") %>% paste(., collapse = "") %>% gsub(",\n$", "", .)
+    targets = paste0("   tar_target(df_", files_targets, ", prepare_", files_targets, "(DF_clean, short_name_scale_str = '", files,"')),\n") %>% paste(., collapse = "")
+    joins = paste0("\t\t\t\t\t\t\t df_", files_targets, ",\n") %>% paste(., collapse = "") %>% gsub(",\n$", "", .)
   
     # Replace targets and joins sections 
     final_targets = gsub("#TARGETS_HERE", targets, template)
@@ -627,9 +627,9 @@ create_targets_file <- function(pid_protocol = 0, folder_data = NULL, folder_tas
     # Find and replace pid_target
     line_pid_target = which(grepl("pid_target = '999'", final_joins))
     if (length(line_pid_target) == 0) cli::cli_abort("Can´t find `pid_target = '999'` in _targets_TEMPLATE.R") # Check we find the string to replace
-    final_joins[line_pid_target] = paste0("\tpid_target = '", pid_protocol, "'")
+    final_joins[line_pid_target] = paste0("\tpid_target = '", pid, "'")
     final_file = final_joins
-    # final_file = gsub("pid_target = '999'", paste0("pid_target = '", pid_protocol, "'"), final_joins) # OLD method
+    # final_file = gsub("pid_target = '999'", paste0("pid_target = '", pid, "'"), final_joins) # OLD method
     # cat(final_joins, sep = "\n")
   
     # Create final file
@@ -637,7 +637,7 @@ create_targets_file <- function(pid_protocol = 0, folder_data = NULL, folder_tas
     
   } else {
   
-    cli::cli_alert_danger("0 tasks found for protocol '{pid_protocol}'. NOT creating `_targets.R` file")  
+    cli::cli_alert_danger("0 tasks found for protocol '{pid}'. NOT creating `_targets.R` file")  
 
   }
   
@@ -652,6 +652,9 @@ create_targets_file <- function(pid_protocol = 0, folder_data = NULL, folder_tas
                                                details = "{.pkg {files}}"))
     } else {
       
+      cli_message(var_used = files,
+                  info = "{cli::style_bold((cli::col_yellow('Overwriten')))} file '_targets.R' to include the following {length(files)} tasks", 
+                  details = "{.pkg {files}}")
       response_prompt = 1
       
     }
