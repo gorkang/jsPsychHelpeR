@@ -40,10 +40,7 @@ prepare_Consent <- function(DF_clean, short_name_scale_str) {
                      help_names = FALSE) # help_names = FALSE once the script is ready
   
   # Create long -------------------------------------------------------------
-  DF_long_RAW = create_raw_long(DF_clean, short_name_scale = short_name_scale_str, numeric_responses = FALSE)
-  
-  # Show number of items, responses, etc. [uncomment to help prepare the test] 
-  # prepare_helper(DF_long_RAW, show_trialid_questiontext = TRUE)
+  DF_long_RAW = create_raw_long(DF_clean, short_name_scale = short_name_scale_str, numeric_responses = FALSE, help_prepare = FALSE)
   
   
   # Create long DIR ------------------------------------------------------------
@@ -111,7 +108,8 @@ prepare_Consent <- function(DF_clean, short_name_scale_str) {
 
 
   # CHECK NAs -------------------------------------------------------------------
-  check_NAs(DF_wide_RAW_DIR)
+  # TODO: En algun protocolo se ha modificado la tarea Consent
+  # check_NAs(DF_wide_RAW_DIR)
   
   # Save files --------------------------------------------------------------
   save_files(DF_wide_RAW_DIR, short_name_scale = short_name_scale_str, is_scale = TRUE)

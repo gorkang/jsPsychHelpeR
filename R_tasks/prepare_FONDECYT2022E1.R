@@ -63,15 +63,12 @@ prepare_FONDECYT2022E1 <- function(DF_clean, short_name_scale_str) {
   
   # Create long -------------------------------------------------------------
   DF_long_RAW = 
-    create_raw_long(DF_clean, short_name_scale = short_name_scale_str, numeric_responses = FALSE, is_experiment = TRUE) %>% 
+    create_raw_long(DF_clean, short_name_scale = short_name_scale_str, numeric_responses = FALSE, is_experiment = TRUE, help_prepare = FALSE) %>% 
     
     # SHOULD DO THIS INSIDE create_raw_long is_experiment????
     mutate(trialid = gsub("_[1-5]$", "", trialid),
            trialid = paste0(trialid, "_", condition_within)) %>% 
     select(-condition_within)
-  
-  # Show number of items, responses, etc. [uncomment to help prepare the test] 
-  # prepare_helper(DF_long_RAW, show_trialid_questiontext = TRUE)
   
   
   # Create long DIR ------------------------------------------------------------

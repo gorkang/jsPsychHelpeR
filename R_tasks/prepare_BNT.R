@@ -25,15 +25,12 @@ prepare_BNT <- function(DF_clean, short_name_scale_str) {
                      help_names = FALSE) # help_names = FALSE once the script is ready
   
   # Create long -------------------------------------------------------------
-  DF_long_RAW = create_raw_long(DF_clean, short_name_scale = short_name_scale_str, numeric_responses = TRUE) %>% 
+  DF_long_RAW = create_raw_long(DF_clean, short_name_scale = short_name_scale_str, numeric_responses = TRUE, help_prepare = FALSE) %>% 
     
     # In BNT we have exit conditions. Add "BNT_03","BNT_04" to make we have all the columns we need to complete the correction
     bind_rows(tibble(trialid = c("BNT_03","BNT_04"))) %>% 
     complete(trialid, nesting(id, experiment)) %>% 
     drop_na(id) 
-  
-  # Show number of items, responses, etc. [uncomment to help prepare the test] 
-  # prepare_helper(DF_long_RAW, show_trialid_questiontext = TRUE)
   
   
   # Create long DIR ------------------------------------------------------------

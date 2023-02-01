@@ -45,7 +45,7 @@ prepare_ERQ <- function(DF_clean, short_name_scale_str) {
     DF_clean,
     short_name_scale = short_name_scale_str,
     numeric_responses = TRUE,
-    help_prepare = TRUE
+    help_prepare = FALSE
   )
 
 
