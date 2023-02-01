@@ -13,12 +13,7 @@
 delete_duplicates <- function(folder, check = TRUE, keep_which = "older") {
   
   # DEBUG
-  # folder = ".vault/data/"
-  # folder = "data/3/"
-  # check = TRUE
-  # keep_which = "newer"
-  
-  # folder = "data/4"
+  # folder = "data/12/"
   # check = TRUE
   # keep_which = "older"
   
@@ -36,11 +31,8 @@ delete_duplicates <- function(folder, check = TRUE, keep_which = "older") {
   DF_files =
     tibble(full_filename = list.files(path = folder, pattern = "*.csv", full.names = TRUE)) %>% 
     mutate(filename = basename(full_filename)) %>% 
-    separate(col = filename, 
-             into = c("project", "experimento", "version", "datetime", "id"), 
-             sep = c("_"), remove = FALSE) %>% 
-    mutate(id = gsub("(*.)\\.csv", "\\1", id),
-           id = gsub(" \\([2-9]{1,2}\\)", "", id))
+    parse_filename() |> 
+    mutate(id = gsub(" \\([2-9]{1,2}\\)", "", id)) # remove the (2) from the filename
   
   
   folder = dirname(DF_files$full_filename[1])

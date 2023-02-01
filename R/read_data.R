@@ -15,7 +15,6 @@ read_data <- function(input_files, anonymize = FALSE, save_output = TRUE, worker
   
   # DEBUG
   # debug_function(read_data)
-  # workers = 1
   
   # We accept either a single zip file or multiple csv files
   DF_raw_read = read_csv_or_zip(input_files, workers = workers)
@@ -28,12 +27,8 @@ read_data <- function(input_files, anonymize = FALSE, save_output = TRUE, worker
   # Extract information from filename
   DF_raw =
     DF_raw_read %>% 
-    separate(col = filename, 
-             into = c("project", "experimento", "version", "datetime", "id"), 
-             sep = c("_"), remove = FALSE) %>% 
-    mutate(time_elapsed = as.integer(time_elapsed),
-           id = gsub("(*.)\\.csv", "\\1", id)) # userID
-  
+    parse_filename() |> 
+    mutate(time_elapsed = as.integer(time_elapsed))  
   
 
   # Wide version ------------------------------------------------------------

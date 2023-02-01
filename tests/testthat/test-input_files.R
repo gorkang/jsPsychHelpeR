@@ -15,7 +15,7 @@ testthat::test_that('Check all input files have the essential columns', {
   # Store column names of files
   read_check <- function(file_name, workers) {
     DF = data.table::fread(here::here(file_name), encoding = 'UTF-8', nThread = 1)
-    names(DF) %>% as_tibble() %>% mutate(name_file = file_name)
+    names(DF) %>% as_tibble() %>% mutate(filename = file_name)
   }
   
   all_csvs = all(grepl("\\.csv", input_files))
@@ -26,20 +26,15 @@ testthat::test_that('Check all input files have the essential columns', {
     
     # We read ONE file for each task. Otherwise, with big protocols it takes ages
     one_of_each_file = 
-      basename(input_files) %>% as_tibble() %>% 
-      separate(col = value, into = c("project", "experimento", "version", "datetime", "id"), sep = c("_"), remove = FALSE, extra = "merge") %>% 
+      tibble(filename = basename(input_files)) %>% 
+      parse_filename() |> 
       group_by(experimento) %>% 
       sample_n(1) %>% 
-      pull(value)    # colClasses = c(response = "character")
+      pull(filename)
     
     # Construimos DF global
     DF_final = purrr::map_dfr(paste0(dirname(input_files), "/", one_of_each_file), read_check, workers = workers) %>% 
-      mutate(name_file = basename(name_file)) %>% 
-      separate(col = name_file, 
-               into = c("project", "experimento", "version", "datetime", "id"), 
-               sep = c("_"), remove = FALSE, extra = "merge") %>% 
-      mutate(id = gsub("\\.csv", "", id))
-    
+      parse_filename()
 
   # Essential columns
   essential_columns = c("procedure", "trialid", "rt", "responses", "stimulus")
@@ -60,13 +55,13 @@ testthat::test_that('Check all input files have the essential columns', {
     
     # cat(cli::col_green("\n - Missing column: "), name_missing_column)
     DF_final %>% 
-      group_by(name_file) %>% 
+      group_by(filename) %>% 
       # filter(!"responses" %in% value) %>%
       filter(!name_missing_column %in% value) %>%
       
       ungroup() %>% 
-      distinct(name_file) %>% 
-      pull(name_file)
+      distinct(filename) %>% 
+      pull(filename)
     
   }
   

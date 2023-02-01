@@ -1,3 +1,33 @@
+#' parse_filename
+#' 
+#' Parse input files to get the essential pieces encoded in the filename column
+#'
+#' @param DF DF with a list of 
+#'
+#' @return
+#' @export
+#'
+#' @examples
+parse_filename <- function(DF) {
+  
+  if(!"filename" %in% colnames(DF)) cli::cli_abort("The input DF must include a filename column")
+
+  DF |> 
+    # Make sure it works regardless of having a full path or not
+    mutate(input = filename,
+           filename = basename(filename)) |> 
+    # Separate chunks
+    separate(col = filename, 
+             into = c("project", "experimento", "version", "datetime", "id"), 
+             sep = c("_"), 
+             remove = FALSE) |> 
+            # TODO: extra = "merge"
+    
+    # Clean id
+    mutate(id = gsub("(*.)\\.csv", "\\1", id))
+  
+}
+
 #' standardized_names
 #' Standardized names for Direct scores, dimensions and scales
 #' Creates names_list, which can be used in the prepare_TASK scripts to create 
@@ -863,10 +893,11 @@ show_progress_pid <- function(pid = 3, files_vector, last_task = "Goodbye", goal
   
   # Read files in csv or zip
   DF_files = read_csv_or_zip(files_vector) |> 
-    tidyr::separate(col = filename,
-                    into = c("project", "experimento", "version", "datetime", "id"),
-                    sep = c("_"), remove = FALSE) %>%
-    mutate(id = gsub("(*.)\\.csv", "\\1", id))
+    parse_filename()
+    # tidyr::separate(col = filename,
+    #                 into = c("project", "experimento", "version", "datetime", "id"),
+    #                 sep = c("_"), remove = FALSE) %>%
+    # mutate(id = gsub("(*.)\\.csv", "\\1", id))
   
   
   DF_progress =
@@ -1286,9 +1317,16 @@ check_project_and_results <- function(participants, folder_protocol, folder_resu
   
   # DEBUG
   # participants = 5
+  # folder_results = "data/999/"
+  # folder_results = "data/9992/"
+  
   
   files_protocol = dir(folder_protocol)
   files_results = dir(folder_results)
+  
+  # If it's a single zip, read files inside # TODO: make more eficient
+  if (grepl("\\.zip$", basename(files_results))) files_results = read_zips(paste0(folder_results, "/", files_results), only_list = TRUE)
+  
   
   if (length(files_protocol) / (length(files_results)/participants) == 1)  {
     cat("OK, one task per participant")
@@ -1298,10 +1336,14 @@ check_project_and_results <- function(participants, folder_protocol, folder_resu
     cat(length(files_results)/participants, "files per participant\n")
   }
   
-  experiments_results = tibble(filename = files_results) %>% tidyr::separate(col = filename,
-                                                                             into = c("project", "experimento", "version", "datetime", "id"),
-                                                                             sep = c("_"), remove = FALSE) %>%
-    mutate(id = gsub("(*.)\\.csv", "\\1", id)) %>% distinct(experimento) %>% 
+  experiments_results = 
+    tibble(filename = files_results) %>% 
+    parse_filename() |> 
+    # tidyr::separate(col = filename,
+    #                 into = c("project", "experimento", "version", "datetime", "id"),
+    #                 sep = c("_"), remove = FALSE) %>%
+    # mutate(id = gsub("(*.)\\.csv", "\\1", id)) %>% 
+    distinct(experimento) %>% 
     pull(experimento)
   
   missing_experiments = files_protocol[!files_protocol %in% paste0(experiments_results, ".js")]
@@ -1375,13 +1417,15 @@ read_csv_or_zip <- function(input_files, workers = 1) {
 #' @export
 #'
 #' @examples
-read_zips = function(input_files, workers = 1, unzip_dir = file.path(dirname(input_files), sprintf("csvtemp_%s", sub(".zip", "", basename(input_files)))), silent = FALSE, do_cleanup = TRUE){
+read_zips = function(input_files, workers = 1, unzip_dir = file.path(dirname(input_files), sprintf("csvtemp_%s", sub(".zip", "", basename(input_files)))), silent = FALSE, do_cleanup = TRUE, only_list = FALSE){
   
   # DEBUG
+  # input_files = "data/999/999.zip"
   # workers = 1
   # unzip_dir = file.path(dirname(input_files), sprintf("csvtemp_%s", sub(".zip", "", basename(input_files))))
   # silent = FALSE
   # do_cleanup = TRUE
+  # only_list = FALSE
   
   dir.create(unzip_dir, showWarnings = FALSE)
   
@@ -1407,7 +1451,12 @@ read_zips = function(input_files, workers = 1, unzip_dir = file.path(dirname(inp
   if (!all(tools::file_ext(fns) == "csv")) cli::cli_abort("The zip file should only contain CSV files")
   
   # Read files
-  res = purrr::map_dfr(fns %>% set_names(basename(.)), data.table::fread, .id = "filename", colClasses = 'character', encoding = 'UTF-8', fill = TRUE, nThread = as.numeric(workers)) %>% as_tibble()
+  if (only_list == TRUE) {
+    res = fns
+  } else {
+    res = purrr::map_dfr(fns %>% set_names(basename(.)), data.table::fread, .id = "filename", colClasses = 'character', encoding = 'UTF-8', fill = TRUE, nThread = as.numeric(workers)) %>% as_tibble()  
+  }
+  
   
   # Delete files
   if (do_cleanup) unlink(unzip_dir, recursive = TRUE)
