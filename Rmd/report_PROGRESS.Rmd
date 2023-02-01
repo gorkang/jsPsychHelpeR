@@ -81,7 +81,11 @@ DT::datatable(DF$DF_progress,
 
 DF$PLOT_progress
 
-ggsave(here::here(paste0("outputs/plots/plot_", params$pid_report, "_progress.png")), DF$PLOT_progress, width = 16, height = 10, bg = "white")
+filename_plot = here::here(paste0("outputs/plots/plot_", 
+                                  gsub("\\/", "_", params$pid_report), # So it works in dev protocols
+                                  "_progress.png"))
+
+ggsave(filename_plot, DF$PLOT_progress, width = 16, height = 10, bg = "white")
   
 ```
 

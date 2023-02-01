@@ -70,19 +70,24 @@ We create the groups crossing the variables: `r paste(params$group_vars, collaps
 
 ```{r summary, echo=FALSE}
 
-DT_analysis = 
-  params$input_DF %>% 
-  DT::datatable(options = list(dom = 'ti'), rownames = FALSE) 
-
 if (all(params$group_vars %in% names(DF_analysis))) {
+  
+  DT_analysis = 
+    DF_analysis %>% 
+    DT::datatable(options = list(dom = 'ti'), rownames = FALSE) 
+
+
   DT_analysis %>% 
     DT::formatStyle(
       columns = c("missing"), 
       target = "cell",
       color = DT::styleInterval(cuts = c(-10, 0), values = c("red", "orange", "green"))
   )
+  
 } else {
-  DT_analysis
+  
+  cat("group_vars NOT in DF_analysis. Fix in _targets.R")
+  
 }
 
 ```
