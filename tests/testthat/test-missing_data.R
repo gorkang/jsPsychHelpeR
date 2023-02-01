@@ -20,7 +20,7 @@ testthat::test_that('Tests if participants that completed the protocol are missi
   # Use max n of tasks as criteria for completed protocol
   ids_completed_protocol = 
     DF_raw %>% 
-    count(id, experimento) %>% 
+    count(id, experiment) %>% 
     count(id, name = "tasks") %>% 
     filter(tasks == max(.$tasks))
   

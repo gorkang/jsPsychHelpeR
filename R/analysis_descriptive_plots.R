@@ -68,15 +68,15 @@ analysis_descriptive_plots <- function(DF_joined, DF_raw, DF_clean, save_plots =
   options(scipen = 999)
   
   plot_time_participants = DF_raw %>% 
-    select(id, experimento, rt) %>% 
+    select(id, experiment, rt) %>% 
     mutate(rt = as.numeric(rt)/60000) %>% 
-    group_by(id, experimento) %>% 
+    group_by(id, experiment) %>% 
     summarise(TIME = round(max(rt), 2), 
               N = n(), 
               .groups = "keep") %>% 
     ggplot(aes(TIME)) +
     geom_histogram(bins = 30) +
-    facet_wrap(~experimento, scales = "free") + 
+    facet_wrap(~experiment, scales = "free") + 
     theme_minimal() +
     labs(title = "time of participants by task",
          x = "time (in minutes)",
@@ -92,7 +92,7 @@ analysis_descriptive_plots <- function(DF_joined, DF_raw, DF_clean, save_plots =
     labs(title = "rt of all the responses by task",
          x = "rt (in seconds)",
          y = "number of responses") +
-    facet_wrap(~ experimento, scales = "free")
+    facet_wrap(~ experiment, scales = "free")
   
   
 

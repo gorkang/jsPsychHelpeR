@@ -19,7 +19,7 @@ testthat::test_that('Check if the trialid question_text are unique', {
     #            is.na(stimulus) ~ question_text,
     #            TRUE ~ NA_character_
     #          )) %>% 
-    group_by(experimento) %>% 
+    group_by(experiment) %>% 
     count(trialid, stimulus) %>% 
     group_by(trialid, stimulus) %>% 
     count() %>% 

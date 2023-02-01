@@ -61,13 +61,13 @@ create_clean_data <- function(DF_raw, save_output = TRUE, check_duplicates = TRU
   
   
   # CHECK duplicate trialid's -----------------------------------------------
-  DF_duplicate_trialids_raw = DF_clean %>% count(id, experimento, trialid) %>% arrange(desc(n)) %>% filter(n > 1)
+  DF_duplicate_trialids_raw = DF_clean %>% count(id, experiment, trialid) %>% arrange(desc(n)) %>% filter(n > 1)
   
   DF_message = DF_duplicate_trialids_raw %>% 
-    # filter(experimento != "Consent") |> 
-    # mutate(experimento = gsub("(.*)_[0-9]{2,3}", "\\1", trialid)) %>% 
+    # filter(experiment != "Consent") |> 
+    # mutate(experiment = gsub("(.*)_[0-9]{2,3}", "\\1", trialid)) %>% 
     group_by(id) %>% 
-    summarize(duplicate_tasks = paste(unique(experimento), collapse = ", ")) %>% 
+    summarize(duplicate_tasks = paste(unique(experiment), collapse = ", ")) %>% 
     transmute(message = paste0(id, ": ", duplicate_tasks ))
   
   if (check_duplicates == TRUE & nrow(DF_message) > 0) rlang::abort(message = paste0("There are duplicate trialid's for: \n['participant: tasks']\n", paste("-", str_sort(DF_message$message, numeric = TRUE), collapse = "\n"), "\n\nFor more details check `create_clean_data()`"))

@@ -29,7 +29,7 @@ prepare_BNT <- function(DF_clean, short_name_scale_str) {
     
     # In BNT we have exit conditions. Add "BNT_03","BNT_04" to make we have all the columns we need to complete the correction
     bind_rows(tibble(trialid = c("BNT_03","BNT_04"))) %>% 
-    complete(trialid, nesting(id, experimento)) %>% 
+    complete(trialid, nesting(id, experiment)) %>% 
     drop_na(id) 
   
   # Show number of items, responses, etc. [uncomment to help prepare the test] 

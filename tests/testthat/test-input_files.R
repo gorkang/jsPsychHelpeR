@@ -28,7 +28,7 @@ testthat::test_that('Check all input files have the essential columns', {
     one_of_each_file = 
       tibble(filename = basename(input_files)) %>% 
       parse_filename() |> 
-      group_by(experimento) %>% 
+      group_by(experiment) %>% 
       sample_n(1) %>% 
       pull(filename)
     
@@ -42,8 +42,8 @@ testthat::test_that('Check all input files have the essential columns', {
   
   names_missing_columns = 
     DF_final %>% 
-    filter(!experimento %in% whitelist_tasks) %>% 
-    # count(experimento, value) 
+    filter(!experiment %in% whitelist_tasks) %>% 
+    # count(experiment, value) 
     count(value) %>% # Todos los campos deberian aparecer length(number_of_files) veces
     filter(value %in% essential_columns) %>%
     filter(n != max(n)) %>% 

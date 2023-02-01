@@ -42,11 +42,11 @@ DF = DF_clean
 
 number_participants = DF_raw %>% distinct(id) %>% nrow()
 
-number_tasks = DF_raw %>% distinct(experimento) %>% nrow()
+number_tasks = DF_raw %>% distinct(experiment) %>% nrow()
 
 text_participants = 
   DF_raw %>% 
-  count(id, experimento) %>% 
+  count(id, experiment) %>% 
   count(id, name = "tasks") %>% 
   count(tasks, name = "people") %>% 
   arrange(desc(tasks))
@@ -71,20 +71,20 @@ DT::datatable(text_participants,
 
 ```{r summary-table, echo=FALSE}
 
-all_tasks = DF_raw %>% distinct(experimento) %>% pull(experimento)
+all_tasks = DF_raw %>% distinct(experiment) %>% pull(experiment)
 
 summary_table = 
   DF_raw %>% 
-    select(id, experimento, rt) %>% 
+    select(id, experiment, rt) %>% 
     mutate(rt = as.numeric(rt)) %>% 
-    group_by(id, experimento) %>% 
+    group_by(id, experiment) %>% 
     summarise(TIME = round(sum(rt, na.rm = TRUE)/60000, 2), # TIME = round(max(time_elapsed)/60000, 2), # time_elapsed is cumulative!
               N = n(), 
               .groups = "keep") %>% 
     group_by(id) %>% 
     summarise(TIME = sum(TIME), 
               N = n(), 
-              tasks = paste(experimento, collapse = ", "),
+              tasks = paste(experiment, collapse = ", "),
               .groups = "keep") %>% 
       mutate(missing = paste(all_tasks[!all_tasks %in% (strsplit(tasks, split = ", ") %>% unlist())], collapse = ", "))
 
@@ -100,14 +100,14 @@ DT::datatable(summary_table, filter = 'top', options = list(dom = 'ltip', pageLe
 # Using time_elapsed overestimates time by a lot. NOT sure why
 # summary_table2 =
 #   DF_raw %>% 
-#     group_by(id, experimento) %>% 
+#     group_by(id, experiment) %>% 
 #     summarise(
 #       n_participants = n_distinct(id),
 #       time = max(time_elapsed) / 60000,
 #       .groups = "drop"
 #     ) %>% #View
 #   
-#     group_by(experimento) %>% 
+#     group_by(experiment) %>% 
 #     summarise(
 #       n_participants = n(),
 #       mean_time = round(mean(time), 1),
@@ -119,13 +119,13 @@ DT::datatable(summary_table, filter = 'top', options = list(dom = 'ltip', pageLe
 
  summary_table2 =
    DF_raw %>% 
-    select(id, experimento, rt) %>% 
+    select(id, experiment, rt) %>% 
     mutate(rt = as.numeric(rt)) %>% 
-    group_by(id, experimento) %>% 
+    group_by(id, experiment) %>% 
     summarise(TIME = round(sum(rt, na.rm = TRUE)/60000, 2), # TIME = round(max(time_elapsed)/60000, 2), # time_elapsed is cumulative!
               N = n(), 
               .groups = "drop") %>% 
-    group_by(experimento) %>% 
+    group_by(experiment) %>% 
 summarise(
       n_participants = n(),
       mean_time = round(mean(TIME), 1),
@@ -147,7 +147,7 @@ DT::datatable(summary_table2, filter = 'top', options = list(dom = 'ltip', pageL
 # Using time_elapsed overestimates time by a lot. NOT sure why
 # summary_table3 =
 #   DF_raw %>% 
-#     group_by(id, experimento) %>% 
+#     group_by(id, experiment) %>% 
 #     summarise(
 #       # n_participants = n_distinct(id),
 #       time = round(max(time_elapsed) / 60000, 2),
@@ -156,9 +156,9 @@ DT::datatable(summary_table2, filter = 'top', options = list(dom = 'ltip', pageL
 
 summary_table3 = 
   DF_raw %>% 
-  select(id, experimento, rt) %>% 
+  select(id, experiment, rt) %>% 
   mutate(rt = as.numeric(rt)) %>% 
-  group_by(id, experimento) %>% 
+  group_by(id, experiment) %>% 
   summarise(TIME = round(sum(rt, na.rm = TRUE)/60000, 2), # TIME = round(max(time_elapsed)/60000, 2), # time_elapsed is cumulative!
             items = n(), 
             .groups = "drop")
@@ -173,18 +173,18 @@ DT::datatable(summary_table3, filter = 'top', options = list(dom = 'ltip', pageL
 
 ```{r summary-position, echo=FALSE}
 summary_position = DF_raw %>% 
-  distinct(id, experimento, datetime) %>% 
+  distinct(id, experiment, datetime) %>% 
   group_by(id) %>% 
   arrange(id, (datetime)) %>% 
   mutate(Order = row_number()) %>% 
   select(-datetime) %>% 
-  group_by(experimento) %>% 
+  group_by(experiment) %>% 
   summarise(MEAN_Position = round(mean(Order), 1),
             SD_Position = round(sd(Order), 1),
             MIN_Position = min(Order), 
             MAX_Position = max(Order), 
             .groups = "drop") %>% 
-  arrange(MEAN_Position, experimento)
+  arrange(MEAN_Position, experiment)
 
 DT::datatable(summary_position, filter = 'top', options = list(dom = 'ltip', pageLength = 10))
 
@@ -201,10 +201,10 @@ DT::datatable(summary_position, filter = 'top', options = list(dom = 'ltip', pag
 # Alternative trialid for each scale
 trialid_table = DF %>% 
   filter(trial_type != "fullscreen") %>% 
-  select(experimento, trial_type, trialid, response) %>% 
-  group_by(experimento) %>% 
+  select(experiment, trial_type, trialid, response) %>% 
+  group_by(experiment) %>% 
   distinct(trialid) %>% 
-  count(experimento, name = "number_items")
+  count(experiment, name = "number_items")
 
 
 DT::datatable(trialid_table, 
@@ -223,8 +223,8 @@ DT::datatable(trialid_table,
 
 # trialid and question_text for each experiment
 trialid_detail_table = DF %>% 
-  select(experimento, trialid, stimulus) %>% 
-  group_by(experimento) %>% 
+  select(experiment, trialid, stimulus) %>% 
+  group_by(experiment) %>% 
   distinct(trialid, stimulus) 
 
 
@@ -270,9 +270,9 @@ Only showing multi-choice, slider and liker scales.
 # Alternatives responses for each scale
 responses_table = DF %>% 
   # distinct(trial_type)
-  select(experimento, trial_type, trialid, response) %>% 
+  select(experiment, trial_type, trialid, response) %>% 
   filter(trial_type %in% c("survey-multi-choice-vertical", "survey-multi-choice-horizontal", "likert", "html-slider-response")) %>% 
-  group_by(experimento) %>% 
+  group_by(experiment) %>% 
   distinct(trialid, response) 
 
 
@@ -291,16 +291,16 @@ DT::datatable(responses_table,
 ```{r echo=FALSE}
 #   DF_responses =
 #     DF %>%
-#     count(trialid, experimento, responses) %>%
-#     group_by(experimento, trialid) %>%
+#     count(trialid, experiment, responses) %>%
+#     group_by(experiment, trialid) %>%
 #     summarise(N = n(),
 #               Responses = paste(responses, collapse = ", "),
 #               .groups = "drop") %>%
-#     group_by(experimento, Responses) %>%
+#     group_by(experiment, Responses) %>%
 #     summarise(N = n(),
 #               trialid = paste(trialid, collapse = ", "),
 #               .groups = "drop") %>% 
-#   select(experimento, trialid, Responses, N)
+#   select(experiment, trialid, Responses, N)
 # 
 # 
 # DT::datatable(DF_responses, 

@@ -40,21 +40,21 @@ delete_duplicates <- function(folder, check = TRUE, keep_which = "older") {
   suppressMessages({
     DUPLICATES = 
       DF_files %>% 
-      count(id, experimento, filename) %>% 
-      janitor::get_dupes(c(id, experimento))
+      count(id, experiment, filename) %>% 
+      janitor::get_dupes(c(id, experiment))
   })
   
   if (nrow(DUPLICATES) > 0) {
     
     if (keep_which == "older") {
       
-      # Select the oldest file for each id/experimento
-      KEEP = DF_files %>% group_by(id, experimento) %>% filter(datetime == min(datetime))
+      # Select the oldest file for each id/experiment
+      KEEP = DF_files %>% group_by(id, experiment) %>% filter(datetime == min(datetime))
       
     } else if (keep_which == "newer") {
       
-      # Select the newest file for each id/experimento
-      KEEP = DF_files %>% group_by(id, experimento) %>% filter(datetime == max(datetime))
+      # Select the newest file for each id/experiment
+      KEEP = DF_files %>% group_by(id, experiment) %>% filter(datetime == max(datetime))
       
     } else {
       cat(cli::col_red("keep_which should be either 'older' or 'newer'"))
@@ -65,7 +65,7 @@ delete_duplicates <- function(folder, check = TRUE, keep_which = "older") {
     # Delete the rest
     DELETE = 
       DUPLICATES %>% 
-      anti_join(KEEP, by = c("id", "experimento", "filename")) %>% 
+      anti_join(KEEP, by = c("id", "experiment", "filename")) %>% 
       pull(filename)
     
     
@@ -83,16 +83,16 @@ delete_duplicates <- function(folder, check = TRUE, keep_which = "older") {
       
       DF_dups_clean = 
         DUPLICATES %>% 
-        split(interaction(DUPLICATES$id, DUPLICATES$experimento)) %>% 
+        split(interaction(DUPLICATES$id, DUPLICATES$experiment)) %>% 
         .[lapply(., nrow) > 0] 
       
       DF_differences_all = 
         1:length(DF_dups_clean) %>% 
         map(~ 
               {
-                if (!DF_dups_clean[[.x]]$experimento[1] %in% c("Consent", "Goodbye")) { 
+                if (!DF_dups_clean[[.x]]$experiment[1] %in% c("Consent", "Goodbye")) { 
                   
-                  # Reads all files of a set of duplicates (id/experimento) and filters out all the non-duplicates values
+                  # Reads all files of a set of duplicates (id/experiment) and filters out all the non-duplicates values
                   DF_temp = map_df(paste0(folder, "/", DF_dups_clean[[.x]]$filename) %>% set_names(basename(.)), data.table::fread, .id = "filename", encoding = 'UTF-8') %>% 
                     drop_na(trialid) %>% filter(trialid != "") 
                   
@@ -108,7 +108,7 @@ delete_duplicates <- function(folder, check = TRUE, keep_which = "older") {
         )
       
       # Use names of sets of duplicates for the elements of the list
-      names(DF_differences_all) <- 1:length(DF_dups_clean) %>% map_chr(~ DF_dups_clean[[.x]] %>% transmute(name_list = paste0(id, "_", experimento)) %>% pull(name_list) %>% unlist() %>% head(1))
+      names(DF_differences_all) <- 1:length(DF_dups_clean) %>% map_chr(~ DF_dups_clean[[.x]] %>% transmute(name_list = paste0(id, "_", experiment)) %>% pull(name_list) %>% unlist() %>% head(1))
       
       # Filter out empty entries
       LIST_differences_diff = 
@@ -122,7 +122,7 @@ delete_duplicates <- function(folder, check = TRUE, keep_which = "older") {
       
       # Duplicates that are SAFE to delete because they are == 
       SAFE_DELETE = 
-        DUPLICATES %>% mutate(index = paste0(id, "_", experimento)) %>% 
+        DUPLICATES %>% mutate(index = paste0(id, "_", experiment)) %>% 
         filter(index %in% LIST_differences_equal) %>% 
         filter(filename %in% DELETE) %>% pull(filename)
       

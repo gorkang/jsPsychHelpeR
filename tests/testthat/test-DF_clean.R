@@ -26,7 +26,7 @@ testthat::test_that('Check if any of the items appear more or less than the othe
   
   DF_temp = 
     DF_clean %>% 
-    group_by(experimento) %>% 
+    group_by(experiment) %>% 
     count(trialid, name = "times_item_shown") %>% 
     filter(!trialid %in% white_list) %>% 
     count(times_item_shown) %>% 
@@ -35,13 +35,13 @@ testthat::test_that('Check if any of the items appear more or less than the othe
   DF_clean_offender_tests =
     DF_temp %>% 
     filter(n > 1) %>% 
-    pull(experimento)
+    pull(experiment)
   
   checks_DF = 
     DF_clean %>% 
-    group_by(experimento) %>% 
+    group_by(experiment) %>% 
     count(trialid) %>% 
-    filter(experimento %in% DF_clean_offender_tests)
+    filter(experiment %in% DF_clean_offender_tests)
   
   
   # Warning and log ---------------------------------------------------------

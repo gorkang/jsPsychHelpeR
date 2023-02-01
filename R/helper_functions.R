@@ -18,7 +18,7 @@ parse_filename <- function(DF) {
            filename = basename(filename)) |> 
     # Separate chunks
     separate(col = filename, 
-             into = c("project", "experimento", "version", "datetime", "id"), 
+             into = c("project", "experiment", "version", "datetime", "id"), 
              sep = c("_"), 
              remove = FALSE) |> 
             # TODO: extra = "merge"
@@ -236,9 +236,9 @@ create_raw_long <- function(DF_clean, short_name_scale, numeric_responses = FALS
       # filter(grepl(paste0(short_name_scale, "_[0-9]"), trialid)) %>%
     
       # NEW system
-      filter(experimento == short_name_scale) %>%
+      filter(experiment == short_name_scale) %>%
     
-      select(id, experimento, rt, trialid, stimulus, response, starts_with(eval(experimental_conditions), ignore.case = FALSE)) %>%
+      select(id, experiment, rt, trialid, stimulus, response, starts_with(eval(experimental_conditions), ignore.case = FALSE)) %>%
       mutate(response =
                if (numeric_responses == TRUE) {
                  as.numeric(response)
@@ -895,14 +895,14 @@ show_progress_pid <- function(pid = 3, files_vector, last_task = "Goodbye", goal
   DF_files = read_csv_or_zip(files_vector) |> 
     parse_filename()
     # tidyr::separate(col = filename,
-    #                 into = c("project", "experimento", "version", "datetime", "id"),
+    #                 into = c("project", "experiment", "version", "datetime", "id"),
     #                 sep = c("_"), remove = FALSE) %>%
     # mutate(id = gsub("(*.)\\.csv", "\\1", id))
   
   
   DF_progress =
     DF_files %>%
-    filter(experimento == last_task) %>%#"COVIDCONTROL"
+    filter(experiment == last_task) %>%#"COVIDCONTROL"
     distinct(id, .keep_all = TRUE) %>%
     distinct(filename, datetime) %>%
     mutate(fecha_registro = as.Date(datetime)) %>%
@@ -997,7 +997,7 @@ show_progress_pid <- function(pid = 3, files_vector, last_task = "Goodbye", goal
 separate_responses <- function(DF) {
   
   # DEBUG
-  # DF = DF_clean_raw #%>% filter(experimento == "MLQ")
+  # DF = DF_clean_raw #%>% filter(experiment == "MLQ")
   
   # How many different N of responses we have
   different_N = DF %>% 
@@ -1340,11 +1340,11 @@ check_project_and_results <- function(participants, folder_protocol, folder_resu
     tibble(filename = files_results) %>% 
     parse_filename() |> 
     # tidyr::separate(col = filename,
-    #                 into = c("project", "experimento", "version", "datetime", "id"),
+    #                 into = c("project", "experiment", "version", "datetime", "id"),
     #                 sep = c("_"), remove = FALSE) %>%
     # mutate(id = gsub("(*.)\\.csv", "\\1", id)) %>% 
-    distinct(experimento) %>% 
-    pull(experimento)
+    distinct(experiment) %>% 
+    pull(experiment)
   
   missing_experiments = files_protocol[!files_protocol %in% paste0(experiments_results, ".js")]
   

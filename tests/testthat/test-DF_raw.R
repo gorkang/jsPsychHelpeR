@@ -14,7 +14,7 @@ testthat::test_that('Check if DF_raw', {
     DF_raw %>%
     filter(!grepl("[a-zA-Z0-9]{1,100}_[0-9]{2}|^Instructions|^Fullscreen", trialid)) %>% 
     filter(trial_type != "fullscreen") %>% 
-    distinct(trialid, experimento) %>% 
+    distinct(trialid, experiment) %>% 
     drop_na(trialid) 
   
   offenders =
@@ -22,16 +22,16 @@ testthat::test_that('Check if DF_raw', {
     distinct(trialid, .keep_all = TRUE) %>% 
     mutate(message = 
              case_when(
-               is.na(trialid) ~ paste0(experimento, ": NA"),
-               trialid == "" ~ paste0(experimento, ": empty"),
-               TRUE ~ paste0(experimento, ": ", trialid))) %>% 
+               is.na(trialid) ~ paste0(experiment, ": NA"),
+               trialid == "" ~ paste0(experiment, ": empty"),
+               TRUE ~ paste0(experiment, ": ", trialid))) %>% 
     pull(message)
   
 
   
   # Test: we have the canonical columns in DF_raw -------------------------------------------------------------------
 
-    canonical_names_columns =  c("filename", "trial_type", "trial_index", "time_elapsed", "internal_node_id", "view_history", "rt", "trialid", "stimulus", "response", "id", "project", "experimento", "version", "datetime",
+    canonical_names_columns =  c("filename", "trial_type", "trial_index", "time_elapsed", "internal_node_id", "view_history", "rt", "trialid", "stimulus", "response", "id", "project", "experiment", "version", "datetime",
                                  "procedure", "success", "url", "question_order", "slider_start", "button_pressed", 
                                  "condition_within", "condition_between",
                                  "timeout", "failed_images", "failed_audio", "failed_video")
