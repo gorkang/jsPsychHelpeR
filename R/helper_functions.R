@@ -8,7 +8,7 @@
 #' @export
 #'
 #' @examples
-parse_filename <- function(DF) {
+parse_filename <- function(DF, separator = "_") {
   
   if(!"filename" %in% colnames(DF)) cli::cli_abort("The input DF must include a filename column")
 
@@ -16,10 +16,11 @@ parse_filename <- function(DF) {
     # Make sure it works regardless of having a full path or not
     mutate(input = filename,
            filename = basename(filename)) |> 
+    
     # Separate chunks
     separate(col = filename, 
              into = c("project", "experiment", "version", "datetime", "id"), 
-             sep = c("_"), 
+             sep = separator, 
              remove = FALSE) |> 
             # TODO: extra = "merge"
     
@@ -608,9 +609,10 @@ create_vector_items <- function(VECTOR, collapse_string = "|") {
 create_targets_file <- function(pid = 0, folder_data = NULL, folder_tasks = NULL, dont_ask = FALSE) {
 
   # DEBUG
-  # folder_data = "data/999"
-  # folder_tasks = NULL
   # pid = "999"
+  # folder_data = paste0("data/", pid, "/")
+  # folder_tasks = NULL
+  
 
   suppressPackageStartupMessages(library(dplyr))
   
@@ -630,24 +632,47 @@ create_targets_file <- function(pid = 0, folder_data = NULL, folder_tasks = NULL
   if (is.null(folder_data) & !is.null(folder_tasks)) {
     
     files = gsub(".js", "", basename(list.files(folder_tasks, recursive = FALSE, pattern = ".js")))
-    # files_targets = gsub("-", "_", files)
-    
+
   } else if (!is.null(folder_data) & is.null(folder_tasks)) {
     
-    input_files = list.files(path = folder_data, pattern = "*.csv|*.zip", full.names = TRUE)
-
-    # Extract all unique tasks
-    files = read_csv_or_zip(input_files) %>% distinct(procedure) %>% pull(procedure)
-    # files_targets = gsub("-", "_", files)
+    # List files in data folder. If zip, read_csv_or_zip will read the zip and list files, If csv, will list after cleaning empty files
+    input_files_temp = list.files(path = folder_data, pattern = "*.csv|*.zip", full.names = TRUE) 
+    input_files = read_csv_or_zip(input_files = input_files_temp, only_list = TRUE)
+    
+    # Get distinct tasks/experiments
+    files = tibble(filename = input_files) |> parse_filename() |> distinct(experiment) |> pull(experiment)
+    
   }
   
   if (length(files) > 0) {
     
+    # Equivalent tasks DICC ---
+    
+      # Use dictionary to find the correct prepare function for translations
+      # This can be used when the correction logic DOES not change  (e.g. BNTen -> BNT)
+      DICC_equivalent_tasks = tibble(canonical = c("BNT"),
+                                     alt = c("BNTen"))
+      
+      files_prepare_funs = tibble(original = files) |>
+        left_join(DICC_equivalent_tasks, by = c("original" = "alt")) |> 
+        mutate(files = ifelse(!is.na(canonical), canonical, original)) |> 
+        pull(files)
+      
+      all_prepare_funs = gsub("prepare_|\\.R", "", list.files("R_tasks/"))
+      prepare_funs_NOT_found = files_prepare_funs[!files_prepare_funs %in% all_prepare_funs]
+      
+      if (length(prepare_funs_NOT_found) > 0) {
+        cli::cli_alert_warning("Did not find the prepare_FUN for {length(prepare_funs_NOT_found)} task: {prepare_funs_NOT_found}. 
+                                -If it is a translation, add it to `DICC_equivalent_tasks` in `create_targets_file()`.
+                                -If it is a new task, create the prepare_FUN with `create_new_task()`")
+      }
+    # END DICC ---
+
     # Read template
     template = readLines("targets/_targets_TEMPLATE.R")
     
     # Prepare targets section and joins section
-    targets = paste0("   tar_target(df_", files, ", prepare_", files, "(DF_clean, short_name_scale_str = '", files,"')),\n") %>% paste(., collapse = "")
+    targets = paste0("   tar_target(df_", files, ", prepare_", files_prepare_funs, "(DF_clean, short_name_scale_str = '", files,"')),\n") %>% paste(., collapse = "")
     joins = paste0("\t\t\t\t\t\t\t df_", files, ",\n") %>% paste(., collapse = "") %>% gsub(",\n$", "", .)
   
     # Replace targets and joins sections 
@@ -1366,14 +1391,13 @@ check_project_and_results <- function(participants, folder_protocol, folder_resu
 #' @export
 #'
 #' @examples
-read_csv_or_zip <- function(input_files, workers = 1) {
-  
+read_csv_or_zip <- function(input_files, workers = 1, only_list = FALSE) {
+
   length_files = length(input_files)
   input_folder = unique(dirname(input_files))
   all_csvs = all(grepl("\\.csv", input_files))
   all_zips = all(grepl("\\.zip", input_files))
-  
-  
+
   # Read file/s
   if (all_csvs) {
     
@@ -1382,13 +1406,17 @@ read_csv_or_zip <- function(input_files, workers = 1) {
     if (nrow(empty_files) > 0) cli::cli_alert_warning("There are {length(empty_files)} empty input files (size < 100 bytes)")
     input_files = input_files[!input_files %in% empty_files$files]
     
-    DF_raw_read = purrr::map_dfr(input_files %>% set_names(basename(.)), data.table::fread, .id = "filename", colClasses = 'character', encoding = 'UTF-8', nThread = as.numeric(workers)) %>% as_tibble()
-    # colClasses = c(response = "character")
+    if (only_list == TRUE) {
+      DF_raw_read = input_files
+    } else {
+      DF_raw_read = purrr::map_dfr(input_files %>% set_names(basename(.)), data.table::fread, .id = "filename", colClasses = 'character', encoding = 'UTF-8', nThread = as.numeric(workers)) %>% as_tibble()
+    }
+    
     
   } else if (length_files == 1 & all_zips) {
     
     # Unzips to temp folder, reads files and deletes temp folder
-    DF_raw_read = read_zips(input_files)  
+    DF_raw_read = read_zips(input_files, only_list = only_list)
     
   } else {
     # Other issues
@@ -1914,8 +1942,7 @@ count_responses <- function(DF, max_length_strings = 50) { #, n_unique = 20
   
   OUT = list(DF_out = DF_out,
              PLOT = PLOT_all / PLOT,
-             DF |> skimr::skim()  
-             # PLOT_all = PLOT_all
+             DF |> skimr::skim()
   )
   
   return(OUT)
