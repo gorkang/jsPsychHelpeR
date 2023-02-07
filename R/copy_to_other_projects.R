@@ -1,3 +1,15 @@
+#' copy_to_other_projects
+#' 
+#' Copy specific files to other projects
+#'
+#' @param file_name .
+#' @param overwrite_str .
+#' @param check .
+#' @param folder_to_search .
+#'
+#' @return
+#'
+#' @examples
 copy_to_other_projects <- function(file_name, overwrite_str = FALSE, check = TRUE, folder_to_search) {
   
   # DEBUG

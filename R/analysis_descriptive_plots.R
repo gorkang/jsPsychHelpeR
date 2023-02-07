@@ -1,12 +1,16 @@
-##' .. content for \description{} (no empty lines) ..
-##'
-##' .. content for \details{} ..
-##'
-##' @title
-##' @param df_analysis
-##' @return
-##' @author gorkang
-##' @export
+#' analysis_descriptive_plots
+#'
+#' Generate histograms for main variables
+#'
+#' @param DF_joined .
+#' @param DF_raw .
+#' @param DF_clean .
+#' @param save_plots TRUE / FALSE
+#'
+#' @return
+#' @export
+#'
+#' @examples
 analysis_descriptive_plots <- function(DF_joined, DF_raw, DF_clean, save_plots = FALSE) {
   
   # DEBUG
@@ -19,42 +23,42 @@ analysis_descriptive_plots <- function(DF_joined, DF_raw, DF_clean, save_plots =
   # Scores ----------------------------------------------------------------
   
   DF_plot = DF_joined %>% 
-    select(id, all_of(all_scales))
+   dplyr::select(id, dplyr::all_of(all_scales))
   
   # NUMERIC values
   d <- 
     DF_plot %>% 
-    select_if(is.numeric) %>% 
-    pivot_longer(1:ncol(.)) %>% 
-    filter(value != 9999) %>% # Si existiera algun codigo para missing values, filtrar
-    drop_na(value)
+    dplyr::select_if(is.numeric) %>% 
+    tidyr::pivot_longer(1:ncol(.)) %>% 
+    dplyr::filter(value != 9999) %>% # Si existiera algun codigo para missing values, filtrar
+   tidyr::drop_na(value)
   
   # Plot numeric variables
   plot1 = d %>% 
-    ggplot(aes(value)) + 
-    facet_wrap(~ name, scales = "free") + 
-    geom_histogram(bins = 15) +
-    theme_minimal()
+    ggplot2::ggplot(ggplot2::aes(value)) + 
+    ggplot2::facet_wrap(~ name, scales = "free") + 
+    ggplot2::geom_histogram(bins = 15) +
+    ggplot2::theme_minimal()
   
   
   # CHARACTER values
   d2 <- 
     DF_plot %>% 
-    select_if(is.character) %>% 
-    # select(-id) %>% 
-    pivot_longer(1:ncol(.)) %>% 
-    filter(value != 9999) %>% # Si existiera algun codigo para missing values, filtrar
-    drop_na(value)
+    dplyr::select_if(is.character) %>% 
+    #dplyr::select(-id) %>% 
+    tidyr::pivot_longer(1:ncol(.)) %>% 
+    dplyr::filter(value != 9999) %>% # Si existiera algun codigo para missing values, filtrar
+   tidyr::drop_na(value)
   
   # If we only have id, do not create plot
   if(length(unique(d2$name)) != 1) {
     # Plot character variables
     plot2 = d2 %>% 
-      ggplot(aes(value)) + 
-      facet_wrap(~ name, scales = "free") + 
-      geom_bar() +
-      coord_flip() +
-      theme_minimal()
+      ggplot2::ggplot(ggplot2::aes(value)) + 
+      ggplot2::facet_wrap(~ name, scales = "free") + 
+      ggplot2::geom_bar() +
+      ggplot2::coord_flip() +
+      ggplot2::theme_minimal()
     
     
   } else {
@@ -68,31 +72,31 @@ analysis_descriptive_plots <- function(DF_joined, DF_raw, DF_clean, save_plots =
   options(scipen = 999)
   
   plot_time_participants = DF_raw %>% 
-    select(id, experiment, rt) %>% 
-    mutate(rt = as.numeric(rt)/60000) %>% 
-    group_by(id, experiment) %>% 
-    summarise(TIME = round(max(rt), 2), 
+   dplyr::select(id, experiment, rt) %>% 
+    dplyr::mutate(rt = as.numeric(rt)/60000) %>% 
+    dplyr::group_by(id, experiment) %>% 
+    dplyr::summarise(TIME = round(max(rt), 2), 
               N = n(), 
               .groups = "keep") %>% 
-    ggplot(aes(TIME)) +
-    geom_histogram(bins = 30) +
-    facet_wrap(~experiment, scales = "free") + 
-    theme_minimal() +
-    labs(title = "time of participants by task",
+    ggplot2::ggplot(ggplot2::aes(TIME)) +
+    ggplot2::geom_histogram(bins = 30) +
+    ggplot2::facet_wrap(~experiment, scales = "free") + 
+    ggplot2::theme_minimal() +
+    ggplot2::labs(title = "time of participants by task",
          x = "time (in minutes)",
          y = "number of participants") 
     # scale_x_log10(n.breaks = 10)
   
   
   plot_time_responses = DF_clean %>% 
-    mutate(rt = as.numeric(rt)/1000) %>% 
-    ggplot(aes(rt)) +
-    geom_histogram() +
-    theme_minimal() +
-    labs(title = "rt of all the responses by task",
+    dplyr::mutate(rt = as.numeric(rt)/1000) %>% 
+    ggplot2::ggplot(ggplot2::aes(rt)) +
+    ggplot2::geom_histogram() +
+    ggplot2::theme_minimal() +
+    ggplot2::labs(title = "rt of all the responses by task",
          x = "rt (in seconds)",
          y = "number of responses") +
-    facet_wrap(~ experiment, scales = "free")
+    ggplot2::facet_wrap(~ experiment, scales = "free")
   
   
 
@@ -101,10 +105,10 @@ analysis_descriptive_plots <- function(DF_joined, DF_raw, DF_clean, save_plots =
   if (save_plots == TRUE) {
     
     cli::cli_alert_info("Saving descriptive plots")
-    ggsave(paste0("outputs/plots/plot_", pid_target, "_descriptive_numeric.png"), plot1, dpi = 150, height = 12, width = 20, bg = "white")
-    ggsave(paste0("outputs/plots/plot_", pid_target, "_descriptive_categorical.png"), plot2, dpi = 150, height = 12, width = 20, bg = "white")
-    ggsave(paste0("outputs/plots/plot_", pid_target, "_time_participants.png"), plot_time_participants, dpi = 150, height = 12, width = 20, bg = "white")
-    ggsave(paste0("outputs/plots/plot_", pid_target, "_time_responses.png"), plot_time_responses, dpi = 150, height = 12, width = 20, bg = "white")
+    ggplot2::ggsave(paste0("outputs/plots/plot_", pid_target, "_descriptive_numeric.png"), plot1, dpi = 150, height = 12, width = 20, bg = "white")
+    ggplot2::ggsave(paste0("outputs/plots/plot_", pid_target, "_descriptive_categorical.png"), plot2, dpi = 150, height = 12, width = 20, bg = "white")
+    ggplot2::ggsave(paste0("outputs/plots/plot_", pid_target, "_time_participants.png"), plot_time_participants, dpi = 150, height = 12, width = 20, bg = "white")
+    ggplot2::ggsave(paste0("outputs/plots/plot_", pid_target, "_time_responses.png"), plot_time_responses, dpi = 150, height = 12, width = 20, bg = "white")
   
   }
   

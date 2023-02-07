@@ -136,7 +136,7 @@ add_pwd_for_pid_data <- function(pid) {
 
 encrypt_data <- function(mysupersecretpassword = NULL, data_unencrypted, output_name) {
   
-  library(sodium)
+  # library(sodium)
   
   if (grepl("\\.|\\/", output_name)) cli::cli_abort("output_name must NOT be a file name. Use a simple string as: 'passwords'")
   
@@ -149,11 +149,11 @@ encrypt_data <- function(mysupersecretpassword = NULL, data_unencrypted, output_
   # data_unencrypted <- data.frame(id = seq(1:10))
   
   #Private key
-  key_private <- sha256(charToRaw(mysupersecretpassword))
+  key_private <- sodium::sha256(charToRaw(mysupersecretpassword))
   paste("Private Key:", paste(key_private, collapse = " "))
   
   #Public key
-  key_public  <- pubkey(key_private)
+  key_public  <- sodium::pubkey(key_private)
   public_print = paste(key_public, collapse = " ")
   output_public_key = paste0(".vault/", output_name, "_public_key.txt")
   
@@ -167,7 +167,7 @@ encrypt_data <- function(mysupersecretpassword = NULL, data_unencrypted, output_
   
   
   #Encrypt data
-  data_encrypted <- simple_encrypt(serialize(data_unencrypted, NULL), key_public)
+  data_encrypted <- sodium::simple_encrypt(serialize(data_unencrypted, NULL), key_public)
   
   #Save data
   # saveRDS(data_encrypted, "data_encrypted.rds")

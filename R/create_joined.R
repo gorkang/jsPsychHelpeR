@@ -1,13 +1,13 @@
-##' Join the df of all the processed tasks
-##'
-##' .. content for \details{} ..
-##'
-##' @title prepare_joined
-##' @param df_SBS
-##' @param df_CRT7
-##' @return
-##' @author gorkang
-##' @export
+#' create_joined
+#' 
+#' Join the df of all the processed tasks
+#'
+#' @param ... .
+#'
+#' @return
+#' @export
+#'
+#' @examples
 create_joined <- function(...) {
   
   # DEBUG
@@ -37,7 +37,7 @@ create_joined <- function(...) {
   targets::tar_load(!!final_prepared_files, envir = .GlobalEnv)
   
   # List with all the input DF's
-  input_list <- map(final_prepared_files, get)
+  input_list <- purrr::map(final_prepared_files, get)
   
   # Name lists
   names(input_list) <- final_prepared_files
@@ -48,10 +48,10 @@ create_joined <- function(...) {
   # Join all by ID in a single DF
   DF_joined = 
     input_list %>% 
-    reduce(full_join, by = "id")
+    purrr::reduce(full_join, by = "id")
   
   # Only RAW
-  DF_joined_RAW = DF_joined %>% select(id, ends_with("RAW"))
+  DF_joined_RAW = DF_joined %>% dplyr::select(id, dplyr::ends_with("RAW"))
   
   
   # Save files --------------------------------------------------------------

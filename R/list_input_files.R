@@ -1,7 +1,7 @@
 #' list_input_files
 #' Lists all input csv files or single zip file in a data folder. 
 #'
-#' @param pid_target 
+#' @param pid_target .
 #'
 #' @return
 #' @export
@@ -10,8 +10,8 @@
 list_input_files <- function(pid_target) {
   
   # List csv and zip files in folder data/[pid]
-  pid_folder = paste0("data/", pid_target)
-  files_raw = list.files(path = pid_folder, pattern = "*.csv|*.zip", full.names = TRUE)
+  input_folder = paste0("data/", pid_target)
+  files_raw = list.files(path = input_folder, pattern = "*.csv|*.zip", full.names = TRUE)
   
 
   # CHECKS ------------------------------------------------------------------
@@ -33,9 +33,9 @@ list_input_files <- function(pid_target) {
   } else {
     
     # Other issues
-    if (length_files == 0) cli::cli_abort("NO files in '{pid_folder}'")
-    if (length_files != 1 & all_zips) cli::cli_abort("Multiple ZIP files detected in '{pid_folder}'")
-    if (length_files != 0 & !all_zips & !all_csvs) cli::cli_abort("Multiple types of files detected in '{pid_folder}'")
+    if (length_files == 0) cli::cli_abort("NO files in '{input_folder}'")
+    if (length_files != 1 & all_zips) cli::cli_abort("Multiple ZIP files detected in '{input_folder}'")
+    if (length_files != 0 & !all_zips & !all_csvs) cli::cli_abort("Multiple types of files detected in '{input_folder}'. Make sure either a single zip or multiple csv files are present.")
     
   }
   

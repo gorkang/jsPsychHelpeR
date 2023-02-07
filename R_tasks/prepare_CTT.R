@@ -58,7 +58,7 @@ prepare_CTT <- function(DF_clean, short_name_scale_str) {
   # Create long DIR ------------------------------------------------------------
   DF_long_DIR = 
     DF_long_RAW %>% 
-    select(id, trialid, condition_between, RAW) %>%
+   dplyr::select(id, trialid, condition_between, RAW) %>%
     
     
     
@@ -66,9 +66,9 @@ prepare_CTT <- function(DF_clean, short_name_scale_str) {
   # ****************************************************************************
   
     # Transformations
-    mutate(
+    dplyr::mutate(
       DIR =
-        case_when(
+       dplyr::case_when(
           trialid %in% c("CTT_01") & condition_between == 1 & RAW == "Iría a la entrevista" ~ "1",
           trialid %in% c("CTT_01") & condition_between == 1 & RAW == "se devolvería a revisar la puerta del carro (auto)" ~ "1",
           
@@ -86,7 +86,7 @@ prepare_CTT <- function(DF_clean, short_name_scale_str) {
         )
     ) %>% 
     
-    mutate(DIR = as.numeric(DIR))
+    dplyr::mutate(DIR = as.numeric(DIR))
     
   # [END ADAPT 2/3]: ***********************************************************
   # ****************************************************************************
@@ -95,13 +95,13 @@ prepare_CTT <- function(DF_clean, short_name_scale_str) {
   # Create DF_wide_RAW_DIR -----------------------------------------------------
   DF_wide_RAW =
     DF_long_DIR %>% 
-    pivot_wider(
+    tidyr::pivot_wider(
       names_from = trialid, 
       values_from = c(RAW, DIR),
       names_glue = "{trialid}_{.value}") %>% 
     
     # NAs for RAW and DIR items
-    mutate(!!names_list$name_RAW_NA := rowSums(is.na(select(., -matches(paste0(short_name_scale_str, "_", items_to_ignore, "_RAW")) & matches("_RAW$")))),
+    dplyr::mutate(!!names_list$name_RAW_NA := rowSums(is.na(select(., -matches(paste0(short_name_scale_str, "_", items_to_ignore, "_RAW")) & matches("_RAW$")))),
            !!names_list$name_DIR_NA := rowSums(is.na(select(., -matches(paste0(short_name_scale_str, "_", items_to_ignore, "_DIR")) & matches("_DIR$")))))
 
 
@@ -118,7 +118,7 @@ prepare_CTT <- function(DF_clean, short_name_scale_str) {
   # CHECK with: create_formulas(type = "dimensions_DIR", functions = "sum", names(items_dimensions))
   DF_wide_RAW_DIR =
     DF_wide_RAW %>% 
-    mutate(
+    dplyr::mutate(
 
       # [CHECK] Using correct formula? rowMeans() / rowSums()
       

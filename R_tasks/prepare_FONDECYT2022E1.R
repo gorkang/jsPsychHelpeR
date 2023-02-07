@@ -66,25 +66,25 @@ prepare_FONDECYT2022E1 <- function(DF_clean, short_name_scale_str) {
     create_raw_long(DF_clean, short_name_scale = short_name_scale_str, numeric_responses = FALSE, is_experiment = TRUE, help_prepare = FALSE) %>% 
     
     # SHOULD DO THIS INSIDE create_raw_long is_experiment????
-    mutate(trialid = gsub("_[1-5]$", "", trialid),
+    dplyr::mutate(trialid = gsub("_[1-5]$", "", trialid),
            trialid = paste0(trialid, "_", condition_within)) %>% 
-    select(-condition_within)
+   dplyr::select(-condition_within)
   
   
   # Create long DIR ------------------------------------------------------------
   
   DF_long_DIR = 
     DF_long_RAW %>% 
-    select(id, trialid, RAW, condition_between) %>%
+   dplyr::select(id, trialid, RAW, condition_between) %>%
     
     
     # [ADAPT]: RAW to DIR for individual items -----------------------------------
   # ****************************************************************************
   
   # Transformations
-  mutate(
+  dplyr::mutate(
     DIR =
-      case_when(
+     dplyr::case_when(
         RAW == "Si" ~ "1",
         RAW == "No" ~ "0",
         is.na(RAW) ~ NA_character_,
@@ -100,13 +100,13 @@ prepare_FONDECYT2022E1 <- function(DF_clean, short_name_scale_str) {
   # Create DF_wide_RAW_DIR -----------------------------------------------------
   DF_wide_RAW =
     DF_long_DIR %>% 
-    pivot_wider(
+    tidyr::pivot_wider(
       names_from = trialid, 
       values_from = c(RAW, DIR),
       names_glue = "{trialid}_{.value}") %>% 
     
     # NAs for RAW and DIR items
-    mutate(!!names_list$name_RAW_NA := rowSums(is.na(select(., -matches(paste0(short_name_scale_str, "_", items_to_ignore, "_RAW")) & matches("_RAW$")))),
+    dplyr::mutate(!!names_list$name_RAW_NA := rowSums(is.na(select(., -matches(paste0(short_name_scale_str, "_", items_to_ignore, "_RAW")) & matches("_RAW$")))),
            !!names_list$name_DIR_NA := rowSums(is.na(select(., -matches(paste0(short_name_scale_str, "_", items_to_ignore, "_DIR")) & matches("_DIR$")))))
   
   
@@ -122,7 +122,7 @@ prepare_FONDECYT2022E1 <- function(DF_clean, short_name_scale_str) {
   
   DF_wide_RAW_DIR =
     DF_wide_RAW %>% 
-    mutate(
+    dplyr::mutate(
       
       # Make sure to use the correct formula: rowMeans() / rowSums()
       

@@ -12,20 +12,20 @@ testthat::test_that('Check if DF_raw', {
   
   DF_problematic_trialids = 
     DF_raw %>%
-    filter(!grepl("[a-zA-Z0-9]{1,100}_[0-9]{2}|^Instructions|^Fullscreen", trialid)) %>% 
-    filter(trial_type != "fullscreen") %>% 
-    distinct(trialid, experiment) %>% 
-    drop_na(trialid) 
+    dplyr::filter(!grepl("[a-zA-Z0-9]{1,100}_[0-9]{2}|^Instructions|^Fullscreen", trialid)) %>% 
+    dplyr::filter(trial_type != "fullscreen") %>% 
+    dplyr::distinct(trialid, experiment) %>% 
+   tidyr::drop_na(trialid) 
   
   offenders =
     DF_problematic_trialids %>% 
-    distinct(trialid, .keep_all = TRUE) %>% 
-    mutate(message = 
-             case_when(
+    dplyr::distinct(trialid, .keep_all = TRUE) %>% 
+    dplyr::mutate(message = 
+            dplyr::case_when(
                is.na(trialid) ~ paste0(experiment, ": NA"),
                trialid == "" ~ paste0(experiment, ": empty"),
                TRUE ~ paste0(experiment, ": ", trialid))) %>% 
-    pull(message)
+    dplyr::pull(message)
   
 
   
@@ -43,7 +43,7 @@ testthat::test_that('Check if DF_raw', {
   
   if (nrow(DF_problematic_trialids) > 0) {
     
-    write_csv(DF_problematic_trialids, here::here(paste0("outputs/tests_outputs/test-", name_of_test, ".csv")))
+    readr::write_csv(DF_problematic_trialids, here::here(paste0("outputs/tests_outputs/test-", name_of_test, ".csv")))
     
     cat(cli::col_red("\nERROR in", paste0("test-", name_of_test), "\n"),
         cli::col_red("  - Some of the items have non-supported trialids:"), offenders, "\n",
@@ -54,7 +54,7 @@ testthat::test_that('Check if DF_raw', {
   
   if (length(non_canonical_names) > 0) {
     
-    # write_csv(non_canonical_names, here::here(paste0("outputs/tests_outputs/test-", name_of_test, ".csv")))
+    # readr::write_csv(non_canonical_names, here::here(paste0("outputs/tests_outputs/test-", name_of_test, ".csv")))
     
     cat(cli::col_red("\nERROR in", paste0("test-", name_of_test), "\n"),
         cli::col_red("  - Some of the items have non-canonical names:"), non_canonical_names, "\n",

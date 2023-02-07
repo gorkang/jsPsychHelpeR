@@ -46,14 +46,14 @@ prepare_SASS <- function(DF_clean, short_name_scale_str) {
   
   DF_long_DIR =
     DF_long_RAW %>% 
-    select(id, trialid, RAW) %>%
+   dplyr::select(id, trialid, RAW) %>%
     
     
   # [ADAPT]: RAW to DIR for individual items -----------------------------------
   # ****************************************************************************
-    mutate(
+    dplyr::mutate(
       DIR =
-        case_when(
+       dplyr::case_when(
           RAW == "Moderadamente" & trialid == "SASS_10" ~ 1, # Moderadamente is the third option except for item SASS_10
           grepl("Nada|Nada de entusiasmo|Insatisfactoria|Insatisfactorio|Nunca|Nadie|Pasivamente|Ningún valor|Para nada", RAW) ~ 0,
           grepl("Poco|Poco entusiasmo|Justa|Justo|Raramente|Pocas personas|Poco valor|Levemente|No mucho|A veces", RAW) ~ 1,
@@ -66,9 +66,9 @@ prepare_SASS <- function(DF_clean, short_name_scale_str) {
     ) %>% 
     
     # Invert items
-    mutate(
+    dplyr::mutate(
       DIR = 
-        case_when(
+       dplyr::case_when(
           DIR == 9999 ~ DIR, # To keep the missing values unchanged
           trialid %in% paste0(short_name_scale_str, "_", items_to_reverse) ~ (3 - DIR),
           TRUE ~ DIR
@@ -83,13 +83,13 @@ prepare_SASS <- function(DF_clean, short_name_scale_str) {
   
   DF_wide_RAW =
     DF_long_DIR %>%  
-    pivot_wider(
+    tidyr::pivot_wider(
       names_from = trialid, 
       values_from = c(RAW, DIR),
       names_glue = "{trialid}_{.value}") %>% 
     
     # NAs for RAW and DIR items
-    mutate(!!names_list$name_RAW_NA := rowSums(is.na(select(., -matches(paste0(short_name_scale_str, "_", items_to_ignore, "_RAW")) & matches("_RAW$")))),
+    dplyr::mutate(!!names_list$name_RAW_NA := rowSums(is.na(select(., -matches(paste0(short_name_scale_str, "_", items_to_ignore, "_RAW")) & matches("_RAW$")))),
            !!names_list$name_DIR_NA := rowSums(is.na(select(., -matches(paste0(short_name_scale_str, "_", items_to_ignore, "_DIR")) & matches("_DIR$")))))
   
   
@@ -112,13 +112,13 @@ prepare_SASS <- function(DF_clean, short_name_scale_str) {
   DF_wide_RAW_DIR =
     DF_wide_RAW %>% 
     
-    mutate(
+    dplyr::mutate(
       
       # Score Scale
       !!names_list$name_DIRt := rowSums(select(., matches("_DIR$")), na.rm = TRUE),
       
       # Reliability Scale 
-      !!names_list$name_RELt := rowSums(select(., all_of(included_key_items), paste0(short_name_scale_str, "_", items_RELt, "_DIR")), na.rm = TRUE)
+      !!names_list$name_RELt := rowSums(select(., dplyr::all_of(included_key_items), paste0(short_name_scale_str, "_", items_RELt, "_DIR")), na.rm = TRUE)
 
     )
     

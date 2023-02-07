@@ -1,12 +1,13 @@
-##' Calls all the tests in 'test/testthat'
-##'
-##' .. content for \details{} ..
-##'
-##' @title
-
-##' @return
-##' @author gorkang
-##' @export
+#' test_testhat
+#' 
+#' Calls all the tests in 'test/testthat'
+#'
+#' @param ... .
+#'
+#' @return
+#' @export
+#'
+#' @examples
 test_testhat <- function(...) { # input_files_automatic_tests_str
 
   # Load targets objects used in tests --------------------------------------
@@ -15,7 +16,7 @@ test_testhat <- function(...) { # input_files_automatic_tests_str
   arguments = lapply(argnames[-1], as.character) %>% unlist()
   
   # Load targets
-  targets::tar_load(all_of(arguments), envir = .GlobalEnv)
+  targets::tar_load(dplyr::all_of(arguments), envir = .GlobalEnv)
   
   # Print
   num_tests = list.files("tests/testthat/", pattern = ".R") %>% length()

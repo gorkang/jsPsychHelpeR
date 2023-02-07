@@ -22,7 +22,7 @@ run_sensitive_data <- function(df_SDG, run_online_FORM = FALSE) {
     df_FORM = prepare_FORM(df_SDG, short_name_scale_str = "FORM")  
   } else {
     cat(cli::col_yellow("Reading offline FORM Google sheet...\n"))
-    df_FORM = read_rds(".vault/data/df_FORM_RAW.rds")
+    df_FORM = readr::read_rds(".vault/data/df_FORM_RAW.rds")
   }
   
   df_AIM = prepare_AIM_gsheet(df_FORM, short_name_scale_str = "AIM")

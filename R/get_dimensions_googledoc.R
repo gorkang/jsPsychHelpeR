@@ -1,7 +1,9 @@
 #' get_dimensions_googledoc
 #' Get information from the main jsPsychR GoogleSheet to help creating a new task
 #'
-#' @param short_name_text 
+#' @param short_name_text .
+#' @param google_username .
+#' @param google_sheet .
 #'
 #' @return
 #' @export
@@ -29,15 +31,15 @@ get_dimensions_googledoc <- function(short_name_text, google_username = "gorkang
   
   # We use this to get the number of items
   DF_resumen_ALL = googlesheets4::read_sheet(google_sheet_ID, sheet = 2, skip = 0) %>% 
-    rename(short_name = `Código Test`) %>% 
-    filter(!grepl("short_name.*", short_name)) %>% 
-    # filter(short_name != "short_name: NO debe contener espacios ni caracteres extraños :)") %>% 
-    # arrange(short_name) %>% 
-    # select(short_name, Nombre, Descripcion) %>% 
+    dplyr::rename(short_name = `Código Test`) %>% 
+    dplyr::filter(!grepl("short_name.*", short_name)) %>% 
+    # dplyr::filter(short_name != "short_name: NO debe contener espacios ni caracteres extraños :)") %>% 
+    # dplyr::arrange(short_name) %>% 
+    #dplyr::select(short_name, Nombre, Descripcion) %>% 
     tidyr::drop_na(short_name) 
   
   DF_resumen = DF_resumen_ALL %>% 
-    filter(short_name == short_name_text) %>% 
+    dplyr::filter(short_name == short_name_text) %>% 
     janitor::clean_names()
   
   
@@ -53,22 +55,22 @@ get_dimensions_googledoc <- function(short_name_text, google_username = "gorkang
   
   
   DF_dimensions = googlesheets4::read_sheet(google_sheet_ID, sheet = 5, skip = 0) %>% 
-    rename(short_name = `Código Test`) %>% 
-    # filter(short_name != "short_name: NO debe contener espacios ni caracteres extraños :)") %>% 
-    # arrange(short_name) %>% 
-    # select(short_name, Nombre, Descripcion) %>% 
+    dplyr::rename(short_name = `Código Test`) %>% 
+    # dplyr::filter(short_name != "short_name: NO debe contener espacios ni caracteres extraños :)") %>% 
+    # dplyr::arrange(short_name) %>% 
+    #dplyr::select(short_name, Nombre, Descripcion) %>% 
     tidyr::drop_na(short_name) %>% 
-    filter(short_name == short_name_text) %>% 
+    dplyr::filter(short_name == short_name_text) %>% 
     janitor::clean_names()
   
   
   DF_items = googlesheets4::read_sheet(google_sheet_ID, sheet = 4, skip = 0) %>% 
-    rename(short_name = `Código Test`) %>% 
-    # filter(short_name != "short_name: NO debe contener espacios ni caracteres extraños :)") %>% 
-    # arrange(short_name) %>% 
-    # select(short_name, Nombre, Descripcion) %>% 
+    dplyr::rename(short_name = `Código Test`) %>% 
+    # dplyr::filter(short_name != "short_name: NO debe contener espacios ni caracteres extraños :)") %>% 
+    # dplyr::arrange(short_name) %>% 
+    #dplyr::select(short_name, Nombre, Descripcion) %>% 
     tidyr::drop_na(short_name) %>% 
-    filter(short_name == short_name_text) %>% 
+    dplyr::filter(short_name == short_name_text) %>% 
     janitor::clean_names()
   
   # CHECK2 ---
@@ -95,7 +97,7 @@ get_dimensions_googledoc <- function(short_name_text, google_username = "gorkang
       purrr::walk(~
              {
                #.x = 1
-               numbers_RAW = DF_items[.x,"items_invertidos"] %>% pull(items_invertidos)
+               numbers_RAW = DF_items[.x,"items_invertidos"] %>% dplyr::pull(items_invertidos)
                
                # Extract numbers from cell with individual numbers and intervals as (1-7)
                NUMBERS_formatted = create_number_series(numbers_RAW)
@@ -114,7 +116,7 @@ get_dimensions_googledoc <- function(short_name_text, google_username = "gorkang
     cli::cli_end()
     
     
-    short_name = DF_items[1,"short_name"] %>% pull(short_name)
+    short_name = DF_items[1,"short_name"] %>% dplyr::pull(short_name)
     number_items = unlist(DF_resumen$items)
     
     # For each of the rows in the google doc
@@ -125,14 +127,14 @@ get_dimensions_googledoc <- function(short_name_text, google_username = "gorkang
                cli::cli_text()
                ## Items to apply the numeric conversion
                # .x = 1
-               numbers_RAW = DF_items[.x,"items"] %>% pull(items)
+               numbers_RAW = DF_items[.x,"items"] %>% dplyr::pull(items)
                
                # Extract numbers from cell with individual numbers and intervals as (1-7)
                NUMBERS_formatted = create_number_series(numbers_RAW)
                
                
                ## Specific numeric conversion
-               numeric_conversion = DF_items[.x,"conversion_numerica"] %>% pull(conversion_numerica)
+               numeric_conversion = DF_items[.x,"conversion_numerica"] %>% dplyr::pull(conversion_numerica)
                numbers_chunks_all = stringi::stri_extract_all(str = gsub("=| = ", "=", numeric_conversion) %>% gsub("$", "\n", .), regex = ".*\n") %>% unlist() %>% gsub("\n", "", .)
                numbers_chunks_destination = stringi::stri_extract_all(str = numbers_chunks_all, regex = ".*=") %>% unlist() %>% gsub("=", "", .)
                numbers_chunks_origin = stringi::stri_extract_all(str = numbers_chunks_all, regex = "=.*") %>% unlist() %>% gsub("=", "", .)
@@ -168,7 +170,7 @@ get_dimensions_googledoc <- function(short_name_text, google_username = "gorkang
     cli::cli_h1("Dimensiones")
     cli::cli_end()
     
-    NAMES_dimensions_CamelCase = janitor::make_clean_names(DF_dimensions %>% pull(nombre_dimension), case = "big_camel")
+    NAMES_dimensions_CamelCase = janitor::make_clean_names(DF_dimensions %>% dplyr::pull(nombre_dimension), case = "big_camel")
     
     
     # NEW TEMPLATE
@@ -179,7 +181,7 @@ get_dimensions_googledoc <- function(short_name_text, google_username = "gorkang
       purrr::map_chr(~
                 {
                   #.x = 1
-                  numbers_RAW = DF_dimensions[.x,"numero_item_dimension_o_sub_escala"] %>% pull(numero_item_dimension_o_sub_escala)
+                  numbers_RAW = DF_dimensions[.x,"numero_item_dimension_o_sub_escala"] %>% dplyr::pull(numero_item_dimension_o_sub_escala)
                   
                   # Extract numbers from cell with individual numbers and intervals as (1-7)
                   NUMBERS_formatted = create_number_series(numbers_RAW)
@@ -219,8 +221,8 @@ get_dimensions_googledoc <- function(short_name_text, google_username = "gorkang
       1:nrow(DF_dimensions) %>%
       purrr::map_df(~
              {
-               calculo_dimension_RAW = DF_dimensions[.x, "calculo_dimension"] %>% pull(calculo_dimension)
-               notas_RAW = DF_dimensions[.x, "notas"] %>% pull(notas)
+               calculo_dimension_RAW = DF_dimensions[.x, "calculo_dimension"] %>% dplyr::pull(calculo_dimension)
+               notas_RAW = DF_dimensions[.x, "notas"] %>% dplyr::pull(notas)
                error_text = NA
                # cli::cli_alert_info(calculo_dimension_RAW)
                if (tolower(calculo_dimension_RAW) %in% c("promedio", "media", "mean")) {
@@ -240,7 +242,7 @@ get_dimensions_googledoc <- function(short_name_text, google_username = "gorkang
                
                # NEW
                # !!names_list$name_DIRd[1] := rowMeans(select(., paste0(short_name_scale_str, "_", items_dimensions[[1]], "_DIR")), na.rm = TRUE), 
-               tibble(calculo = paste0('!!names_list$name_DIRd[', .x, '] := ', cli::col_yellow(string_function), '(select(., paste0(short_name_scale_str, "_", items_dimensions[[', .x, ']], "_DIR")), na.rm = TRUE),\n'),
+               tibble::tibble(calculo = paste0('!!names_list$name_DIRd[', .x, '] := ', cli::col_yellow(string_function), '(select(., paste0(short_name_scale_str, "_", items_dimensions[[', .x, ']], "_DIR")), na.rm = TRUE),\n'),
                       error_text = error_text,
                       notas = notas_RAW)
              })
@@ -248,7 +250,7 @@ get_dimensions_googledoc <- function(short_name_text, google_username = "gorkang
     cat(DF_dims_final$calculo)
     
     # IF there are important notes, show
-    if (nrow(DF_dims_final %>% select(notas) %>% drop_na()) > 0) {
+    if (nrow(DF_dims_final %>% dplyr::select(notas) %>%tidyr::drop_na()) > 0) {
       cli::cli_par()
       cli::cli_text("")
       cli::cli_h3("Calculo Dimensiones - NOTAS IMPORTANTES")
@@ -256,14 +258,14 @@ get_dimensions_googledoc <- function(short_name_text, google_username = "gorkang
       cli::cli_alert_warning("Hay detalles importantes sobre el cálculo de las dimensiones")
 
       1:length(DF_dims_final$notas) %>% 
-        walk(~ {
+        purrr::walk(~ {
           if (!is.na(DF_dims_final$notas[.x])) cli::cli_alert_warning("{.x}: {DF_dims_final$notas[.x]}")
         })      
       # cli::cli_ol(DF_dims_final$notas)
     }
     
     # IF there are errors, show
-    if (nrow(DF_dims_final %>% select(error_text) %>% drop_na()) > 0) {
+    if (nrow(DF_dims_final %>% dplyr::select(error_text) %>%tidyr::drop_na()) > 0) {
       cli::cli_par()
       cli::cli_text("")
       cli::cli_h3("ERRORES - Calculo Dimensiones")
@@ -271,7 +273,7 @@ get_dimensions_googledoc <- function(short_name_text, google_username = "gorkang
       # cli::cli_alert_warning("Hay detalles importantes sobre el cálculo de las dimensiones")
       
       1:length(DF_dims_final$error_text) %>% 
-        walk(~ {
+        purrr::walk(~ {
           if (!is.na(DF_dims_final$error_text[.x])) cli::cli_alert_danger("{.x}: {DF_dims_final$error_text[.x]}")
           })
     }

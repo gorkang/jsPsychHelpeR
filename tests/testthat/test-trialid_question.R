@@ -13,29 +13,29 @@ testthat::test_that('Check if the trialid question_text are unique', {
   
   DF_trialid = 
     DF_clean %>% 
-    # mutate(question_text = 
-    #          case_when(
+    # dplyr::mutate(question_text = 
+    #         dplyr::case_when(
     #            is.na(question_text) ~ stimulus,
     #            is.na(stimulus) ~ question_text,
     #            TRUE ~ NA_character_
     #          )) %>% 
-    group_by(experiment) %>% 
-    count(trialid, stimulus) %>% 
-    group_by(trialid, stimulus) %>% 
-    count() %>% 
-    drop_na(trialid) 
+    dplyr::group_by(experiment) %>% 
+    dplyr::count(trialid, stimulus) %>% 
+    dplyr::group_by(trialid, stimulus) %>% 
+    dplyr::count() %>% 
+   tidyr::drop_na(trialid) 
   
   non_unique_trialid = 
     DF_trialid %>% 
-    filter(n > 1) %>%  
-    pull(trialid)
+    dplyr::filter(n > 1) %>%  
+    dplyr::pull(trialid)
   
 
   # Warning and log ---------------------------------------------------------
   
   if (length(non_unique_trialid) > 0) {
     
-    write_csv(non_unique_trialid %>% as_tibble(), here::here(paste0("outputs/tests_outputs/test-", name_of_test, ".csv")))
+    readr::write_csv(non_unique_trialid %>% tibble::as_tibble(), here::here(paste0("outputs/tests_outputs/test-", name_of_test, ".csv")))
     
     cat(cli::col_red("\nERROR in", paste0("test-", name_of_test), "\n"),
         cli::col_red("  - Some of the trialid's are not unique:"), non_unique_trialid, "\n",

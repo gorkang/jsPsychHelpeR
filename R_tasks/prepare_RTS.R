@@ -45,15 +45,15 @@ prepare_RTS <- function(DF_clean, short_name_scale_str) {
 
   DF_long_DIR = 
     DF_long_RAW %>% 
-    select(id, trialid, RAW) %>%
+   dplyr::select(id, trialid, RAW) %>%
     
     
   # [ADAPT]: RAW to DIR for individual items -----------------------------------
   # ****************************************************************************
   
-    mutate(
+    dplyr::mutate(
       DIR =
-        case_when(
+       dplyr::case_when(
           grepl("02|03|04|05|08|09|12|13|16|18|19|20|21|22|25|26|29", trialid) & RAW == "Verdadero" ~ 1,
           grepl("02|03|04|05|08|09|12|13|16|18|19|20|21|22|25|26|29", trialid) & RAW == "Falso" ~ 0,
           is.na(RAW) ~ NA_real_,
@@ -69,13 +69,13 @@ prepare_RTS <- function(DF_clean, short_name_scale_str) {
   # Create DF_wide_RAW_DIR -----------------------------------------------------
   DF_wide_RAW =
     DF_long_DIR %>% 
-    pivot_wider(
+    tidyr::pivot_wider(
       names_from = trialid, 
       values_from = c(RAW, DIR),
       names_glue = "{trialid}_{.value}") %>% 
     
     # NAs for RAW and DIR items
-    mutate(!!names_list$name_RAW_NA := rowSums(is.na(select(., -matches(paste0(short_name_scale_str, "_", items_to_ignore, "_RAW")) & matches("_RAW$")))),
+    dplyr::mutate(!!names_list$name_RAW_NA := rowSums(is.na(select(., -matches(paste0(short_name_scale_str, "_", items_to_ignore, "_RAW")) & matches("_RAW$")))),
            !!names_list$name_DIR_NA := rowSums(is.na(select(., -matches(paste0(short_name_scale_str, "_", items_to_ignore, "_DIR")) & matches("_DIR$")))))
       
     
@@ -85,7 +85,7 @@ prepare_RTS <- function(DF_clean, short_name_scale_str) {
 
   DF_wide_RAW_DIR = 
     DF_wide_RAW %>% 
-    mutate(
+    dplyr::mutate(
 
       # # Score Dimensions (use 3 digit item numbers)
       # !!names_list$name_DIRd[1] := rowSums(select(., matches("02|04|05") & matches("_DIR$")), na.rm = TRUE), 
@@ -96,7 +96,7 @@ prepare_RTS <- function(DF_clean, short_name_scale_str) {
       
       # Rasch scores
       !!names_list$name_STDt :=  
-          case_when(
+         dplyr::case_when(
             RTS_DIRt == 0 ~ 13.7,
             RTS_DIRt == 1 ~ 15.9,
             RTS_DIRt == 2 ~ 18.3,

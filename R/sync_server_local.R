@@ -1,13 +1,15 @@
 #' sync_server_local
 #' Standalone function to Download/Upload files from server to local folder or vice-versa
 #'
-#' @param server_folder 
-#' @param local_folder 
+#' @param server_folder server folder
+#' @param local_folder local folder
 #' @param direction should be either 'server_to_local' or 'local_to_server'
 #' @param only_test TRUE/FALSE
 #' @param exclude_csv DO NOT INCLUDE DATA
 #' @param delete_nonexistent  Delete files localy if they are NOT in server anymore
 #' @param dont_ask For the initial setup, do not ask and proceed! DANGER
+#' @param all_messages show all messages
+#' @param list_credentials where are the credentials
 #'
 #' @return
 #' @export

@@ -42,16 +42,16 @@ prepare_PSPPC <- function(DF_clean, short_name_scale_str) {
   
   DF_long_DIR = 
     DF_long_RAW %>% 
-    select(id, trialid, RAW) %>%
+   dplyr::select(id, trialid, RAW) %>%
     
     
   # [ADAPT]: RAW to DIR for individual items -----------------------------------
   # ****************************************************************************
   
     # Transformations
-    mutate(
+    dplyr::mutate(
       DIR =
-        case_when(
+       dplyr::case_when(
           # RAW == "Muy de acuerdo" ~ 6,
           # RAW == "Parcialmente de acuerdo" ~ 5,
           # RAW == "De acuerdo" ~ 4,
@@ -65,9 +65,9 @@ prepare_PSPPC <- function(DF_clean, short_name_scale_str) {
     ) %>% 
     
     # Invert items
-    mutate(
+    dplyr::mutate(
       DIR = 
-        case_when(
+       dplyr::case_when(
           DIR == 9999 ~ DIR, # To keep the missing values unchanged
           grepl(items_to_reverse, trialid) ~ (6 - DIR),
           TRUE ~ DIR
@@ -81,13 +81,13 @@ prepare_PSPPC <- function(DF_clean, short_name_scale_str) {
   # Create DF_wide_RAW_DIR -----------------------------------------------------
   DF_wide_RAW_DIR =
     DF_long_DIR %>% 
-    pivot_wider(
+    tidyr::pivot_wider(
       names_from = trialid, 
       values_from = c(RAW, DIR),
       names_glue = "{trialid}_{.value}") %>% 
     
     # NAs for RAW and DIR items
-    mutate(!!names_list$name_RAW_NA := rowSums(is.na(select(., -matches(items_to_ignore) & matches("_RAW")))),
+    dplyr::mutate(!!names_list$name_RAW_NA := rowSums(is.na(select(., -matches(items_to_ignore) & matches("_RAW")))),
            !!names_list$name_DIR_NA := rowSums(is.na(select(., -matches(items_to_ignore) & matches("_DIR"))))) %>% 
       
     
@@ -95,7 +95,7 @@ prepare_PSPPC <- function(DF_clean, short_name_scale_str) {
   # ****************************************************************************
     # [USE STANDARD NAMES FOR Scales and dimensions: name_DIRt, name_DIRd1, etc.] Check with: standardized_names(help_names = TRUE)
 
-    mutate(
+    dplyr::mutate(
 
       # Score Dimensions (see standardized_names(help_names = TRUE) for instructions)
       # !!names_list$name_DIRd[1] := rowSums(select(., matches("02|04|05") & matches("_DIR$")), na.rm = TRUE), 

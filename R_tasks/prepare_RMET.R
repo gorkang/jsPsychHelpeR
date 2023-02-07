@@ -47,16 +47,16 @@ prepare_RMET <- function(DF_clean, short_name_scale_str) {
 
   DF_long_DIR = 
     DF_long_RAW %>% 
-    select(id, trialid, RAW) %>%
+   dplyr::select(id, trialid, RAW) %>%
     
     
   # [ADAPT]: RAW to DIR for individual items -----------------------------------
   # ****************************************************************************
   
     # Transformations
-    mutate(
+    dplyr::mutate(
       DIR =
-        case_when(
+       dplyr::case_when(
           
           # Example trial.
           # TODO: SHOULD BE 000
@@ -106,9 +106,9 @@ prepare_RMET <- function(DF_clean, short_name_scale_str) {
     ) %>% 
     
     # Invert items
-    mutate(
+    dplyr::mutate(
       DIR = 
-        case_when(
+       dplyr::case_when(
           DIR == 9999 ~ DIR, # To keep the missing values unchanged
           trialid %in% paste0(short_name_scale_str, "_", items_to_reverse) ~ (6 - DIR),
           TRUE ~ DIR
@@ -122,13 +122,13 @@ prepare_RMET <- function(DF_clean, short_name_scale_str) {
   # Create DF_wide_RAW_DIR -----------------------------------------------------
   DF_wide_RAW =
     DF_long_DIR %>% 
-    pivot_wider(
+    tidyr::pivot_wider(
       names_from = trialid, 
       values_from = c(RAW, DIR),
       names_glue = "{trialid}_{.value}") %>% 
     
     # NAs for RAW and DIR items
-    mutate(!!names_list$name_RAW_NA := rowSums(is.na(select(., -matches(paste0(short_name_scale_str, "_", items_to_ignore, "_RAW")) & matches("_RAW$")))),
+    dplyr::mutate(!!names_list$name_RAW_NA := rowSums(is.na(select(., -matches(paste0(short_name_scale_str, "_", items_to_ignore, "_RAW")) & matches("_RAW$")))),
            !!names_list$name_DIR_NA := rowSums(is.na(select(., -matches(paste0(short_name_scale_str, "_", items_to_ignore, "_DIR")) & matches("_DIR$")))))
   
   
@@ -144,7 +144,7 @@ prepare_RMET <- function(DF_clean, short_name_scale_str) {
 
   DF_wide_RAW_DIR =
     DF_wide_RAW %>% 
-    mutate(
+    dplyr::mutate(
 
       # Make sure to use the correct formula: rowMeans() / rowSums()
       

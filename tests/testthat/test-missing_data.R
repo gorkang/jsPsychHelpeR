@@ -20,39 +20,39 @@ testthat::test_that('Tests if participants that completed the protocol are missi
   # Use max n of tasks as criteria for completed protocol
   ids_completed_protocol = 
     DF_raw %>% 
-    count(id, experiment) %>% 
-    count(id, name = "tasks") %>% 
-    filter(tasks == max(.$tasks))
+    dplyr::count(id, experiment) %>% 
+    dplyr::count(id, name = "tasks") %>% 
+    dplyr::filter(tasks == max(.$tasks))
   
   missing_DF_temp = 
     DF_joined %>% 
-    filter(id %in% ids_completed_protocol$id) %>% # Filter participants that did not complete the protocol
-    select(id, all_of(all_scales)) %>% 
-    select(-matches(white_list)) %>% 
-    mutate(NAs_id = rowSums(is.na(select(., matches(all_scales)))))
+    dplyr::filter(id %in% ids_completed_protocol$id) %>% # Filter participants that did not complete the protocol
+   dplyr::select(id, dplyr::all_of(all_scales)) %>% 
+   dplyr::select(-matches(white_list)) %>% 
+    dplyr::mutate(NAs_id = rowSums(is.na(select(., matches(all_scales)))))
   
   # Get names
   DF_missing_vars = 
     missing_DF_temp %>% 
-    mutate(across(-id, is.na)) %>%  # replace all NA with TRUE and else FALSE
-    pivot_longer(-id, names_to = "var") %>%  # pivot longer
-    filter(value == TRUE) %>% 
-    group_by(id) %>%    # group by the ID
-    summarise(Missing_Variables = toString(var), .groups = "keep")
+    dplyr::mutate(dplyr::across(-id, is.na)) %>%  # replace all NA with TRUE and else FALSE
+    tidyr::pivot_longer(-id, names_to = "var") %>%  # pivot longer
+    dplyr::filter(value == TRUE) %>% 
+    dplyr::group_by(id) %>%    # group by the ID
+    dplyr::summarise(Missing_Variables = toString(var), .groups = "keep")
   
   missing_DF = 
     missing_DF_temp %>% 
-    left_join(DF_missing_vars, by = "id") %>% 
-    select(id, NAs_id, Missing_Variables, colnames(.)[!complete.cases(t(.))]) %>% 
-    filter(NAs_id > 0)
+    dplyr::left_join(DF_missing_vars, by = "id") %>% 
+    dplyr::select(id, NAs_id, Missing_Variables, colnames(.)[!complete.cases(t(.))]) %>% 
+    dplyr::filter(NAs_id > 0)
   
   missing_vars = 
-    missing_DF %>% select(-id, -NAs_id, -Missing_Variables) %>% names(.)
+    missing_DF %>% dplyr::select(-id, -NAs_id, -Missing_Variables) %>% names(.)
   
   missing_ids = missing_DF_temp %>% 
-    filter(NAs_id > 0) %>% 
-    arrange(id) %>% 
-    pull(id)
+    dplyr::filter(NAs_id > 0) %>% 
+    dplyr::arrange(id) %>% 
+    dplyr::pull(id)
   
   
   
@@ -61,29 +61,29 @@ testthat::test_that('Tests if participants that completed the protocol are missi
 
   missingall_DF_temp = 
     DF_joined %>% 
-    select(-all_of(all_scales)) %>% 
-    mutate(NAs_id = rowSums(is.na(select(., -matches(all_scales)))))
+   dplyr::select(-dplyr::all_of(all_scales)) %>% 
+    dplyr::mutate(NAs_id = rowSums(is.na(select(., -matches(all_scales)))))
   
   # Get names
   DF_missingall_vars = 
     missingall_DF_temp %>% 
-    mutate(across(-id, is.na)) %>%  # replace all NA with TRUE and else FALSE
-    pivot_longer(-id, names_to = "var") %>%  # pivot longer
-    filter(value == TRUE) %>% 
-    group_by(id) %>%    # group by the ID
-    summarise(Missing_Variables = toString(var), .groups = "keep")
+    dplyr::mutate(dplyr::across(-id, is.na)) %>%  # replace all NA with TRUE and else FALSE
+    tidyr::pivot_longer(-id, names_to = "var") %>%  # pivot longer
+    dplyr::filter(value == TRUE) %>% 
+    dplyr::group_by(id) %>%    # group by the ID
+    dplyr::summarise(Missing_Variables = toString(var), .groups = "keep")
   
   missingall_DF = missingall_DF_temp %>% 
-    left_join(DF_missingall_vars, by = "id") %>% 
-    select(id, NAs_id, Missing_Variables, colnames(.)[!complete.cases(t(.))]) %>% 
-    filter(NAs_id > 0)
+    dplyr::left_join(DF_missingall_vars, by = "id") %>% 
+   dplyr::select(id, NAs_id, Missing_Variables, colnames(.)[!complete.cases(t(.))]) %>% 
+    dplyr::filter(NAs_id > 0)
   
   # Warning and log ---------------------------------------------------------
   
   if (length(missing_ids) > 0) {
     
-    write_csv(missing_DF, here::here(paste0("outputs/tests_outputs/test-", name_of_test, ".csv")))
-    write_csv(missingall_DF, here::here(paste0("outputs/tests_outputs/test-", name_of_test, "_ALL.csv")))
+    readr::write_csv(missing_DF, here::here(paste0("outputs/tests_outputs/test-", name_of_test, ".csv")))
+    readr::write_csv(missingall_DF, here::here(paste0("outputs/tests_outputs/test-", name_of_test, "_ALL.csv")))
     
     cat(cli::col_red("\n", cli::style_underline("ERROR"), " in ", paste0("test-", name_of_test), "\n"),
         cli::col_red("  - Some of the participants are ", cli::style_underline("missing test results:")), missing_ids, "\n",

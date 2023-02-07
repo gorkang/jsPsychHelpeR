@@ -45,15 +45,15 @@ prepare_bRCOPE <- function(DF_clean, short_name_scale_str) {
   # Create long DIR ------------------------------------------------------------
   DF_long_DIR = 
     DF_long_RAW %>% 
-    select(id, trialid, RAW) %>%
+   dplyr::select(id, trialid, RAW) %>%
     
     
   # [ADAPT]: RAW to DIR for individual items -----------------------------------
   # ****************************************************************************
   
-    mutate(
+    dplyr::mutate(
       DIR =
-        case_when(
+       dplyr::case_when(
           RAW == "Nunca" ~ 1,
           RAW == "Casi\\n Nunca" ~ 2,
           RAW == "A veces" ~ 3,
@@ -69,13 +69,13 @@ prepare_bRCOPE <- function(DF_clean, short_name_scale_str) {
   # Create DF_wide_RAW_DIR -----------------------------------------------------
   DF_wide_RAW_DIR =
     DF_long_DIR %>% 
-    pivot_wider(
+    tidyr::pivot_wider(
       names_from = trialid, 
       values_from = c(RAW, DIR),
       names_glue = "{trialid}_{.value}") %>% 
     
     # NAs for RAW and DIR items
-    mutate(!!names_list$name_RAW_NA := rowSums(is.na(select(., matches("_RAW")))),
+    dplyr::mutate(!!names_list$name_RAW_NA := rowSums(is.na(select(., matches("_RAW")))),
            !!names_list$name_DIR_NA := rowSums(is.na(select(., matches("_DIR"))))) %>% 
       
     
@@ -84,7 +84,7 @@ prepare_bRCOPE <- function(DF_clean, short_name_scale_str) {
     # [USE STANDARD NAMES FOR Scales and dimensions: name_DIRt, name_DIRd1, etc.] Check with: standardized_names(help_names = TRUE)
 
     # [REMEMBER]: itemid numbers will have 3 digits: 002|004... 
-    mutate(
+    dplyr::mutate(
 
       # Score Dimensions (use 3 digit item numbers)
       !!names_list$name_DIRd[1] := rowMeans(select(., paste0(short_name_scale_str, "_", items_DIRd1, "_DIR")), na.rm = TRUE), 

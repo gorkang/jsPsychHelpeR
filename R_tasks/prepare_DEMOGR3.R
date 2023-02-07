@@ -56,15 +56,15 @@ prepare_DEMOGR3 <- function(DF_clean, short_name_scale_str) {
   
   DF_long_DIR = 
     DF_long_RAW %>% 
-    select(id, trialid, RAW) %>%
+   dplyr::select(id, trialid, RAW) %>%
     
     
   # [ADAPT]: RAW to DIR for individual items -----------------------------------
   # ****************************************************************************
   
     # Transformations
-    mutate(
-      DIR = case_when(
+    dplyr::mutate(
+      DIR =dplyr::case_when(
       trialid == "DEMOGR3_01" ~ RAW,
       
       trialid == "DEMOGR3_02" & RAW == "Hombre" ~ "1",
@@ -102,20 +102,20 @@ prepare_DEMOGR3 <- function(DF_clean, short_name_scale_str) {
       TRUE ~ "9999"
       )
     ) %>% 
-    mutate(DIR = as.numeric(DIR))
+    dplyr::mutate(DIR = as.numeric(DIR))
     
 
 
   # Create DF_wide_RAW_DIR -----------------------------------------------------
   DF_wide_RAW_DIR =
     DF_long_DIR %>% 
-    pivot_wider(
+    tidyr::pivot_wider(
       names_from = trialid, 
       values_from = c(RAW, DIR),
       names_glue = "{trialid}_{.value}") %>% 
     
     # NAs for RAW and DIR items
-    mutate(!!names_list$name_RAW_NA := rowSums(is.na(select(., -matches(items_to_ignore) & matches("_RAW")))),
+    dplyr::mutate(!!names_list$name_RAW_NA := rowSums(is.na(select(., -matches(items_to_ignore) & matches("_RAW")))),
            !!names_list$name_DIR_NA := rowSums(is.na(select(., -matches(items_to_ignore) & matches("_DIR"))))) 
       
     
@@ -123,8 +123,8 @@ prepare_DEMOGR3 <- function(DF_clean, short_name_scale_str) {
   # SENSITIVE ---------------------------------------------------------------
 
   # Item DEMOGR3_09 contains sensitive data
-  DF_output = DF_wide_RAW_DIR %>% select(-starts_with("DEMOGR3_09"))
-  DF_sensitive = DF_wide_RAW_DIR %>% select(id, starts_with("DEMOGR3_09"))
+  DF_output = DF_wide_RAW_DIR %>% dplyr::select(-dplyr::starts_with("DEMOGR3_09"))
+  DF_sensitive = DF_wide_RAW_DIR %>% dplyr::select(id, dplyr::starts_with("DEMOGR3_09"))
   
 
   # CHECK NAs -------------------------------------------------------------------

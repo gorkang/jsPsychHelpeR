@@ -57,14 +57,14 @@ prepare_BART <- function(DF_clean, short_name_scale_str) {
   
   DF_long_DIR = 
     DF_long_RAW %>% 
-    select(id, trialid, RAW) %>%
+   dplyr::select(id, trialid, RAW) %>%
     
     
     # [ADAPT]: RAW to DIR for individual items -----------------------------------
   # ****************************************************************************
   
   # Transformations
-  mutate(
+  dplyr::mutate(
     DIR = RAW
   ) 
   
@@ -88,31 +88,31 @@ prepare_BART <- function(DF_clean, short_name_scale_str) {
   
   DF_temp =
     DF_long_RAW %>%
-    select(id, trialid, RAW) %>%
+   dplyr::select(id, trialid, RAW) %>%
 
     # Should be fixed
-    # mutate(trialid =
-    #          case_when(
+    # dplyr::mutate(trialid =
+    #         dplyr::case_when(
     #            grepl("round_money", trialid) ~ gsub("(.*)round_money", "\\1RoundMoney", trialid),
     #            grepl("total_money", trialid) ~ gsub("(.*)total_money", "\\1TotalMoney", trialid),
     #            grepl("explode_rounds", trialid) ~ gsub("(.*)explode_rounds", "\\1ExplodeRounds", trialid),
     #            TRUE ~ trialid)) %>%
-    separate(trialid, into = c("BART", "trialnum", "variable"), sep = "_") %>%
-    pivot_wider(names_from = variable, values_from = RAW) %>% 
-    mutate(status = stringr::str_to_sentence(status))
+    tidyr::separate(trialid, into = c("BART", "trialnum", "variable"), sep = "_") %>%
+    tidyr::pivot_wider(names_from = variable, values_from = RAW) %>% 
+    dplyr::mutate(status = stringr::str_to_sentence(status))
 
 
   DF_wide_Dimensions =
 
     DF_temp %>%
-      group_by(id, status) %>%
-      summarise(BART_meanRounds = mean(as.numeric(rounds), na.rm = TRUE),
+      dplyr::group_by(id, status) %>%
+      dplyr::summarise(BART_meanRounds = mean(as.numeric(rounds), na.rm = TRUE),
                 BART_number = n(), 
                 .groups = "drop") %>%
-      pivot_wider(names_from = status, values_from = c(BART_meanRounds, BART_number), names_sep = "") %>%
-      left_join(DF_temp %>%
-                  group_by(id) %>%
-                  summarise(BART_totalMoney = max(as.numeric(totalMoney)), .groups = "drop"), 
+      tidyr::pivot_wider(names_from = status, values_from = c(BART_meanRounds, BART_number), names_sep = "") %>%
+      dplyr::left_join(DF_temp %>%
+                  dplyr::group_by(id) %>%
+                  dplyr::summarise(BART_totalMoney = max(as.numeric(totalMoney)), .groups = "drop"), 
                 by = "id"
       ) %>% rename_with(~paste0(., "_DIRd"), BART_meanRoundsExplode:BART_totalMoney)
 
@@ -127,13 +127,13 @@ prepare_BART <- function(DF_clean, short_name_scale_str) {
   
   DF_wide_RAW_DIR =
     DF_long_DIR %>% 
-    pivot_wider(
+    tidyr::pivot_wider(
       names_from = trialid, 
       values_from = c(RAW, DIR),
       names_glue = "{trialid}_{.value}") %>% 
     
     # NAs for RAW and DIR items
-    mutate(!!names_list$name_RAW_NA := rowSums(is.na(select(., -matches(items_to_ignore) & matches("_RAW")))),
+    dplyr::mutate(!!names_list$name_RAW_NA := rowSums(is.na(select(., -matches(items_to_ignore) & matches("_RAW")))),
            !!names_list$name_DIR_NA := rowSums(is.na(select(., -matches(items_to_ignore) & matches("_DIR"))))) %>% 
     
     
@@ -142,8 +142,8 @@ prepare_BART <- function(DF_clean, short_name_scale_str) {
   # [USE STANDARD NAMES FOR Scales and dimensions: name_DIRt, name_DIRd1, etc.] Check with: standardized_names(help_names = TRUE)
 
     
-    left_join(DF_wide_Dimensions, by = "id")  
-  # mutate(
+    dplyr::left_join(DF_wide_Dimensions, by = "id")  
+  # dplyr::mutate(
   #   
   #   # Score Dimensions (see standardized_names(help_names = TRUE) for instructions)
   #   !!names_list$name_DIRd[1] := rowMeans(select(., matches("01") & matches("_DIR$")), na.rm = TRUE), 

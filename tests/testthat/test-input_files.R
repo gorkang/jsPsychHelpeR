@@ -15,7 +15,7 @@ testthat::test_that('Check all input files have the essential columns', {
   # Store column names of files
   read_check <- function(file_name, workers) {
     DF = data.table::fread(here::here(file_name), encoding = 'UTF-8', nThread = 1)
-    names(DF) %>% as_tibble() %>% mutate(filename = file_name)
+    names(DF) %>% tibble::as_tibble() %>% dplyr::mutate(filename = file_name)
   }
   
   all_csvs = all(grepl("\\.csv", input_files))
@@ -26,11 +26,11 @@ testthat::test_that('Check all input files have the essential columns', {
     
     # We read ONE file for each task. Otherwise, with big protocols it takes ages
     one_of_each_file = 
-      tibble(filename = basename(input_files)) %>% 
+      tibble::tibble(filename = basename(input_files)) %>% 
       parse_filename() |> 
-      group_by(experiment) %>% 
+      dplyr::group_by(experiment) %>% 
       sample_n(1) %>% 
-      pull(filename)
+      dplyr::pull(filename)
     
     # Construimos DF global
     DF_final = purrr::map_dfr(paste0(dirname(input_files), "/", one_of_each_file), read_check, workers = workers) %>% 
@@ -42,12 +42,12 @@ testthat::test_that('Check all input files have the essential columns', {
   
   names_missing_columns = 
     DF_final %>% 
-    filter(!experiment %in% whitelist_tasks) %>% 
-    # count(experiment, value) 
-    count(value) %>% # Todos los campos deberian aparecer length(number_of_files) veces
-    filter(value %in% essential_columns) %>%
-    filter(n != max(n)) %>% 
-    pull(value)
+    dplyr::filter(!experiment %in% whitelist_tasks) %>% 
+    # dplyr::count(experiment, value) 
+    dplyr::count(value) %>% # Todos los campos deberian aparecer length(number_of_files) veces
+    dplyr::filter(value %in% essential_columns) %>%
+    dplyr::filter(n != max(n)) %>% 
+    dplyr::pull(value)
   
   
   # Buscamos en que archivos NO aparecen determinadas columnas
@@ -55,20 +55,20 @@ testthat::test_that('Check all input files have the essential columns', {
     
     # cat(cli::col_green("\n - Missing column: "), name_missing_column)
     DF_final %>% 
-      group_by(filename) %>% 
-      # filter(!"responses" %in% value) %>%
-      filter(!name_missing_column %in% value) %>%
+      dplyr::group_by(filename) %>% 
+      # dplyr::filter(!"responses" %in% value) %>%
+      dplyr::filter(!name_missing_column %in% value) %>%
       
-      ungroup() %>% 
-      distinct(filename) %>% 
-      pull(filename)
+      dplyr::ungroup() %>% 
+      dplyr::distinct(filename) %>% 
+      dplyr::pull(filename)
     
   }
   
   if (length(names_missing_columns) > 0) {
     check_input_files_DF = 
       1:length(names_missing_columns) %>% 
-      map_df(~ wich_files_missing_columns(name_missing_column = names_missing_columns[.x], DF_final) %>% as_tibble() %>% mutate(column_missing = names_missing_columns[.x]) %>% rename(file = value))
+      purrr::map_df(~ wich_files_missing_columns(name_missing_column = names_missing_columns[.x], DF_final) %>% tibble::as_tibble() %>% dplyr::mutate(column_missing = names_missing_columns[.x]) %>% dplyr::rename(file = value))
   }
   
   
@@ -85,7 +85,7 @@ testthat::test_that('Check all input files have the essential columns', {
   
   if (length(names_missing_columns) > 0) {
     
-    write_csv(check_input_files_DF, here::here(paste0("outputs/tests_outputs/test-", name_of_test, ".csv")))
+    readr::write_csv(check_input_files_DF, here::here(paste0("outputs/tests_outputs/test-", name_of_test, ".csv")))
     
     cat(cli::col_red("\nERROR in", paste0("test-", name_of_test), "\n"),
         cli::col_red("  - Some of the essential columns are not in all input_files:"), names_missing_columns, "\n",
@@ -96,7 +96,7 @@ testthat::test_that('Check all input files have the essential columns', {
   
   
   # Actual expectation -------------------------------------------------------------
-  DF_columns_files = DF_final %>% count(value)
+  DF_columns_files = DF_final %>% dplyr::count(value)
   testthat::expect_gt(nrow(DF_columns_files), 1) # Checks that we have some rows in the DF
   testthat::expect_length(names_missing_columns, 0) # No missing critical columns
   testthat::expect_identical(extra_pieces_in_csv, FALSE, info = "We expect the csv to be: project_experimento_version_datetime_id.csv, but this has some extra bits separated by '_'")

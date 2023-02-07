@@ -1,3 +1,5 @@
+# DEPRECATED: by jsPsychHelpeR package.
+
 # Run this script to install all the dependencies needed.
 
   # You might need to run it twice and restart the RStudio session afterwards: Control + Shift + F10
@@ -7,7 +9,7 @@ run_setup <- function(dont_ask = FALSE) {
   
   # Make sure all packages are present --------------------------------------
   
-    if (!suppressMessages(require('rlang'))) install.packages('rlang'); suppressPackageStartupMessages(suppressWarnings(library('rlang')))
+    # if (!suppressMessages(require('rlang'))) utils::install.packages('rlang'); suppressPackageStartupMessages(suppressWarnings(library('rlang')))
     rlang::check_installed(c("targets", "tarchetypes", "rmarkdown"), reason = "to run the initial {jsPsychHelpeR} setup")
   
     # Create _targets_packages and read all dependencies
@@ -51,6 +53,7 @@ run_setup <- function(dont_ask = FALSE) {
   
   
   # Make sure all the necessary folders exist -------------------------------
+    # DONE in setup_folders()
     
     necessary_folders = c("data/manual_correction", "outputs/backup", "outputs/data", "outputs/plots", "outputs/reliability", "outputs/reports", "outputs/tables", "outputs/tests_outputs", 
                           ".vault/data_vault", ".vault/Rmd", ".vault/outputs/data", ".vault/outputs/reports")

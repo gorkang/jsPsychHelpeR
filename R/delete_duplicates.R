@@ -2,7 +2,7 @@
 #' 
 #' Checks or deletes duplicate files, keeping the older file.
 #'
-#' @param folder 
+#' @param folder .
 #' @param check TRUE/FALSE
 #' @param keep_which "older"/"newer"
 #'
@@ -29,10 +29,10 @@ delete_duplicates <- function(folder, check = TRUE, keep_which = "older") {
   # Main files --------------------------------------------------------------
   
   DF_files =
-    tibble(full_filename = list.files(path = folder, pattern = "*.csv", full.names = TRUE)) %>% 
-    mutate(filename = basename(full_filename)) %>% 
+    tibble::tibble(full_filename = list.files(path = folder, pattern = "*.csv", full.names = TRUE)) %>% 
+    dplyr::mutate(filename = basename(full_filename)) %>% 
     parse_filename() |> 
-    mutate(id = gsub(" \\([2-9]{1,2}\\)", "", id)) # remove the (2) from the filename
+    dplyr::mutate(id = gsub(" \\([2-9]{1,2}\\)", "", id)) # remove the (2) from the filename
   
   
   folder = dirname(DF_files$full_filename[1])
@@ -40,7 +40,7 @@ delete_duplicates <- function(folder, check = TRUE, keep_which = "older") {
   suppressMessages({
     DUPLICATES = 
       DF_files %>% 
-      count(id, experiment, filename) %>% 
+      dplyr::count(id, experiment, filename) %>% 
       janitor::get_dupes(c(id, experiment))
   })
   
@@ -49,12 +49,12 @@ delete_duplicates <- function(folder, check = TRUE, keep_which = "older") {
     if (keep_which == "older") {
       
       # Select the oldest file for each id/experiment
-      KEEP = DF_files %>% group_by(id, experiment) %>% filter(datetime == min(datetime))
+      KEEP = DF_files %>% dplyr::group_by(id, experiment) %>% dplyr::filter(datetime == min(datetime))
       
     } else if (keep_which == "newer") {
       
       # Select the newest file for each id/experiment
-      KEEP = DF_files %>% group_by(id, experiment) %>% filter(datetime == max(datetime))
+      KEEP = DF_files %>% dplyr::group_by(id, experiment) %>% dplyr::filter(datetime == max(datetime))
       
     } else {
       cat(cli::col_red("keep_which should be either 'older' or 'newer'"))
@@ -65,8 +65,8 @@ delete_duplicates <- function(folder, check = TRUE, keep_which = "older") {
     # Delete the rest
     DELETE = 
       DUPLICATES %>% 
-      anti_join(KEEP, by = c("id", "experiment", "filename")) %>% 
-      pull(filename)
+      dplyr::anti_join(KEEP, by = c("id", "experiment", "filename")) %>% 
+      dplyr::pull(filename)
     
     
     # Check or delete ---------------------------------------------------------
@@ -88,27 +88,27 @@ delete_duplicates <- function(folder, check = TRUE, keep_which = "older") {
       
       DF_differences_all = 
         1:length(DF_dups_clean) %>% 
-        map(~ 
+        purrr::map(~ 
               {
                 if (!DF_dups_clean[[.x]]$experiment[1] %in% c("Consent", "Goodbye")) { 
                   
                   # Reads all files of a set of duplicates (id/experiment) and filters out all the non-duplicates values
-                  DF_temp = map_df(paste0(folder, "/", DF_dups_clean[[.x]]$filename) %>% set_names(basename(.)), data.table::fread, .id = "filename", encoding = 'UTF-8') %>% 
-                    drop_na(trialid) %>% filter(trialid != "") 
+                  DF_temp = purrr::map_df(paste0(folder, "/", DF_dups_clean[[.x]]$filename) %>% set_names(basename(.)), data.table::fread, .id = "filename", encoding = 'UTF-8') %>% 
+                   tidyr::drop_na(trialid) %>% dplyr::filter(trialid != "") 
                   
-                  if (!"responses" %in% names(DF_temp) & "response" %in% names(DF_temp)) DF_temp = DF_temp %>% rename(responses = response)
-                  if (!"responses" %in% names(DF_temp)) DF_temp = DF_temp %>% mutate(responses = paste0("CHECK_ME_", runif(n(), min = 0, max = 10)))
+                  if (!"responses" %in% names(DF_temp) & "response" %in% names(DF_temp)) DF_temp = DF_temp %>% dplyr::rename(responses = response)
+                  if (!"responses" %in% names(DF_temp)) DF_temp = DF_temp %>% dplyr::mutate(responses = paste0("CHECK_ME_", runif(n(), min = 0, max = 10)))
                   DF_temp %>%  
-                    select(filename, trialid, responses) %>%  replace_na(replace = list(responses = "")) %>% 
-                    filter(!trialid %in% c("Instructions", "Instrucciones")) %>% # SHOULD NOT, but sometimes the trialid Instructions repeats itself
-                    pivot_wider(names_from = filename, values_from = responses) %>% 
-                    filter(ifelse(apply(.[ , 2:ncol(.)], MARGIN=1, function(x) length(unique(x))) == 1, FALSE, TRUE))
+                   dplyr::select(filename, trialid, responses) %>%  replace_na(replace = list(responses = "")) %>% 
+                    dplyr::filter(!trialid %in% c("Instructions", "Instrucciones")) %>% # SHOULD NOT, but sometimes the trialid Instructions repeats itself
+                    tidyr::pivot_wider(names_from = filename, values_from = responses) %>% 
+                    dplyr::filter(ifelse(apply(.[ , 2:ncol(.)], MARGIN=1, function(x) length(unique(x))) == 1, FALSE, TRUE))
                 }
               }
         )
       
       # Use names of sets of duplicates for the elements of the list
-      names(DF_differences_all) <- 1:length(DF_dups_clean) %>% map_chr(~ DF_dups_clean[[.x]] %>% transmute(name_list = paste0(id, "_", experiment)) %>% pull(name_list) %>% unlist() %>% head(1))
+      names(DF_differences_all) <- 1:length(DF_dups_clean) %>% purrr::map_chr(~ DF_dups_clean[[.x]] %>% dplyr::transmute(name_list = paste0(id, "_", experiment)) %>% dplyr::pull(name_list) %>% unlist() %>% head(1))
       
       # Filter out empty entries
       LIST_differences_diff = 
@@ -122,9 +122,9 @@ delete_duplicates <- function(folder, check = TRUE, keep_which = "older") {
       
       # Duplicates that are SAFE to delete because they are == 
       SAFE_DELETE = 
-        DUPLICATES %>% mutate(index = paste0(id, "_", experiment)) %>% 
-        filter(index %in% LIST_differences_equal) %>% 
-        filter(filename %in% DELETE) %>% pull(filename)
+        DUPLICATES %>% dplyr::mutate(index = paste0(id, "_", experiment)) %>% 
+        dplyr::filter(index %in% LIST_differences_equal) %>% 
+        dplyr::filter(filename %in% DELETE) %>% dplyr::pull(filename)
       
       
       # REMOVING SAFE_DELETE FILES
@@ -154,7 +154,7 @@ delete_duplicates <- function(folder, check = TRUE, keep_which = "older") {
       if (!file.exists(".vault/.credentials")) cat(cli::col_red("The .vault/.credentials file does not exist. RUN: \n"), cli::col_silver("rstudioapi::navigateToFile('setup/setup_server_credentials.R')\n"))
       list_credentials = source(".vault/.credentials")
       SAFE_DELETE = 1:length(SAFE_DELETE) %>%
-        map(~ {
+        purrr::map(~ {
           
           c(paste0('ssh ', list_credentials$value$user, '@', list_credentials$value$IP, ' rm ', list_credentials$value$main_FOLDER, id_protocol, '/.data/', SAFE_DELETE[.x]))
           ### system(paste0('rm ', getwd(), '/data/3/', SAFE_DELETE[.x]))
@@ -165,7 +165,7 @@ delete_duplicates <- function(folder, check = TRUE, keep_which = "older") {
       if (!file.exists(".vault/.credentials")) cat(cli::col_red("The .vault/.credentials file does not exist. RUN: \n"), cli::col_silver("rstudioapi::navigateToFile('setup/setup_server_credentials.R')\n"))
       list_credentials = source(".vault/.credentials")
       ALL_DELETE = 1:length(DELETE) %>%
-        map(~ {
+        purrr::map(~ {
           
           c(paste0('ssh ', list_credentials$value$user, '@', list_credentials$value$IP, ' rm ', list_credentials$value$main_FOLDER, id_protocol, '/.data/', DELETE[.x]))
           ### system(paste0('rm ', getwd(), '/data/3/', DELETE[.x]))
@@ -189,7 +189,7 @@ delete_duplicates <- function(folder, check = TRUE, keep_which = "older") {
   
   
   OUTPUT = 
-    list(DUPLICATES = DUPLICATES %>% mutate(ACTION = ifelse(filename %in% DELETE, "DELETE", "KEEP")),
+    list(DUPLICATES = DUPLICATES %>% dplyr::mutate(ACTION = ifelse(filename %in% DELETE, "DELETE", "KEEP")),
          KEEP = KEEP,
          DELETE = DELETE,
          LIST_differences_diff = LIST_differences_diff,

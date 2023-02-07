@@ -43,7 +43,7 @@ prepare_FORM4 <- function(DF_clean_form, short_name_scale_str) {
   
   DF_long_DIR = 
     DF_long_RAW %>% 
-    select(id, trialid, RAW) %>%
+   dplyr::select(id, trialid, RAW) %>%
     
   
     # [ADAPT]: RAW to DIR for individual items -----------------------------------
@@ -57,9 +57,9 @@ prepare_FORM4 <- function(DF_clean_form, short_name_scale_str) {
     
     
     # Transformations
-    mutate(
+    dplyr::mutate(
       DIR =
-        case_when(
+       dplyr::case_when(
           trialid == "FORM4_01" ~ RAW,
           
           trialid == "FORM4_02" & RAW == "Masculino" ~ "0",
@@ -86,13 +86,13 @@ prepare_FORM4 <- function(DF_clean_form, short_name_scale_str) {
     # Create DF_wide_RAW_DIR -----------------------------------------------------
     DF_wide_RAW_DIR =
       DF_long_DIR %>% 
-      pivot_wider(
+      tidyr::pivot_wider(
         names_from = trialid, 
         values_from = c(RAW, DIR),
         names_glue = "{trialid}_{.value}") %>% 
       
       # NAs for RAW and DIR items
-      mutate(!!names_list$name_RAW_NA := rowSums(is.na(select(., -matches(items_to_ignore) & matches("_RAW")))),
+      dplyr::mutate(!!names_list$name_RAW_NA := rowSums(is.na(select(., -matches(items_to_ignore) & matches("_RAW")))),
              !!names_list$name_DIR_NA := rowSums(is.na(select(., -matches(items_to_ignore) & matches("_DIR")))))
 
 

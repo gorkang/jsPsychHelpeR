@@ -55,7 +55,7 @@ prepare_CEL <- function(DF_clean, short_name_scale_str) {
   # Create long DIR ------------------------------------------------------------
   DF_long_DIR = 
     DF_long_RAW %>% 
-    select(id, trialid, RAW) %>%
+   dplyr::select(id, trialid, RAW) %>%
     
     
     
@@ -63,9 +63,9 @@ prepare_CEL <- function(DF_clean, short_name_scale_str) {
   # ****************************************************************************
   
     # Transformations
-    mutate(
+    dplyr::mutate(
       DIR =
-        case_when(
+       dplyr::case_when(
           trialid %in% c("CEL_01") & RAW == "Espera hasta que estén listos para hablar." ~ "Derivativo",
           trialid %in% c("CEL_01") & RAW == "Sugiere que el grupo vote qué hacer ahora." ~ "Democratico",
           trialid %in% c("CEL_01") & RAW == "Asigna tareas específicas a diferentes personas y los ayuda a completar con sus tareas." ~ "Directivo",
@@ -103,13 +103,13 @@ prepare_CEL <- function(DF_clean, short_name_scale_str) {
   # Create DF_wide_RAW_DIR -----------------------------------------------------
   DF_wide_RAW =
     DF_long_DIR %>% 
-    pivot_wider(
+    tidyr::pivot_wider(
       names_from = trialid, 
       values_from = c(RAW, DIR),
       names_glue = "{trialid}_{.value}") %>% 
     
     # NAs for RAW and DIR items
-    mutate(!!names_list$name_RAW_NA := rowSums(is.na(select(., -matches(paste0(short_name_scale_str, "_", items_to_ignore, "_RAW")) & matches("_RAW$")))),
+    dplyr::mutate(!!names_list$name_RAW_NA := rowSums(is.na(select(., -matches(paste0(short_name_scale_str, "_", items_to_ignore, "_RAW")) & matches("_RAW$")))),
            !!names_list$name_DIR_NA := rowSums(is.na(select(., -matches(paste0(short_name_scale_str, "_", items_to_ignore, "_DIR")) & matches("_DIR$")))))
 
 
@@ -126,7 +126,7 @@ prepare_CEL <- function(DF_clean, short_name_scale_str) {
   # CHECK with: create_formulas(type = "dimensions_DIR", functions = "sum", names(items_dimensions))
   DF_wide_RAW_DIR =
     DF_wide_RAW %>% 
-    mutate(
+    dplyr::mutate(
 
       # [CHECK] Using correct formula? rowMeans() / rowSums()
       

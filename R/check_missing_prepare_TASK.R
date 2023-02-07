@@ -67,22 +67,22 @@ check_missing_prepare_TASK <- function(sync_protocols = FALSE,
       # Unique tasks found in all the protocols
       ALL_tasks = list.files(local_protocols, pattern = "*.js", full.names = TRUE, recursive = TRUE)
       DF_tasks =
-        ALL_tasks[grepl("*tasks/.*\\.js", ALL_tasks)] %>% as_tibble() %>% 
-        filter(!grepl("OLD_TESTS", value)) %>% 
-        mutate(task = gsub("\\.js", "", basename(value)),
+        ALL_tasks[grepl("*tasks/.*\\.js", ALL_tasks)] %>% tibble::as_tibble() %>% 
+        dplyr::filter(!grepl("OLD_TESTS", value)) %>% 
+        dplyr::mutate(task = gsub("\\.js", "", basename(value)),
                protocol = gsub(".*\\/(test\\/.*)\\/tasks\\/.*|.*\\/(.*)\\/tasks\\/.*", "\\1\\2", value)) %>% 
-          group_by(task) %>% 
-          summarise(protocols = paste(unique(protocol), collapse = ", ")) %>% 
-        distinct(task, .keep_all = TRUE)
+          dplyr::group_by(task) %>% 
+          dplyr::summarise(protocols = paste(unique(protocol), collapse = ", ")) %>% 
+        dplyr::distinct(task, .keep_all = TRUE)
   
   
     # Unique correction scripts -----------------------------------------------
   
       ALL_scripts = list.files(local_prepare_tasks, pattern = "*.R", full.names = TRUE, recursive = TRUE)
       DF_scripts = 
-        ALL_scripts %>% as_tibble() %>% 
-        mutate(script = gsub("prepare_(.*)\\.R", "\\1", basename(value))) %>% 
-        distinct(script)
+        ALL_scripts %>% tibble::as_tibble() %>% 
+        dplyr::mutate(script = gsub("prepare_(.*)\\.R", "\\1", basename(value))) %>% 
+        dplyr::distinct(script)
   
   
     # Google doc --------------------------------------------------------------
@@ -93,21 +93,21 @@ check_missing_prepare_TASK <- function(sync_protocols = FALSE,
       googlesheets4::gs4_auth("gorkang@gmail.com")
       DF_googledoc1 = 
         googlesheets4::read_sheet("1Eo0F4GcmqWZ1cghTpQlA4aHsc8kTABss-HAeimE2IqA", sheet = 2, skip = 0) %>% 
-        rename(short_name = `Código Test`) %>% 
-        filter(!grepl("short_name", short_name)) %>% 
-        arrange(short_name) %>% 
-        select(short_name, Nombre, Descripcion) %>% 
+        dplyr::rename(short_name = `Código Test`) %>% 
+        dplyr::filter(!grepl("short_name", short_name)) %>% 
+        dplyr::arrange(short_name) %>% 
+       dplyr::select(short_name, Nombre, Descripcion) %>% 
         tidyr::drop_na(short_name)
       
       DF_googledoc_NEW = 
         googlesheets4::read_sheet("1LAsyTZ2ZRP_xLiUBkqmawwnKWgy8OCwq4mmWrrc_rpQ", sheet = 2, skip = 0) %>% 
-        rename(short_name = `Código Test`) %>% 
-        filter(!grepl("short_name", short_name)) %>% 
-        arrange(short_name) %>% 
-        select(short_name, Nombre, Descripcion, EMAIL) %>% 
+        dplyr::rename(short_name = `Código Test`) %>% 
+        dplyr::filter(!grepl("short_name", short_name)) %>% 
+        dplyr::arrange(short_name) %>% 
+       dplyr::select(short_name, Nombre, Descripcion, EMAIL) %>% 
         tidyr::drop_na(short_name)
       
-      DF_googledoc = DF_googledoc1 %>% bind_rows(DF_googledoc_NEW) %>% distinct(short_name)
+      DF_googledoc = DF_googledoc1 %>% dplyr::bind_rows(DF_googledoc_NEW) %>% dplyr::distinct(short_name)
       
     
    
@@ -117,20 +117,20 @@ check_missing_prepare_TASK <- function(sync_protocols = FALSE,
     # JS Tasks without correction scripts -----------------------------------
   
     missing_script = DF_tasks$task[!DF_tasks$task %in% DF_scripts$script]
-    DF_missing_script = DF_tasks %>% filter(task %in% missing_script) %>% arrange(task)
+    DF_missing_script = DF_tasks %>% dplyr::filter(task %in% missing_script) %>% dplyr::arrange(task)
    
   
     # Tasks without info on google docs -------------------------------------
   
     missing_tasks_googledoc = DF_tasks$task[!DF_tasks$task %in% DF_googledoc$short_name]
-    DF_missing_googledoc = DF_tasks %>% filter(task %in% missing_tasks_googledoc) %>% arrange(task)
+    DF_missing_googledoc = DF_tasks %>% dplyr::filter(task %in% missing_tasks_googledoc) %>% dplyr::arrange(task)
     
   
     # In google docs not yet implemented (JS) -------------------------------
     
     missing_googledoc_tasks = DF_googledoc_NEW$short_name[!DF_googledoc_NEW$short_name %in% DF_tasks$task]
-    DF_missing_JS_tasks = DF_googledoc_NEW %>% filter(short_name %in% missing_googledoc_tasks) %>% arrange(short_name) %>% 
-      rename(task = short_name) %>% select(-EMAIL)
+    DF_missing_JS_tasks = DF_googledoc_NEW %>% dplyr::filter(short_name %in% missing_googledoc_tasks) %>% dplyr::arrange(short_name) %>% 
+      dplyr::rename(task = short_name) %>% dplyr::select(-EMAIL)
     
     
     
@@ -146,11 +146,11 @@ check_missing_prepare_TASK <- function(sync_protocols = FALSE,
     
     cli::cli_h1("FOLDER: protocols/")
     OUTPUT_ALL = 1:length(ALL_PROTOCOLS) %>% 
-      map(~  check_trialids(local_folder_protocol = paste0(local_protocols, ALL_PROTOCOLS[.x], "/"), show_all_messages = show_all_messages))
+      purrr::map(~  check_trialids(local_folder_protocol = paste0(local_protocols, ALL_PROTOCOLS[.x], "/"), show_all_messages = show_all_messages))
     
     cli::cli_h1("FOLDER: protocols/test/protocols_DEV/")
     OUTPUT_TEST = 1:length(TEST_PROTOCOLS) %>% 
-      map(~  check_trialids(local_folder_protocol = paste0(local_protocols, "/test/protocols_DEV/", TEST_PROTOCOLS[.x], "/"), show_all_messages = show_all_messages))
+      purrr::map(~  check_trialids(local_folder_protocol = paste0(local_protocols, "/test/protocols_DEV/", TEST_PROTOCOLS[.x], "/"), show_all_messages = show_all_messages))
     
     # CHECK 999
     cli::cli_h1("FOLDER: protocols/999/")
@@ -168,24 +168,24 @@ check_missing_prepare_TASK <- function(sync_protocols = FALSE,
     # All sheets from NEW to check we have all data
     DF_googledoc_NEW_citas = 
       googlesheets4::read_sheet("1LAsyTZ2ZRP_xLiUBkqmawwnKWgy8OCwq4mmWrrc_rpQ", sheet = 3, skip = 0) %>% 
-      rename(short_name = `Código Test`) %>% 
-      filter(!grepl("short_name", short_name)) %>%
+      dplyr::rename(short_name = `Código Test`) %>% 
+      dplyr::filter(!grepl("short_name", short_name)) %>%
       tidyr::drop_na(short_name) %>% 
-      select(short_name) %>% mutate(citas = "")
+     dplyr::select(short_name) %>% dplyr::mutate(citas = "")
     
     DF_googledoc_NEW_puntajes = 
       googlesheets4::read_sheet("1LAsyTZ2ZRP_xLiUBkqmawwnKWgy8OCwq4mmWrrc_rpQ", sheet = 4, skip = 0) %>% 
-      rename(short_name = `Código Test`) %>% 
-      filter(!grepl("short_name", short_name)) %>%
+      dplyr::rename(short_name = `Código Test`) %>% 
+      dplyr::filter(!grepl("short_name", short_name)) %>%
       tidyr::drop_na(short_name) %>% 
-      select(short_name) %>% mutate(puntajes = "")
+     dplyr::select(short_name) %>% dplyr::mutate(puntajes = "")
     
     DF_googledoc_NEW_dimensiones = 
       googlesheets4::read_sheet("1LAsyTZ2ZRP_xLiUBkqmawwnKWgy8OCwq4mmWrrc_rpQ", sheet = 5, skip = 0) %>% 
-      rename(short_name = `Código Test`) %>% 
-      filter(!grepl("short_name", short_name)) %>%
+      dplyr::rename(short_name = `Código Test`) %>% 
+      dplyr::filter(!grepl("short_name", short_name)) %>%
       tidyr::drop_na(short_name) %>% 
-      select(short_name) %>% mutate(dimensiones = "")
+     dplyr::select(short_name) %>% dplyr::mutate(dimensiones = "")
     
     
   
@@ -194,33 +194,33 @@ check_missing_prepare_TASK <- function(sync_protocols = FALSE,
     cli::cli_h1("CHECK missing info in tabs")
     
     DF_all_NEW = 
-      DF_googledoc_NEW %>% select(short_name, EMAIL) %>% mutate(resumen = "") %>% 
-      left_join(DF_googledoc_NEW_citas, by = "short_name") %>% 
-      left_join(DF_googledoc_NEW_puntajes, by = "short_name") %>% 
-      left_join(DF_googledoc_NEW_dimensiones, by = "short_name") %>% 
-      distinct(short_name, .keep_all = TRUE) %>% 
-      filter(is.na(resumen) | is.na(citas) | is.na(puntajes) | is.na(dimensiones)) %>% 
+      DF_googledoc_NEW %>% dplyr::select(short_name, EMAIL) %>% dplyr::mutate(resumen = "") %>% 
+      dplyr::left_join(DF_googledoc_NEW_citas, by = "short_name") %>% 
+      dplyr::left_join(DF_googledoc_NEW_puntajes, by = "short_name") %>% 
+      dplyr::left_join(DF_googledoc_NEW_dimensiones, by = "short_name") %>% 
+      dplyr::distinct(short_name, .keep_all = TRUE) %>% 
+      dplyr::filter(is.na(resumen) | is.na(citas) | is.na(puntajes) | is.na(dimensiones)) %>% 
       tidyr::replace_na(replace = list(resumen = "resumen", citas = "citas", puntajes = "puntajes", dimensiones = "dimensiones")) %>% 
-      mutate(TEXT = paste0(resumen, ", ", citas, ", ", puntajes, ", ", dimensiones, sep = ", ")) %>% 
-      select(short_name, EMAIL, TEXT) %>% 
-      mutate(TEXT = gsub("  |^ | $| ,|^ ,|^,|, $", "", TEXT),
+      dplyr::mutate(TEXT = paste0(resumen, ", ", citas, ", ", puntajes, ", ", dimensiones, sep = ", ")) %>% 
+     dplyr::select(short_name, EMAIL, TEXT) %>% 
+      dplyr::mutate(TEXT = gsub("  |^ | $| ,|^ ,|^,|, $", "", TEXT),
              TEXT = trimws(TEXT)) # Remove white space at the begining and end of the string
     
     
     MISSING_n = 
       DF_all_NEW %>% 
-      count(EMAIL) %>% 
-      mutate(TEXT = paste0(EMAIL, ": ", n)) %>% 
-      pull(TEXT)
+      dplyr::count(EMAIL) %>% 
+      dplyr::mutate(TEXT = paste0(EMAIL, ": ", n)) %>% 
+      dplyr::pull(TEXT)
     
     MISSING_tabs = 
       DF_all_NEW %>% 
-      group_by(EMAIL) %>% 
-      summarise(tasks = paste0(paste0(short_name, " (", TEXT, ") "), collapse = "; "),
+      dplyr::group_by(EMAIL) %>% 
+      dplyr::summarise(tasks = paste0(paste0(short_name, " (", TEXT, ") "), collapse = "; "),
                 TEXT = unique(TEXT), 
                 .groups = "drop") %>% 
-      mutate(TEXT = paste0(cli::col_cyan(EMAIL), ": ", tasks)) %>% 
-      distinct(TEXT, .keep_all = TRUE) # Delete duplicates (when tasks with different missing pieces for same EMAIL)
+      dplyr::mutate(TEXT = paste0(cli::col_cyan(EMAIL), ": ", tasks)) %>% 
+      dplyr::distinct(TEXT, .keep_all = TRUE) # Delete duplicates (when tasks with different missing pieces for same EMAIL)
       
     
     cli::cli_alert_danger("Tasks missing info in tabs: ")
@@ -236,7 +236,7 @@ check_missing_prepare_TASK <- function(sync_protocols = FALSE,
     
     cli::cli_h1("CHECK duplicates")
     # Check we don't have duplicate names
-    count_TASK_names = DF_googledoc %>% count(short_name) %>% filter(n != 1)
+    count_TASK_names = DF_googledoc %>% dplyr::count(short_name) %>% dplyr::filter(n != 1)
     if (nrow(count_TASK_names) != 0) { 
       cli::cli_alert_danger("DUPLICATED short_name: {paste(count_TASK_names$short_name, collapse = '; ')}")
     } else {
@@ -248,11 +248,11 @@ check_missing_prepare_TASK <- function(sync_protocols = FALSE,
 
   DF_FINAL = 
     DF_tasks %>% 
-    full_join(DF_missing_script %>% mutate(missing_script = task) %>% select(-protocols), by = c("task")) %>% 
-    left_join(DF_missing_googledoc %>% mutate(missing_gdoc = task) %>% select(-protocols), by = c("task")) %>% 
-    bind_rows(DF_missing_JS_tasks %>% mutate(missing_task = task) %>% select(-Nombre, -Descripcion)) %>% 
-    left_join(DF_googledoc1 %>% bind_rows(DF_googledoc_NEW), by = c("task" = "short_name")) %>% 
-    select(task, starts_with("missing"), everything())
+    dplyr::full_join(DF_missing_script %>% dplyr::mutate(missing_script = task) %>% dplyr::select(-protocols), by = c("task")) %>% 
+    dplyr::left_join(DF_missing_googledoc %>% dplyr::mutate(missing_gdoc = task) %>% dplyr::select(-protocols), by = c("task")) %>% 
+    dplyr::bind_rows(DF_missing_JS_tasks %>% dplyr::mutate(missing_task = task) %>% dplyr::select(-Nombre, -Descripcion)) %>% 
+    dplyr::left_join(DF_googledoc1 %>% dplyr::bind_rows(DF_googledoc_NEW), by = c("task" = "short_name")) %>% 
+    dplyr::select(task, dplyr::starts_with("missing"), dplyr::everything())
   
 
   OUTPUT = 

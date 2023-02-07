@@ -43,16 +43,16 @@ prepare_AIM <- function(DF_clean, short_name_scale_str) {
   # Create long DIR ------------------------------------------------------------
   DF_long_DIR = 
     DF_long_RAW %>% 
-    select(id, trialid, RAW) %>%
+   dplyr::select(id, trialid, RAW) %>%
     
     
     # [ADAPT]: RAW to DIR for individual items -----------------------------------
   # ****************************************************************************
   
   # Transformations
-  mutate(
+  dplyr::mutate(
     DIR =
-      case_when(
+     dplyr::case_when(
         RAW == "Sin estudios formales." ~ "1",
         RAW == "Básica incompleta; primaria o preparatoria incompleta." ~ "2",
         RAW == "Básica completa; primaria o preparatoria completa." ~ "3",
@@ -149,11 +149,11 @@ prepare_AIM <- function(DF_clean, short_name_scale_str) {
       )) %>% 
     
     # When a task combines numbers and characters in RAW, we need to first create a DIR var with numbers as characters and then convert all to numbers 
-    mutate(DIR = as.numeric(DIR)) %>% 
+    dplyr::mutate(DIR = as.numeric(DIR)) %>% 
     
     # Here we process the AIM_03 numbers
-    mutate(DIR = 
-             case_when(
+    dplyr::mutate(DIR = 
+            dplyr::case_when(
                trialid == "AIM_03" & DIR < 1 ~ 1,
                trialid == "AIM_03" & DIR < 7 ~ DIR,
                trialid == "AIM_03" & DIR >= 7 ~ 7,
@@ -168,13 +168,13 @@ prepare_AIM <- function(DF_clean, short_name_scale_str) {
   # Create DF_wide_RAW_DIR -----------------------------------------------------
   DF_wide_RAW_DIR =
     DF_long_DIR %>%
-    pivot_wider(
+    tidyr::pivot_wider(
       names_from = trialid, 
       values_from = c(RAW, DIR),
       names_glue = "{trialid}_{.value}") %>% 
     
     # NAs for RAW and DIR items
-    mutate(!!names_list$name_RAW_NA := rowSums(is.na(select(., matches("_RAW")))),
+    dplyr::mutate(!!names_list$name_RAW_NA := rowSums(is.na(select(., matches("_RAW")))),
            !!names_list$name_DIR_NA := rowSums(is.na(select(., matches("_DIR"))))) %>% 
       
     
@@ -182,7 +182,7 @@ prepare_AIM <- function(DF_clean, short_name_scale_str) {
   # ****************************************************************************
     # [USE STANDARD NAMES FOR Scales and dimensions: name_DIRt, name_DIRd1, etc.] Check with: standardized_names(help_names = TRUE)
 
-    mutate(
+    dplyr::mutate(
 
       # Score Dimensions (see standardized_names(help_names = TRUE) for instructions)
       !!names_list$name_DIRd[1] := rowSums(select(., matches("04|05|06|07|08|09|10") & matches("_DIR$")), na.rm = TRUE)
@@ -192,16 +192,16 @@ prepare_AIM <- function(DF_clean, short_name_scale_str) {
       
     ) %>% 
     
-    left_join(DF_lookup, by = c("AIM_01_DIR", "AIM_02_DIR", "AIM_TramoIngreso_DIRd"))
+    dplyr::left_join(DF_lookup, by = c("AIM_01_DIR", "AIM_02_DIR", "AIM_TramoIngreso_DIRd"))
     
   
   
   ## GET protocol id ---------------
   # DF_wide_RAW_DIR = 
   #   DF_wide_RAW_DIR %>% 
-  #   rename(id_form = id) %>% 
-  #   # left_join(DF_DICCIONARY_id, by = "id_form") %>% 
-  #   select(id, RUT, everything())
+  #   dplyr::rename(id_form = id) %>% 
+  #   # dplyr::left_join(DF_DICCIONARY_id, by = "id_form") %>% 
+  #  dplyr::select(id, RUT, dplyr::everything())
   
   
   # [END ADAPT]: ***************************************************************
@@ -216,7 +216,7 @@ prepare_AIM <- function(DF_clean, short_name_scale_str) {
   
   # Save sensitive version (with RUT) in .vault
   # save_files(DF_wide_RAW_DIR, short_name_scale = short_name_scale_str, is_scale = TRUE, is_sensitive = TRUE)
-  # DF_wide_RAW_DIR = DF_wide_RAW_DIR %>% select(-RUT, -id_form) %>% drop_na(id)
+  # DF_wide_RAW_DIR = DF_wide_RAW_DIR %>% dplyr::select(-RUT, -id_form) %>%tidyr::drop_na(id)
   
   # Save clean version (only id's) in outputs/data
   save_files(DF_wide_RAW_DIR, short_name_scale = short_name_scale_str, is_scale = TRUE)
@@ -224,6 +224,6 @@ prepare_AIM <- function(DF_clean, short_name_scale_str) {
   
   # Output of function ---------------------------------------------------------
   return(DF_wide_RAW_DIR) 
-  # return(DF_wide_RAW_DIR %>% select(-RUT) %>% drop_na(id)) 
+  # return(DF_wide_RAW_DIR %>% dplyr::select(-RUT) %>%tidyr::drop_na(id)) 
   
 }

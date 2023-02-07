@@ -1,12 +1,13 @@
-##' Create DF_clean
-##'
-##' .. content for \details{} ..
-##'
-##' @title
-##' @param DF_raw
-##' @return
-##' @author gorkang
-##' @export
+#' create_clean_data
+#'
+#' @param DF_raw .
+#' @param save_output .
+#' @param check_duplicates .
+#'
+#' @return
+#' @export
+#'
+#' @examples
 create_clean_data <- function(DF_raw, save_output = TRUE, check_duplicates = TRUE) {
   
   # targets::tar_load_globals()
@@ -15,14 +16,14 @@ create_clean_data <- function(DF_raw, save_output = TRUE, check_duplicates = TRU
   DF_clean_raw =
     DF_raw %>% 
     janitor::clean_names() %>% 
-    filter(trial_type != "fullscreen") %>% # Empty line
-    filter(!trialid %in% c("Screen_WM", "Instructions")) %>%  # Delete instructions [TODO]: use regexp to clean instrucciones_NOMBRETEST
-    filter(!grepl("Instructions", trialid, ignore.case = TRUE)) %>% 
-    mutate(response = gsub('&nbsp;|\u00A0', '', response), # HTML space and invisible character
+    dplyr::filter(trial_type != "fullscreen") %>% # Empty line
+    dplyr::filter(!trialid %in% c("Screen_WM", "Instructions")) %>%  # Delete instructions [TODO]: use regexp to clean instrucciones_NOMBRETEST
+    dplyr::filter(!grepl("Instructions", trialid, ignore.case = TRUE)) %>% 
+    dplyr::mutate(response = gsub('&nbsp;|\u00A0', '', response), # HTML space and invisible character
            # If we have [] in response, it is probably a multi-select (e.g. DEMOGR_19: "{\"\"Q0\"\":[\"\"&nbsp;Madre\"\",\"\"&nbsp;Hermanas\"\",\"\"&nbsp;Amigas cercanas\"\"]}")
            # In this case, join all responses and separate by ;
            response = 
-             case_when(
+            dplyr::case_when(
                grepl("\\[", response) ~ gsub(pattern = '"",""', replacement = "; ", x = response, perl = TRUE), # In multi-select, output is: {\"\"Q0\"\":\"\"response1"",""response2\"\"} -> {\"\"Q0\"\":\"\"response1; response2\"\"}
                TRUE ~ response
              ),
@@ -35,55 +36,55 @@ create_clean_data <- function(DF_raw, save_output = TRUE, check_duplicates = TRU
     separate_responses(DF_clean_raw) %>% 
     
     # Clean up remaining responses (e.g. DEMOGR_19)
-    mutate(
+    dplyr::mutate(
       response = gsub('\\{"".*"":', "", response), # Get rid of {""Q0"":
       response = gsub('\\}$', "", response), # Get rid of }
       response = gsub(pattern = '""', replacement = "", x = response, perl = TRUE) # Remaining double quotes""
     ) %>% 
     
     # Clean up stimulus
-    rename(stimulus_raw = stimulus) %>% 
-    mutate(
+    dplyr::rename(stimulus_raw = stimulus) %>% 
+    dplyr::mutate(
       stimulus = gsub('\\{"".*"":', "", stimulus_raw), # Get rid of {""Q0"":
       stimulus = gsub('\\}$', "", stimulus), # Get rid of }
       stimulus = gsub(pattern = '""', replacement = "", x = stimulus, perl = TRUE) # Remaining double quotes""
     ) %>% 
     
     # Need to make sure the columns used below exist
-    mutate(button_pressed = ifelse("button_pressed" %in% names(.), button_pressed, NA_character_)) %>% 
+    dplyr::mutate(button_pressed = ifelse("button_pressed" %in% names(.), button_pressed, NA_character_)) %>% 
     
     # Plugings not using response to store responses
-    mutate(response = 
-             case_when(
+    dplyr::mutate(response = 
+            dplyr::case_when(
                is.na(response) & !is.na(button_pressed) ~ button_pressed, # html-button-response
                TRUE ~ response
                ))
   
   
   # CHECK duplicate trialid's -----------------------------------------------
-  DF_duplicate_trialids_raw = DF_clean %>% count(id, experiment, trialid) %>% arrange(desc(n)) %>% filter(n > 1)
+  DF_duplicate_trialids_raw = DF_clean %>% dplyr::count(id, experiment, trialid) %>% dplyr::arrange(desc(n)) %>% dplyr::filter(n > 1)
   
   DF_message = DF_duplicate_trialids_raw %>% 
-    # filter(experiment != "Consent") |> 
-    # mutate(experiment = gsub("(.*)_[0-9]{2,3}", "\\1", trialid)) %>% 
-    group_by(id) %>% 
-    summarize(duplicate_tasks = paste(unique(experiment), collapse = ", ")) %>% 
-    transmute(message = paste0(id, ": ", duplicate_tasks ))
+    # dplyr::filter(experiment != "Consent") |> 
+    # dplyr::mutate(experiment = gsub("(.*)_[0-9]{2,3}", "\\1", trialid)) %>% 
+    dplyr::group_by(id) %>% 
+    dplyr::summarise(duplicate_tasks = paste(unique(experiment), collapse = ", ")) %>% 
+    dplyr::transmute(message = paste0(id, ": ", duplicate_tasks ))
   
-  if (check_duplicates == TRUE & nrow(DF_message) > 0) rlang::abort(message = paste0("There are duplicate trialid's for: \n['participant: tasks']\n", paste("-", str_sort(DF_message$message, numeric = TRUE), collapse = "\n"), "\n\nFor more details check `create_clean_data()`"))
+  if (check_duplicates == TRUE & nrow(DF_message) > 0) rlang::abort(message = paste0("There are duplicate trialid's for: \n['participant: tasks']\n", paste("-", stringr::str_sort(DF_message$message, numeric = TRUE), collapse = "\n"), "\n\nFor more details check `create_clean_data()`"))
   
   # To get full detail, with filenames: 
   # DF_message = DF_clean %>% 
-  #   group_by(id, trialid) %>% summarise(N_files = n(), filenames = paste(filename, collapse = "\n")) %>% 
-  #   filter(N_files > 1) %>%  
-  #   group_by(id, filenames) %>%  summarise(N_trialids = n(), N_files = unique(N_files), trialids = paste(trialid, collapse = ", ")) %>% 
-  #   distinct(filenames, .keep_all = TRUE) %>% select(id, N_files, N_trialids, trialids, everything()) 
+  #   dplyr::group_by(id, trialid) %>% dplyr::summarise(N_files = n(), filenames = paste(filename, collapse = "\n")) %>% 
+  #   dplyr::filter(N_files > 1) %>%  
+  #   dplyr::group_by(id, filenames) %>%  dplyr::summarise(N_trialids = n(), N_files = unique(N_files), trialids = paste(trialid, collapse = ", ")) %>% 
+  #   dplyr::distinct(filenames, .keep_all = TRUE) %>% dplyr::select(id, N_files, N_trialids, trialids, dplyr::everything()) 
   
-  # IDs = DF_message %>% group_by(1) %>% summarise(IDs = paste(id, collapse = ", ")) %>% arrange(desc(IDs)) %>%  pull(IDs)
-  # FILES = DF_message %>% group_by(1) %>% summarise(filenames = paste(filenames, collapse = "\n"))  %>% pull(filenames)
+  # IDs = DF_message %>% dplyr::group_by(1) %>% dplyr::summarise(IDs = paste(id, collapse = ", ")) %>% dplyr::arrange(desc(IDs)) %>%  dplyr::pull(IDs)
+  # FILES = DF_message %>% dplyr::group_by(1) %>% dplyr::summarise(filenames = paste(filenames, collapse = "\n"))  %>% dplyr::pull(filenames)
   
-  duplicate_trialids = DF_duplicate_trialids_raw %>% count(trialid) %>% pull(trialid) %>% paste(., collapse = "; ")
-  DF_duplicate_trialids = DF_duplicate_trialids_raw %>% count(id)
+  duplicate_trialids = DF_duplicate_trialids_raw %>% dplyr::count(trialid) %>% dplyr::pull(trialid) %>% paste(., collapse = "; ")
+  DF_duplicate_trialids = DF_duplicate_trialids_raw %>% dplyr::count(id)
   if (check_duplicates == TRUE & nrow(DF_duplicate_trialids) > 0) rlang::abort(message = paste0("There are duplicate trialid's: \n", paste("-", duplicate_trialids, collapse = "\n"), "\n\nFor more details check `create_clean_data()`"))
   
   
@@ -92,9 +93,9 @@ create_clean_data <- function(DF_raw, save_output = TRUE, check_duplicates = TRU
 
   DF_clean_wide = 
     DF_clean %>% 
-    rename(RAW = response) %>%
-    select(id, trialid, RAW) %>%
-    pivot_wider(
+    dplyr::rename(RAW = response) %>%
+    dplyr::select(id, trialid, RAW) %>%
+    tidyr::pivot_wider(
       names_from = trialid, 
       values_from = c(RAW),
       names_glue = "{trialid}_{.value}")
@@ -102,8 +103,8 @@ create_clean_data <- function(DF_raw, save_output = TRUE, check_duplicates = TRU
   
   # DF_clean_wide_rt = 
   #   DF_clean %>% 
-  #   select(id, trialid, rt) %>%
-  #   pivot_wider(
+  #  dplyr::select(id, trialid, rt) %>%
+  #   tidyr::pivot_wider(
   #     names_from = trialid, 
   #     values_from = c(rt),
   #     names_glue = "{trialid}_{.value}")

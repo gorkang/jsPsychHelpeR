@@ -58,7 +58,7 @@ prepare_LSNS <- function(DF_clean, short_name_scale_str) {
   # Create long DIR ------------------------------------------------------------
   DF_long_DIR = 
     DF_long_RAW %>% 
-    select(id, trialid, RAW) %>%
+   dplyr::select(id, trialid, RAW) %>%
     
     
     
@@ -66,9 +66,9 @@ prepare_LSNS <- function(DF_clean, short_name_scale_str) {
   # ****************************************************************************
   
     # Transformations
-    mutate(
+    dplyr::mutate(
       DIR =
-        case_when(
+       dplyr::case_when(
           trialid %in% c("LSNS_01", "LSNS_03", "LSNS_04", "LSNS_07", "LSNS_09", "LSNS_10") & RAW == "ninguno" ~ 0,
           trialid %in% c("LSNS_01", "LSNS_03", "LSNS_04", "LSNS_07", "LSNS_09", "LSNS_10") & RAW == "uno" ~ 1,
           trialid %in% c("LSNS_01", "LSNS_03", "LSNS_04", "LSNS_07", "LSNS_09", "LSNS_10") & RAW == "dos" ~ 2,
@@ -103,9 +103,9 @@ prepare_LSNS <- function(DF_clean, short_name_scale_str) {
     ) %>% 
     
     # Invert items [CAN BE DELETED IF NOT USED or DIR is non-numeric]
-    mutate(
+    dplyr::mutate(
       DIR = 
-        case_when(
+       dplyr::case_when(
           DIR == 9999 ~ DIR, # To keep the missing values unchanged
           trialid %in% paste0(short_name_scale_str, "_", items_to_reverse) ~ (6 - DIR), # REVIEW and replace 6 by MAX + 1
           TRUE ~ DIR
@@ -119,13 +119,13 @@ prepare_LSNS <- function(DF_clean, short_name_scale_str) {
   # Create DF_wide_RAW_DIR -----------------------------------------------------
   DF_wide_RAW =
     DF_long_DIR %>% 
-    pivot_wider(
+    tidyr::pivot_wider(
       names_from = trialid, 
       values_from = c(RAW, DIR),
       names_glue = "{trialid}_{.value}") %>% 
     
     # NAs for RAW and DIR items
-    mutate(!!names_list$name_RAW_NA := rowSums(is.na(select(., -matches(paste0(short_name_scale_str, "_", items_to_ignore, "_RAW")) & matches("_RAW$")))),
+    dplyr::mutate(!!names_list$name_RAW_NA := rowSums(is.na(select(., -matches(paste0(short_name_scale_str, "_", items_to_ignore, "_RAW")) & matches("_RAW$")))),
            !!names_list$name_DIR_NA := rowSums(is.na(select(., -matches(paste0(short_name_scale_str, "_", items_to_ignore, "_DIR")) & matches("_DIR$")))))
 
 
@@ -142,7 +142,7 @@ prepare_LSNS <- function(DF_clean, short_name_scale_str) {
   # CHECK with: create_formulas(type = "dimensions_DIR", functions = "sum", names(items_dimensions))
   DF_wide_RAW_DIR =
     DF_wide_RAW %>% 
-    mutate(
+    dplyr::mutate(
 
       # [CHECK] Using correct formula? rowMeans() / rowSums()
       

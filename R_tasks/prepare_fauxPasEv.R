@@ -62,24 +62,24 @@ prepare_fauxPasEv <- function(DF_clean, short_name_scale_str) {
   items_noFP_Q2 = paste0("fauxPasEv_", sprintf("%03d", numbers_noFP_Q2))
   items_FP_Q2 = paste0("fauxPasEv_", sprintf("%03d", numbers_FP_Q2))
   
-  numbers_noFP_Q3_Q7 = (9 - 3:7) %>% map(~ (stories_noFP * 9) - .x) %>% unlist()
+  numbers_noFP_Q3_Q7 = (9 - 3:7) %>% purrr::map(~ (stories_noFP * 9) - .x) %>% unlist()
   items_noFP_Q3_Q7 = paste0("fauxPasEv_", sprintf("%03d", numbers_noFP_Q3_Q7))
   
   
   # Items 8 and 9 (old Questions 7 and 8)
-  numbers_FP_Q8_Q9 = (9 - 8:9) %>% map(~ (stories_FP * 9) - .x) %>% unlist()
+  numbers_FP_Q8_Q9 = (9 - 8:9) %>% purrr::map(~ (stories_FP * 9) - .x) %>% unlist()
   items_FP_Q8_Q9 = paste0("fauxPasEv_", sprintf("%03d", numbers_FP_Q8_Q9))
   
-  numbers_noFP_Q8_Q9 = (9 - 8:9) %>% map(~ (stories_noFP * 9) - .x) %>% unlist()
+  numbers_noFP_Q8_Q9 = (9 - 8:9) %>% purrr::map(~ (stories_noFP * 9) - .x) %>% unlist()
   items_noFP_Q8_Q9 = paste0("fauxPasEv_", sprintf("%03d", numbers_noFP_Q8_Q9))
   
 
   # Items Q2 to Q7, for final score
-  numbers_Q2_Q7 = (9 - 2:7) %>% map(~ (1:20 * 9) - .x) %>% unlist()
+  numbers_Q2_Q7 = (9 - 2:7) %>% purrr::map(~ (1:20 * 9) - .x) %>% unlist()
   items_Q2_Q7 = paste0("fauxPasEv_", sprintf("%03d", numbers_Q2_Q7))
   
   # Items Q8 and Q9, for final score
-  numbers_noFP_Q8_Q9 = (9 - 8:9) %>% map(~ (stories_noFP * 9) - .x) %>% unlist()
+  numbers_noFP_Q8_Q9 = (9 - 8:9) %>% purrr::map(~ (stories_noFP * 9) - .x) %>% unlist()
   items_noFP_Q8_Q9 = paste0("fauxPasEv_", sprintf("%03d", numbers_noFP_Q8_Q9))
   
     
@@ -89,16 +89,16 @@ prepare_fauxPasEv <- function(DF_clean, short_name_scale_str) {
   
   DF_long_DIR = 
     DF_long_RAW %>% 
-    select(id, trialid, RAW) %>%
+   dplyr::select(id, trialid, RAW) %>%
     
     
   # RAW to DIR for individual items --------------------------------------------
   # ****************************************************************************
   
   # Transformations
-  mutate(
+  dplyr::mutate(
     DIR =
-      case_when(
+     dplyr::case_when(
         
         # Stories
         trialid %in% items_Q1 ~ NA_real_,
@@ -208,9 +208,9 @@ prepare_fauxPasEv <- function(DF_clean, short_name_scale_str) {
   ) %>% 
     
     # Invert items
-    mutate(
+    dplyr::mutate(
       DIR = 
-        case_when(
+       dplyr::case_when(
           DIR == 9999 ~ DIR, # To keep the missing values unchanged
           trialid %in% paste0(short_name_scale_str, "_", items_to_reverse) ~ (6 - DIR),
           TRUE ~ DIR
@@ -242,9 +242,9 @@ prepare_fauxPasEv <- function(DF_clean, short_name_scale_str) {
   # Create file
   OUTPUT_DF = DF_long_DIR %>% 
     # Manual correction
-    filter(DIR == 123456789) %>% 
+    dplyr::filter(DIR == 123456789) %>% 
     # Instructions are empty
-    filter(RAW != "") 
+    dplyr::filter(RAW != "") 
   
   # Write
   OUTPUT_DF %>% 
@@ -267,12 +267,13 @@ prepare_fauxPasEv <- function(DF_clean, short_name_scale_str) {
     nrow_input = nrow(DF_manual_correction)
     
     # Count uncorrected rows
-    DF_uncorrected = DF_manual_correction %>% filter(DIR == 123456789 | is.na(DIR))
+    DF_uncorrected = DF_manual_correction %>% dplyr::filter(DIR == 123456789 | is.na(DIR))
     nrow_uncorrected = DF_uncorrected %>% nrow()
     
     # Count missing rows
-    missing_rows = OUTPUT_DF %>% anti_join(DF_manual_correction, by = c("id", "trialid")) %>% 
-      bind_rows(DF_uncorrected %>% drop_na(trialid))
+    missing_rows = OUTPUT_DF %>% 
+      dplyr::anti_join(DF_manual_correction, by = c("id", "trialid")) %>% 
+      dplyr::bind_rows(DF_uncorrected %>%tidyr::drop_na(trialid))
     
     # Check if raw output file == manual correction input file
     if(nrow_output == nrow_input) {
@@ -286,7 +287,7 @@ prepare_fauxPasEv <- function(DF_clean, short_name_scale_str) {
       
       # CHECKS ---
       
-      # uncorrected_responses = nrow(DF_manual_correction %>% filter(DIR == 123456789))
+      # uncorrected_responses = nrow(DF_manual_correction %>% dplyr::filter(DIR == 123456789))
       if (nrow_uncorrected > 0) {
         
         cli::cli_h1(text = "INSTRUCTIONS")
@@ -365,9 +366,9 @@ prepare_fauxPasEv <- function(DF_clean, short_name_scale_str) {
   DF_long_DIR_manually_corrected = 
     DF_long_DIR %>% 
     # Read DF_long_DIR without the manually corrected items
-    filter(DIR != 123456789) %>% 
+    dplyr::filter(DIR != 123456789) %>% 
     # Add manually corrected items from manually corrected file
-    bind_rows(DF_manual_correction)
+    dplyr::bind_rows(DF_manual_correction)
   
   # ****************************************************************************
   
@@ -391,7 +392,7 @@ prepare_fauxPasEv <- function(DF_clean, short_name_scale_str) {
   
   
   # Create a diccionary with stories and trialid's
-  DICC_story_items = tibble(story = rep(1:20, each = 9),
+  DICC_story_items = tibble::tibble(story = rep(1:20, each = 9),
                             trialid = paste0("fauxPasEv_", sprintf("%03d", rep(1:180))))
   
   # Items key questions 8 and 9 (old 7 and 8)
@@ -399,29 +400,29 @@ prepare_fauxPasEv <- function(DF_clean, short_name_scale_str) {
   
   # Join stories dictionary
   DF_long_DIR_manually_corrected_DICT = DF_long_DIR_manually_corrected %>% 
-    left_join(DICC_story_items, by = "trialid") %>% 
-    mutate(KEY = paste0(id, "_", story))
+    dplyr::left_join(DICC_story_items, by = "trialid") %>% 
+    dplyr::mutate(KEY = paste0(id, "_", story))
   
   # Stories where participants have items 8 and 9 OK
   # En primer lugar se corrigen las preguntas de comprensión 7 y 8. 
   # Se da un punto solo si las dos preguntas control se han respondido correctamente. 
   DF_stories_OK = 
     DF_long_DIR_manually_corrected_DICT %>% 
-    filter(trialid %in% items_Q8_Q9) %>% 
-    group_by(id, story) %>% 
-    summarise(Q8_Q9 = sum(DIR), 
+    dplyr::filter(trialid %in% items_Q8_Q9) %>% 
+    dplyr::group_by(id, story) %>% 
+    dplyr::summarise(Q8_Q9 = sum(DIR), 
               KEY = unique(KEY), 
               .groups = "drop") %>% 
-    filter(Q8_Q9 == 2) %>% 
-    mutate(Q8_Q9 = Q8_Q9/2) # Only 1 point when Q8_Q9 of a story are OK
+    dplyr::filter(Q8_Q9 == 2) %>% 
+    dplyr::mutate(Q8_Q9 = Q8_Q9/2) # Only 1 point when Q8_Q9 of a story are OK
   
   
   # Points of Questions 8 and 9 (out of 1)
   # La puntuación obtenida se divide entre 20.
   DF_points_Q8Q9 = 
     DF_stories_OK %>% 
-    group_by(id) %>% 
-    summarise(Q8_Q9 = sum(Q8_Q9)/20, .groups = "drop") 
+    dplyr::group_by(id) %>% 
+    dplyr::summarise(Q8_Q9 = sum(Q8_Q9)/20, .groups = "drop") 
   
   
   # Solo se consideraran para el calculo de puntaje total aquellas  historias en las que se haya respondido bien las preguntas 7 y 8.
@@ -431,44 +432,44 @@ prepare_fauxPasEv <- function(DF_clean, short_name_scale_str) {
   # Points in trialid's 2 to 7, only when Q8_Q9 are OK 
   DF_points_Q2Q7 = 
     DF_long_DIR_manually_corrected_DICT %>%
-    filter(trialid %in% items_Q2_Q7) %>% # Only items 2 to 7
-    filter(KEY %in% DF_stories_OK$KEY) %>% # Only if Q8_Q9 are both OK
-    group_by(id) %>% 
-    summarise(Q2_Q7 = sum(DIR), 
+    dplyr::filter(trialid %in% items_Q2_Q7) %>% # Only items 2 to 7
+    dplyr::filter(KEY %in% DF_stories_OK$KEY) %>% # Only if Q8_Q9 are both OK
+    dplyr::group_by(id) %>% 
+    dplyr::summarise(Q2_Q7 = sum(DIR), 
               .groups = "drop")
   
   # DF with participants whose final score is > 0
   DF_points_final_non_0 = 
     DF_points_Q8Q9 %>% 
-    full_join(DF_points_Q2Q7, by = "id") %>% 
-    mutate(!!names_list$name_DIRt := rowSums(select(., starts_with("Q")), na.rm = TRUE)) %>% 
-    select(id, !!names_list$name_DIRt)
+    dplyr::full_join(DF_points_Q2Q7, by = "id") %>% 
+    dplyr::mutate(!!names_list$name_DIRt := rowSums(select(., dplyr::starts_with("Q")), na.rm = TRUE)) %>% 
+    dplyr::select(id, !!names_list$name_DIRt)
   
   # DF with participants whose final score is 0
     # Create this so in the final DF all participants have a row
   DF_points_final_0 = 
     DF_long_DIR_manually_corrected_DICT %>% 
-    distinct(id) %>% 
-    filter(!id %in% DF_points_final_non_0$id) %>% 
-    mutate(!!names_list$name_DIRt := 0)
+    dplyr::distinct(id) %>% 
+    dplyr::filter(!id %in% DF_points_final_non_0$id) %>% 
+    dplyr::mutate(!!names_list$name_DIRt := 0)
   
   # Join all id's and scores
   DF_points_final = 
     DF_points_final_non_0 %>% 
-    bind_rows(DF_points_final_0)
+    dplyr::bind_rows(DF_points_final_0)
   
   
   
   # Create DF_wide_RAW_DIR -----------------------------------------------------
   DF_wide_RAW =
     DF_long_DIR_manually_corrected %>% 
-    pivot_wider(
+    tidyr::pivot_wider(
       names_from = trialid, 
       values_from = c(RAW, DIR),
       names_glue = "{trialid}_{.value}") %>% 
     
     # NAs for RAW and DIR items
-    mutate(!!names_list$name_RAW_NA := rowSums(is.na(select(., -matches(paste0(short_name_scale_str, "_", items_to_ignore, "_RAW")) & matches("_RAW$")))),
+    dplyr::mutate(!!names_list$name_RAW_NA := rowSums(is.na(select(., -matches(paste0(short_name_scale_str, "_", items_to_ignore, "_RAW")) & matches("_RAW$")))),
            !!names_list$name_DIR_NA := rowSums(is.na(select(., -matches(paste0(short_name_scale_str, "_", items_to_ignore, "_DIR")) & matches("_DIR$")))))
   
   
@@ -479,7 +480,7 @@ prepare_fauxPasEv <- function(DF_clean, short_name_scale_str) {
   
   DF_wide_RAW_DIR =
     DF_wide_RAW %>% 
-    left_join(DF_points_final, by = "id")
+    dplyr::left_join(DF_points_final, by = "id")
     
   # [END ADAPT]: ***************************************************************
   # ****************************************************************************
@@ -493,31 +494,31 @@ prepare_fauxPasEv <- function(DF_clean, short_name_scale_str) {
   # TODO: Delete/comment this after checking all is well
   
   RAW = DF_wide_RAW_DIR %>%
-    pivot_longer(starts_with("faux") & ends_with("RAW"), values_transform = as.character, values_to = "RAW") %>%
-    select(id, name, RAW) %>%
-    separate(name, into = c("task", "item", "type")) %>% 
-    select(-task, -type)
+    tidyr::pivot_longer(dplyr::starts_with("faux") & dplyr::ends_with("RAW"), values_transform = as.character, values_to = "RAW") %>%
+    dplyr::select(id, name, RAW) %>%
+    tidyr::separate(name, into = c("task", "item", "type")) %>% 
+    dplyr::select(-task, -type)
   
   
   
   DIR = DF_wide_RAW_DIR %>%
-    pivot_longer(starts_with("faux") & ends_with("DIR"), values_transform = as.character, values_to = "DIR") %>%
-    select(id, name, DIR) %>%
-    separate(name, into = c("task", "item", "type")) %>% 
-    select(-task, -type)
+    tidyr::pivot_longer(dplyr::starts_with("faux") & dplyr::ends_with("DIR"), values_transform = as.character, values_to = "DIR") %>%
+    dplyr::select(id, name, DIR) %>%
+    tidyr::separate(name, into = c("task", "item", "type")) %>% 
+    dplyr::select(-task, -type)
   
   
   # RAW %>%
-  #   full_join(DIR, by = c("id", "item")) %>%
-  #   arrange(item) %>%  
-  #   select(-DIR) %>%
-  #   pivot_wider(names_from = id, names_prefix ="RAW_", values_from = RAW) %>%
+  #   dplyr::full_join(DIR, by = c("id", "item")) %>%
+  #   dplyr::arrange(item) %>%  
+  #  dplyr::select(-DIR) %>%
+  #   tidyr::pivot_wider(names_from = id, names_prefix ="RAW_", values_from = RAW) %>%
   #   writexl::write_xlsx("outputs/manual_correction/TEMP_WIDE_fauxpas.xlsx")
   
   
   RAW %>%
-    full_join(DIR, by = c("id", "item")) %>%
-    arrange(item) %>% 
+    dplyr::full_join(DIR, by = c("id", "item")) %>%
+    dplyr::arrange(item) %>% 
     writexl::write_xlsx("outputs/manual_correction/TEMP_LONG_fauxpas.xlsx")
   
   DF_wide_RAW_DIR %>% writexl::write_xlsx("outputs/manual_correction/TEMP_DF_wide_RAW_DIR_fauxpas.xlsx")

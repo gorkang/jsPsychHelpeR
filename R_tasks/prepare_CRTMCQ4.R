@@ -48,7 +48,7 @@ prepare_CRTMCQ4 <- function(DF_clean, short_name_scale_str) {
   
   DF_long_DIR = 
     DF_long_RAW %>% 
-    select(id, trialid, RAW) %>%
+   dplyr::select(id, trialid, RAW) %>%
     
     
   # [ADAPT]: RAW to DIR for individual items -----------------------------------
@@ -58,9 +58,9 @@ prepare_CRTMCQ4 <- function(DF_clean, short_name_scale_str) {
   # Intuitiveness score (0 – 7): 1 point for each intuitive incorrect answer: 10 pence, 100 minutes, 24 days, 9 days, 30 students, 10 pounds, is ahead of where he began, respectively.
   
     # Transformations
-    mutate(
+    dplyr::mutate(
       DIR =
-        case_when(
+       dplyr::case_when(
           trialid == "CRTMCQ4_01" & RAW == "50 pesos" ~ "reflective",
           trialid == "CRTMCQ4_02" & RAW == "5 minutos" ~ "reflective",
           trialid == "CRTMCQ4_03" & RAW == "47 días" ~ "reflective",
@@ -90,13 +90,13 @@ prepare_CRTMCQ4 <- function(DF_clean, short_name_scale_str) {
   # Create DF_wide_RAW_DIR -----------------------------------------------------
   DF_wide_RAW =
     DF_long_DIR %>% 
-    pivot_wider(
+    tidyr::pivot_wider(
       names_from = trialid, 
       values_from = c(RAW, DIR),
       names_glue = "{trialid}_{.value}") %>% 
     
     # NAs for RAW and DIR items
-    mutate(!!names_list$name_RAW_NA := rowSums(is.na(select(., -matches(paste0(short_name_scale_str, "_", items_to_ignore, "_RAW")) & matches("_RAW$")))),
+    dplyr::mutate(!!names_list$name_RAW_NA := rowSums(is.na(select(., -matches(paste0(short_name_scale_str, "_", items_to_ignore, "_RAW")) & matches("_RAW$")))),
            !!names_list$name_DIR_NA := rowSums(is.na(select(., -matches(paste0(short_name_scale_str, "_", items_to_ignore, "_DIR")) & matches("_DIR$")))))
       
     
@@ -107,7 +107,7 @@ prepare_CRTMCQ4 <- function(DF_clean, short_name_scale_str) {
   DF_wide_RAW_DIR =
     DF_wide_RAW %>% 
     
-    mutate(
+    dplyr::mutate(
 
       # Score Dimensions (see standardized_names(help_names = TRUE) for instructions)
       !!names_list$name_DIRd[1] := rowSums(select(., paste0(short_name_scale_str, "_", items_DIRd1, "_DIR")) == "reflective", na.rm = TRUE), 

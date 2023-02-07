@@ -31,15 +31,15 @@ prepare_CRT7 <- function(DF_clean, short_name_scale_str) {
   # Create long DIR ------------------------------------------------------------
   DF_long_DIR = 
     DF_long_RAW %>% 
-    select(id, trialid, RAW) %>%
+   dplyr::select(id, trialid, RAW) %>%
     
     
   # [ADAPT]: RAW to DIR for individual items -----------------------------------
   # ****************************************************************************
   
-    mutate(
+    dplyr::mutate(
       DIR =
-        case_when(
+       dplyr::case_when(
           trialid == "CRT7_01" & RAW == "50" ~ 1,
           trialid == "CRT7_02" & RAW == "5" ~ 1,
           trialid == "CRT7_03" & RAW == "47" ~ 1,
@@ -57,13 +57,13 @@ prepare_CRT7 <- function(DF_clean, short_name_scale_str) {
   # Create DF_wide_RAW_DIR -----------------------------------------------------
   DF_wide_RAW_DIR =
     DF_long_DIR %>% 
-    pivot_wider(
+    tidyr::pivot_wider(
       names_from = trialid, 
       values_from = c(RAW, DIR),
       names_glue = "{trialid}_{.value}") %>% 
     
     # NAs for RAW and DIR items
-    mutate(!!names_list$name_RAW_NA := rowSums(is.na(select(., matches("_RAW")))),
+    dplyr::mutate(!!names_list$name_RAW_NA := rowSums(is.na(select(., matches("_RAW")))),
            !!names_list$name_DIR_NA := rowSums(is.na(select(., matches("_DIR"))))) %>% 
       
     
@@ -71,7 +71,7 @@ prepare_CRT7 <- function(DF_clean, short_name_scale_str) {
   # ****************************************************************************
     # [USE STANDARD NAMES FOR Scales and dimensions] Check with: standardized_names()
 
-    mutate(
+    dplyr::mutate(
 
       # Score Scale
       !!names_list$name_DIRt := rowSums(select(., matches("_DIR$")), na.rm = TRUE)

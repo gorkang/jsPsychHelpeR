@@ -26,29 +26,29 @@ testthat::test_that('Check if any of the items appear more or less than the othe
   
   DF_temp = 
     DF_clean %>% 
-    group_by(experiment) %>% 
-    count(trialid, name = "times_item_shown") %>% 
-    filter(!trialid %in% white_list) %>% 
-    count(times_item_shown) %>% 
-    count() # How many times an experiment appears?
+    dplyr::group_by(experiment) %>% 
+    dplyr::count(trialid, name = "times_item_shown") %>% 
+    dplyr::filter(!trialid %in% white_list) %>% 
+    dplyr::count(times_item_shown) %>% 
+    dplyr::count() # How many times an experiment appears?
     
   DF_clean_offender_tests =
     DF_temp %>% 
-    filter(n > 1) %>% 
-    pull(experiment)
+    dplyr::filter(n > 1) %>% 
+    dplyr::pull(experiment)
   
   checks_DF = 
     DF_clean %>% 
-    group_by(experiment) %>% 
-    count(trialid) %>% 
-    filter(experiment %in% DF_clean_offender_tests)
+    dplyr::group_by(experiment) %>% 
+    dplyr::count(trialid) %>% 
+    dplyr::filter(experiment %in% DF_clean_offender_tests)
   
   
   # Warning and log ---------------------------------------------------------
   
   if (length(DF_clean_offender_tests) > 0) {
     
-    write_csv(checks_DF, here::here(paste0("outputs/tests_outputs/test-", name_of_test, ".csv")))
+    readr::write_csv(checks_DF, here::here(paste0("outputs/tests_outputs/test-", name_of_test, ".csv")))
     
     cat(cli::col_red("\nERROR in", paste0("test-", name_of_test), "\n"),
         cli::col_red("  - Some of the items appear more than others in the same tests:"), DF_clean_offender_tests, "\n",

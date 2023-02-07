@@ -1,12 +1,11 @@
-##' tests_DF_raw
-##'
-##' .. content for \details{} ..
-##'
-##' @title
-
-##' @return
-##' @author gorkang
-##' @export
+#' tests_DF_raw
+#'
+#' @param DF_raw .
+#'
+#' @return
+#' @export
+#'
+#' @examples
 tests_DF_raw <- function(DF_raw) {
 
   # # Load targets objects used in tests --------------------------------------
@@ -21,7 +20,7 @@ tests_DF_raw <- function(DF_raw) {
   # Only one project
   test_projects = 
     DF_raw %>% 
-    count(project)
+    dplyr::count(project)
   
   if (nrow(test_projects) > 1) cat(cli::col_red(paste0("\n\n[WARNING]: More than 1 project\n")))
   
@@ -29,10 +28,10 @@ tests_DF_raw <- function(DF_raw) {
   # All tasks same version!
   test_version_tasks = 
     DF_raw %>% 
-    count(experiment, version) %>% 
-    count(experiment) %>% 
-    arrange(desc(n)) %>% 
-    filter(n > 1)
+    dplyr::count(experiment, version) %>% 
+    dplyr::count(experiment) %>% 
+    dplyr::arrange(desc(n)) %>% 
+    dplyr::filter(n > 1)
   
   if (nrow(test_version_tasks) > 0) cat(cli::col_red(paste0("\n\n[WARNING]: Some of the tasks have data from different versions\n")))
   
@@ -40,15 +39,15 @@ tests_DF_raw <- function(DF_raw) {
   # No repeated id's per experiment!
   repeated_id = 
     DF_raw %>% 
-    count(id, experiment, filename) %>% 
-    count(id, experiment) %>% 
-    arrange(desc(n)) %>% 
-    filter(n > 1)
+    dplyr::count(id, experiment, filename) %>% 
+    dplyr::count(id, experiment) %>% 
+    dplyr::arrange(desc(n)) %>% 
+    dplyr::filter(n > 1)
   
   
   if (nrow(repeated_id) > 0) {
     cat(cli::col_red(paste0("\n\n[WARNING]: We have repeated id's in: ")), paste(repeated_id$experiment, collapse = ", "), "\n")
-    cat(cli::col_red(paste0("\t\t      Offending IDs: ")), paste(repeated_id %>% distinct(id) %>% pull(id), collapse = ", "), "\n")
+    cat(cli::col_red(paste0("\t\t      Offending IDs: ")), paste(repeated_id %>% dplyr::distinct(id) %>% dplyr::pull(id), collapse = ", "), "\n")
     stop("FIX this error before proceeding")
     
   }
@@ -57,9 +56,9 @@ tests_DF_raw <- function(DF_raw) {
   # No repeated trialid per id ----------------
   
   # DF_clean %>% 
-  # count(id, trialid) %>% 
-  # arrange(desc(n)) %>% 
-  # filter(n > 1) %>% 
-  # select(-n)
+  # dplyr::count(id, trialid) %>% 
+  # dplyr::arrange(desc(n)) %>% 
+  # dplyr::filter(n > 1) %>% 
+  #dplyr::select(-n)
 
 }

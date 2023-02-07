@@ -9,14 +9,23 @@
   # Clean renv cache: renv::clean()
 
   
-  source("admin/helper-scripts-admin.R")
-  PID = 999
+  
   
   # Clean unused cache libraries
   renv::clean()
+
+  # Clean extra versions of libraries
+  source("R/helper_functions_extra.R")
   clean_renv_cache()
+
   
-  create_docker_container(PID = PID)
+  
+  # MISSING SOME FILES: 
+  # Probably also remove some from dockerfile
+  
+  # renv::install("/home/emrys/gorkang@gmail.com/RESEARCH/PROYECTOS-Code/jsPsychR/jsPsychHelpeR_0.2.0.tar.gz")  
+  PID = 999
+  jsPsychHelpeR::create_docker_container(PID = PID)
   #60 sec elapsed from CLEAN cache
 
 
@@ -25,6 +34,10 @@
   # Run project inside a docker container. Output in Downloads/jsPsychHelpeR/pid[PID]/
   file.remove(list.files(paste0("~/Downloads/jsPsychHelpeR", PID, "/outputs"), recursive = TRUE, full.names = TRUE))
   system(paste0("docker run --rm -d --name pid", PID, " -v ~/Downloads/jsPsychHelpeR", PID, "/outputs:/home/project/jsPsychHelpeR/outputs:rw gorkang/jspsychhelper:pid", PID))
+  
+  # DEBUG AS WOULD RUN
+  # docker run --rm -ti -v ~/Downloads/jsPsychHelpeR999/outputs:/home/project/jsPsychHelpeR/outputs:rw gorkang/jspsychhelper:pid999 /bin/bash
+  
   
   # Windows
   # In cmd:
@@ -46,7 +59,7 @@
   
   
   # UNZIP and load in new computer:
-  unzip(zipfile = paste0("pid", PID, ".tar.zip"), files = paste0("pid", PID, ".tar.zip"))
+  utils::unzip(zipfile = paste0("pid", PID, ".tar.zip"), files = paste0("pid", PID, ".tar.zip"))
   # docker load --input pid999.tar
   
 

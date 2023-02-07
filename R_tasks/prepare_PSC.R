@@ -59,7 +59,7 @@ prepare_PSC <- function(DF_clean, short_name_scale_str) {
   # Create long DIR ------------------------------------------------------------
   DF_long_DIR = 
     DF_long_RAW %>% 
-    select(id, trialid, RAW) %>%
+   dplyr::select(id, trialid, RAW) %>%
     
     
     
@@ -67,9 +67,9 @@ prepare_PSC <- function(DF_clean, short_name_scale_str) {
   # ****************************************************************************
   
     # Transformations
-    mutate(
+    dplyr::mutate(
       DIR =
-        case_when(
+       dplyr::case_when(
           trialid %in% c("PSC_01", "PSC_01_Q1", "PSC_01_Q2", "PSC_01_Q3") ~ RAW,
           is.na(RAW) ~ NA_real_, # OR NA_character_,
           grepl(items_to_ignore, trialid) ~ NA_real_, # OR NA_character_,
@@ -78,9 +78,9 @@ prepare_PSC <- function(DF_clean, short_name_scale_str) {
     ) %>% 
     
     # Invert items [CAN BE DELETED IF NOT USED or DIR is non-numeric]
-    mutate(
+    dplyr::mutate(
       DIR = 
-        case_when(
+       dplyr::case_when(
           DIR == 9999 ~ DIR, # To keep the missing values unchanged
           trialid %in% paste0(short_name_scale_str, "_", items_to_reverse) ~ (6 - DIR), # REVIEW and replace 6 by MAX + 1
           TRUE ~ DIR
@@ -94,13 +94,13 @@ prepare_PSC <- function(DF_clean, short_name_scale_str) {
   # Create DF_wide_RAW_DIR -----------------------------------------------------
   DF_wide_RAW =
     DF_long_DIR %>% 
-    pivot_wider(
+    tidyr::pivot_wider(
       names_from = trialid, 
       values_from = c(RAW, DIR),
       names_glue = "{trialid}_{.value}") %>% 
     
     # NAs for RAW and DIR items
-    mutate(!!names_list$name_RAW_NA := rowSums(is.na(select(., -matches(paste0(short_name_scale_str, "_", items_to_ignore, "_RAW")) & matches("_RAW$")))),
+    dplyr::mutate(!!names_list$name_RAW_NA := rowSums(is.na(select(., -matches(paste0(short_name_scale_str, "_", items_to_ignore, "_RAW")) & matches("_RAW$")))),
            !!names_list$name_DIR_NA := rowSums(is.na(select(., -matches(paste0(short_name_scale_str, "_", items_to_ignore, "_DIR")) & matches("_DIR$")))))
 
 
@@ -117,7 +117,7 @@ prepare_PSC <- function(DF_clean, short_name_scale_str) {
   # CHECK with: create_formulas(type = "dimensions_DIR", functions = "sum", names(items_dimensions))
   DF_wide_RAW_DIR =
     DF_wide_RAW %>% 
-    mutate(
+    dplyr::mutate(
 
       # [CHECK] Using correct formula? rowMeans() / rowSums()
       

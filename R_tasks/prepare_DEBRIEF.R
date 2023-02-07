@@ -43,16 +43,16 @@ prepare_DEBRIEF <- function(DF_clean, short_name_scale_str) {
   
   DF_long_DIR = 
     DF_long_RAW %>% 
-    select(id, trialid, RAW) %>%
+   dplyr::select(id, trialid, RAW) %>%
     
     
   # [ADAPT]: RAW to DIR for individual items -----------------------------------
   # ****************************************************************************
   
     # Transformations
-    mutate(
+    dplyr::mutate(
       DIR =
-        case_when(
+       dplyr::case_when(
           trialid == "DEBRIEF_01" & RAW == "casi nada" ~ "1",
           trialid == "DEBRIEF_01" & RAW == "muy poco" ~ "2",
           trialid == "DEBRIEF_01" & RAW == "algo" ~ "3",
@@ -70,23 +70,23 @@ prepare_DEBRIEF <- function(DF_clean, short_name_scale_str) {
   # Create DF_wide_RAW_DIR -----------------------------------------------------
   DF_wide_RAW_DIR =
     DF_long_DIR %>% 
-    pivot_wider(
+    tidyr::pivot_wider(
       names_from = trialid, 
       values_from = c(RAW, DIR),
       names_glue = "{trialid}_{.value}") %>% 
     
     # NAs for RAW and DIR items
-    mutate(!!names_list$name_RAW_NA := rowSums(is.na(select(., -matches(items_to_ignore) & matches("_RAW")))),
+    dplyr::mutate(!!names_list$name_RAW_NA := rowSums(is.na(select(., -matches(items_to_ignore) & matches("_RAW")))),
            !!names_list$name_DIR_NA := rowSums(is.na(select(., -matches(items_to_ignore) & matches("_DIR"))))) %>% 
       
     # Transform numeric items
-    mutate(!!paste0(numeric_items, "_DIR") := as.numeric(!!sym(paste0(numeric_items, "_DIR")))) %>% 
+    dplyr::mutate(!!paste0(numeric_items, "_DIR") := as.numeric(!!sym(paste0(numeric_items, "_DIR")))) %>% 
     
   # [ADAPT]: Scales and dimensions calculations --------------------------------
   # ****************************************************************************
     # [USE STANDARD NAMES FOR Scales and dimensions: name_DIRt, name_DIRd1, etc.] Check with: standardized_names(help_names = TRUE)
 
-    mutate(
+    dplyr::mutate(
 
       # Score Dimensions (see standardized_names(help_names = TRUE) for instructions)
       !!names_list$name_DIRd[1] := rowSums(select(., matches("01") & matches("_DIR$")), na.rm = TRUE)

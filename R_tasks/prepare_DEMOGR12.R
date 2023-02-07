@@ -57,12 +57,12 @@ prepare_DEMOGR12 <- function(DF_clean, short_name_scale_str) {
   
   DF_long_DIR = 
     DF_long_RAW %>% 
-    select(id, trialid, RAW) %>%
+   dplyr::select(id, trialid, RAW) %>%
     
     # Transformations
-    mutate(
+    dplyr::mutate(
       DIR =
-        case_when(
+       dplyr::case_when(
           trialid == "DEMOGR12_01" ~ RAW,
           
           trialid == "DEMOGR12_02" & RAW == "Masculino" ~ "0",
@@ -86,13 +86,13 @@ prepare_DEMOGR12 <- function(DF_clean, short_name_scale_str) {
     # Create DF_wide_RAW_DIR -----------------------------------------------------
     DF_wide_RAW =
       DF_long_DIR %>% 
-      pivot_wider(
+      tidyr::pivot_wider(
         names_from = trialid, 
         values_from = c(RAW, DIR),
         names_glue = "{trialid}_{.value}") %>% 
       
       # NAs for RAW and DIR items
-      mutate(!!names_list$name_RAW_NA := rowSums(is.na(select(., -matches(items_to_ignore) & matches("_RAW")))),
+      dplyr::mutate(!!names_list$name_RAW_NA := rowSums(is.na(select(., -matches(items_to_ignore) & matches("_RAW")))),
              !!names_list$name_DIR_NA := rowSums(is.na(select(., -matches(items_to_ignore) & matches("_DIR")))))
   
   
@@ -100,19 +100,19 @@ prepare_DEMOGR12 <- function(DF_clean, short_name_scale_str) {
     DF_wide_RAW %>% 
     
     # Mach a simplified version of the strings (lower case, only standard characters and no extra space at the end)
-    mutate(COMUNA = tolower(stringi::stri_trans_general(str = DEMOGR12_06_DIR, id = "Latin-ASCII")) %>% gsub(" $", "", .)) %>% 
-    left_join(DF_lookup %>% mutate(COMUNA = tolower(stringi::stri_trans_general(str = comuna, id = "Latin-ASCII")) %>% gsub(" $", "", .)), 
+    dplyr::mutate(COMUNA = tolower(stringi::stri_trans_general(str = DEMOGR12_06_DIR, id = "Latin-ASCII")) %>% gsub(" $", "", .)) %>% 
+    dplyr::left_join(DF_lookup %>% dplyr::mutate(COMUNA = tolower(stringi::stri_trans_general(str = comuna, id = "Latin-ASCII")) %>% gsub(" $", "", .)), 
               by = c("COMUNA")) %>% 
-    rename(DEMOGR12_comuna_DIRd = DEMOGR_comuna_DIRd) %>% # DEMOGR_comuna_DIRd comes from excel file. DO NOT RENAME
-    mutate(DEMOGR12_comuna_DIRd = ifelse(is.na(DEMOGR12_comuna_DIRd), paste0("Not found: ", DEMOGR12_06_DIR), DEMOGR12_comuna_DIRd)) %>%
-    select(-COMUNA, -comuna) %>% 
+    dplyr::rename(DEMOGR12_comuna_DIRd = DEMOGR_comuna_DIRd) %>% # DEMOGR_comuna_DIRd comes from excel file. DO NOT RENAME
+    dplyr::mutate(DEMOGR12_comuna_DIRd = ifelse(is.na(DEMOGR12_comuna_DIRd), paste0("Not found: ", DEMOGR12_06_DIR), DEMOGR12_comuna_DIRd)) %>%
+   dplyr::select(-COMUNA, -comuna) %>% 
     
     
     # [ADAPT]: Scales and dimensions calculations --------------------------------
     # ****************************************************************************
     # [USE STANDARD NAMES FOR Scales and dimensions: name_DIRt, name_DIRd1, etc.] Check with: standardized_names(help_names = TRUE)
     
-    mutate(
+    dplyr::mutate(
       !!names_list$name_DIRd[1] := get(paste0(short_name_scale_str, "_", items_DIRd1, "_DIR")), 
       !!names_list$name_DIRd[2] := get(paste0(short_name_scale_str, "_", items_DIRd2, "_DIR"))
     )

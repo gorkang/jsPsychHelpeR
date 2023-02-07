@@ -1,17 +1,26 @@
-# Initial setup -----------------------------------------------------------
+# TODO
+# Having the renv cache and lib adds ~250 MB to the package
 
-  # **Run only once**
+# When 
+
+
+
+# Initial setup (run once) ------------------------------------------------
+
+# Install jsPsychHelpeR package:
+
+  if (!require('remotes')) utils::install.packages('remotes'); remotes::install_github('gorkang/jsPsychHelpeR')
+  if (!require('renv')) utils::install.packages('renv'); renv::install("/home/emrys/gorkang@gmail.com/RESEARCH/PROYECTOS-Code/jsPsychR/jsPsychHelpeR_0.2.0.tar.gz")
+
+# Create and configure RStudio project with data preparation (use the folder parameter to set a destination)
+
   # REPLACE 'pid' below with your project ID
-  # If you have the FTP credentials in .vault/.credentials, run 1)
-  # If you manually copied the .csv files to data/pid, run 2)
 
-  # 1) FULLY AUTOMATIC: Will download data automatically
-    invisible(lapply(list.files("./R", full.names = TRUE, pattern = ".R$"), source))
-    run_initial_setup(pid = "999", download_files = TRUE, download_task_script = TRUE)
+  # 1) FULLY AUTOMATIC: If you have the FTP credentials in .vault/.credentials
+  jsPsychHelpeR::run_initial_setup(pid = '999', download_files = TRUE, download_task_script = FALSE, dont_ask = TRUE)
     
-  # 2) SEMI AUTOMATIC: Manually place data in 'data/pid' 
-    invisible(lapply(list.files("./R", full.names = TRUE, pattern = ".R$"), source))
-    run_initial_setup(pid = "999", download_files = FALSE, download_task_script = FALSE)
+  # 2) SEMI AUTOMATIC: If you have the raw data somewhere in your computer
+  jsPsychHelpeR::run_initial_setup(pid = '999', data_location = '~/Downloads/JSPSYCH/24/', dont_ask = TRUE)
     
 
   
@@ -59,7 +68,7 @@
   rstudioapi::navigateToFile("_targets.R") # Open _targets.R file
   
   # CHECK warnings
-  targets::tar_meta() %>% select(name, warnings) %>% drop_na()
+  targets::tar_meta() %>% dplyr::select(name, warnings) %>%tidyr::drop_na()
   
   
   

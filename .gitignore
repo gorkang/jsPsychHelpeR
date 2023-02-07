@@ -32,5 +32,9 @@ tests/manual_correction
 data/
 !data/999/999.zip
 
+renv/cache/
+renv/lib/
+Dockerfile
+_targets/
 # Uncomment if don't want to upload data and targets cache
 # _targets/objects/ ## SHOULD UPLOAD 

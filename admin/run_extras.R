@@ -41,7 +41,7 @@ targets::tar_visnetwork(targets_only = TRUE, label = "time") #label = "time"
 
 # Global time and time per process
 sum(targets::tar_meta(fields = seconds)$seconds, na.rm = TRUE)
-targets::tar_meta() %>% select(name, seconds) %>% arrange(desc(seconds))
+targets::tar_meta() %>% dplyr::select(name, seconds) %>% dplyr::arrange(desc(seconds))
 
 
 # See warnings in all functions ------------------------------------------

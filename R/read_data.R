@@ -21,25 +21,25 @@ read_data <- function(input_files, anonymize = FALSE, save_output = TRUE, worker
   
   
   # In some old jsPsych plugins, we have a responses column instead of response
-  if (!"response" %in% names(DF_raw_read) & "responses" %in% names(DF_raw_read)) DF_raw_read = DF_raw_read %>% rename(response = responses)
+  if (!"response" %in% names(DF_raw_read) & "responses" %in% names(DF_raw_read)) DF_raw_read = DF_raw_read %>% dplyr::rename(response = responses)
   
   
   # Extract information from filename
   DF_raw =
     DF_raw_read %>% 
     parse_filename() |> 
-    mutate(time_elapsed = as.integer(time_elapsed))  
+    dplyr::mutate(time_elapsed = as.integer(time_elapsed))  
   
 
   # Wide version ------------------------------------------------------------
 
   DF_raw_wide = 
     DF_raw %>% 
-    filter(!grepl("Instructions", trialid)) %>%
-    filter(trialid != "") %>% 
-    rename(RAW = response) %>%
-    select(id, trialid, RAW) %>%
-    pivot_wider(
+    dplyr::filter(!grepl("Instructions", trialid)) %>%
+    dplyr::filter(trialid != "") %>% 
+    dplyr::rename(RAW = response) %>%
+   dplyr::select(id, trialid, RAW) %>%
+    tidyr::pivot_wider(
       names_from = trialid, 
       values_from = c(RAW),
       names_glue = "{trialid}_{.value}") 

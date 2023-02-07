@@ -59,32 +59,32 @@ server <- function(input, output) {
   
   d <- reactive({
     DF_analysis %>% 
-      select(id, input$variable) %>%
-      pivot_longer(2:ncol(.))
+     dplyr::select(id, input$variable) %>%
+      tidyr::pivot_longer(2:ncol(.))
   })
   
   d_table <- reactive({
     DF_analysis %>% 
-      select(id, input$variable)
+     dplyr::select(id, input$variable)
   })
   
   output$plot <- renderPlot({
     d() %>% 
       
-      ggplot(aes(value, name, fill = name)) + 
+      ggplot2::ggplot(ggplot2::aes(value, name, fill = name)) + 
       ggridges::geom_density_ridges(stat = "binline", bins = input$bins, scale = 0.95, draw_baseline = FALSE, show.legend = FALSE) +
       ggridges::geom_density_ridges(jittered_points = TRUE, position = "raincloud", alpha = 0.7, scale = 0.9, show.legend = FALSE) +
-      theme(legend.position = "none") +
-      theme_minimal()
+      ggplot2::theme(legend.position = "none") +
+      ggplot2::theme_minimal()
     
-    # ggplot(aes_string(input$variable)) + 
-    # geom_histogram(bins = input$bins) +
-    # theme_minimal()
+    # ggplot2::ggplot(aes_string(input$variable)) + 
+    # ggplot2::geom_histogram(bins = input$bins) +
+    # ggplot2::theme_minimal()
   })
   
   # Generate a summary of the data ----
   output$summary <- renderDataTable({
-    skimr::skim(d_table() %>% select(-id))
+    skimr::skim(d_table() %>% dplyr::select(-id))
   })
   
   # Generate an HTML table view of the data ----

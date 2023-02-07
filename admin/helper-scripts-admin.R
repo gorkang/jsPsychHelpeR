@@ -1,36 +1,3 @@
-create_docker_container <- function(PID = 999) {
-
-  cli::cli_h1("Building container for pid {PID}")
-  
-  # Read template
-  template = readLines("admin/Dockerfile_TEMPLATE")
-  
-  # Replace PID
-  final_file = gsub("999", PID, template)
-  
-  # Create final file
-  cat(final_file, file = "Dockerfile", sep = "\n")
-
-  # system(paste0("docker build -t pid", PID, " ."))
-  system(paste0("docker build -t gorkang/jspsychhelper:pid", PID, " ."))
-  
-  
-}
-
-
-clean_renv_cache <- function() {
-  
-  LIB = list.files("renv/lib/R-4.2/x86_64-pc-linux-gnu/")
-  CACHE = list.files("renv/cache/v5/R-4.2/x86_64-pc-linux-gnu", full.names = TRUE) |> tibble::as_tibble() |> dplyr::mutate(name = basename(value))
-  
-  DELETE = CACHE |> dplyr::filter(!CACHE$name %in% LIB)
-  # LIB[!LIB %in% CACHE$name]
-  
-  cli::cli_alert_info("Will delete {nrow(DELETE)} unused packages from cache: {DELETE$name}")
-  
-  unlink(DELETE$value, recursive = TRUE)
-  
-}
 
 
 DELETE_data_server <- function(pid = NULL) {

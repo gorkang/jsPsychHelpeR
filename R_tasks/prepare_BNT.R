@@ -28,9 +28,9 @@ prepare_BNT <- function(DF_clean, short_name_scale_str) {
   DF_long_RAW = create_raw_long(DF_clean, short_name_scale = short_name_scale_str, numeric_responses = TRUE, help_prepare = FALSE) %>% 
     
     # In BNT we have exit conditions. Add "BNT_03","BNT_04" to make we have all the columns we need to complete the correction
-    bind_rows(tibble(trialid = c("BNT_03","BNT_04"))) %>% 
-    complete(trialid, nesting(id, experiment)) %>% 
-    drop_na(id) 
+    dplyr::bind_rows(tibble(trialid = c("BNT_03","BNT_04"))) %>% 
+    tidyr::complete(trialid, nesting(id, experiment)) %>% 
+    tidyr::drop_na(id) 
   
   
   # Create long DIR ------------------------------------------------------------
@@ -47,16 +47,16 @@ prepare_BNT <- function(DF_clean, short_name_scale_str) {
   
   DF_long_DIR = 
     DF_long_RAW %>% 
-    select(id, trialid, RAW) %>%
+   dplyr::select(id, trialid, RAW) %>%
     
     
   # [ADAPT]: RAW to DIR for individual items -----------------------------------
   # ****************************************************************************
   
     # Transformations
-    mutate(
+    dplyr::mutate(
       DIR =
-        case_when(
+       dplyr::case_when(
           # trialid == "BNT_01" & as.numeric(RAW) >= 400 & as.numeric(RAW) <= 600 ~ 1,
           trialid == "BNT_02" & RAW != 30 ~ 1,
           trialid == "BNT_02" & RAW == 30 ~ 2,
@@ -77,14 +77,14 @@ prepare_BNT <- function(DF_clean, short_name_scale_str) {
   # Create DF_wide_RAW_DIR -----------------------------------------------------
   DF_wide_RAW_DIR =
     DF_long_DIR %>% 
-    pivot_wider(
+    tidyr::pivot_wider(
       names_from = trialid, 
       values_from = c(RAW, DIR),
       names_glue = "{trialid}_{.value}") %>% 
     
     # ENMIENDA MANUAL para corregir error en piloto. Si han acertado el BNT_03_DIR, no deberian ver el BNT_04_DIR ------------------
-    mutate(BNT_04_DIR = 
-             case_when(
+    dplyr::mutate(BNT_04_DIR = 
+            dplyr::case_when(
                BNT_03_DIR == 4 & BNT_04_DIR == 4 ~ 0,
                TRUE ~ BNT_04_DIR
              )) %>% 
@@ -93,7 +93,7 @@ prepare_BNT <- function(DF_clean, short_name_scale_str) {
     
     
     # NAs for RAW and DIR items
-    mutate(!!names_list$name_RAW_NA := rowSums(is.na(select(., -matches(items_to_ignore) & matches("_RAW")))),
+    dplyr::mutate(!!names_list$name_RAW_NA := rowSums(is.na(select(., -matches(items_to_ignore) & matches("_RAW")))),
            !!names_list$name_DIR_NA := rowSums(is.na(select(., -matches(items_to_ignore) & matches("_DIR"))))) %>% 
       
     
@@ -101,7 +101,7 @@ prepare_BNT <- function(DF_clean, short_name_scale_str) {
   # ****************************************************************************
     # [USE STANDARD NAMES FOR Scales and dimensions: name_DIRt, name_DIRd1, etc.] Check with: standardized_names(help_names = TRUE)
 
-    mutate(
+    dplyr::mutate(
 
       # Score Dimensions (see standardized_names(help_names = TRUE) for instructions)
       # !!names_list$name_DIRd[1] := rowSums(select(., matches("02|04|05") & matches("_DIR$")), na.rm = TRUE), 

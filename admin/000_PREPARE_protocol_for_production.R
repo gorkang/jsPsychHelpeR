@@ -2,7 +2,7 @@
 
   # PARAMETERS --------------------------------
   # Debe estar en test/protocols_DEV/!!!
-  PROTOCOLID = "test/protocols_DEV/999"
+  PROTOCOLID = "test/protocols_DEV/29"
   # -------------------------------------------
   
   # Sources and credentials
@@ -39,10 +39,11 @@
   # 3) Limpiar los archivos de resultados de Monkeys -----------------------
     
     # Delete csv files in .data/
+    # rstudioapi::navigateToFile(".vault/.credentials") 
     DELETE_data_server(pid = PROTOCOLID)
     
     
-  # 4) Revisar el config.js para pasar el experimento a produccion ----------
+  # 4) Revisar el config.js para pasar el experiment a produccion ----------
     
     # -[] online = true
     # -[] pid OK?

@@ -1,9 +1,72 @@
 Package: jsPsychHelpeR
-Title: Standardize and automatize data preparation and analysis of jsPsych experiments created with jsPsychMaker.
+Title: Standardize and automatize data preparation and analysis of jsPsych experiments created with jsPsychMaker
 Version: 0.2.0
 Date: 2021-10-20
 Authors@R: c(person("Gorka", "Navarrete", email = "gorkang@gmail.com", role = c("aut", "cre"), comment = c(ORCID = "0000-0001-7678-8656")))
+Description: Automatize and standardize data preparation for jsPsychMaker protocols.
 Maintainer: Gorka Navarrete <gorkang@gmail.com>
 License: MIT + file LICENSE
 URL: https://github.com/gorkang/jsPsychHelpeR
 BugReports: https://github.com/gorkang/jsPsychHelpeR/issues
+Depends: 
+    R (>= 4.1.0)
+Imports: 
+    callr,
+    cli, 
+    data.table, 
+    dplyr, 
+    DT, 
+    ggplot2,
+    glue,
+    googledrive,
+    googlesheets4,
+    gtools, 
+    gtsummary, 
+    here, 
+    janitor, 
+    magrittr, 
+    psych, 
+    purrr, 
+    readr, 
+    readxl, 
+    renv, 
+    rlang,
+    rmarkdown, 
+    rstudioapi,
+    skimr,
+    stringr, 
+    stringi,
+    tarchetypes, 
+    targets, 
+    tibble, 
+    tidyr, 
+    webshot
+Suggests: 
+    covr,
+    knitr,
+    broom, 
+    broom.mixed, 
+    diffviewer, 
+    emmeans, 
+    forcats, 
+    ggalluvial, 
+    ggridges, 
+    gt, 
+    irr, 
+    lme4, 
+    parameters, 
+    patchwork, 
+    performance, 
+    qs, 
+    scales, 
+    testthat (>= 3.0.0),
+    visNetwork, 
+    writexl, 
+    xml2
+VignetteBuilder: 
+    knitr
+LazyData: FALSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.3
+Config/testthat/edition: 3

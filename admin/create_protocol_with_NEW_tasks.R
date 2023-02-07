@@ -44,22 +44,22 @@ create_protocol_with_missing_in_999 <- function(search_where = "prepare_TASK", d
   
   # Read csv's in 999.zip
   input_files = list.files("data/999", recursive = TRUE, full.names = TRUE) 
-  files = read_zips(input_files) %>% distinct(procedure) %>% pull(procedure)
+  files = read_zips(input_files) %>% dplyr::distinct(procedure) %>% dplyr::pull(procedure)
   
   # Read all .js tasks in jsPsychMaker/protocols_DEV/
   JS_missing_CSV =
-    list.files("../jsPsychMaker/protocols_DEV/", pattern = "js$", recursive = TRUE) %>% as_tibble()  %>% 
-    filter(grepl("*tasks/.*\\.js", value)) %>% 
-    mutate(task = gsub("\\.js", "", basename(value))) %>% 
-    filter(!task %in% files) %>% 
-    filter(!task %in% c("TEMPLATE", "TEMPLATE_OLD")) %>% pull(task) 
+    list.files("../jsPsychMaker/protocols_DEV/", pattern = "js$", recursive = TRUE) %>% tibble::as_tibble()  %>% 
+    dplyr::filter(grepl("*tasks/.*\\.js", value)) %>% 
+    dplyr::mutate(task = gsub("\\.js", "", basename(value))) %>% 
+    dplyr::filter(!task %in% files) %>% 
+    dplyr::filter(!task %in% c("TEMPLATE", "TEMPLATE_OLD")) %>% dplyr::pull(task) 
   
   # Read all prepare_TASK in jsPSychHelpeR/R_tasks/
   TASKS_missing_CSV = 
-    list.files("R_tasks/") %>% as_tibble() %>% 
-    mutate(task = gsub("prepare_(.*)\\.R", "\\1", value)) %>% 
-    filter(!task %in% files & !grepl("\\.csv", value)) %>% 
-    filter(!task %in% c("TEMPLATE", "TEMPLATE_OLD")) %>% pull(task) 
+    list.files("R_tasks/") %>% tibble::as_tibble() %>% 
+    dplyr::mutate(task = gsub("prepare_(.*)\\.R", "\\1", value)) %>% 
+    dplyr::filter(!task %in% files & !grepl("\\.csv", value)) %>% 
+    dplyr::filter(!task %in% c("TEMPLATE", "TEMPLATE_OLD")) %>% dplyr::pull(task) 
   
   if (search_where == "prepare_TASK") {
     NEW_TASKS = paste0(TASKS_missing_CSV, ".js")    
@@ -89,11 +89,11 @@ create_protocol_with_missing_in_999 <- function(search_where = "prepare_TASK", d
   cli::cli_alert_info("Create new protocol in /CSCN-server/")
   
   ALL_js = 
-    list.files("../CSCN-server/", recursive = TRUE, pattern = "\\.js") %>% as_tibble() %>% 
-    filter(!grepl("NEW_TASKS", value)) %>% # Do not look into NEW_TASKS to avoid circularity
-    filter(grepl("*tasks/.*\\.js", value)) %>% 
-    mutate(task_name = basename(value)) %>% 
-    mutate(mtime = file.info(paste0("../CSCN-server/", value))$mtime,
+    list.files("../CSCN-server/", recursive = TRUE, pattern = "\\.js") %>% tibble::as_tibble() %>% 
+    dplyr::filter(!grepl("NEW_TASKS", value)) %>% # Do not look into NEW_TASKS to avoid circularity
+    dplyr::filter(grepl("*tasks/.*\\.js", value)) %>% 
+    dplyr::mutate(task_name = basename(value)) %>% 
+    dplyr::mutate(mtime = file.info(paste0("../CSCN-server/", value))$mtime,
            size = file.info(paste0("../CSCN-server/", value))$size)
     
   # DT::datatable(ALL_js)
@@ -101,11 +101,11 @@ create_protocol_with_missing_in_999 <- function(search_where = "prepare_TASK", d
   # Select newer versions of tasks
   PATHS_NEW_TASKS = 
     ALL_js %>% 
-    filter(task_name %in% NEW_TASKS) %>% 
-    group_by(task_name) %>% filter(mtime == max(mtime)) %>% 
-    distinct(task_name, .keep_all = TRUE) %>% 
-    arrange(task_name) %>% 
-    pull(value)
+    dplyr::filter(task_name %in% NEW_TASKS) %>% 
+    dplyr::group_by(task_name) %>% dplyr::filter(mtime == max(mtime)) %>% 
+    dplyr::distinct(task_name, .keep_all = TRUE) %>% 
+    dplyr::arrange(task_name) %>% 
+    dplyr::pull(value)
   
   
 
