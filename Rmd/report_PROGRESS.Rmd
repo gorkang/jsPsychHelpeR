@@ -85,14 +85,14 @@ filename_plot = here::here(paste0("outputs/plots/plot_",
                                   gsub("\\/", "_", params$pid_report), # So it works in dev protocols
                                   "_progress.png"))
 
-ggsave(filename_plot, DF$PLOT_progress, width = 16, height = 10, bg = "white")
+ggplot2::ggsave(filename_plot, DF$PLOT_progress, width = 16, height = 10, bg = "white")
   
 ```
 
 ### All tasks
 
 ```{r all-tasks, echo=FALSE}
-DT::datatable(DF$DF_files %>% count(experiment) %>% arrange(desc(n)),
+DT::datatable(DF$DF_files %>% dplyr::count(experiment) %>% dplyr::arrange(dplyr::desc(n)),
               width = "50%",
               rownames = FALSE,
               options = list(dom = 't',

@@ -5,7 +5,7 @@
 # Clean environment -------------------------------------------------------
 
   # DELETE ALL CACHE
-  # docker builder prune
+  # docker builder prune --all
   # Clean renv cache: renv::clean()
 
   # Clean unused cache libraries
@@ -28,11 +28,14 @@
   
   # Run project inside a docker container. Output in Downloads/jsPsychHelpeR/pid[PID]/
   file.remove(list.files(paste0("~/Downloads/jsPsychHelpeR", PID, "/outputs"), recursive = TRUE, full.names = TRUE))
-  system(paste0("docker run --rm -d --name pid", PID, " -v ~/Downloads/jsPsychHelpeR", PID, "/outputs:/home/project/jsPsychHelpeR/outputs:rw docker.io/gorkang/jspsychhelper:pid", PID))
   system(paste0("docker run --rm -d --name pid", PID, " -v ~/Downloads/jsPsychHelpeR", PID, "/outputs:/home/project/jsPsychHelpeR/outputs:rw gorkang/jspsychhelper:pid", PID))
   
-  # DEBUG AS WOULD RUN
+  # ***DEBUG*** 
   # docker run --rm -ti -v ~/Downloads/jsPsychHelpeR999/outputs:/home/project/jsPsychHelpeR/outputs:rw gorkang/jspsychhelper:pid999 /bin/bash
+  # See last CMD line in Dockerfile_TEMPLATE:
+    # source('renv/activate.R'); invisible(lapply(list.files('./R', full.names = TRUE, pattern = '.R$'), source)); setup_folders(pid = 999, folder = '.'); targets::tar_destroy(ask = FALSE); targets::tar_make()
+    # du -had1 renv/ # Check size folders
+  # *** ***
   
   
   # Windows
@@ -62,7 +65,7 @@
 # SHARE with dockerhub ----------------------------------------------------
 
   # PUSH TO DOCKERHUB
-  # docker tag pid999:latest gorkang/jspsychhelper:pid999
+  # docker tag gorkang/jspsychhelper:pid999 pid999:latest
   # docker push gorkang/jspsychhelper:pid999 
   
   # GET IMAGE

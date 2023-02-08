@@ -1,15 +1,45 @@
 # Step by step instructions to build and test package
 
-# Prepare files -----------------------------------------------------------
+
+# Make sure we have the minimum dependencies ------------------------------
+
+  # To have a minimal renv cache:
+
+  # .Rprofile: make sure source("renv/activate.R") is UNCOMMENTED
+  rstudioapi::navigateToFile(".Rprofile")
+
+    # 1) Delete renv/cache and renv/lib folders
+    # 2) Only install the packages explicitly mentionened in _targets_options.R main_packages 
+      # - Open _targets_options.R, load main_packages
+      # renv::restore(packages = main_packages) 
+    # 3) Recreate _targets_packages.R: 
+      # targets::tar_renv(extras = c("markdown", "rstudioapi","visNetwork"))
+    # 4) Create lockfile with the installed subset
+      # renv::snapshot()
+    # Make sure project 999 runs: targets::tar_make()
   
+
+# Prepare files -----------------------------------------------------------
+
+  # .Rprofile: make sure source("renv/activate.R") is UNCOMMENTED
+  rstudioapi::navigateToFile(".Rprofile")
+
   # DO THIS ALWAYS so jsPsychHelpeR.zip is updated!
   # Create jsPsychHelpeR.zip
   source("admin/helper-scripts-admin.R")
-  create_jsPsychHelpeR_zip()
+  
+  # add_renv_cache = TRUE creates a ~ 230MB package
+  # Useful to avoid downloading all renv cache again
+  # CAN'T upload that to Github :(
+  create_jsPsychHelpeR_zip(add_renv_cache = FALSE)
+
 
 
 # Build package -----------------------------------------------------------
 
+  # .Rprofile: make sure source("renv/activate.R") is COMMENTED
+  rstudioapi::navigateToFile(".Rprofile")
+  
   # Build and install
   devtools::document()
   devtools::load_all()
@@ -18,31 +48,30 @@
 
 # Install package ---------------------------------------------------------
 
-  devtools::install()
+  # devtools::install()
   renv::install("/home/emrys/gorkang@gmail.com/RESEARCH/PROYECTOS-Code/jsPsychR/jsPsychHelpeR_0.3.0.tar.gz") # Install package from file
 
 
 # CHECK functions ----------------------------------------------------------
 
   # CHECK Main function 
-  jsPsychHelpeR::run_initial_setup(pid = 999, download_files = TRUE, dont_ask = FALSE)
   jsPsychHelpeR::run_initial_setup(pid = 999, data_location = "~/gorkang@gmail.com/RESEARCH/PROYECTOS-Code/jsPsychR/jsPsychHelpeR/data/999", dont_ask = TRUE)
-  
-  jsPsychHelpeR::run_initial_setup(pid = 999, download_files = TRUE, dont_ask = TRUE, folder = "~/Downloads/XXX")
-  jsPsychHelpeR::run_initial_setup(pid = 999, data_location = "~/gorkang@gmail.com/RESEARCH/PROYECTOS-Code/jsPsychR/jsPsychHelpeR/data/999", dont_ask = TRUE, folder = "~/Downloads/XXX2")
+  # jsPsychHelpeR::run_initial_setup(pid = 999, download_files = TRUE, dont_ask = FALSE)
+  # jsPsychHelpeR::run_initial_setup(pid = 999, download_files = TRUE, dont_ask = TRUE, folder = "~/Downloads/XXX")
+  # jsPsychHelpeR::run_initial_setup(pid = 999, data_location = "~/gorkang@gmail.com/RESEARCH/PROYECTOS-Code/jsPsychR/jsPsychHelpeR/data/999", dont_ask = TRUE, folder = "~/Downloads/XXX2")
 
   # CHECK project works
   targets::tar_make()
   
   # Check docker works
-  renv::install("/home/emrys/gorkang@gmail.com/RESEARCH/PROYECTOS-Code/jsPsychR/jsPsychHelpeR_0.2.0.tar.gz")
+  # rstudioapi::navigateToFile("admin/create_docker.R")
   jsPsychHelpeR::create_docker_container()
   PID = 999
   file.remove(list.files(paste0("~/Downloads/jsPsychHelpeR", PID, "/outputs"), recursive = TRUE, full.names = TRUE))
   system(paste0("docker run --rm -d --name pid", PID, " -v ~/Downloads/jsPsychHelpeR", PID, "/outputs:/home/project/jsPsychHelpeR/outputs:rw gorkang/jspsychhelper:pid", PID))
 
-  
-  
+  # ***DEBUG*** 
+  # docker run --rm -ti -v ~/Downloads/jsPsychHelpeR999/outputs:/home/project/jsPsychHelpeR/outputs:rw gorkang/jspsychhelper:pid999 /bin/bash
   
 
 # CHECK package -----------------------------------------------------------
