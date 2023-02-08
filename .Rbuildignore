@@ -1,4 +1,3 @@
-Dockerfile
 ^renv$
 ^renv\.lock$
 ^.*\.Rproj$

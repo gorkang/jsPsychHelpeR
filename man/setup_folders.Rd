@@ -5,7 +5,7 @@
 \title{setup_folders
 Extract jsPsychHelpeR.zip and make sure we have all necessary folders in a specific location}
 \usage{
-setup_folders(pid, folder)
+setup_folders(pid, folder, extract_zip = FALSE)
 }
 \arguments{
 \item{pid}{.}

@@ -60,7 +60,7 @@ create_formulas <- function(type, functions = "sum", dimensions = NULL) {
 #'
 #' Loads the parameters used in the functions present in _targets.R to make debugging easier
 #'
-#' @param name_function .
+#' @param name_function name of the function (in _targets.R) for which you want to load the parameters
 #'
 #' @return
 #' @export
@@ -73,10 +73,12 @@ debug_function <- function(name_function) {
 
   # Function to tar_load or assign the parameters
   load_parameters <- function(parameters_function_separated, NUM) {
+    # NUM = 2
     if (length(parameters_function_separated[[NUM]]) == 1) {
       targets::tar_load(parameters_function_separated[[NUM]], envir = .GlobalEnv)
     } else if (length(parameters_function_separated[[NUM]]) == 2) {
-      assign(parameters_function_separated[[NUM]][1], parameters_function_separated[[NUM]][2], envir = .GlobalEnv)
+      # assign(parameters_function_separated[[NUM]][1], parameters_function_separated[[NUM]][2], envir = .GlobalEnv)
+      assign(parameters_function_separated[[NUM]][1], parameters_function_separated[[NUM]][2], inherits = TRUE)
     }
   }
 
@@ -421,7 +423,7 @@ zip_files <- function(folder_files, zip_name, remove_files = FALSE) {
   FILES_ZIP = FILES_ZIP_raw[!grepl(basename(zip_name), FILES_ZIP_raw)]
   
   # Create safely version so an error won't avoid resetting the project's wd
-  zip_safely = purrr::safely(zip)
+  zip_safely = purrr::safely(utils::zip)
   
   if (length(FILES_ZIP) == 0) {
     cli::cli_alert_danger("NO files found")
@@ -720,8 +722,9 @@ create_docker_container <- function(PID = 999) {
   # template = readLines("admin/Dockerfile_TEMPLATE") 
   
   # From jsPsychHelpeR package
-  path <- callr::r(func = find.package, args =  list(package = "jsPsychHelpeR", lib.loc = NULL, quiet = TRUE))
-  Dockerfile_location = list.files(path, recursive = TRUE, pattern = "Dockerfile_TEMPLATE", full.names = TRUE)
+  # path <- callr::r(func = find.package, args =  list(package = "jsPsychHelpeR", lib.loc = NULL, quiet = TRUE))
+  # Dockerfile_location = list.files(path, recursive = TRUE, pattern = "Dockerfile_TEMPLATE", full.names = TRUE)
+  Dockerfile_location = system.file("templates", "Dockerfile_TEMPLATE", package = "jsPsychHelpeR")  
   template = readLines(Dockerfile_location)
   
   # Replace PID

@@ -1,3 +1,43 @@
+create_jsPsychHelpeR_zip <- function(add_renv_cache = FALSE) {
+  
+  output_file = "inst/templates/jsPsychHelpeR.zip"
+  
+  
+  # List of core files for ext/templates/jsPsychHelpeR.zip
+  
+  root_files = c("jsPsychHelpeR.Rproj", "renv.lock", "run.R", "_targets_options.R", ".Rprofile", "README.md", "NEWS.md", "DESCRIPTION")
+  
+  other_important = c("renv/activate.R", ".vault/README.md", "inst/templates/_targets_TEMPLATE.R") #"targets/_targets_TEMPLATE.R", 
+  
+  # R folder
+  R_folder = c("R/list_input_files.R", "R/helper_functions_minimal.R", "R/run_initial_setup.R")
+  tasks = list.files("R_tasks", full.names = TRUE)
+  analysis = list.files("R", pattern = "^analysis", full.names = TRUE)
+  create = list.files("R", pattern = "^create", full.names = TRUE)
+  read = list.files("R", pattern = "^read", full.names = TRUE)
+  tests = c(list.files("R", pattern = "^test", full.names = TRUE), "tests/testthat.R", list.files("tests/testthat/", full.names = TRUE))
+  
+  # Rmd
+  reports = list.files("Rmd", full.names = TRUE)
+  
+  # renv cache
+  renv_cache = list.files("renv/cache", full.names = TRUE, recursive = TRUE)
+  renv_lib = list.files("renv/lib/", full.names = TRUE, recursive = TRUE)
+  
+  all_files = c(root_files, other_important, R_folder, tasks, reports, analysis, create, read, tests) # NO RENV CACHE
+  
+  # Add renv cache and lib
+  if (add_renv_cache == TRUE) all_files = c(all_files, renv_cache, renv_lib) # TOO big for Github :(max 100MB)
+  
+  # Create new jsPsychHelpeR.zip (~22 sec)
+  file.remove(output_file)
+  utils::zip(zipfile = output_file, files = all_files, flags = "-q")
+  
+  file_KB = round(file.info(output_file)$size/1024, 2)
+  cli::cli_alert_success("`jsPsychHelpeR.zip` created in `inst/templates/`: {file_KB}KB")
+  
+}
+
 
 
 DELETE_data_server <- function(pid = NULL) {

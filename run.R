@@ -1,9 +1,3 @@
-# TODO
-# Having the renv cache and lib adds ~250 MB to the package
-
-# When 
-
-
 
 # Initial setup (run once) ------------------------------------------------
 
@@ -70,5 +64,14 @@
   # CHECK warnings
   targets::tar_meta() %>% dplyr::select(name, warnings) %>%tidyr::drop_na()
   
+  
+  
+
+# Create docker container -------------------------------------------------
+  
+  PID = 999
+  jsPsychHelpeR::create_docker_container(PID = PID)
+  file.remove(list.files(paste0("~/Downloads/jsPsychHelpeR", PID, "/outputs"), recursive = TRUE, full.names = TRUE))
+  system(paste0("docker run --rm -d --name pid", PID, " -v ~/Downloads/jsPsychHelpeR", PID, "/outputs:/home/project/jsPsychHelpeR/outputs:rw gorkang/jspsychhelper:pid", PID))
   
   

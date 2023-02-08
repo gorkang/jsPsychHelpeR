@@ -59,8 +59,7 @@ run_initial_setup <- function(pid, download_files = FALSE, data_location = NULL,
     # 1) Run to make sure you have all the necessary packages and folders -------
     
     cli_message(h1_title = "Setup")
-    # run_setup(dont_ask = dont_ask) # SHOULD DELETE THIS OLD 
-    setup_folders(pid = pid, folder = folder)
+    setup_folders(pid = pid, folder = folder, extract_zip = TRUE)
     
     
     # 2) **Manually** copy .csv files to data/[YOUR_PROJECT_ID]/  --------------

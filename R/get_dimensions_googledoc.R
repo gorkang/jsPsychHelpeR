@@ -31,11 +31,8 @@ get_dimensions_googledoc <- function(short_name_text, google_username = "gorkang
   
   # We use this to get the number of items
   DF_resumen_ALL = googlesheets4::read_sheet(google_sheet_ID, sheet = 2, skip = 0) %>% 
-    dplyr::rename(short_name = `Código Test`) %>% 
+    dplyr::rename(short_name = `Codigo Test`) %>% 
     dplyr::filter(!grepl("short_name.*", short_name)) %>% 
-    # dplyr::filter(short_name != "short_name: NO debe contener espacios ni caracteres extraños :)") %>% 
-    # dplyr::arrange(short_name) %>% 
-    #dplyr::select(short_name, Nombre, Descripcion) %>% 
     tidyr::drop_na(short_name) 
   
   DF_resumen = DF_resumen_ALL %>% 
@@ -55,20 +52,14 @@ get_dimensions_googledoc <- function(short_name_text, google_username = "gorkang
   
   
   DF_dimensions = googlesheets4::read_sheet(google_sheet_ID, sheet = 5, skip = 0) %>% 
-    dplyr::rename(short_name = `Código Test`) %>% 
-    # dplyr::filter(short_name != "short_name: NO debe contener espacios ni caracteres extraños :)") %>% 
-    # dplyr::arrange(short_name) %>% 
-    #dplyr::select(short_name, Nombre, Descripcion) %>% 
+    dplyr::rename(short_name = `Codigo Test`) %>% 
     tidyr::drop_na(short_name) %>% 
     dplyr::filter(short_name == short_name_text) %>% 
     janitor::clean_names()
   
   
   DF_items = googlesheets4::read_sheet(google_sheet_ID, sheet = 4, skip = 0) %>% 
-    dplyr::rename(short_name = `Código Test`) %>% 
-    # dplyr::filter(short_name != "short_name: NO debe contener espacios ni caracteres extraños :)") %>% 
-    # dplyr::arrange(short_name) %>% 
-    #dplyr::select(short_name, Nombre, Descripcion) %>% 
+    dplyr::rename(short_name = `Codigo Test`) %>% 
     tidyr::drop_na(short_name) %>% 
     dplyr::filter(short_name == short_name_text) %>% 
     janitor::clean_names()
@@ -112,7 +103,7 @@ get_dimensions_googledoc <- function(short_name_text, google_username = "gorkang
     
     cli::cli_par()
     cli::cli_text("")
-    cli::cli_h1("Conversion numérica")
+    cli::cli_h1("Numeric conversion")
     cli::cli_end()
     
     
@@ -253,9 +244,9 @@ get_dimensions_googledoc <- function(short_name_text, google_username = "gorkang
     if (nrow(DF_dims_final %>% dplyr::select(notas) %>%tidyr::drop_na()) > 0) {
       cli::cli_par()
       cli::cli_text("")
-      cli::cli_h3("Calculo Dimensiones - NOTAS IMPORTANTES")
+      cli::cli_h3("Dimensions calculations - IMPORTANT NOTES")
       cli::cli_end()
-      cli::cli_alert_warning("Hay detalles importantes sobre el cálculo de las dimensiones")
+      cli::cli_alert_warning("Important details about the dimensions calculations")
 
       1:length(DF_dims_final$notas) %>% 
         purrr::walk(~ {
@@ -268,9 +259,8 @@ get_dimensions_googledoc <- function(short_name_text, google_username = "gorkang
     if (nrow(DF_dims_final %>% dplyr::select(error_text) %>%tidyr::drop_na()) > 0) {
       cli::cli_par()
       cli::cli_text("")
-      cli::cli_h3("ERRORES - Calculo Dimensiones")
+      cli::cli_h3("ERRORS - Dimensions calculations")
       cli::cli_end()
-      # cli::cli_alert_warning("Hay detalles importantes sobre el cálculo de las dimensiones")
       
       1:length(DF_dims_final$error_text) %>% 
         purrr::walk(~ {

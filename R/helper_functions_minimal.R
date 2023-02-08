@@ -8,7 +8,7 @@
 #' @export
 #'
 #' @examples
-setup_folders <- function(pid, folder) {
+setup_folders <- function(pid, folder, extract_zip = FALSE) {
   
   # DEBUG
   # folder =  "~/Downloads/jsPsychHelpeRtest"
@@ -18,22 +18,24 @@ setup_folders <- function(pid, folder) {
   # Avoid spaces in folder path because other functions (e.g. update_data) won't work if there are spaces
   if (grepl(" ", folder)) cli::cli_abort("The folder path should NOT have spaces. You can replace {.code {folder}} for {.code {gsub(' ', '', folder)}}")
   
-  # Make sure folder exists and extract jsPsychHelpeR.zip there
-  if (!dir.exists(folder)) dir.create(folder)
-  
-  # Location of jsPsychHelpeR.zip
-  if ("jsPsychHelpeR" %in% utils::installed.packages()) {
-    path <- callr::r(func = find.package, args =  list(package = "jsPsychHelpeR", lib.loc = NULL, quiet = TRUE))
-    jsPsychHelpeR_zip = list.files(path, recursive = TRUE, pattern = "jsPsychHelpeR.zip", full.names = TRUE)
+  if (extract_zip == TRUE) {
+    # Make sure folder exists and extract jsPsychHelpeR.zip there
+    if (!dir.exists(folder)) dir.create(folder)
     
-  } else {
-    jsPsychHelpeR_zip = "inst/templates/jsPsychHelpeR.zip"
+    # Location of jsPsychHelpeR.zip
+    if ("jsPsychHelpeR" %in% utils::installed.packages()) {
+      # path <- callr::r(func = find.package, args =  list(package = "jsPsychHelpeR", lib.loc = NULL, quiet = TRUE))
+      # jsPsychHelpeR_zip = list.files(path, recursive = TRUE, pattern = "jsPsychHelpeR.zip", full.names = TRUE)
+      jsPsychHelpeR_zip = system.file("templates", "jsPsychHelpeR.zip", package = "jsPsychHelpeR")
+      
+    } else {
+      jsPsychHelpeR_zip = "inst/templates/jsPsychHelpeR.zip"
+    }
+    
+    utils::unzip(jsPsychHelpeR_zip, exdir = folder)
+    cli::cli_alert_success("jsPsychHelpeR project extracted to {.code {folder}}\n")
+    
   }
-  
-  utils::unzip(jsPsychHelpeR_zip, exdir = folder)
-  # unzip("inst/templates/jsPsychHelpeR.zip", exdir = folder)
-  cli::cli_alert_success("jsPsychHelpeR project extracted to {.code {folder}}\n")
-  
   
   # Make sure all the necessary folders exist ---
   
@@ -491,7 +493,7 @@ create_targets_file <- function(pid = 0, folder, dont_ask = FALSE) {
     # END DICC ---
 
     # Read template
-    template = readLines(paste0(folder, "/targets/_targets_TEMPLATE.R"))
+    template = readLines(paste0(folder, "/inst/templates/_targets_TEMPLATE.R"))
     
     # Prepare targets section and joins section
     targets = paste0("   tar_target(df_", tasks, ", prepare_", files_prepare_funs, "(DF_clean, short_name_scale_str = '", tasks,"')),\n") %>% paste(., collapse = "")

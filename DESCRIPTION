@@ -1,7 +1,7 @@
 Package: jsPsychHelpeR
 Title: Standardize and automatize data preparation and analysis of jsPsych experiments created with jsPsychMaker
-Version: 0.2.0
-Date: 2021-10-20
+Version: 0.3.0
+Date: 2023-02-08
 Authors@R: c(person("Gorka", "Navarrete", email = "gorkang@gmail.com", role = c("aut", "cre"), comment = c(ORCID = "0000-0001-7678-8656")))
 Description: Automatize and standardize data preparation for jsPsychMaker protocols.
 Maintainer: Gorka Navarrete <gorkang@gmail.com>

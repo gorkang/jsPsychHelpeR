@@ -1,16 +1,13 @@
+# Step by step instructions to create a Dockerfile in the project's main folder 
+# build the docker image and run the docker container
 
-# Create docker image -----------------------------------------------------
 
-  # This creates a Dockerfile in the project's main folder and builds the docker container
-  
-  
+# Clean environment -------------------------------------------------------
+
   # DELETE ALL CACHE
   # docker builder prune
   # Clean renv cache: renv::clean()
 
-  
-  
-  
   # Clean unused cache libraries
   renv::clean()
 
@@ -18,12 +15,10 @@
   source("R/helper_functions_extra.R")
   clean_renv_cache()
 
+
+# Create docker container -----------------------------------------------------  
   
-  
-  # MISSING SOME FILES: 
-  # Probably also remove some from dockerfile
-  
-  # renv::install("/home/emrys/gorkang@gmail.com/RESEARCH/PROYECTOS-Code/jsPsychR/jsPsychHelpeR_0.2.0.tar.gz")  
+  # if (!require('remotes')) utils::install.packages('remotes'); remotes::install_github('gorkang/jsPsychHelpeR')
   PID = 999
   jsPsychHelpeR::create_docker_container(PID = PID)
   #60 sec elapsed from CLEAN cache
@@ -33,6 +28,7 @@
   
   # Run project inside a docker container. Output in Downloads/jsPsychHelpeR/pid[PID]/
   file.remove(list.files(paste0("~/Downloads/jsPsychHelpeR", PID, "/outputs"), recursive = TRUE, full.names = TRUE))
+  system(paste0("docker run --rm -d --name pid", PID, " -v ~/Downloads/jsPsychHelpeR", PID, "/outputs:/home/project/jsPsychHelpeR/outputs:rw docker.io/gorkang/jspsychhelper:pid", PID))
   system(paste0("docker run --rm -d --name pid", PID, " -v ~/Downloads/jsPsychHelpeR", PID, "/outputs:/home/project/jsPsychHelpeR/outputs:rw gorkang/jspsychhelper:pid", PID))
   
   # DEBUG AS WOULD RUN
@@ -59,7 +55,7 @@
   
   
   # UNZIP and load in new computer:
-  utils::unzip(zipfile = paste0("pid", PID, ".tar.zip"), files = paste0("pid", PID, ".tar.zip"))
+  unzip(zipfile = paste0("pid", PID, ".tar.zip"), files = paste0("pid", PID, ".tar.zip"))
   # docker load --input pid999.tar
   
 
@@ -71,6 +67,3 @@
   
   # GET IMAGE
   # docker pull gorkang/jspsychhelper:pid999
-
-
-

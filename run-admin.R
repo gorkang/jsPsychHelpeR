@@ -1,5 +1,16 @@
 # SEE https://gorkang.github.io/jsPsychR-manual/qmd/06-jsPsychRadmins.html
 
+
+# Update or delete data from server ---------------------------------------
+
+# source("R/helper_functions_extra.R")
+# update_data(id_protocol = "test/protocols_DEV/29/")
+
+# source("admin/helper-scripts-admin.R")
+# DELETE_data_server("test/protocols_DEV/27/")
+
+
+
 # CHECK all protocols --------------------------------------------------------
 
  # - Sync server with ../CSCN-server

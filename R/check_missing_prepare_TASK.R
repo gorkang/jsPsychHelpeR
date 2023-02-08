@@ -93,7 +93,7 @@ check_missing_prepare_TASK <- function(sync_protocols = FALSE,
       googlesheets4::gs4_auth("gorkang@gmail.com")
       DF_googledoc1 = 
         googlesheets4::read_sheet("1Eo0F4GcmqWZ1cghTpQlA4aHsc8kTABss-HAeimE2IqA", sheet = 2, skip = 0) %>% 
-        dplyr::rename(short_name = `Código Test`) %>% 
+        dplyr::rename(short_name = `Codigo Test`) %>% 
         dplyr::filter(!grepl("short_name", short_name)) %>% 
         dplyr::arrange(short_name) %>% 
        dplyr::select(short_name, Nombre, Descripcion) %>% 
@@ -101,7 +101,7 @@ check_missing_prepare_TASK <- function(sync_protocols = FALSE,
       
       DF_googledoc_NEW = 
         googlesheets4::read_sheet("1LAsyTZ2ZRP_xLiUBkqmawwnKWgy8OCwq4mmWrrc_rpQ", sheet = 2, skip = 0) %>% 
-        dplyr::rename(short_name = `Código Test`) %>% 
+        dplyr::rename(short_name = `Codigo Test`) %>% 
         dplyr::filter(!grepl("short_name", short_name)) %>% 
         dplyr::arrange(short_name) %>% 
        dplyr::select(short_name, Nombre, Descripcion, EMAIL) %>% 
@@ -168,21 +168,21 @@ check_missing_prepare_TASK <- function(sync_protocols = FALSE,
     # All sheets from NEW to check we have all data
     DF_googledoc_NEW_citas = 
       googlesheets4::read_sheet("1LAsyTZ2ZRP_xLiUBkqmawwnKWgy8OCwq4mmWrrc_rpQ", sheet = 3, skip = 0) %>% 
-      dplyr::rename(short_name = `Código Test`) %>% 
+      dplyr::rename(short_name = `Codigo Test`) %>% 
       dplyr::filter(!grepl("short_name", short_name)) %>%
       tidyr::drop_na(short_name) %>% 
      dplyr::select(short_name) %>% dplyr::mutate(citas = "")
     
     DF_googledoc_NEW_puntajes = 
       googlesheets4::read_sheet("1LAsyTZ2ZRP_xLiUBkqmawwnKWgy8OCwq4mmWrrc_rpQ", sheet = 4, skip = 0) %>% 
-      dplyr::rename(short_name = `Código Test`) %>% 
+      dplyr::rename(short_name = `Codigo Test`) %>% 
       dplyr::filter(!grepl("short_name", short_name)) %>%
       tidyr::drop_na(short_name) %>% 
      dplyr::select(short_name) %>% dplyr::mutate(puntajes = "")
     
     DF_googledoc_NEW_dimensiones = 
       googlesheets4::read_sheet("1LAsyTZ2ZRP_xLiUBkqmawwnKWgy8OCwq4mmWrrc_rpQ", sheet = 5, skip = 0) %>% 
-      dplyr::rename(short_name = `Código Test`) %>% 
+      dplyr::rename(short_name = `Codigo Test`) %>% 
       dplyr::filter(!grepl("short_name", short_name)) %>%
       tidyr::drop_na(short_name) %>% 
      dplyr::select(short_name) %>% dplyr::mutate(dimensiones = "")

@@ -48,7 +48,7 @@ create_joined <- function(...) {
   # Join all by ID in a single DF
   DF_joined = 
     input_list %>% 
-    purrr::reduce(full_join, by = "id")
+    purrr::reduce(dplyr::full_join, by = "id")
   
   # Only RAW
   DF_joined_RAW = DF_joined %>% dplyr::select(id, dplyr::ends_with("RAW"))
