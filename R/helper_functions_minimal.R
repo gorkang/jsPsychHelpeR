@@ -2,7 +2,8 @@
 #' Extract jsPsychHelpeR.zip and make sure we have all necessary folders in a specific location
 #'
 #' @param folder destination folder for the project
-#' @param pid .
+#' @param pid project id
+#' @param extract_zip If TRUE, extracts jsPsychHelpeR.zip to folder
 #'
 #' @return
 #' @export
@@ -65,7 +66,7 @@ setup_folders <- function(pid, folder, extract_zip = FALSE) {
 #' Parse input files to get the essential pieces encoded in the filename column
 #'
 #' @param DF DF with a list of 
-#' @param separator .
+#' @param separator by default "_"
 #'
 #' @return
 #' @export
@@ -345,7 +346,7 @@ save_files <- function(DF, short_name_scale, is_scale = TRUE, is_sensitive = FAL
 
 #' helper to correct tasks
 #'
-#' @param DF_long_RAW .
+#' @param DF_long_RAW dataframe
 #' @param show_trialid_questiontext TRUE/FALSE
 #'
 #' @return
@@ -547,51 +548,61 @@ create_targets_file <- function(pid = 0, folder, dont_ask = FALSE) {
       file.rename(from = paste0(folder, "/_targets_automatic_file.R"), to = paste0(folder, "/_targets.R"))
       
       # DELETE UNUSED tasks
-      # COMMENT Temporarily. Probably will add specific parameter for this (different than dont_ask)
-        TASKS_TO_DELETE_raw =
+        TASKS_TO_DELETE =
           list.files(paste0(folder, "/R_tasks/")) %>%
           tibble::as_tibble() %>%
           dplyr::mutate(task = gsub("prepare_(.*)\\.R", "\\1", value)) %>%
           dplyr::filter(!task %in% tasks & !grepl("\\.csv", value)) %>%
           dplyr::pull(value)
 
-        if(length(TASKS_TO_DELETE_raw) > 0) {
-
-          TASKS_TO_DELETE = TASKS_TO_DELETE_raw %>% paste0(folder, "/R_tasks/", .)
+        if(length(TASKS_TO_DELETE) > 0) {
+          
+          # relative so zip works, absolute to delete 
+          TASKS_TO_DELETE_relative = TASKS_TO_DELETE %>% paste0("R_tasks/", .)
+          TASKS_TO_DELETE_absolute = TASKS_TO_DELETE %>% paste0(folder, "/R_tasks/", .)
+          
 
           if (dont_ask == FALSE) {
             
             delete_prompt = menu(choices = c("Yes", "NO"),
                                  title = cli_message(var_used = TASKS_TO_DELETE,
-                                                     h1_title = "Clean up",
+                                                     h2_title = "Clean up",
                                                      info = "{cli::style_bold((cli::col_red('DELETE')))} the following {length(TASKS_TO_DELETE)} unused tasks from 'R_tasks/'?:",
                                                      details = "{.pkg {basename(TASKS_TO_DELETE)}}")
             )
             
           } else {
             cli_message(var_used = TASKS_TO_DELETE,
-                        h1_title = "Clean up",
+                        h2_title = "Clean up",
                         info = "{cli::style_bold((cli::col_red('DELETED')))} the following {length(TASKS_TO_DELETE)} unused tasks from 'R_tasks/':",
                         details = "{.pkg {basename(TASKS_TO_DELETE)}}")
             delete_prompt = 1
           }
           
           if (delete_prompt == 1) {
-            cli::cli_alert_info("Zipping unused tasks to create backup")
-            utils::zip(zipfile = paste0(folder, "/outputs/backup/deleted_tasks.zip"), files = TASKS_TO_DELETE, flags = "-q") # Silent flags = "-q"
-            file.remove(TASKS_TO_DELETE)
+            
+            
+            cli::cli_alert_info("Zipping and removing unused tasks")
+            
+            # Need to pass relative paths to zip, so we setwd to the files and come back ---
+              # TODO: zip_files() only works with full folder
+              project_folder = getwd()
+              setwd(folder) # Set Temp folder as working folder so the files in zip WONT have the temp path
+              utils::zip(zipfile = paste0(folder, "/outputs/backup/deleted_tasks.zip"), files = TASKS_TO_DELETE_relative, flags = "-q") # Silent flags = "-q"
+              setwd(project_folder)
+            # ---
+            
+            # Remove files
+            file.remove(TASKS_TO_DELETE_absolute)
             cli::cli_alert_success(paste0("Deleted ", length(TASKS_TO_DELETE), " unused tasks. Backup in {.code {paste0(folder, '/outputs/backup/deleted_tasks.zip')}}"))
           }
         }
       
-      # END Messages
-      cli_message(h1_title = "All done", 
-                  success = "NEW '_targets.R' created",
-                  details = cli::col_grey("Use the following commands to start the data preparation:"),
-                  list = c("Visualize pipeline: {.code targets::tar_visnetwork()}",
-                           "Delete cache: {.code targets::tar_destroy()}", 
-                           "Start data preparation: {.code targets::tar_make()}")
+      # END Message
+      cli_message(h2_title = "All done", 
+                  success = "NEW '_targets.R' created"
                   )
+
     
     } else {
       cli::cli_alert_warning("OK, nothing done\n")
@@ -607,10 +618,10 @@ create_targets_file <- function(pid = 0, folder, dont_ask = FALSE) {
 #'
 #' Checks Cronbach's alpha and select variables based on a min r.drop criteria
 #'
-#' @param DF .
-#' @param short_name_scale .
-#' @param items .
-#' @param min_rdrop .
+#' @param DF dataframe
+#' @param short_name_scale short name of scale
+#' @param items items to check
+#' @param min_rdrop rdrop threshold 
 #'
 #' @return
 #' @export
@@ -731,9 +742,9 @@ auto_reliability = function(DF, short_name_scale = short_name_scale_str, items =
 #' move_sensitive_tasks_to_vault
 #' Move sensitive files to .vault/data_vault
 #' 
-#' @param pid .
-#' @param folder .
-#' @param sensitive_tasks .
+#' @param pid project id
+#' @param folder project location
+#' @param sensitive_tasks short names of sensitive tasks
 #'
 #' @return
 #' @export
@@ -1193,6 +1204,7 @@ read_zips = function(input_files, workers = 1, unzip_dir = file.path(dirname(inp
 #'
 #' @param var_used if using a {variable}, need to include it here
 #' @param h1_title title
+#' @param h2_title subtitle
 #' @param success cli_success
 #' @param danger cli_danger
 #' @param details details
@@ -1203,7 +1215,7 @@ read_zips = function(input_files, workers = 1, unzip_dir = file.path(dirname(inp
 #' @export
 #'
 #' @examples
-cli_message <- function(var_used = NULL, h1_title = NULL, info = NULL, success = NULL, danger = NULL, details = NULL, list = NULL) {
+cli_message <- function(var_used = NULL, h1_title = NULL,  h2_title = NULL, info = NULL, success = NULL, danger = NULL, details = NULL, list = NULL) {
   
   # Prepare var_used to be used internally
     # Otherwise, we can't use vars in the messages: e.g. info = "{var_not_in_var_used}" will give an error
@@ -1231,19 +1243,24 @@ cli_message <- function(var_used = NULL, h1_title = NULL, info = NULL, success =
         cli::cli_h1(h1_title)
         cli::cli_end()
       }
+      if (!is.null(h2_title)) {
+        cli::cli_par()
+        cli::cli_h2(h2_title)
+        cli::cli_end()
+      }
       if (!is.null(danger)) {
         cli::cli_par()
         cli::cli_alert_danger(danger)
         cli::cli_end()
       }
-      if (!is.null(info)) {
-        cli::cli_par()
-        cli::cli_alert_info(info)
-        cli::cli_end()
-      }
       if (!is.null(success)) {
         cli::cli_par()
         cli::cli_alert_success(success)
+        cli::cli_end()
+      }
+      if (!is.null(info)) {
+        cli::cli_par()
+        cli::cli_alert_info(info)
         cli::cli_end()
       }
       if (!is.null(details)) {

@@ -8,6 +8,7 @@ Create standardize cli messages}
 cli_message(
   var_used = NULL,
   h1_title = NULL,
+  h2_title = NULL,
   info = NULL,
   success = NULL,
   danger = NULL,
@@ -19,6 +20,8 @@ cli_message(
 \item{var_used}{if using a {variable}, need to include it here}
 
 \item{h1_title}{title}
+
+\item{h2_title}{subtitle}
 
 \item{info}{info}
 

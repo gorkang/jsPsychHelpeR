@@ -8,9 +8,11 @@ Extract jsPsychHelpeR.zip and make sure we have all necessary folders in a speci
 setup_folders(pid, folder, extract_zip = FALSE)
 }
 \arguments{
-\item{pid}{.}
+\item{pid}{project id}
 
 \item{folder}{destination folder for the project}
+
+\item{extract_zip}{If TRUE, extracts jsPsychHelpeR.zip to folder}
 }
 \description{
 setup_folders

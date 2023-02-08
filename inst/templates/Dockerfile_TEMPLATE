@@ -12,17 +12,10 @@ RUN addgroup --system project \
 # Add relevant folders
 ADD .vault /home/project/jsPsychHelpeR/.vault
 ADD data/999 /home/project/jsPsychHelpeR/data/999
-#ADD outputs /home/project/jsPsychHelpeR/outputs 
-#ADD outputs/plots /home/project/jsPsychHelpeR/outputs/plots
-#ADD outputs/reports /home/project/jsPsychHelpeR/outputs/reports
-#ADD outputs/data /home/project/jsPsychHelpeR/outputs/data
-#ADD outputs/data /home/project/jsPsychHelpeR/outputs/reliability
 ADD R /home/project/jsPsychHelpeR/R
 ADD R_tasks /home/project/jsPsychHelpeR/R_tasks
 ADD renv /home/project/jsPsychHelpeR/renv
 ADD Rmd /home/project/jsPsychHelpeR/Rmd
-# ADD setup /home/project/jsPsychHelpeR/setup
-ADD targets /home/project/jsPsychHelpeR/targets
 ADD tests /home/project/jsPsychHelpeR/tests
 
 # Add relevant files

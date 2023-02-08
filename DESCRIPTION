@@ -39,8 +39,7 @@ Imports:
     tarchetypes, 
     targets, 
     tibble, 
-    tidyr, 
-    webshot
+    tidyr
 Suggests: 
     covr,
     knitr,
@@ -61,6 +60,7 @@ Suggests:
     scales, 
     testthat (>= 3.0.0),
     visNetwork, 
+    webshot,
     writexl, 
     xml2
 VignetteBuilder: 

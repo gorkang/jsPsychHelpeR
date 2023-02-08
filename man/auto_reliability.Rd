@@ -12,13 +12,13 @@ auto_reliability(
 )
 }
 \arguments{
-\item{DF}{.}
+\item{DF}{dataframe}
 
-\item{short_name_scale}{.}
+\item{short_name_scale}{short name of scale}
 
-\item{items}{.}
+\item{items}{items to check}
 
-\item{min_rdrop}{.}
+\item{min_rdrop}{rdrop threshold}
 }
 \description{
 Checks Cronbach's alpha and select variables based on a min r.drop criteria

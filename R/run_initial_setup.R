@@ -117,12 +117,22 @@ run_initial_setup <- function(pid, download_files = FALSE, data_location = NULL,
     
     # 3) Create a _targets.R file for your data -------------------------------
     
-    cli_message(h1_title = "Create _targets.R file")
+    cli_message(var_used = folder, h1_title = "Create _targets.R file in {.code {folder}}")
     create_targets_file(pid = pid, folder = folder, dont_ask = dont_ask)
+    
+    cli_message(var_used = folder, h1_title = "Initial setup successful", 
+                success = "The new RStudio project is in {.code {folder}}",
+                info = "Open `run.R` there to start",
+                  
+                details = cli::col_grey("Use the following commands to start the data preparation:"),
+                list = c("Visualize pipeline: {.code targets::tar_visnetwork()}",
+                         "Delete cache: {.code targets::tar_destroy()}", 
+                         "Start data preparation: {.code targets::tar_make()}")
+    )
     
     # Open _targets.R and run.R
     if (Sys.getenv("RSTUDIO") == "1") {
-      cli_message(info = "Opening new RStudio project. Open `_targets.R` and `run.R` there to start")
+      cli_message(info = "Opening new RStudio project")
       
       rstudioapi::openProject(folder, newSession = TRUE)
       # invisible(rstudioapi::navigateToFile("_targets.R"))

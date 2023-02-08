@@ -9,7 +9,7 @@ parse_filename(DF, separator = "_")
 \arguments{
 \item{DF}{DF with a list of}
 
-\item{separator}{.}
+\item{separator}{by default "_"}
 }
 \description{
 Parse input files to get the essential pieces encoded in the filename column

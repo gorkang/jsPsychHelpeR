@@ -1,36 +1,58 @@
 # jsPsychHelpeR
 
-Standardize and automatize data preparation and analysis of [jsPsych](https://www.jspsych.org/) experiments created with [jsPsychMaker](https://github.com/gorkang/jsPsychMaker).
+Standardize and automatize data preparation and analysis of [jsPsych](https://www.jspsych.org/) experiments created with [jsPsychMaker](https://github.com/gorkang/jsPsychMaker). See the [jsPsychHelpeR manual](https://gorkang.github.io/jsPsychR-manual/qmd/05-jsPsychHelpeR.html) for more detailes information.  
 
 Please, address any correspondence to [gorkang\@gmail.com](mailto:gorkang@gmail.com)
 
 
+## Who can use this
+
+If you ran or simulated participants on a protocol created with [jsPsychMaker](https://github.com/gorkang/jsPsychMaker) you can use jsPsychHelpeR.
+
+
 ## How to use
 
-If you run or simulated participants on a [jsPsych](https://www.jspsych.org/) experiment created with [jsPsychMaker](https://github.com/gorkang/jsPsychMaker), you can simply run:
+First, install the jsPsychHelpeR package:
 
 ```
-if (!require('usethis')) install.packages('usethis'); library('usethis')
+if (!require('remotes')) utils::install.packages('remotes'); remotes::install_github('gorkang/jsPsychHelpeR')
+```
 
-usethis::use_course(url = "gorkang/jsPsychHelper", destdir = "~/Downloads/")
+Then, to create and configure an RStudio project with the data preparation, run one of the following options.  
+
+---  
+
+
+**OPTION 1) If you have the raw data in your computer**
+
+Replace 'pid' below with your project ID  
+Use the `folder` parameter to select a specific folder for the RStudio project  
+Use the `data_location` parameter to indicate the location of the raw data  
+
+```
+jsPsychHelpeR::run_initial_setup(pid = '999', 
+                                 data_location = '~/Downloads/JSPSYCH/999/', 
+                                 folder = '~/Downloads/jsPsychHelpeR_999/')
 ```
   
   
-Then, open `run.R` and follow the instructions. Mainly:  
+**OPTION 2) If you have the FTP credentials in .vault/.credentials**
 
 ```
-# REPLACE 'pid = 999' with your project ID
-
-invisible(lapply(list.files("./R", full.names = TRUE, pattern = ".R$"), source))
-run_initial_setup(pid = 999) 
+jsPsychHelpeR::run_initial_setup(pid = '999', 
+                                 download_files = TRUE)
 ```
+ 
+---  
+
+If you are using RStudio, the new project will open. In there, open `run.R` and follow the instructions.  
 
 
 ### First run
 
-1. To make sure there are no old objects: `targets::tar_destroy()`
+Visualize pipeline: `targets::tar_visnetwork()`
 
-2. Run `targets::tar_make()` to start!
+Start data preparation: `targets::tar_make()`  
 
 
 ### Outputs
@@ -46,7 +68,7 @@ To load an object `targets::tar_load()`. For example: `targets::tar_load(DF_anal
 
 ## Data preparation and analysis
 
-We use the {targets} (<https://github.com/wlandau/targets>) package.
+We use the [targets](https://github.com/wlandau/targets) package.
 
 **The whole process can be reproduced running `targets::tar_make()`**
 

@@ -8,11 +8,11 @@ Move sensitive files to .vault/data_vault}
 move_sensitive_tasks_to_vault(pid, folder, sensitive_tasks = c(""))
 }
 \arguments{
-\item{pid}{.}
+\item{pid}{project id}
 
-\item{folder}{.}
+\item{folder}{project location}
 
-\item{sensitive_tasks}{.}
+\item{sensitive_tasks}{short names of sensitive tasks}
 }
 \description{
 move_sensitive_tasks_to_vault

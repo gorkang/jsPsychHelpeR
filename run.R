@@ -4,22 +4,12 @@
 # Install jsPsychHelpeR package:
 
   if (!require('remotes')) utils::install.packages('remotes'); remotes::install_github('gorkang/jsPsychHelpeR')
-  if (!require('renv')) utils::install.packages('renv'); renv::install("/home/emrys/gorkang@gmail.com/RESEARCH/PROYECTOS-Code/jsPsychR/jsPsychHelpeR_0.2.0.tar.gz")
-
-# Create and configure RStudio project with data preparation (use the folder parameter to set a destination)
-
-  # REPLACE 'pid' below with your project ID
-
-  # 1) FULLY AUTOMATIC: If you have the FTP credentials in .vault/.credentials
-  jsPsychHelpeR::run_initial_setup(pid = '999', download_files = TRUE, download_task_script = FALSE, dont_ask = TRUE)
-    
-  # 2) SEMI AUTOMATIC: If you have the raw data somewhere in your computer
-  jsPsychHelpeR::run_initial_setup(pid = '999', data_location = '~/Downloads/JSPSYCH/24/', dont_ask = TRUE)
-    
-
   
+
 # RUN pipeline -------------------------------------------------------------
 
+  # Your pipeline is in the file _targets.R
+  
   # Visualize targets tree
   targets::tar_visnetwork(targets_only = TRUE, label = "time")
 

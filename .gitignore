@@ -9,6 +9,7 @@
 _targets_old.R
 
 # Do not upload _targets meta
+_targets.R
 _targets/objects/
 _targets/meta/
 

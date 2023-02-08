@@ -6,6 +6,10 @@
 run-admin.R
 run.R
 TODO.Rmd
+_targets.R
+_targets_packages.R
+^_targets$
+^outputs$
 
 ^.Rproj.user$
 ^.vault$

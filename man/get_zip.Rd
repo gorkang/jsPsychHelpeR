@@ -8,15 +8,15 @@ Get and zip a the data or a full jsPsychMakeR protocol without the data to keep 
 get_zip(pid, what, where = NULL, list_credentials = NULL, dont_ask = TRUE)
 }
 \arguments{
-\item{pid}{.}
+\item{pid}{project id}
 
 \item{what}{data/protocol}
 
 \item{where}{.}
 
-\item{list_credentials}{.}
+\item{list_credentials}{list with the credentials. Usually source(".vault/.credentials")}
 
-\item{dont_ask}{.}
+\item{dont_ask}{TRUE / FALSE}
 }
 \description{
 get_zip

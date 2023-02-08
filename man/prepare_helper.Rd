@@ -7,7 +7,7 @@
 prepare_helper(DF_long_RAW, show_trialid_questiontext = FALSE)
 }
 \arguments{
-\item{DF_long_RAW}{.}
+\item{DF_long_RAW}{dataframe}
 
 \item{show_trialid_questiontext}{TRUE/FALSE}
 }

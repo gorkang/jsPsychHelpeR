@@ -1,7 +1,8 @@
 # Step by step instructions to build and test package
 
 # Prepare files -----------------------------------------------------------
-
+  
+  # DO THIS ALWAYS so jsPsychHelpeR.zip is updated!
   # Create jsPsychHelpeR.zip
   source("admin/helper-scripts-admin.R")
   create_jsPsychHelpeR_zip()
@@ -46,8 +47,8 @@
 
 # CHECK package -----------------------------------------------------------
 
-devtools::check() # Check package (~70s)
-devtools::test() # Run all tests (~35s)
+devtools::check() # Check package (~30s)
+devtools::test() # Run all tests (~10s)
 
 devtools::test_coverage()
 # Not necesary because we have a use_github_action???

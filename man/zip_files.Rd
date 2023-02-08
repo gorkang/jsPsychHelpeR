@@ -8,11 +8,11 @@ zip files of a folder}
 zip_files(folder_files, zip_name, remove_files = FALSE)
 }
 \arguments{
-\item{folder_files}{.}
+\item{folder_files}{folder to zip}
 
-\item{zip_name}{.}
+\item{zip_name}{name of output zip}
 
-\item{remove_files}{.}
+\item{remove_files}{remove source files TRUE / FALSE}
 }
 \description{
 zip_files

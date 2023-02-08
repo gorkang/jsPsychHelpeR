@@ -403,9 +403,9 @@ check_project_and_results <- function(participants, folder_protocol, folder_resu
 #' zip_files
 #' zip files of a folder
 #'
-#' @param folder_files .
-#' @param zip_name .
-#' @param remove_files .
+#' @param folder_files folder to zip
+#' @param zip_name name of output zip
+#' @param remove_files remove source files TRUE / FALSE
 #'
 #' @return
 #' @export
@@ -455,11 +455,11 @@ zip_files <- function(folder_files, zip_name, remove_files = FALSE) {
 #' get_zip
 #' Get and zip a the data or a full jsPsychMakeR protocol without the data to keep it as a backup
 #'
-#' @param pid .
+#' @param pid project id
 #' @param what data/protocol
 #' @param where .
-#' @param list_credentials .
-#' @param dont_ask .
+#' @param list_credentials list with the credentials. Usually source(".vault/.credentials")
+#' @param dont_ask TRUE / FALSE
 #'
 #' @return
 #' @export
@@ -707,7 +707,7 @@ set_permissions_google_drive <- function(pid, email_IP) {
 
 #' create_docker_container
 #'
-#' @param PID .
+#' @param PID project id
 #'
 #' @return
 #' @export
