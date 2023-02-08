@@ -13,14 +13,31 @@ suppressWarnings(targets::tar_source("R_tasks"))
 options(pillar.sigfig = 5)
 
 # Packages to load
-main_packages = c("cli", "furrr", "patchwork", "renv", "tarchetypes", "targets", "testthat")
-data_preparation_packages = c("dplyr", "forcats", "here", "janitor", "purrr", "readr", "stringr", "tibble", "tidyr", "writexl")
-data_analysis_packages = c("broom", "broom.mixed", "emmeans", "gt", "gtsummary", "irr", "lme4", "parameters", "performance", "psych")
-data_visualization_packages = c("DT", "ggalluvial", "ggridges")
-non_declared_dependencies = c("diffviewer", "qs", "visNetwork", "webshot", "performance", "xml2", "jquerylib") #shinyWidgets
-admin_dependencies = c("gtools")
-# extra_packages = ifelse (Sys.info()["sysname"] %in% c("Linux"), c("shrtcts"), NA)
-packages_to_load = purrr::discard(c(main_packages, data_preparation_packages, data_analysis_packages, data_visualization_packages, non_declared_dependencies, admin_dependencies), is.na) #extra_packages
+essential_packages = c(
+                  # Main
+                  "cli", "renv", "tarchetypes", "targets", "testthat", "visNetwork",
+                  
+                  # Data preparation
+                  "dplyr", "forcats", "here", "janitor", "purrr", "readr", "stringr", "tibble", "tidyr",
+                  
+                  # Data analysis and visualization
+                  "gtsummary", "psych", "DT", "ggplot2"
+                  )
+
+extra_packages = c(
+                  # Extras
+                  "furrr", "patchwork", "writexl", "broom", "broom.mixed", "emmeans", "gt", "irr", "lme4", "parameters", "performance", "ggalluvial", "ggridges",
+                  
+                  # Non declared dependencies
+                  "diffviewer", "qs", "webshot", "xml2", "jquerylib",
+                  
+                  # Admin
+                  "devtools", "gtools"
+)
+
+
+packages_to_load = purrr::discard(c(essential_packages), is.na)
+# packages_to_load = purrr::discard(c(essential_packages, extra_packages), is.na)
 
 
 # target options (packages, errors...)

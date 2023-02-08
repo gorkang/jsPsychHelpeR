@@ -7,7 +7,7 @@ create_jsPsychHelpeR_zip <- function(add_renv_cache = FALSE) {
   
   root_files = c("jsPsychHelpeR.Rproj", "renv.lock", "run.R", "_targets_options.R", ".Rprofile", "README.md", "NEWS.md", "DESCRIPTION")
   
-  other_important = c("renv/activate.R", ".vault/README.md", "inst/templates/_targets_TEMPLATE.R") #"targets/_targets_TEMPLATE.R", 
+  other_important = c("renv/activate.R", ".vault/README.md", "inst/templates/_targets_TEMPLATE.R")
   
   # R folder
   R_folder = c("R/list_input_files.R", "R/helper_functions_minimal.R", "R/run_initial_setup.R")
@@ -22,7 +22,7 @@ create_jsPsychHelpeR_zip <- function(add_renv_cache = FALSE) {
   
   # renv cache
   renv_cache = list.files("renv/cache", full.names = TRUE, recursive = TRUE)
-  renv_lib = list.files("renv/lib/", full.names = TRUE, recursive = TRUE)
+  renv_lib = list.files("renv/lib/", full.names = TRUE, recursive = TRUE) # TODO: This is recreated almost instantly with: renv::restore(prompt = FALSE). Maybe exclude?
   
   all_files = c(root_files, other_important, R_folder, tasks, reports, analysis, create, read, tests) # NO RENV CACHE
   
