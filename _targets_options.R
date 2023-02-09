@@ -37,6 +37,8 @@ extra_packages = c(
 
 
 packages_to_load = purrr::discard(c(essential_packages), is.na)
+
+# Uncomment this for more functionality, and add your needed packages to extra_packages
 # packages_to_load = purrr::discard(c(essential_packages, extra_packages), is.na)
 
 

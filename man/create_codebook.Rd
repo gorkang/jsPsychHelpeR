@@ -3,16 +3,20 @@
 \name{create_codebook}
 \alias{create_codebook}
 \title{create_codebook
-Extracts information from the prepare_TASK.R files to create a codebook}
+Extracts information from the prepare_TASK.R files to create a codebook. USed in report_DF_clean.Rmd}
 \usage{
-create_codebook(tasks, number)
+create_codebook(task)
 }
 \arguments{
-\item{tasks}{.}
-
-\item{number}{.}
+\item{task}{A prepare_TASK.R file}
+}
+\value{
+A DF with correcction information of a prepare_TASK() function
 }
 \description{
 create_codebook
-Extracts information from the prepare_TASK.R files to create a codebook
+Extracts information from the prepare_TASK.R files to create a codebook. USed in report_DF_clean.Rmd
+}
+\examples{
+create_codebook(task = system.file("R_tasks", "prepare_AIM.R", package = "jsPsychHelpeR"))
 }

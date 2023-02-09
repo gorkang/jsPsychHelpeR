@@ -7,10 +7,16 @@
 parse_filename(DF, separator = "_")
 }
 \arguments{
-\item{DF}{DF with a list of}
+\item{DF}{DF including the column filename}
 
 \item{separator}{by default "_"}
 }
+\value{
+Same DF with extra columns "project", "experiment", "version", "datetime", "id"
+}
 \description{
 Parse input files to get the essential pieces encoded in the filename column
+}
+\examples{
+tibble::tibble(filename = "999_RTS_original_2023-02-13T222222_1.csv") |>  parse_filename()
 }

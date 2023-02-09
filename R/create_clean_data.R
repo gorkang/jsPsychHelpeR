@@ -12,7 +12,7 @@ create_clean_data <- function(DF_raw, save_output = TRUE, check_duplicates = TRU
   
   # targets::tar_load_globals()
   # debug_function("create_clean_data")
-  
+
   DF_clean_raw =
     DF_raw %>% 
     janitor::clean_names() %>% 

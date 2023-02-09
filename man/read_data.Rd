@@ -2,22 +2,22 @@
 % Please edit documentation in R/read_data.R
 \name{read_data}
 \alias{read_data}
-\title{read_data()}
+\title{read_data}
 \usage{
-read_data(input_files, anonymize = FALSE, save_output = TRUE, workers = 1)
+read_data(input_files, is_sensitive = FALSE, save_output = TRUE, workers = 1)
 }
 \arguments{
 \item{input_files}{files to read}
 
-\item{anonymize}{TODO}
+\item{is_sensitive}{Save in .vault: TRUE / FALSE}
 
-\item{save_output}{should save output?}
+\item{save_output}{TRUE / FALSE}
 
 \item{workers}{number of threads for data.table::fread}
 }
+\value{
+A DF
+}
 \description{
 Read raw data and prepare a global DF
-}
-\author{
-gorkang
 }

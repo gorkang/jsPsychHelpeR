@@ -21,11 +21,11 @@ save_files(
 
 \item{is_sensitive}{= TRUE}
 
-\item{output_formats}{.}
+\item{output_formats}{One or more of the following: csv, csv2 or rds}
 }
 \description{
 Save files
 }
-\author{
-gorkang
+\details{
+Save a DF in one or more output formats to output/data or .vault/outputs/data/
 }

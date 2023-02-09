@@ -2,7 +2,8 @@
 % Please edit documentation in R/helper_functions_extra.R
 \name{create_docker_container}
 \alias{create_docker_container}
-\title{create_docker_container}
+\title{create_docker_container
+Creates a Docker container named gorkang/jspsychhelper:pidPID}
 \usage{
 create_docker_container(PID = 999)
 }
@@ -11,4 +12,5 @@ create_docker_container(PID = 999)
 }
 \description{
 create_docker_container
+Creates a Docker container named gorkang/jspsychhelper:pidPID
 }

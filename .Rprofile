@@ -8,5 +8,5 @@ Sys.setenv(
 
 options(encoding = "UTF-8")
 
-# source("renv/activate.R")
-# renv::restore(prompt = FALSE)
+source("renv/activate.R")
+renv::restore(prompt = FALSE, clean = TRUE)

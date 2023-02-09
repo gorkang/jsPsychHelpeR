@@ -84,8 +84,6 @@ To see more detail about any specific step, you can:
 
 ## Output tables and plots
 
--   **Raw data** (anonymized) are in `data/raw_data_anonymized.csv`
-
 -   **Plots**, **tables** and **reports** are in `outputs/plots`, `outputs/tables`and `outputs/reports` respectively.
 
 -   **Dataframes** for different stages of data processing can be seen in `outputs/data`

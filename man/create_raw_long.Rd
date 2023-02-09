@@ -13,16 +13,19 @@ create_raw_long(
 )
 }
 \arguments{
-\item{DF_clean}{.}
+\item{DF_clean}{DF_clean in a prepare_TASK}
 
-\item{short_name_scale}{.}
+\item{short_name_scale}{Short name of scale}
 
-\item{numeric_responses}{.}
+\item{numeric_responses}{TRUE / FALSE}
 
-\item{is_experiment}{.}
+\item{is_experiment}{TRUE / FALSE}
 
-\item{help_prepare}{.}
+\item{help_prepare}{TRUE / FALSE}
+}
+\value{
+A long and clean version of DF_clean for a specific task
 }
 \description{
-Create long DF for a specific task (short_name_scale)
+Create long DF for a specific task (short_name_scale). Also cleans the DF and if it's an experiment, makes sure names are OK.
 }

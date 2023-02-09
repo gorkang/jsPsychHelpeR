@@ -3,7 +3,7 @@
 \name{read_zips}
 \alias{read_zips}
 \title{read_zips
-Function to unzip and read csv files}
+Function to unzip and read csv files. This is used in read_csv_or_zip()}
 \usage{
 read_zips(
   input_files,
@@ -16,19 +16,25 @@ read_zips(
 )
 }
 \arguments{
-\item{input_files}{.}
+\item{input_files}{A zip, tar or xz file}
 
-\item{workers}{.}
+\item{workers}{Workers for data.table::fread}
 
-\item{unzip_dir}{.}
+\item{unzip_dir}{Where to unzip (if do_cleanup == TRUE, the folder will be deleted)}
 
-\item{silent}{.}
+\item{silent}{Show feedback FALSE / TRUE}
 
-\item{do_cleanup}{.}
+\item{do_cleanup}{Delete temp folder TRUE / FALSE}
 
-\item{only_list}{.}
+\item{only_list}{Only list the files, but do not read them}
+}
+\value{
+Either a list of files or a dataframe after reading the files
 }
 \description{
 read_zips
-Function to unzip and read csv files
+Function to unzip and read csv files. This is used in read_csv_or_zip()
+}
+\examples{
+read_zips(system.file("extdata/", "999.zip", package = "jsPsychHelpeR"))
 }

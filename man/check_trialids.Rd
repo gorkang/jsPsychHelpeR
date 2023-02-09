@@ -11,6 +11,9 @@ check_trialids(local_folder_protocol, show_all_messages = FALSE)
 
 \item{show_all_messages}{.}
 }
+\value{
+cli messages with information
+}
 \description{
 Checks that trialid's of an experiment in a folder follow the standard expected rules
 }

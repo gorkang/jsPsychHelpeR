@@ -33,7 +33,13 @@ cli_message(
 
 \item{list}{list of elements}
 }
+\value{
+A cli message
+}
 \description{
 cli_message
 Create standardize cli messages
+}
+\examples{
+cli_message(h1_title = "title")
 }

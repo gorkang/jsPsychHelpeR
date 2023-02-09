@@ -2,15 +2,18 @@
 % Please edit documentation in R/helper_functions_minimal.R
 \name{prepare_helper}
 \alias{prepare_helper}
-\title{helper to correct tasks}
+\title{prepare_helper}
 \usage{
 prepare_helper(DF_long_RAW, show_trialid_questiontext = FALSE)
 }
 \arguments{
-\item{DF_long_RAW}{dataframe}
+\item{DF_long_RAW}{DF_long_RAW created by create_raw_long()}
 
-\item{show_trialid_questiontext}{TRUE/FALSE}
+\item{show_trialid_questiontext}{TRUE / FALSE}
+}
+\value{
+A number of tables, DT, etc.
 }
 \description{
-helper to correct tasks
+Helper to correct tasks. Shows trialid's, responses, etc. to help correcting a task
 }

@@ -1,17 +1,15 @@
-##' Read raw data and prepare a global DF
-##'
-##'
-##' @title read_data()
-##'
-##' @param anonymize TODO
-##' @param save_output should save output?
-##' @param workers number of threads for data.table::fread
-##' @param input_files files to read
-##'
-##' @return
-##' @author gorkang
-##' @export
-read_data <- function(input_files, anonymize = FALSE, save_output = TRUE, workers = 1) {
+#' read_data
+#' 
+#' Read raw data and prepare a global DF
+#'
+#' @param input_files files to read
+#' @param is_sensitive Save in .vault: TRUE / FALSE
+#' @param save_output TRUE / FALSE
+#' @param workers number of threads for data.table::fread
+#'
+#' @return A DF 
+#' @export
+read_data <- function(input_files, is_sensitive = FALSE, save_output = TRUE, workers = 1) {
   
   # DEBUG
   # debug_function(read_data)
@@ -19,10 +17,8 @@ read_data <- function(input_files, anonymize = FALSE, save_output = TRUE, worker
   # We accept either a single zip file or multiple csv files
   DF_raw_read = read_csv_or_zip(input_files, workers = workers)
   
-  
   # In some old jsPsych plugins, we have a responses column instead of response
   if (!"response" %in% names(DF_raw_read) & "responses" %in% names(DF_raw_read)) DF_raw_read = DF_raw_read %>% dplyr::rename(response = responses)
-  
   
   # Extract information from filename
   DF_raw =
@@ -32,13 +28,12 @@ read_data <- function(input_files, anonymize = FALSE, save_output = TRUE, worker
   
 
   # Wide version ------------------------------------------------------------
-
   DF_raw_wide = 
     DF_raw %>% 
     dplyr::filter(!grepl("Instructions", trialid)) %>%
     dplyr::filter(trialid != "") %>% 
     dplyr::rename(RAW = response) %>%
-   dplyr::select(id, trialid, RAW) %>%
+    dplyr::select(id, trialid, RAW) %>%
     tidyr::pivot_wider(
       names_from = trialid, 
       values_from = c(RAW),
@@ -47,8 +42,8 @@ read_data <- function(input_files, anonymize = FALSE, save_output = TRUE, worker
   
   
   # Save files --------------------------------------------------------------
-  if (save_output == TRUE) save_files(DF_raw, short_name_scale = "raw", is_scale = FALSE)
-  if (save_output == TRUE) save_files(DF_raw_wide, short_name_scale = "raw_wide", is_scale = FALSE)
+  if (save_output == TRUE) save_files(DF_raw, short_name_scale = "raw", is_scale = FALSE, is_sensitive = is_sensitive)
+  if (save_output == TRUE) save_files(DF_raw_wide, short_name_scale = "raw_wide", is_scale = FALSE, is_sensitive = is_sensitive)
   
   
   # Output of function ---------------------------------------------------------

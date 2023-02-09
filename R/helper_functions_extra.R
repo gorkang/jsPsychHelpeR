@@ -407,10 +407,8 @@ check_project_and_results <- function(participants, folder_protocol, folder_resu
 #' @param zip_name name of output zip
 #' @param remove_files remove source files TRUE / FALSE
 #'
-#' @return
+#' @return NULL
 #' @export
-#'
-#' @examples
 zip_files <- function(folder_files, zip_name, remove_files = FALSE) {
   
   project_folder = getwd()
@@ -461,10 +459,8 @@ zip_files <- function(folder_files, zip_name, remove_files = FALSE) {
 #' @param list_credentials list with the credentials. Usually source(".vault/.credentials")
 #' @param dont_ask TRUE / FALSE
 #'
-#' @return
+#' @return A zip file
 #' @export
-#'
-#' @examples
 get_zip <- function(pid, what, where = NULL, list_credentials = NULL, dont_ask = TRUE) {
   
   # DEBUG
@@ -540,21 +536,10 @@ get_zip <- function(pid, what, where = NULL, list_credentials = NULL, dont_ask =
 #' @param local_folder_protocol .
 #' @param show_all_messages .
 #'
-#' @return
+#' @return cli messages with information
 #' @export
-#'
-#' @examples
 check_trialids <- function(local_folder_protocol, show_all_messages = FALSE) {
-  
-  # DEBUG
-  # local_folder_protocol = "/home/emrys/gorkang@gmail.com/RESEARCH/PROYECTOS-Code/jsPsychR/CSCN-server/protocols/999"
-  
-  # suppressMessages(suppressWarnings(library(dplyr)))
-  # suppressMessages(suppressWarnings(library(purrr)))
-  # suppressMessages(suppressWarnings(library(readr)))
-  
-  # cli::cli_h1("Checking /{basename(local_folder_protocol)}")
-  
+
   scripts = dir(path = paste0(local_folder_protocol, "/tasks"), pattern = ".js", recursive = TRUE, full.names = TRUE)
   if (length(scripts) == 0) {
     
@@ -645,14 +630,14 @@ check_trialids <- function(local_folder_protocol, show_all_messages = FALSE) {
 
 
 #' set_permissions_google_drive
+#' 
+#' Changes permission in a google drive folder
 #'
 #' @param pid pid of project
 #' @param email_IP email of Principal Researcher to give reading permissions to data in google drive
 #'
-#' @return
+#' @return NULL
 #' @export
-#'
-#' @examples
 set_permissions_google_drive <- function(pid, email_IP) {
   
   googledrive::drive_auth("gorkang@gmail.com")
@@ -706,13 +691,12 @@ set_permissions_google_drive <- function(pid, email_IP) {
 
 
 #' create_docker_container
+#' Creates a Docker container named gorkang/jspsychhelper:pidPID
 #'
 #' @param PID project id
 #'
-#' @return
+#' @return NULL
 #' @export
-#'
-#' @examples
 create_docker_container <- function(PID = 999) {
   
   cli::cli_h1("Building container for pid {PID}")
@@ -724,7 +708,7 @@ create_docker_container <- function(PID = 999) {
   # From jsPsychHelpeR package
   # path <- callr::r(func = find.package, args =  list(package = "jsPsychHelpeR", lib.loc = NULL, quiet = TRUE))
   # Dockerfile_location = list.files(path, recursive = TRUE, pattern = "Dockerfile_TEMPLATE", full.names = TRUE)
-  Dockerfile_location = system.file("templates", "Dockerfile_TEMPLATE", package = "jsPsychHelpeR")  
+  Dockerfile_location = system.file("templates", "Dockerfile_TEMPLATE", package = "jsPsychHelpeR")
   template = readLines(Dockerfile_location)
   
   # Replace PID

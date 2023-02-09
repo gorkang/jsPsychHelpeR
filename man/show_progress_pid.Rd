@@ -23,6 +23,9 @@ show_progress_pid(
 
 \item{DEBUG}{TRUE / FALSE}
 }
+\value{
+Table, plot, DF... about the progress of data collection
+}
 \description{
 Show progress of data collection of a project
 }

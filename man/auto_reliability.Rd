@@ -20,6 +20,9 @@ auto_reliability(
 
 \item{min_rdrop}{rdrop threshold}
 }
+\value{
+Saves a DF and outputs information about the item selection
+}
 \description{
 Checks Cronbach's alpha and select variables based on a min r.drop criteria
 }

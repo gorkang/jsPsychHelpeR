@@ -19,7 +19,7 @@ targets <- list(
   tar_target(input_files, list_input_files(pid_target), format = "file"),
   
   # RAW data
-  tar_target(DF_raw, read_data(input_files, anonymize = FALSE)),
+  tar_target(DF_raw, read_data(input_files, is_sensitive = FALSE)),
   
   # Cleaned data
   tar_target(DF_clean, create_clean_data(DF_raw)),

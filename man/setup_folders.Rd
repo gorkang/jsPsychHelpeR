@@ -18,3 +18,6 @@ setup_folders(pid, folder, extract_zip = FALSE)
 setup_folders
 Extract jsPsychHelpeR.zip and make sure we have all necessary folders in a specific location
 }
+\examples{
+setup_folders(999, tempdir())
+}

@@ -5,15 +5,12 @@
 #' @param pid project id
 #' @param extract_zip If TRUE, extracts jsPsychHelpeR.zip to folder
 #'
-#' @return
+#' @return NULL
 #' @export
 #'
-#' @examples
+#' @examples setup_folders(999, tempdir())
 setup_folders <- function(pid, folder, extract_zip = FALSE) {
-  
-  # DEBUG
-  # folder =  "~/Downloads/jsPsychHelpeRtest"
-  
+
   # TODO: ADD check about empty folder and ASK user if we should delete contents
   
   # Avoid spaces in folder path because other functions (e.g. update_data) won't work if there are spaces
@@ -25,10 +22,7 @@ setup_folders <- function(pid, folder, extract_zip = FALSE) {
     
     # Location of jsPsychHelpeR.zip
     if ("jsPsychHelpeR" %in% utils::installed.packages()) {
-      # path <- callr::r(func = find.package, args =  list(package = "jsPsychHelpeR", lib.loc = NULL, quiet = TRUE))
-      # jsPsychHelpeR_zip = list.files(path, recursive = TRUE, pattern = "jsPsychHelpeR.zip", full.names = TRUE)
       jsPsychHelpeR_zip = system.file("templates", "jsPsychHelpeR.zip", package = "jsPsychHelpeR")
-      
     } else {
       jsPsychHelpeR_zip = "inst/templates/jsPsychHelpeR.zip"
     }
@@ -38,25 +32,18 @@ setup_folders <- function(pid, folder, extract_zip = FALSE) {
     
   }
   
-  # Make sure all the necessary folders exist ---
-  
+  # Necessary folders
   necessary_folders = c(paste0("data/", pid), # data/manual_correction
                         "outputs/backup", "outputs/data", "outputs/plots", "outputs/reliability", "outputs/reports", "outputs/tables", "outputs/tests_outputs", 
                         ".vault/data_vault", ".vault/Rmd", ".vault/outputs/data", ".vault/outputs/reports")
   
-  
   if (all(necessary_folders %in% dir(folder, recursive = TRUE, include.dirs = TRUE, all.files = TRUE))) {
-    
     cli::cli_alert_success("All the necessary folders are present\n")
-    
   } else {
-    
     invisible(purrr::map(paste0(folder, "/", necessary_folders), dir.create, recursive = TRUE, showWarnings = FALSE))
     system("chmod 700 -R .vault/")
     cli::cli_alert_success("Created necessary folders: {.pkg {necessary_folders}}\n")
-    
   }
-  
   
 }
 
@@ -65,13 +52,13 @@ setup_folders <- function(pid, folder, extract_zip = FALSE) {
 #' 
 #' Parse input files to get the essential pieces encoded in the filename column
 #'
-#' @param DF DF with a list of 
+#' @param DF DF including the column filename
 #' @param separator by default "_"
 #'
-#' @return
+#' @return Same DF with extra columns "project", "experiment", "version", "datetime", "id"
 #' @export
 #'
-#' @examples
+#' @examples tibble::tibble(filename = "999_RTS_original_2023-02-13T222222_1.csv") |>  parse_filename()
 parse_filename <- function(DF, separator = "_") {
   
   if(!"filename" %in% colnames(DF)) cli::cli_abort("The input DF must include a filename column")
@@ -94,19 +81,15 @@ parse_filename <- function(DF, separator = "_") {
 }
 
 #' standardized_names
+#' 
 #' Standardized names for Direct scores, dimensions and scales
-#' Creates names_list, which can be used in the prepare_TASK scripts to create 
-#' columns with standardized names for direct scores, total scores, etc.
-#' The OLD version created global variables, now we create a list with everything needed
 #'
 #' @param short_name_scale short name of scale
 #' @param dimensions c("DIMENSION1", "DIMENSION2"): list of names for the dimensions
 #' @param help_names TRUE prints a message with the instructions
 #'
-#' @return
-#' @export
-#'
-#' @examples
+#' @return Creates names_list, which can be used in the prepare_TASK scripts to 
+#' create columns with standardized names for direct scores, total scores, etc.
 standardized_names <- function(short_name_scale, dimensions = "", help_names = FALSE) {
 
   # Global sufix for direct scores
@@ -134,11 +117,6 @@ standardized_names <- function(short_name_scale, dimensions = "", help_names = F
   # Create names for dimensions, NAs and/or totals
   if (dimensions[1] != "") {
     
-    # DEBUG
-    # help_names = TRUE
-    # short_name_scale = "XXX"
-    # dimensions = c("dimension1", "dimension2")
-    
     # Build strings for DIR, REL and STD
     names_list = list(name_DIRd = paste0(short_name_scale, "_", dimensions, "_DIRd"),
                       name_RELd = paste0(short_name_scale, "_", dimensions, "_RELd"),
@@ -162,8 +140,7 @@ standardized_names <- function(short_name_scale, dimensions = "", help_names = F
     
   }
   
-  # names_list$names_dimensions_DIR
-  
+
   if (help_names == TRUE){
     cli::cli_alert_info(
       c('To create the code to calculate dimensions or total scores you can use:\n', 
@@ -171,24 +148,20 @@ standardized_names <- function(short_name_scale, dimensions = "", help_names = F
     )
   }
   
-  # NEW SYSTEM OUTPUT
   return(names_list)
   
 }
 
 
 
-##' Checks if the NAs of the RAW calculation are the same as the ones from the PROC calculation
-##'
-##' Important to catch errors when transforming data from RAW to PROCESSED
-##'
-##' @title check_NAs
-##'
-##' @param DF_joined .
-##'
-##' @return
-##' @author gorkang
-##' @export
+#' check_NAs
+#'
+#' Checks if the NAs of the RAW columns are the same as the ones from the DIR columns
+#' Important to catch errors when transforming data from RAW to DIR
+#' 
+#' @param DF_joined DF_joined
+#'
+#' @return NULL
 check_NAs <- function(DF_joined) {
 
   DF_CHECK_NA = DF_joined %>%
@@ -213,60 +186,47 @@ check_NAs <- function(DF_joined) {
 
 
 
-
 #' create_raw_long
 #' 
-#' Create long DF for a specific task (short_name_scale)
+#' Create long DF for a specific task (short_name_scale). Also cleans the DF and if it's an experiment, makes sure names are OK.
 #'
-#' @param DF_clean .
-#' @param short_name_scale .
-#' @param numeric_responses .
-#' @param is_experiment .
-#' @param help_prepare .
+#' @param DF_clean DF_clean in a prepare_TASK
+#' @param short_name_scale Short name of scale
+#' @param numeric_responses TRUE / FALSE
+#' @param is_experiment TRUE / FALSE
+#' @param help_prepare TRUE / FALSE
 #'
-#' @return
+#' @return A long and clean version of DF_clean for a specific task
 #' @export
-#'
-#' @examples
 create_raw_long <- function(DF_clean, short_name_scale, numeric_responses = FALSE, is_experiment = FALSE, help_prepare = FALSE) {
-
-  # DEBUG
-  # short_name_scale = "FONDECYT"
-  # is_experiment = TRUE
-
+  
   experimental_conditions = "NOTHING_SHOULD_MATCH_THIS"
   if (is_experiment == TRUE) experimental_conditions = "condition_"
   
   DF_output = 
     DF_clean %>%
-    
-      # OLD system
-      # dplyr::filter(grepl(paste0(short_name_scale, "_[0-9]"), trialid)) %>%
-    
-      # NEW system
-      dplyr::filter(experiment == short_name_scale) %>%
-    
-     dplyr::select(id, experiment, rt, trialid, stimulus, response, dplyr::starts_with(eval(experimental_conditions), ignore.case = FALSE)) %>%
-      dplyr::mutate(response =
-               if (numeric_responses == TRUE) {
-                 as.numeric(response)
-               } else {
-                 as.character(response)
-               }
-      ) %>%
-     tidyr::drop_na(trialid) %>%
-      dplyr::rename(RAW = response) %>%
-      dplyr::arrange(trialid, id)
+    dplyr::filter(experiment == short_name_scale) %>%
+    dplyr::select(id, experiment, rt, trialid, stimulus, response, dplyr::starts_with(eval(experimental_conditions), ignore.case = FALSE)) %>%
+    dplyr::mutate(response =
+                    if (numeric_responses == TRUE) {
+                      as.numeric(response)
+                      } else {
+                        as.character(response)
+                      }
+                  ) %>%
+    tidyr::drop_na(trialid) %>%
+    dplyr::rename(RAW = response) %>%
+    dplyr::arrange(trialid, id)
   
     # If is experiment, make sure condition_within is fine
     if (is_experiment == TRUE) {
       if (any(grepl("[ -]", DF_output$condition_within))) {
         
-        condition_within_options = unique(DF_output$condition_within)
+        # condition_within_options = unique(DF_output$condition_within)
         
         cli::cli_text(col_red("{symbol$cross} "), "Unholy names found in condition_within. Cleaning up. It can take a while...\n")
         
-        # NEW WAY: create a diccionary and left_join
+        # Create a diccionary and left_join
         DICCIONARY_within = DF_output %>% 
           dplyr::distinct(condition_within) %>% 
           dplyr::rowwise() %>% 
@@ -280,12 +240,7 @@ create_raw_long <- function(DF_clean, short_name_scale, numeric_responses = FALS
           dplyr::left_join(DICCIONARY_within, by = "condition_within") %>% 
           dplyr::mutate(condition_within = condition_withinOK) %>% dplyr::select(-condition_withinOK)
         
-        # Very slow
-        # DF_output = 
-        #   DF_output %>% 
-        #   dplyr::rowwise() %>% 
-        #   dplyr::mutate(condition_within = paste(purrr::map_chr(stringr::str_split(condition_within, pattern = "_", simplify = TRUE), janitor::make_clean_names, case = "small_camel"), collapse = "_"))
-      }
+        }
     }
   
   
@@ -297,21 +252,20 @@ create_raw_long <- function(DF_clean, short_name_scale, numeric_responses = FALS
 }
 
 
-##' Save files
-##'
-##'
-##'
-##' @title create_raw_wide
-##'
-##' @param DF dataframe
-##' @param short_name_scale short name of scale
-##' @param is_scale = TRUE
-##' @param output_formats .
-##' @param is_sensitive = TRUE
-##'
-##' @return
-##' @author gorkang
-##' @export
+#' Save files
+#'
+#' Save a DF in one or more output formats to output/data or .vault/outputs/data/
+#'
+#' @title create_raw_wide
+#'
+#' @param DF dataframe
+#' @param short_name_scale short name of scale
+#' @param is_scale = TRUE
+#' @param output_formats One or more of the following: csv, csv2 or rds
+#' @param is_sensitive = TRUE
+#'
+#' @return NULL
+#' @export
 save_files <- function(DF, short_name_scale, is_scale = TRUE, is_sensitive = FALSE, output_formats = c("csv", "csv2")) {
 
   # Select path based on nature of the data
@@ -344,20 +298,17 @@ save_files <- function(DF, short_name_scale, is_scale = TRUE, is_sensitive = FAL
 
 
 
-#' helper to correct tasks
+#' prepare_helper
+#' 
+#' Helper to correct tasks. Shows trialid's, responses, etc. to help correcting a task
 #'
-#' @param DF_long_RAW dataframe
-#' @param show_trialid_questiontext TRUE/FALSE
+#' @param DF_long_RAW DF_long_RAW created by create_raw_long()
+#' @param show_trialid_questiontext TRUE / FALSE
 #'
-#' @return
+#' @return A number of tables, DT, etc.
 #' @export
-#'
-#' @examples
 prepare_helper <- function(DF_long_RAW, show_trialid_questiontext = FALSE) {
 
-  # DF_long_RAW created by create_raw_long()
-  # DF_long_RAW = DF_output
-  
   # Items
   vector_items = DF_long_RAW %>% dplyr::distinct(trialid) %>% dplyr::arrange(trialid) %>% dplyr::pull(trialid)
 
@@ -428,10 +379,8 @@ prepare_helper <- function(DF_long_RAW, show_trialid_questiontext = FALSE) {
 #' @param folder protocol folder
 #' @param dont_ask do everything without asking for user input
 #'
-#' @return
+#' @return Creates a _targets.R file
 #' @export
-#'
-#' @examples
 create_targets_file <- function(pid = 0, folder, dont_ask = FALSE) {
 
   # DEBUG
@@ -623,10 +572,8 @@ create_targets_file <- function(pid = 0, folder, dont_ask = FALSE) {
 #' @param items items to check
 #' @param min_rdrop rdrop threshold 
 #'
-#' @return
+#' @return Saves a DF and outputs information about the item selection
 #' @export
-#'
-#' @examples
 auto_reliability = function(DF, short_name_scale = short_name_scale_str, items = NULL, min_rdrop = 0.2) {
 
   # DEBUG
@@ -746,10 +693,8 @@ auto_reliability = function(DF, short_name_scale = short_name_scale_str, items =
 #' @param folder project location
 #' @param sensitive_tasks short names of sensitive tasks
 #'
-#' @return
+#' @return NULL
 #' @export
-#'
-#' @examples
 move_sensitive_tasks_to_vault <- function(pid, folder, sensitive_tasks = c("")) {
   
   data_folder = paste0(folder, '/data/' , pid, '/')
@@ -780,10 +725,8 @@ move_sensitive_tasks_to_vault <- function(pid, folder, sensitive_tasks = c("")) 
 #' @param goal number of participants
 #' @param DEBUG TRUE / FALSE
 #'
-#' @return
+#' @return Table, plot, DF... about the progress of data collection
 #' @export
-#'
-#' @examples
 show_progress_pid <- function(pid = 3, files_vector, last_task = "Goodbye", goal = 100, DEBUG = FALSE) {
   
   # DEBUG
@@ -887,38 +830,34 @@ show_progress_pid <- function(pid = 3, files_vector, last_task = "Goodbye", goal
 
 
 
-
 #' separate_responses
 #' 
-#' Creates one line per response 
+#' Creates one line per response. This function is critical to separate multiple
+#' responses in different rows
 #'
-#' @param DF .
+#' @param DF DF with a trialid and response columns
 #'
-#' @return
+#' @return The same DF cleaning up the response column. If a cell contains 
+#' multiple responses, it will separate them in multiple lines.
 #' @export
 #'
-#' @examples
+#' @examples separate_responses(DF = tibble::tibble(trialid = "PRFBM_04", 
+#' response = '{""Q1"":""Muy de acuerdo"",""Q2"":""Muy de acuerdo""}'))
 separate_responses <- function(DF) {
   
-  # DEBUG
-  # DF = DF_clean_raw #%>% dplyr::filter(experiment == "MLQ")
   
   # How many different N of responses we have
   different_N = DF %>% 
-    # dplyr::mutate(N_responses = stringr::str_count(response, '\\"".*?"":""')) %>% 
     dplyr::mutate(N_responses = stringr::str_count(response, '\\"".*?"":')) %>% 
     dplyr::pull(N_responses) %>% unique()
   
   # Internal function to separate   
   separate_N <- function(N) {
     
-    # N = 4
-    
     # When there is no response recorded (e.g. INFCONS)
     if (is.na(N)) {
       
       DF %>% 
-        # dplyr::mutate(N_responses =  stringr::str_count(response, '\\"".*?"":""')) %>% 
         dplyr::mutate(N_responses = stringr::str_count(response, '\\"".*?"":')) %>% 
         dplyr::filter(is.na(N_responses)) %>% 
         dplyr::mutate(question = "Q0",
@@ -928,7 +867,6 @@ separate_responses <- function(DF) {
     } else if (N == 0) {
       
       DF %>% 
-        # dplyr::mutate(N_responses =  stringr::str_count(response, '\\"".*?"":""')) %>% 
         dplyr::mutate(N_responses =  stringr::str_count(response, '\\"".*?"":')) %>% 
         dplyr::filter(N_responses == N) %>% 
         dplyr::mutate(question = "Q0",
@@ -939,13 +877,11 @@ separate_responses <- function(DF) {
     } else {
       
       pattern_names = 1:N %>% purrr::map(~ c(paste0("qid", .x), paste0("resp", .x))) %>% unlist()
-      # pattern_template_raw = '\\""(.*?)"":\\""(.*?)""'
       pattern_template_raw = '\\""(.*?)"":(.*)'
       pattern_template = paste(rep(pattern_template_raw, N), collapse = ",")
       
       DF_temp = 
         DF %>% 
-        # dplyr::mutate(N_responses =  stringr::str_count(response, '\\"".*?"":""')) %>% 
         dplyr::mutate(N_responses =  stringr::str_count(response, '\\"".*?"":')) %>% 
         dplyr::filter(N_responses == N) %>% 
         tidyr::extract(response, pattern_names, regex = pattern_template, remove = FALSE) %>% 
@@ -953,7 +889,8 @@ separate_responses <- function(DF) {
       
       names_qid = DF_temp %>% dplyr::select(matches("qid[0-9]{1,3}")) %>% names()
       names_resp = DF_temp %>% dplyr::select(matches("resp[0-9]{1,3}")) %>% names()
-      values_qid = DF_temp %>% dplyr::select(matches("qid[0-9]{1,3}")) %>% tidyr::pivot_longer(dplyr::everything()) %>% dplyr::distinct(value) %>% dplyr::pull(value)
+      values_qid = DF_temp %>% dplyr::select(matches("qid[0-9]{1,3}")) %>% 
+        tidyr::pivot_longer(dplyr::everything()) %>% dplyr::distinct(value) %>% dplyr::pull(value)
       
       1:length(names_qid) %>% 
         purrr::map_df(~ DF_temp %>% tidyr::pivot_wider(names_from = names_qid[.x], values_from = names_resp[.x])) %>% 
@@ -984,32 +921,26 @@ separate_responses <- function(DF) {
 
 
 #' create_codebook
-#' Extracts information from the prepare_TASK.R files to create a codebook
+#' Extracts information from the prepare_TASK.R files to create a codebook. USed in report_DF_clean.Rmd
 #'
-#' @param number .
-#' @param tasks .
+#' @param task A prepare_TASK.R file
 #'
-#' @return
+#' @return A DF with correcction information of a prepare_TASK() function
 #' @export
 #'
-#' @examples
-create_codebook <- function(tasks, number) {
+#' @examples create_codebook(task = system.file("R_tasks", "prepare_AIM.R", package = "jsPsychHelpeR"))
+create_codebook <- function(task) {
   
-  # TODO ---
-  # - Add totals
+  # TODO: Add totals
   
-  
-  # DEBUG
-  # number = 51
-  
-  DF = readLines(tasks[number])
+  DF = readLines(task)
   
   DF_clean = DF[!grepl("^[ \t\\#]{1,100}\\#", DF)] # Get rid of comments
   
   lines_DIRd = DF_clean[grepl("!!name_DIRd", DF_clean)]
   
   # Task
-  name_task = gsub("prepare_|\\.R", "", basename(tasks)[number])
+  name_task = gsub("prepare_|\\.R", "", basename(task))
   
   # Descriptions
   description_task = gsub('.*description_task \\= \\"(.*)\\"', "\\1", DF_clean[grepl("description_task", DF_clean)])
@@ -1026,7 +957,6 @@ create_codebook <- function(tasks, number) {
   
   items_reversed = stringr::str_extract_all(DF_clean[grepl("items_to_reverse =", DF_clean)], '"[\\w_]{1,50}"') %>% purrr::compact() %>% unlist() %>% gsub('\"', "",.) %>% unique() %>% paste(., collapse = ", ")
   items_ignored = stringr::str_extract_all(DF_clean[grepl("items_to_ignore =", DF_clean)], '"[\\w_]{1,50}"') %>% purrr::compact() %>% unlist() %>% gsub('\"', "",.) %>% unique() %>% paste(., collapse = ", ")
-  
   
   
   # Dimensions OLD STRUCTURE
@@ -1083,18 +1013,17 @@ create_codebook <- function(tasks, number) {
 
 
 
-
 #' read_csv_or_zip
 #' Read input files, adapting to multiple csv's or a single zip
 #'
 #' @param input_files multiple csv's or a single zip
-#' @param workers how many cores to use
-#' @param only_list .
+#' @param workers Workers for data.table::fread
+#' @param only_list Only list the files, but do not read them
 #'
-#' @return
+#' @return Either a list of files or a dataframe after reading the files
 #' @export
 #'
-#' @examples
+#' @examples read_csv_or_zip(system.file("extdata/", "999.zip", package = "jsPsychHelpeR"))
 read_csv_or_zip <- function(input_files, workers = 1, only_list = FALSE) {
 
   length_files = length(input_files)
@@ -1137,28 +1066,20 @@ read_csv_or_zip <- function(input_files, workers = 1, only_list = FALSE) {
 
 
 #' read_zips
-#' Function to unzip and read csv files
+#' Function to unzip and read csv files. This is used in read_csv_or_zip()
 #'
-#' @param input_files .
-#' @param workers .
-#' @param unzip_dir .
-#' @param silent .
-#' @param do_cleanup .
-#' @param only_list .
+#' @param input_files A zip, tar or xz file
+#' @param workers Workers for data.table::fread
+#' @param unzip_dir Where to unzip (if do_cleanup == TRUE, the folder will be deleted)
+#' @param silent Show feedback FALSE / TRUE
+#' @param do_cleanup Delete temp folder TRUE / FALSE
+#' @param only_list Only list the files, but do not read them
 #'
-#' @return
+#' @return Either a list of files or a dataframe after reading the files
 #' @export
 #'
-#' @examples
+#' @examples read_zips(system.file("extdata/", "999.zip", package = "jsPsychHelpeR"))
 read_zips = function(input_files, workers = 1, unzip_dir = file.path(dirname(input_files), sprintf("csvtemp_%s", sub(".zip", "", basename(input_files)))), silent = FALSE, do_cleanup = TRUE, only_list = FALSE){
-  
-  # DEBUG
-  # input_files = "data/999/999.zip"
-  # workers = 1
-  # unzip_dir = file.path(dirname(input_files), sprintf("csvtemp_%s", sub(".zip", "", basename(input_files))))
-  # silent = FALSE
-  # do_cleanup = TRUE
-  # only_list = FALSE
   
   dir.create(unzip_dir, showWarnings = FALSE)
   
@@ -1211,10 +1132,10 @@ read_zips = function(input_files, workers = 1, unzip_dir = file.path(dirname(inp
 #' @param info  info
 #' @param list list of elements
 #'
-#' @return
+#' @return A cli message
 #' @export
 #'
-#' @examples
+#' @examples cli_message(h1_title = "title")
 cli_message <- function(var_used = NULL, h1_title = NULL,  h2_title = NULL, info = NULL, success = NULL, danger = NULL, details = NULL, list = NULL) {
   
   # Prepare var_used to be used internally
@@ -1282,10 +1203,8 @@ cli_message <- function(var_used = NULL, h1_title = NULL,  h2_title = NULL, info
 #' @param DF .
 #' @param max_length_strings .
 #'
-#' @return
+#' @return Plots and tables
 #' @export
-#'
-#' @examples
 count_responses <- function(DF, max_length_strings = 50) { #, n_unique = 20
   
   # Bar plot ---
@@ -1357,11 +1276,7 @@ count_responses <- function(DF, max_length_strings = 50) { #, n_unique = 20
     ggplot2::labs(title = "Values per variable")
   
   
-  
   # Skimr ---
-  
-  
-  
   OUT = list(DF_out = DF_out,
              PLOT = PLOT_all / PLOT,
              DF |> skimr::skim()

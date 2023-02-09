@@ -2,40 +2,32 @@
 #' 
 #' Checks or deletes duplicate files, keeping the older file.
 #'
-#' @param folder .
-#' @param check TRUE/FALSE
+#' @param folder A folder with a zip or csv files from a jsPsychMaker protocol
+#' @param check If TRUE, only checks, but does not make changes
 #' @param keep_which "older"/"newer"
 #'
-#' @return
+#' @return A list with information
 #' @export
 #'
-#' @examples
+#' @examples delete_duplicates(folder = system.file("extdata/",package = "jsPsychHelpeR"))
 delete_duplicates <- function(folder, check = TRUE, keep_which = "older") {
-  
-  # DEBUG
-  # folder = "data/12/"
-  # check = TRUE
-  # keep_which = "older"
-  
-  suppressPackageStartupMessages(source("_targets_packages.R"))
-  
-  
   
   # PARAMETERS --------------------------------------------------------------
   
   id_protocol = basename(gsub("/$", "", folder))
+  input_files = list.files(path = folder, pattern = "*.csv|*.zip", full.names = TRUE)
   
   
   # Main files --------------------------------------------------------------
   
   DF_files =
-    tibble::tibble(full_filename = list.files(path = folder, pattern = "*.csv", full.names = TRUE)) %>% 
-    dplyr::mutate(filename = basename(full_filename)) %>% 
+    read_csv_or_zip(input_files = input_files) |> 
+    dplyr::mutate(filename = basename(filename)) %>% 
     parse_filename() |> 
     dplyr::mutate(id = gsub(" \\([2-9]{1,2}\\)", "", id)) # remove the (2) from the filename
   
   
-  folder = dirname(DF_files$full_filename[1])
+  folder = dirname(DF_files$filename[1])
   
   suppressMessages({
     DUPLICATES = 

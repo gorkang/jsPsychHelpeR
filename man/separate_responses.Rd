@@ -7,8 +7,17 @@
 separate_responses(DF)
 }
 \arguments{
-\item{DF}{.}
+\item{DF}{DF with a trialid and response columns}
+}
+\value{
+The same DF cleaning up the response column. If a cell contains
+multiple responses, it will separate them in multiple lines.
 }
 \description{
-Creates one line per response
+Creates one line per response. This function is critical to separate multiple
+responses in different rows
+}
+\examples{
+separate_responses(DF = tibble::tibble(trialid = "PRFBM_04", 
+response = '{""Q1"":""Muy de acuerdo"",""Q2"":""Muy de acuerdo""}'))
 }

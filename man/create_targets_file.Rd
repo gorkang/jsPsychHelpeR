@@ -13,6 +13,9 @@ create_targets_file(pid = 0, folder, dont_ask = FALSE)
 
 \item{dont_ask}{do everything without asking for user input}
 }
+\value{
+Creates a _targets.R file
+}
 \description{
 Create _targets.R file from a protocol folder
 }

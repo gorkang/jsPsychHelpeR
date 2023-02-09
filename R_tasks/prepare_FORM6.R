@@ -23,7 +23,7 @@ prepare_FORM6 <- function(files_status, DF_DICCIONARY_id, short_name_scale_str) 
 
   # Read and process files --------------------------------------------------
 
-  DF_status = read_data(files_status, anonymize = FALSE)
+  DF_status = read_data(files_status, is_sensitive = FALSE)
   DF_clean_status = create_clean_data(DF_status)
   
   

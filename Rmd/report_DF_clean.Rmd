@@ -248,7 +248,7 @@ DF_dims = 1:length(tasks) %>%
   map_df(~
         {
           # cat(.x, "\n")
-          create_codebook(tasks, .x)
+          create_codebook(tasks[.x])
         }
   )
 

@@ -11,6 +11,9 @@ count_responses(DF, max_length_strings = 50)
 
 \item{max_length_strings}{.}
 }
+\value{
+Plots and tables
+}
 \description{
 count_responses
 }

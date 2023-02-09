@@ -2,11 +2,7 @@
 % Please edit documentation in R/helper_functions_minimal.R
 \name{standardized_names}
 \alias{standardized_names}
-\title{standardized_names
-Standardized names for Direct scores, dimensions and scales
-Creates names_list, which can be used in the prepare_TASK scripts to create
-columns with standardized names for direct scores, total scores, etc.
-The OLD version created global variables, now we create a list with everything needed}
+\title{standardized_names}
 \usage{
 standardized_names(short_name_scale, dimensions = "", help_names = FALSE)
 }
@@ -17,10 +13,10 @@ standardized_names(short_name_scale, dimensions = "", help_names = FALSE)
 
 \item{help_names}{TRUE prints a message with the instructions}
 }
+\value{
+Creates names_list, which can be used in the prepare_TASK scripts to
+create columns with standardized names for direct scores, total scores, etc.
+}
 \description{
-standardized_names
 Standardized names for Direct scores, dimensions and scales
-Creates names_list, which can be used in the prepare_TASK scripts to create
-columns with standardized names for direct scores, total scores, etc.
-The OLD version created global variables, now we create a list with everything needed
 }

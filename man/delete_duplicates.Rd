@@ -7,12 +7,18 @@
 delete_duplicates(folder, check = TRUE, keep_which = "older")
 }
 \arguments{
-\item{folder}{.}
+\item{folder}{A folder with a zip or csv files from a jsPsychMaker protocol}
 
-\item{check}{TRUE/FALSE}
+\item{check}{If TRUE, only checks, but does not make changes}
 
 \item{keep_which}{"older"/"newer"}
 }
+\value{
+A list with information
+}
 \description{
 Checks or deletes duplicate files, keeping the older file.
+}
+\examples{
+delete_duplicates(folder = system.file("extdata/",package = "jsPsychHelpeR"))
 }

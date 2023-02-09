@@ -12,5 +12,5 @@ set_permissions_google_drive(pid, email_IP)
 \item{email_IP}{email of Principal Researcher to give reading permissions to data in google drive}
 }
 \description{
-set_permissions_google_drive
+Changes permission in a google drive folder
 }

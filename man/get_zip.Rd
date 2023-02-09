@@ -18,6 +18,9 @@ get_zip(pid, what, where = NULL, list_credentials = NULL, dont_ask = TRUE)
 
 \item{dont_ask}{TRUE / FALSE}
 }
+\value{
+A zip file
+}
 \description{
 get_zip
 Get and zip a the data or a full jsPsychMakeR protocol without the data to keep it as a backup

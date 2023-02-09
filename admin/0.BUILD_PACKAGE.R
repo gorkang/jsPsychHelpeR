@@ -1,12 +1,12 @@
 # Step by step instructions to build and test package
-
+  # https://r-pkgs.org/structure.html
 
 # Make sure we have the minimum dependencies ------------------------------
 
   # To have a minimal renv cache:
 
   # .Rprofile: make sure source("renv/activate.R") is UNCOMMENTED
-  rstudioapi::navigateToFile(".Rprofile")
+  rstudioapi::navigateToFile(".Rprofile") # If this fails, it is uncommented
 
     # 1) Delete renv/cache and renv/lib folders
     # 2) Only install the packages explicitly mentionened in _targets_options.R main_packages 
@@ -28,10 +28,10 @@
   # Create jsPsychHelpeR.zip
   source("admin/helper-scripts-admin.R")
   
-  # add_renv_cache = TRUE creates a ~ 230MB package
+  # add_renv_cache = TRUE creates a zip file with the renv cache (initially ~ 230MB package, after cleaning up a loot, 75.6MB)
   # Useful to avoid downloading all renv cache again
   # CAN'T upload that to Github :(
-  create_jsPsychHelpeR_zip(add_renv_cache = FALSE)
+  create_jsPsychHelpeR_zip(add_renv_cache = TRUE)
 
 
 
@@ -49,17 +49,14 @@
 # Install package ---------------------------------------------------------
 
   # devtools::install()
-  renv::install("/home/emrys/gorkang@gmail.com/RESEARCH/PROYECTOS-Code/jsPsychR/jsPsychHelpeR_0.3.0.tar.gz") # Install package from file
+  renv::install("/home/emrys/gorkang@gmail.com/RESEARCH/PROYECTOS-Code/jsPsychR/jsPsychHelpeR_0.2.5.tar.gz") # Install package from file
 
 
 # CHECK functions ----------------------------------------------------------
 
   # CHECK Main function 
   jsPsychHelpeR::run_initial_setup(pid = 999, data_location = "~/gorkang@gmail.com/RESEARCH/PROYECTOS-Code/jsPsychR/jsPsychHelpeR/data/999", dont_ask = TRUE)
-  # jsPsychHelpeR::run_initial_setup(pid = 999, download_files = TRUE, dont_ask = FALSE)
-  # jsPsychHelpeR::run_initial_setup(pid = 999, download_files = TRUE, dont_ask = TRUE, folder = "~/Downloads/XXX")
-  # jsPsychHelpeR::run_initial_setup(pid = 999, data_location = "~/gorkang@gmail.com/RESEARCH/PROYECTOS-Code/jsPsychR/jsPsychHelpeR/data/999", dont_ask = TRUE, folder = "~/Downloads/XXX2")
-
+  
   # CHECK project works
   targets::tar_make()
   
