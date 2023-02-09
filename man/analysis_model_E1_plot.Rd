@@ -9,6 +9,9 @@ analysis_model_E1_plot(model)
 \arguments{
 \item{model}{model object}
 }
+\value{
+ggplot
+}
 \description{
 analysis_model_E1_plot
 }

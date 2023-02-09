@@ -7,10 +7,8 @@
 #' @param DF_clean .
 #' @param save_plots TRUE / FALSE
 #'
-#' @return
+#' @return list with ggplots
 #' @export
-#'
-#' @examples
 analysis_descriptive_plots <- function(DF_joined, DF_raw, DF_clean, save_plots = FALSE) {
   
   # DEBUG

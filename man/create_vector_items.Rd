@@ -8,11 +8,17 @@ Create an OR vector for the grepl() and other functions. From c(1,2) to "1|2"}
 create_vector_items(VECTOR, collapse_string = "|")
 }
 \arguments{
-\item{VECTOR}{.}
+\item{VECTOR}{numeric vector}
 
-\item{collapse_string}{.}
+\item{collapse_string}{"|"}
+}
+\value{
+A character with the numbers separated by |
 }
 \description{
 create_vector_items
 Create an OR vector for the grepl() and other functions. From c(1,2) to "1|2"
+}
+\examples{
+create_vector_items(VECTOR = c( 5, 9, 14, 16, 18))
 }

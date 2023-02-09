@@ -4,10 +4,8 @@
 #'
 #' @param ... .
 #'
-#' @return
+#' @return DF_joined
 #' @export
-#'
-#' @examples
 create_joined <- function(...) {
   
   # DEBUG

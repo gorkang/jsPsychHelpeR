@@ -3,14 +3,17 @@
 \name{list_input_files}
 \alias{list_input_files}
 \title{list_input_files
-Lists all input csv files or single zip file in a data folder.}
+Lists all input csv files or single zip file in the data folder.}
 \usage{
 list_input_files(pid_target)
 }
 \arguments{
-\item{pid_target}{.}
+\item{pid_target}{Project id}
+}
+\value{
+list of files
 }
 \description{
 list_input_files
-Lists all input csv files or single zip file in a data folder.
+Lists all input csv files or single zip file in the data folder.
 }

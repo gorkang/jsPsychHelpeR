@@ -9,6 +9,9 @@ debug_function(name_function)
 \arguments{
 \item{name_function}{name of the function (in _targets.R) for which you want to load the parameters}
 }
+\value{
+Loads in the Global environment the parameters of the function
+}
 \description{
 Loads the parameters used in the functions present in _targets.R to make debugging easier
 }

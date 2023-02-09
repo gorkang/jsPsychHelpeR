@@ -15,6 +15,9 @@ analysis_descriptive_plots(DF_joined, DF_raw, DF_clean, save_plots = FALSE)
 
 \item{save_plots}{TRUE / FALSE}
 }
+\value{
+list with ggplots
+}
 \description{
 Generate histograms for main variables
 }

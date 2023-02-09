@@ -9,10 +9,8 @@
 #' @param folder location for the project
 #' @param sensitive_tasks short names of the sensitive tasks in the protocol, if any
 #'
-#' @return
+#' @return Opens a new RStudio project
 #' @export
-#'
-#' @examples
 run_initial_setup <- function(pid, download_files = FALSE, data_location = NULL, download_task_script = FALSE, folder =  "~/Downloads/jsPsychHelpeRtest", sensitive_tasks = c(""), dont_ask = FALSE) {
   
   # DEBUG

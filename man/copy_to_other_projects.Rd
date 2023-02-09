@@ -20,6 +20,9 @@ copy_to_other_projects(
 
 \item{folder_to_search}{.}
 }
+\value{
+copies file
+}
 \description{
 Copy specific files to other projects
 }

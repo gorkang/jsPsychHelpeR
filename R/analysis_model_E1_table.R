@@ -2,10 +2,8 @@
 #'
 #' @param model model object
 #'
-#' @return
+#' @return gtsummary table
 #' @export
-#'
-#' @examples
 analysis_model_E1_table <- function(model) {
 
   table1_model_E1 = 

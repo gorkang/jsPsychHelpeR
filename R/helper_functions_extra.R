@@ -7,12 +7,12 @@
 #' @param functions One of: c("sum"|"mean")
 #' @param dimensions character vector with the dimensions names
 #'
-#' @return
+#' @return prints the formula for the prepare_TASK() function
 #' @export
 #'
-#' @examples
+#' @examples  create_formulas(type = "dimensions_DIR", functions = "sum", dimensions = c("ONE"))
 create_formulas <- function(type, functions = "sum", dimensions = NULL) {
-  
+
   if (functions == "sum") {
     functions_str = "rowSums"
   } else if (functions == "mean") {
@@ -62,10 +62,8 @@ create_formulas <- function(type, functions = "sum", dimensions = NULL) {
 #'
 #' @param name_function name of the function (in _targets.R) for which you want to load the parameters
 #'
-#' @return
+#' @return Loads in the Global environment the parameters of the function
 #' @export
-#'
-#' @examples
 debug_function <- function(name_function) {
 
   # DEBUG
@@ -119,24 +117,14 @@ debug_function <- function(name_function) {
 #' create_new_task
 #' Create a new prepare_TASK.R file from prepare_TEMPLATE.R replacing TEMPLATE by the short name of the new task
 #'
-#' @param short_name_task .
-#' @param overwrite .
-#' @param get_info_googledoc .
-#' @param destination .
+#' @param short_name_task short name of the task
+#' @param overwrite FALSE / TRUE
+#' @param get_info_googledoc FALSE / TRUE
+#' @param destination "R_tasks"
 #'
-#' @return
+#' @return Creates a R_tasks/prepare_TASK.R using the prepare_TEMPLATE.R
 #' @export
-#'
-#' @examples
 create_new_task <- function(short_name_task, overwrite = FALSE, get_info_googledoc = FALSE, destination = "R_tasks") {
-
-  # DEBUG
-  # short_name_task = "CS"
-  # overwrite = FALSE
-  # get_info_googledoc = TRUE
-  
-  # Needed in case someone launches the function directly (%>%)
-  # library(dplyr)
 
   # Create file ---
   new_task_file = paste0(destination, "/prepare_", short_name_task ,".R")
@@ -190,15 +178,13 @@ create_new_task <- function(short_name_task, overwrite = FALSE, get_info_googled
 #' Create a number series from a vector of numbers including individual numbers 
 #' and intervals such as c(1, "3-8", 11, "22-24")
 #' 
-#' @param numbers_RAW .
+#' @param numbers_RAW A vector of numbers or ranges
 #'
-#' @return
+#' @return A character vector with numbers preceded by a 0, if needed
 #' @export
 #'
-#' @examples
+#' @examples create_number_series(c(1, "3-8", 11, "22-24"))
 create_number_series <- function(numbers_RAW) {
-  
-  # numbers_RAW = c(1, "3-8", 11, "22-24")
   
   # Get rid of spaces
   numbers_RAW_clean = gsub(" ", "", numbers_RAW) #gsub(" - ", "-", numbers_RAW) %>% 
@@ -230,15 +216,15 @@ create_number_series <- function(numbers_RAW) {
 #' create_vector_items
 #' Create an OR vector for the grepl() and other functions. From c(1,2) to "1|2"
 #'
-#' @param VECTOR .
-#' @param collapse_string .
+#' @param VECTOR numeric vector
+#' @param collapse_string "|"
 #'
-#' @return
+#' @return A character with the numbers separated by |
 #' @export
 #'
-#' @examples
+#' @examples create_vector_items(VECTOR = c( 5, 9, 14, 16, 18))
 create_vector_items <- function(VECTOR, collapse_string = "|") {
-  # VECTOR = c( 5, 9, 14, 16, 18)
+  
   cat(paste(sprintf("%02d", VECTOR), collapse = collapse_string))
 }
 
@@ -247,12 +233,10 @@ create_vector_items <- function(VECTOR, collapse_string = "|") {
 #' number_items_tasks
 #' Creates a tibble with information about how many RAW items each task in DF_joined has
 #'
-#' @param DF_joined .
+#' @param DF_joined DF
 #'
-#' @return
+#' @return A tibble
 #' @export
-#'
-#' @examples
 number_items_tasks <- function(DF_joined) {
   
   items_RAW = 
@@ -280,15 +264,9 @@ number_items_tasks <- function(DF_joined) {
 #' @param pid protocol id
 #' @param folder project folder. Data will be downloaded to folder/data/pid
 #'
-#' @return
+#' @return Downloads data from server to the folder
 #' @export
-#'
-#' @examples
 update_data <- function(pid, folder) {
-  
-  # DEBUG
-  # pid = 22
-  # sensitive_tasks = c("DEMOGR")
 
   # CHECKS --
   # Avoid spaces in folder path because rsync won´t work if there are spaces
@@ -356,10 +334,8 @@ update_data <- function(pid, folder) {
 #' @param folder_protocol .
 #' @param folder_results .
 #'
-#' @return
+#' @return Message indicating if there are missing data
 #' @export
-#'
-#' @examples
 check_project_and_results <- function(participants, folder_protocol, folder_results) {
   
   # DEBUG
@@ -397,7 +373,6 @@ check_project_and_results <- function(participants, folder_protocol, folder_resu
   
   
 }
-
 
 
 #' zip_files
@@ -725,11 +700,10 @@ create_docker_container <- function(PID = 999) {
 
 
 #' clean_renv_cache
+#' Gets rid of cache packages not in lib
 #'
-#' @return
+#' @return Cleans the renv cache
 #' @export
-#'
-#' @examples
 clean_renv_cache <- function() {
   
   LIB = list.files("renv/lib/R-4.2/x86_64-pc-linux-gnu/")

@@ -7,9 +7,7 @@
 #' @param check .
 #' @param folder_to_search .
 #'
-#' @return
-#'
-#' @examples
+#' @return copies file
 copy_to_other_projects <- function(file_name, overwrite_str = FALSE, check = TRUE, folder_to_search) {
   
   # DEBUG

@@ -12,6 +12,9 @@ update_data(pid, folder)
 
 \item{folder}{project folder. Data will be downloaded to folder/data/pid}
 }
+\value{
+Downloads data from server to the folder
+}
 \description{
 update_data
 Download 'pid/.data/' server folder to 'data/pid' using rsync. If there are sensitive tasks, move those to .vault/data_vault

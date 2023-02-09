@@ -2,10 +2,8 @@
 #'
 #' @param DF_analysis DF_analysis
 #'
-#' @return
+#' @return lm model
 #' @export
-#'
-#' @examples
 analysis_model_E1 <- function(DF_analysis) {
 
   model_E1 = stats::lm(CRTMCQ4_Reflectiveness_DIRd ~ REI40_Experiential_DIRd, DF_analysis)

@@ -9,6 +9,9 @@ analysis_model_E1(DF_analysis)
 \arguments{
 \item{DF_analysis}{DF_analysis}
 }
+\value{
+lm model
+}
 \description{
 analysis_model_E1
 }

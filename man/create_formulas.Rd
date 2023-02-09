@@ -16,9 +16,15 @@ create_formulas(type, functions = "sum", dimensions = NULL)
 
 \item{dimensions}{character vector with the dimensions names}
 }
+\value{
+prints the formula for the prepare_TASK() function
+}
 \description{
 create_formulas
 It creates the standardized code necessary for the dimensions or total scores calculation in the prepare_TASK scripts
 PROBABLY NOT NEEDED, as we SHOULD do all this automatically in get_dimensions_google_doc()
 Maybe useful when there are some non-standard elements to the calculations? e.g. See prepare_CS
+}
+\examples{
+ create_formulas(type = "dimensions_DIR", functions = "sum", dimensions = c("ONE"))
 }

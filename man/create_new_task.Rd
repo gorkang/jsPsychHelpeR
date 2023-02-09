@@ -13,13 +13,16 @@ create_new_task(
 )
 }
 \arguments{
-\item{short_name_task}{.}
+\item{short_name_task}{short name of the task}
 
-\item{overwrite}{.}
+\item{overwrite}{FALSE / TRUE}
 
-\item{get_info_googledoc}{.}
+\item{get_info_googledoc}{FALSE / TRUE}
 
-\item{destination}{.}
+\item{destination}{"R_tasks"}
+}
+\value{
+Creates a R_tasks/prepare_TASK.R using the prepare_TEMPLATE.R
 }
 \description{
 create_new_task

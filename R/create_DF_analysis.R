@@ -1,14 +1,12 @@
 #' create_DF_analysis
 #'
-#' @param DF_joined .
-#' @param last_task .
-#' @param save_output .
-#' @param DVars .
+#' @param DF_joined DF
+#' @param last_task name of last task
+#' @param save_output TRUE / FALSE
+#' @param DVars vector with variable names
 #'
-#' @return
+#' @return DF_analysis
 #' @export
-#'
-#' @examples
 create_DF_analysis <- function(DF_joined, last_task, save_output = TRUE, DVars = c("")) {
   
   # debug_function("create_DF_analysis")

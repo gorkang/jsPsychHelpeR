@@ -11,10 +11,8 @@
 #' @param all_messages show all messages
 #' @param list_credentials where are the credentials
 #'
-#' @return
+#' @return Sync folders
 #' @export
-#'
-#' @examples
 sync_server_local <-
   function(server_folder,
            local_folder,
@@ -164,4 +162,3 @@ sync_server_local <-
   }
   
 }
-# sync_server_local(server_folder = "test/FONDECYT2021/", local_folder = "canonical_protocol_DEV/", direction = "server_to_local")

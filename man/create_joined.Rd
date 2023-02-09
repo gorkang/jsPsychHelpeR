@@ -9,6 +9,9 @@ create_joined(...)
 \arguments{
 \item{...}{.}
 }
+\value{
+DF_joined
+}
 \description{
 Join the df of all the processed tasks
 }

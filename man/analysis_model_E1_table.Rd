@@ -9,6 +9,9 @@ analysis_model_E1_table(model)
 \arguments{
 \item{model}{model object}
 }
+\value{
+gtsummary table
+}
 \description{
 analysis_model_E1_table
 }

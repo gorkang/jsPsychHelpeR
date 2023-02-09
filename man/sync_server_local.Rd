@@ -36,6 +36,9 @@ sync_server_local(
 
 \item{list_credentials}{where are the credentials}
 }
+\value{
+Sync folders
+}
 \description{
 sync_server_local
 Standalone function to Download/Upload files from server to local folder or vice-versa

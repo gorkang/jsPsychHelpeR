@@ -9,6 +9,9 @@ test_testhat(...)
 \arguments{
 \item{...}{.}
 }
+\value{
+Calls tests
+}
 \description{
 Calls all the tests in 'test/testthat'
 }

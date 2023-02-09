@@ -18,6 +18,9 @@ get_dimensions_googledoc(
 
 \item{google_sheet}{.}
 }
+\value{
+Gets information from Google doc
+}
 \description{
 get_dimensions_googledoc
 Get information from the main jsPsychR GoogleSheet to help creating a new task

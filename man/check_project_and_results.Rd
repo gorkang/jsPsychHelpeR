@@ -14,6 +14,9 @@ check_project_and_results(participants, folder_protocol, folder_results)
 
 \item{folder_results}{.}
 }
+\value{
+Message indicating if there are missing data
+}
 \description{
 check_project_and_results
 Check the project tasks and compare with the csv results to see if there are results or tasks missing

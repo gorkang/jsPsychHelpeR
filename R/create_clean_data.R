@@ -1,13 +1,11 @@
 #' create_clean_data
 #'
-#' @param DF_raw .
-#' @param save_output .
-#' @param check_duplicates .
+#' @param DF_raw DF
+#' @param save_output TRUE / FALSE
+#' @param check_duplicates TRUE / FALSE
 #'
-#' @return
+#' @return DF_clean
 #' @export
-#'
-#' @examples
 create_clean_data <- function(DF_raw, save_output = TRUE, check_duplicates = TRUE) {
   
   # targets::tar_load_globals()

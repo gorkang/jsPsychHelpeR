@@ -5,10 +5,8 @@
 #' @param google_username .
 #' @param google_sheet .
 #'
-#' @return
+#' @return Gets information from Google doc
 #' @export
-#'
-#' @examples
 get_dimensions_googledoc <- function(short_name_text, google_username = "gorkang@gmail.com", google_sheet = "NEW") {
   
   # DEBUG

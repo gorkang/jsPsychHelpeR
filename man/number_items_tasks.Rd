@@ -8,7 +8,10 @@ Creates a tibble with information about how many RAW items each task in DF_joine
 number_items_tasks(DF_joined)
 }
 \arguments{
-\item{DF_joined}{.}
+\item{DF_joined}{DF}
+}
+\value{
+A tibble
 }
 \description{
 number_items_tasks

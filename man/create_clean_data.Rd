@@ -7,11 +7,14 @@
 create_clean_data(DF_raw, save_output = TRUE, check_duplicates = TRUE)
 }
 \arguments{
-\item{DF_raw}{.}
+\item{DF_raw}{DF}
 
-\item{save_output}{.}
+\item{save_output}{TRUE / FALSE}
 
-\item{check_duplicates}{.}
+\item{check_duplicates}{TRUE / FALSE}
+}
+\value{
+DF_clean
 }
 \description{
 create_clean_data

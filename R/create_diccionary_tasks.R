@@ -2,12 +2,9 @@
 #' 
 #' Create DICCIONARY with long and short names for the tasks in the protocol
 #'
-#' @param DF_clean .
+#' @param DF_clean DF_clean
 #'
-#' @return
-#' @export
-#'
-#' @examples
+#' @return Writes outputs/data/DICCIONARY_tasks.csv
 create_diccionary_tasks <- function(DF_clean) {
   
   DICCIONARY_tasks = 

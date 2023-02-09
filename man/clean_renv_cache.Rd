@@ -2,10 +2,15 @@
 % Please edit documentation in R/helper_functions_extra.R
 \name{clean_renv_cache}
 \alias{clean_renv_cache}
-\title{clean_renv_cache}
+\title{clean_renv_cache
+Gets rid of cache packages not in lib}
 \usage{
 clean_renv_cache()
 }
+\value{
+Cleans the renv cache
+}
 \description{
 clean_renv_cache
+Gets rid of cache packages not in lib
 }

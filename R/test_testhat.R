@@ -4,10 +4,8 @@
 #'
 #' @param ... .
 #'
-#' @return
+#' @return Calls tests
 #' @export
-#'
-#' @examples
 test_testhat <- function(...) { # input_files_automatic_tests_str
 
   # Load targets objects used in tests --------------------------------------

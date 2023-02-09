@@ -9,10 +9,16 @@ and intervals such as c(1, "3-8", 11, "22-24")}
 create_number_series(numbers_RAW)
 }
 \arguments{
-\item{numbers_RAW}{.}
+\item{numbers_RAW}{A vector of numbers or ranges}
+}
+\value{
+A character vector with numbers preceded by a 0, if needed
 }
 \description{
 create_number_series
 Create a number series from a vector of numbers including individual numbers
 and intervals such as c(1, "3-8", 11, "22-24")
+}
+\examples{
+create_number_series(c(1, "3-8", 11, "22-24"))
 }

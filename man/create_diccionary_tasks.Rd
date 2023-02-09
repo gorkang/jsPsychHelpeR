@@ -7,7 +7,10 @@
 create_diccionary_tasks(DF_clean)
 }
 \arguments{
-\item{DF_clean}{.}
+\item{DF_clean}{DF_clean}
+}
+\value{
+Writes outputs/data/DICCIONARY_tasks.csv
 }
 \description{
 Create DICCIONARY with long and short names for the tasks in the protocol

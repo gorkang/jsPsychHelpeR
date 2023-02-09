@@ -30,6 +30,9 @@ run_initial_setup(
 
 \item{dont_ask}{answer YES to all questions}
 }
+\value{
+Opens a new RStudio project
+}
 \description{
 run_initial_setup
 Run initial setup for a specific project

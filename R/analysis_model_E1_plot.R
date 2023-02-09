@@ -2,10 +2,8 @@
 #'
 #' @param model model object
 #'
-#' @return
+#' @return ggplot
 #' @export
-#'
-#' @examples
 analysis_model_E1_plot <- function(model) {
 
   # We can use the model data directly: model_XXX$model OR SIMILAR
@@ -15,6 +13,4 @@ analysis_model_E1_plot <- function(model) {
     ggplot2::geom_point() +
     ggplot2::theme_minimal()
   
-  # model_XXX$na.action
-
 }

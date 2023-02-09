@@ -7,13 +7,16 @@
 create_DF_analysis(DF_joined, last_task, save_output = TRUE, DVars = c(""))
 }
 \arguments{
-\item{DF_joined}{.}
+\item{DF_joined}{DF}
 
-\item{last_task}{.}
+\item{last_task}{name of last task}
 
-\item{save_output}{.}
+\item{save_output}{TRUE / FALSE}
 
-\item{DVars}{.}
+\item{DVars}{vector with variable names}
+}
+\value{
+DF_analysis
 }
 \description{
 create_DF_analysis

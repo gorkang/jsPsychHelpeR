@@ -1,11 +1,9 @@
 #' tests_DF_raw
 #'
-#' @param DF_raw .
+#' @param DF_raw DF_raw
 #'
-#' @return
+#' @return cli messages
 #' @export
-#'
-#' @examples
 tests_DF_raw <- function(DF_raw) {
 
   # # Load targets objects used in tests --------------------------------------
