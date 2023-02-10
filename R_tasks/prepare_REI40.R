@@ -47,7 +47,7 @@ prepare_REI40 <- function(DF_clean, short_name_scale_str, needs_v02_fix = FALSE)
 
   # TEMPORAL FIX ------------------------------------------------------------
   if (needs_v02_fix == TRUE) {
-    DF_dicc = read_csv("R_tasks/prepare_REI40_diccionary.csv", show_col_types = FALSE)
+    DF_dicc = readr::read_csv("R_tasks/prepare_REI40_dictionary.csv", show_col_types = FALSE)
     DF_long_RAW = DF_long_RAW %>% 
       dplyr::left_join(DF_dicc, by = "trialid") %>% 
       dplyr::mutate(trialid = trialid_OK) %>% 

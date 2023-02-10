@@ -89,7 +89,7 @@ delete_duplicates <- function(folder, check = TRUE, keep_which = "older") {
                    tidyr::drop_na(trialid) %>% dplyr::filter(trialid != "") 
                   
                   if (!"responses" %in% names(DF_temp) & "response" %in% names(DF_temp)) DF_temp = DF_temp %>% dplyr::rename(responses = response)
-                  if (!"responses" %in% names(DF_temp)) DF_temp = DF_temp %>% dplyr::mutate(responses = paste0("CHECK_ME_", runif(n(), min = 0, max = 10)))
+                  if (!"responses" %in% names(DF_temp)) DF_temp = DF_temp %>% dplyr::mutate(responses = paste0("CHECK_ME_", runif(dplyr::n(), min = 0, max = 10)))
                   DF_temp %>%  
                    dplyr::select(filename, trialid, responses) %>%  replace_na(replace = list(responses = "")) %>% 
                     dplyr::filter(!trialid %in% c("Instructions", "Instrucciones")) %>% # SHOULD NOT, but sometimes the trialid Instructions repeats itself

@@ -73,9 +73,9 @@ create_clean_data <- function(DF_raw, save_output = TRUE, check_duplicates = TRU
   
   # To get full detail, with filenames: 
   # DF_message = DF_clean %>% 
-  #   dplyr::group_by(id, trialid) %>% dplyr::summarise(N_files = n(), filenames = paste(filename, collapse = "\n")) %>% 
+  #   dplyr::group_by(id, trialid) %>% dplyr::summarise(N_files = dplyr::n(), filenames = paste(filename, collapse = "\n")) %>% 
   #   dplyr::filter(N_files > 1) %>%  
-  #   dplyr::group_by(id, filenames) %>%  dplyr::summarise(N_trialids = n(), N_files = unique(N_files), trialids = paste(trialid, collapse = ", ")) %>% 
+  #   dplyr::group_by(id, filenames) %>%  dplyr::summarise(N_trialids = dplyr::n(), N_files = unique(N_files), trialids = paste(trialid, collapse = ", ")) %>% 
   #   dplyr::distinct(filenames, .keep_all = TRUE) %>% dplyr::select(id, N_files, N_trialids, trialids, dplyr::everything()) 
   
   # IDs = DF_message %>% dplyr::group_by(1) %>% dplyr::summarise(IDs = paste(id, collapse = ", ")) %>% dplyr::arrange(desc(IDs)) %>%  dplyr::pull(IDs)

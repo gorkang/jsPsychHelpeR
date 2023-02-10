@@ -1,0 +1,6 @@
+id;Cov19Q_01_RAW;Cov19Q_02_RAW;Cov19Q_03_RAW;Cov19Q_04_RAW;Cov19Q_05_RAW;Cov19Q_06_RAW;Cov19Q_07_RAW;Cov19Q_08_RAW;Cov19Q_09_RAW;Cov19Q_01_DIR;Cov19Q_02_DIR;Cov19Q_03_DIR;Cov19Q_04_DIR;Cov19Q_05_DIR;Cov19Q_06_DIR;Cov19Q_07_DIR;Cov19Q_08_DIR;Cov19Q_09_DIR;Cov19Q_RAW_NA;Cov19Q_DIR_NA;Cov19Q_PrevalenciaTu_DIRd;Cov19Q_PrevalenciaHogar_DIRd;Cov19Q_PrevalenciaCercano_DIRd;Cov19Q_Gravedad_DIRd;Cov19Q_PensamientoConspirativo_DIRd
+1;Si;Si;Si;Poco grave;En desacuerdo;Muy de acuerdo;Ni de acuerdo ni en desacuerdo;Muy en desacuerdo;Muy en desacuerdo;1;1;1;2;1;4;2;0;0;0;0;1;1;1;2;7
+2;Si;Si;No;Poco grave;Muy de acuerdo;Ni de acuerdo ni en desacuerdo;Muy en desacuerdo;Muy en desacuerdo;Muy de acuerdo;1;1;0;2;4;2;0;0;4;0;0;1;1;0;2;10
+3;Si;No;No;Extremadamente grave;Ni de acuerdo ni en desacuerdo;Muy en desacuerdo;Muy en desacuerdo;Muy de acuerdo;Ni de acuerdo ni en desacuerdo;1;0;0;5;2;0;0;4;2;0;0;1;0;0;5;8
+4;No;No;Si;Medianamente grave;Muy en desacuerdo;Muy en desacuerdo;Muy de acuerdo;Ni de acuerdo ni en desacuerdo;Muy de acuerdo;0;0;1;3;0;0;4;2;4;0;0;0;0;1;3;10
+5;No;Si;No;Nada grave;Muy en desacuerdo;Muy de acuerdo;Ni de acuerdo ni en desacuerdo;Muy de acuerdo;De acuerdo;0;1;0;1;0;4;2;4;3;0;0;0;1;0;1;13

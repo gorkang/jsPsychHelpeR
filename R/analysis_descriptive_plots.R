@@ -74,7 +74,7 @@ analysis_descriptive_plots <- function(DF_joined, DF_raw, DF_clean, save_plots =
     dplyr::mutate(rt = as.numeric(rt)/60000) %>% 
     dplyr::group_by(id, experiment) %>% 
     dplyr::summarise(TIME = round(max(rt), 2), 
-              N = n(), 
+              N = dplyr::n(), 
               .groups = "keep") %>% 
     ggplot2::ggplot(ggplot2::aes(TIME)) +
     ggplot2::geom_histogram(bins = 30) +

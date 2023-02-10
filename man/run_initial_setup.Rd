@@ -2,8 +2,7 @@
 % Please edit documentation in R/run_initial_setup.R
 \name{run_initial_setup}
 \alias{run_initial_setup}
-\title{run_initial_setup
-Run initial setup for a specific project}
+\title{Create a jsPsychHelpeR project for your data}
 \usage{
 run_initial_setup(
   pid,
@@ -12,28 +11,42 @@ run_initial_setup(
   download_task_script = FALSE,
   folder = "~/Downloads/jsPsychHelpeRtest",
   sensitive_tasks = c(""),
-  dont_ask = FALSE
+  dont_ask = FALSE,
+  open_rstudio = TRUE
 )
 }
 \arguments{
 \item{pid}{project id}
 
-\item{download_files}{should download the data files? (requires server credentials) TRUE/FALSE}
+\item{download_files}{should download the data files? FALSE / TRUE
+\itemize{
+\item If TRUE, requires sFTP server credentials to be located in \code{.vault/credentials}
+\item See \code{.vault/credentials_TEMPLATE} for more details
+}}
 
 \item{data_location}{local folder where the raw data for the project is}
 
-\item{download_task_script}{should download the task scripts? (requires server credentials) TRUE/FALSE}
+\item{download_task_script}{should download the task scripts? (requires server credentials) FALSE / TRUE}
 
 \item{folder}{location for the project}
 
 \item{sensitive_tasks}{short names of the sensitive tasks in the protocol, if any}
 
-\item{dont_ask}{answer YES to all questions}
+\item{dont_ask}{answer YES to all questions so the process runs uninterrupted. This will:}
+
+\item{open_rstudio}{Open RStudio with the new project TRUE / FALSE}
 }
 \value{
 Opens a new RStudio project
 }
 \description{
-run_initial_setup
-Run initial setup for a specific project
+run_initial_setup() will read your data and create a jsPsychHelpeR project
+tailoring the _targets.R file to the tasks included in the data.
+}
+\examples{
+run_initial_setup(pid = 999, download_files = FALSE,
+data_location = system.file("extdata", package = "jsPsychHelpeR"),
+download_task_script = FALSE, 
+folder = tempdir(), 
+sensitive_tasks = c(""), dont_ask = TRUE, open_rstudio = FALSE)
 }

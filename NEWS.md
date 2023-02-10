@@ -1,8 +1,9 @@
-# jsPsychHelpeR 0.2.9999
+# jsPsychHelpeR 0.2.5
 
 Major updates  
 
 * jsPsychHelpeR is now an R package
+* We can check the canonical_protocol outputs with testthat now, making sure results don't change
 * standardized_names now uses an output list instead of global variables.
 * NEW get_dimensions_googledoc() function to help create new tasks
 * input files can now be in a single ZIP file

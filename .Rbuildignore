@@ -25,3 +25,5 @@ _targets_packages.R
 ^\.github$
 ^data$
 ^LICENSE\.md$
+^_pkgdown\.yml$
+^pkgdown$

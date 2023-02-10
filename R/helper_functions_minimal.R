@@ -226,18 +226,18 @@ create_raw_long <- function(DF_clean, short_name_scale, numeric_responses = FALS
         
         cli::cli_text(col_red("{symbol$cross} "), "Unholy names found in condition_within. Cleaning up. It can take a while...\n")
         
-        # Create a diccionary and left_join
-        DICCIONARY_within = DF_output %>% 
+        # Create a dictionary and left_join
+        DICTIONARY_within = DF_output %>% 
           dplyr::distinct(condition_within) %>% 
           dplyr::rowwise() %>% 
           dplyr::mutate(condition_withinOK = paste(purrr::map_chr(stringr::str_split(condition_within, pattern = "_", simplify = TRUE), janitor::make_clean_names, case = "small_camel"), collapse = "_"))
         
         # Show changes
-        cli::cli_li(DICCIONARY_within %>% dplyr::transmute(DIFF = paste0(condition_within, " -> ",  condition_withinOK)) %>% dplyr::pull(DIFF))
+        cli::cli_li(DICTIONARY_within %>% dplyr::transmute(DIFF = paste0(condition_within, " -> ",  condition_withinOK)) %>% dplyr::pull(DIFF))
         
         DF_output = 
           DF_output %>% 
-          dplyr::left_join(DICCIONARY_within, by = "condition_within") %>% 
+          dplyr::left_join(DICTIONARY_within, by = "condition_within") %>% 
           dplyr::mutate(condition_within = condition_withinOK) %>% dplyr::select(-condition_withinOK)
         
         }
@@ -329,11 +329,11 @@ prepare_helper <- function(DF_long_RAW, show_trialid_questiontext = FALSE) {
     DF_long_RAW %>%
     dplyr::count(trialid, RAW) %>%
     dplyr::group_by(trialid) %>%
-    dplyr::summarise(N = n(),
+    dplyr::summarise(N = dplyr::n(),
               Responses = paste(RAW, collapse = ", "),
               .groups = "drop") %>%
     dplyr::group_by(Responses) %>%
-    dplyr::summarise(N = n(),
+    dplyr::summarise(N = dplyr::n(),
               trialid = paste(trialid, collapse = ", "),
               .groups = "drop") 
 
@@ -921,11 +921,11 @@ separate_responses <- function(DF) {
 
 
 #' create_codebook
-#' Extracts information from the prepare_TASK.R files to create a codebook. USed in report_DF_clean.Rmd
+#' Extracts information from the prepare_TASK.R files to create a codebook. Used in report_DF_clean.Rmd
 #'
 #' @param task A prepare_TASK.R file
 #'
-#' @return A DF with correcction information of a prepare_TASK() function
+#' @return A DF with correction information of a prepare_TASK() function
 #' @export
 #'
 #' @examples create_codebook(task = system.file("R_tasks", "prepare_AIM.R", package = "jsPsychHelpeR"))

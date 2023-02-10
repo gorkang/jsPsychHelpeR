@@ -14,7 +14,7 @@
 ##' @return
 ##' @author gorkang
 ##' @export
-prepare_FORM5 <- function(DF_clean, DF_DICCIONARY_id, short_name_scale_str) {
+prepare_FORM5 <- function(DF_clean, DF_DICTIONARY_id, short_name_scale_str) {
 
   # DEBUG
   # debug_function(prepare_FORM5)
@@ -111,7 +111,7 @@ prepare_FORM5 <- function(DF_clean, DF_DICCIONARY_id, short_name_scale_str) {
   #   DF_wide_RAW_DIR %>% 
   #   dplyr::rename(id_form = id) %>% 
   #   dplyr::mutate(rut = FORM5_01_RAW) %>% 
-  #   dplyr::left_join(DF_DICCIONARY_id, by = "id_form") %>% 
+  #   dplyr::left_join(DF_DICTIONARY_id, by = "id_form") %>% 
   #  dplyr::select(id, RUT, dplyr::everything())
   
   

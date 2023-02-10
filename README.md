@@ -1,6 +1,6 @@
 # jsPsychHelpeR
 
-Standardize and automatize data preparation and analysis of [jsPsych](https://www.jspsych.org/) experiments created with [jsPsychMaker](https://github.com/gorkang/jsPsychMaker). See the [jsPsychHelpeR manual](https://gorkang.github.io/jsPsychR-manual/qmd/05-jsPsychHelpeR.html) for more detailes information.  
+Standardize and automatize data preparation and analysis of [jsPsych](https://www.jspsych.org/) experiments created with [jsPsychMaker](https://github.com/gorkang/jsPsychMaker). See the [jsPsychHelpeR manual](https://gorkang.github.io/jsPsychR-manual/qmd/05-jsPsychHelpeR.html) for more detailed information.  
 
 Please, address any correspondence to [gorkang\@gmail.com](mailto:gorkang@gmail.com)
 

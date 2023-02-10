@@ -79,11 +79,11 @@ summary_table =
     mutate(rt = as.numeric(rt)) %>% 
     group_by(id, experiment) %>% 
     summarise(TIME = round(sum(rt, na.rm = TRUE)/60000, 2), # TIME = round(max(time_elapsed)/60000, 2), # time_elapsed is cumulative!
-              N = n(), 
+              N = dplyr::n(), 
               .groups = "keep") %>% 
     group_by(id) %>% 
     summarise(TIME = sum(TIME), 
-              N = n(), 
+              N = dplyr::n(), 
               tasks = paste(experiment, collapse = ", "),
               .groups = "keep") %>% 
       mutate(missing = paste(all_tasks[!all_tasks %in% (strsplit(tasks, split = ", ") %>% unlist())], collapse = ", "))
@@ -109,7 +109,7 @@ DT::datatable(summary_table, filter = 'top', options = list(dom = 'ltip', pageLe
 #   
 #     group_by(experiment) %>% 
 #     summarise(
-#       n_participants = n(),
+#       n_participants = dplyr::n(),
 #       mean_time = round(mean(time), 1),
 #       time_elapsed_min = round(min(time), 1),
 #       time_elapsed_max = round(max(time), 1),
@@ -123,11 +123,11 @@ DT::datatable(summary_table, filter = 'top', options = list(dom = 'ltip', pageLe
     mutate(rt = as.numeric(rt)) %>% 
     group_by(id, experiment) %>% 
     summarise(TIME = round(sum(rt, na.rm = TRUE)/60000, 2), # TIME = round(max(time_elapsed)/60000, 2), # time_elapsed is cumulative!
-              N = n(), 
+              N = dplyr::n(), 
               .groups = "drop") %>% 
     group_by(experiment) %>% 
 summarise(
-      n_participants = n(),
+      n_participants = dplyr::n(),
       mean_time = round(mean(TIME), 1),
       time_elapsed_min = round(min(TIME), 1),
       time_elapsed_max = round(max(TIME), 1),
@@ -160,7 +160,7 @@ summary_table3 =
   mutate(rt = as.numeric(rt)) %>% 
   group_by(id, experiment) %>% 
   summarise(TIME = round(sum(rt, na.rm = TRUE)/60000, 2), # TIME = round(max(time_elapsed)/60000, 2), # time_elapsed is cumulative!
-            items = n(), 
+            items = dplyr::n(), 
             .groups = "drop")
 
 
@@ -293,11 +293,11 @@ DT::datatable(responses_table,
 #     DF %>%
 #     count(trialid, experiment, responses) %>%
 #     group_by(experiment, trialid) %>%
-#     summarise(N = n(),
+#     summarise(N = dplyr::n(),
 #               Responses = paste(responses, collapse = ", "),
 #               .groups = "drop") %>%
 #     group_by(experiment, Responses) %>%
-#     summarise(N = n(),
+#     summarise(N = dplyr::n(),
 #               trialid = paste(trialid, collapse = ", "),
 #               .groups = "drop") %>% 
 #   select(experiment, trialid, Responses, N)

@@ -23,7 +23,7 @@ prepare_AIM23 <- function(DF_clean, short_name_scale_str) {
 
   
   # OUTSIDE FILES -----------------------------------------------------------
-  DF_lookup = read_csv("R_tasks/prepare_AIM-lookup.csv", 
+  DF_lookup = readr::read_csv("R_tasks/prepare_AIM-lookup.csv", 
                        col_types = 
                          cols(
                            AIM_01_DIR = col_double(),
@@ -214,7 +214,7 @@ prepare_AIM23 <- function(DF_clean, short_name_scale_str) {
   # DF_wide_RAW_DIR = 
   #   DF_wide_RAW_DIR %>% 
   #   dplyr::rename(id_form = id) %>% 
-  #   # dplyr::left_join(DF_DICCIONARY_id, by = "id_form") %>% 
+  #   # dplyr::left_join(DF_DICTIONARY_id, by = "id_form") %>% 
   #  dplyr::select(id, RUT, dplyr::everything())
   
   

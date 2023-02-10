@@ -1,0 +1,6 @@
+id;ESM_01_RAW;ESM_02_RAW;ESM_03_RAW;ESM_04_RAW;ESM_05_RAW;ESM_06_RAW;ESM_07_RAW;ESM_08_RAW;ESM_09_RAW;ESM_10_RAW;ESM_11_RAW;ESM_01_DIR;ESM_02_DIR;ESM_03_DIR;ESM_04_DIR;ESM_05_DIR;ESM_06_DIR;ESM_07_DIR;ESM_08_DIR;ESM_09_DIR;ESM_10_DIR;ESM_11_DIR;ESM_RAW_NA;ESM_DIR_NA;ESM_DIRt
+1;Peor;No se;Muy Buena;Si;Si;No;Muy Buena;No se;No;Si;No;1;0;-2;1;1;-1;-2;0;-1;1;-1;0;0;-3
+2;Peor;Si;Muy Buena;Si;No;Si;Mala;No;Si;No;Si;1;1;-2;1;-1;1;1;-1;1;-1;1;0;0;2
+3;Mejor;Si;Muy Buena;No;Si;No se;Buena;Si;No;Si;No;-1;1;-2;-1;1;0;-1;1;-1;1;-1;0;0;-3
+4;Mejor;Si;Buena;Si;No se;No;Muy Buena;No;Si;No;Si;-1;1;-1;1;0;-1;-2;-1;1;-1;1;0;0;-3
+5;Mejor;No;Muy Buena;No se;No;Si;Buena;Si;No;Si;Si;-1;-1;-2;0;-1;1;-1;1;-1;1;1;0;0;-3

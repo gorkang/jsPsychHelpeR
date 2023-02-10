@@ -24,8 +24,8 @@ targets <- list(
   # Cleaned data
   tar_target(DF_clean, create_clean_data(DF_raw)),
   
-  # Diccionary of tasks
-  tar_target(DICCIONARY_tasks, create_diccionary_tasks(DF_clean), priority = 1),
+  # Dictionary of tasks
+  tar_target(DICTIONARY_tasks, create_dictionary_tasks(DF_clean), priority = 1),
 
   
   ## Prepare tasks -----------------------------------------------------------
@@ -80,7 +80,7 @@ targets <- list(
                                  input_files,
                                  DF_raw,
                                  DF_clean,
-                                 DICCIONARY_tasks,
+                                 DICTIONARY_tasks,
                                  DF_joined
                                  )
   ),

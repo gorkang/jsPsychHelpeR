@@ -391,7 +391,7 @@ prepare_fauxPasEv <- function(DF_clean, short_name_scale_str) {
   
   
   
-  # Create a diccionary with stories and trialid's
+  # Create a dictionary with stories and trialid's
   DICC_story_items = tibble::tibble(story = rep(1:20, each = 9),
                             trialid = paste0("fauxPasEv_", sprintf("%03d", rep(1:180))))
   

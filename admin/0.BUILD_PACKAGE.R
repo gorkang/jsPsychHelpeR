@@ -16,6 +16,7 @@
       # targets::tar_renv(extras = c("markdown", "rstudioapi","visNetwork"))
     # 4) Create lockfile with the installed subset
       # renv::snapshot()
+
     # Make sure project 999 runs: targets::tar_make()
   
 
@@ -29,8 +30,8 @@
   source("admin/helper-scripts-admin.R")
   
   # add_renv_cache = TRUE creates a zip file with the renv cache (initially ~ 230MB package, after cleaning up a loot, 75.6MB)
-  # Useful to avoid downloading all renv cache again
-  # CAN'T upload that to Github :(
+  # Very useful to avoid downloading all renv cache again, to build the docker image much faster...
+  # MAX Github uploads 100MB
   create_jsPsychHelpeR_zip(add_renv_cache = TRUE)
 
 
@@ -43,11 +44,22 @@
   # Build and install
   devtools::document()
   devtools::load_all()
-  devtools::build()
   
-
+  
+  # Documentation
+  devtools::spell_check() # Spell check    
+  pkgdown::build_site() # Create documentation! # pkgdown::build_news()
+  
+  # Only one time?
+  # usethis::use_pkgdown() # build-ignore the docs directory and _pkgdown.yml file to avoid NOTE in CRAN checks
+  # pkgdown::deploy_site_github() # CHECK HOWTO (only first time?)
+  
+  
 # Install package ---------------------------------------------------------
 
+  # Build
+  devtools::build()
+  
   # devtools::install()
   renv::install("/home/emrys/gorkang@gmail.com/RESEARCH/PROYECTOS-Code/jsPsychR/jsPsychHelpeR_0.2.5.tar.gz") # Install package from file
 
@@ -70,11 +82,15 @@
   # ***DEBUG*** 
   # docker run --rm -ti -v ~/Downloads/jsPsychHelpeR999/outputs:/home/project/jsPsychHelpeR/outputs:rw gorkang/jspsychhelper:pid999 /bin/bash
   
-
+  
 # CHECK package -----------------------------------------------------------
 
 devtools::check() # Check package (~30s)
-devtools::test() # Run all tests (~10s)
+devtools::test() # Run all tests for the package (This includes test-0run_initial_setup.R, which will create a full project and run the protocol tests in the tmp/project) (~47s): [ FAIL 0 | WARN 0 | SKIP 0 | PASS 115 ]
+  # Package Tests are in tests/testthat/
+  # Protocol tests are in inst/templates/tests/testthat/
+  # Snapshots in inst/templates/tests/testthat/_snaps/snapshots/
+
 
 devtools::test_coverage()
 # Not necesary because we have a use_github_action???

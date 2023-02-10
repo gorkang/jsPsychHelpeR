@@ -37,7 +37,7 @@ prepare_DEMOGR12 <- function(DF_clean, short_name_scale_str) {
   
   
   # OUTSIDE FILES -----------------------------------------------------------
-  DF_lookup = read_csv("R_tasks/prepare_DEMOGR-lookup.csv", 
+  DF_lookup = readr::read_csv("R_tasks/prepare_DEMOGR-lookup.csv", 
                        col_types = 
                          cols(
                            DEMOGR12_comuna_DIRd = col_integer(), #idcomuna

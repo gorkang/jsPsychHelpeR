@@ -1,24 +1,31 @@
-#' run_initial_setup
-#' Run initial setup for a specific project
+#' Create a jsPsychHelpeR project for your data
+#'
+#' run_initial_setup() will read your data and create a jsPsychHelpeR project 
+#' tailoring the _targets.R file to the tasks included in the data.
 #'
 #' @param pid project id
-#' @param download_files should download the data files? (requires server credentials) TRUE/FALSE 
+#' @param download_files should download the data files? FALSE / TRUE
+#' - If TRUE, requires sFTP server credentials to be located in `.vault/credentials`
+#' - See `.vault/credentials_TEMPLATE` for more details
 #' @param data_location local folder where the raw data for the project is
-#' @param download_task_script should download the task scripts? (requires server credentials) TRUE/FALSE
-#' @param dont_ask answer YES to all questions
+#' @param download_task_script should download the task scripts? (requires server credentials) FALSE / TRUE
+#' @param dont_ask answer YES to all questions so the process runs uninterrupted. This will: 
 #' @param folder location for the project
 #' @param sensitive_tasks short names of the sensitive tasks in the protocol, if any
+#' @param open_rstudio Open RStudio with the new project TRUE / FALSE
 #'
 #' @return Opens a new RStudio project
 #' @export
-run_initial_setup <- function(pid, download_files = FALSE, data_location = NULL, download_task_script = FALSE, folder =  "~/Downloads/jsPsychHelpeRtest", sensitive_tasks = c(""), dont_ask = FALSE) {
-  
-  # DEBUG
-  # pid = "999"
-  # data_location = "/home/emrys/gorkang@gmail.com/RESEARCH/PROYECTOS-Code/jsPsychR/jsPsychHelpeR/data/999/"
+#' @examples 
+#' run_initial_setup(pid = 999, download_files = FALSE,
+#' data_location = system.file("extdata", package = "jsPsychHelpeR"),
+#' download_task_script = FALSE, 
+#' folder = tempdir(), 
+#' sensitive_tasks = c(""), dont_ask = TRUE, open_rstudio = FALSE)
+ 
+run_initial_setup <- function(pid, download_files = FALSE, data_location = NULL, download_task_script = FALSE, folder =  "~/Downloads/jsPsychHelpeRtest", sensitive_tasks = c(""), dont_ask = FALSE, open_rstudio = TRUE) {
   
   # CHECKS
-  
   if (download_files == FALSE & is.null(data_location)) cli::cli_abort("Either `download_files` or `data_location` need to be set. Otherwise, I don't have access to the project's data!")
   if (download_files == TRUE & !is.null(data_location)) cli::cli_abort("Only one of `download_files` or `data_location` must be set.")
   
@@ -60,9 +67,10 @@ run_initial_setup <- function(pid, download_files = FALSE, data_location = NULL,
     setup_folders(pid = pid, folder = folder, extract_zip = TRUE)
     
     
-    # 2) **Manually** copy .csv files to data/[YOUR_PROJECT_ID]/  --------------
-      # or DOWNLOAD from server (needs a .vault/credentials file. 
-      # Rename and edit .vault/credentials_TEMPLATE)
+  
+    # 2) Copy .csv/.zip files to data/[YOUR_PROJECT_ID]/  ------------
+      # DOWNLOAD from server (needs a .vault/credentials file) (rename and edit .vault/credentials_TEMPLATE)
+      # OR Copy from data_location
     
     cli_message(h1_title = "Get data files and task script")
     if (download_files == TRUE) {
@@ -90,12 +98,8 @@ run_initial_setup <- function(pid, download_files = FALSE, data_location = NULL,
     # Make sure sensitive tasks are in .vault
     move_sensitive_tasks_to_vault(pid = pid, folder = folder, sensitive_tasks = sensitive_tasks)
     
-    
     # Files present in destination (after copying)
     files_pid = list.files(folder_data, pattern = "*.csv|*.zip", full.names = FALSE)
-    
-    # cli::cli_alert_info("Will NOT download data files. {length(files_pid)} files found in `{paste0('data/', pid, '/')}`")
-    
       
       if (download_task_script == TRUE) {
         
@@ -118,6 +122,14 @@ run_initial_setup <- function(pid, download_files = FALSE, data_location = NULL,
     cli_message(var_used = folder, h1_title = "Create _targets.R file in {.code {folder}}")
     create_targets_file(pid = pid, folder = folder, dont_ask = dont_ask)
     
+    # Copy tests to tests/testthat/
+    tests_templates_origin = list.files(paste0(folder, "/inst/templates/tests"), full.names = TRUE, recursive = TRUE)
+    tests_templates_destination = gsub("inst/templates/", "", tests_templates_origin)
+    folder_destination_snaps = paste0(folder, "/tests/testthat/_snaps/snapshots/") # Create needed folders
+    if(!dir.exists(folder_destination_snaps)) dir.create(folder_destination_snaps, recursive = TRUE)
+    file.copy(tests_templates_origin, tests_templates_destination, overwrite = TRUE)
+    
+    
     cli_message(var_used = folder, h1_title = "Initial setup successful", 
                 success = "The new RStudio project is in {.code {folder}}",
                 info = "Open `run.R` there to start",
@@ -129,12 +141,16 @@ run_initial_setup <- function(pid, download_files = FALSE, data_location = NULL,
     )
     
     # Open _targets.R and run.R
-    if (Sys.getenv("RSTUDIO") == "1") {
+    if (Sys.getenv("RSTUDIO") == "1" & open_rstudio == TRUE) {
       cli_message(info = "Opening new RStudio project")
       
       rstudioapi::openProject(folder, newSession = TRUE)
       # invisible(rstudioapi::navigateToFile("_targets.R"))
       # invisible(rstudioapi::navigateToFile("run.R"))
+    } else {
+      
+      cli_message(var_used = folder, info = "Your RStudio project is in  {.code {folder}}")
+      
     }
     
     
@@ -143,5 +159,4 @@ run_initial_setup <- function(pid, download_files = FALSE, data_location = NULL,
     cli::cli_alert_warning("OK, nothing done")
     
   }
-  
 }

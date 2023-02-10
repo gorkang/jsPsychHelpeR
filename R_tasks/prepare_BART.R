@@ -103,18 +103,19 @@ prepare_BART <- function(DF_clean, short_name_scale_str) {
 
 
   DF_wide_Dimensions =
-
     DF_temp %>%
-      dplyr::group_by(id, status) %>%
-      dplyr::summarise(BART_meanRounds = mean(as.numeric(rounds), na.rm = TRUE),
-                BART_number = n(), 
-                .groups = "drop") %>%
-      tidyr::pivot_wider(names_from = status, values_from = c(BART_meanRounds, BART_number), names_sep = "") %>%
-      dplyr::left_join(DF_temp %>%
-                  dplyr::group_by(id) %>%
-                  dplyr::summarise(BART_totalMoney = max(as.numeric(totalMoney)), .groups = "drop"), 
-                by = "id"
-      ) %>% rename_with(~paste0(., "_DIRd"), BART_meanRoundsExplode:BART_totalMoney)
+    dplyr::group_by(id, status) %>%
+    dplyr::summarise(BART_meanRounds = mean(as.numeric(rounds), na.rm = TRUE),
+                     BART_number = dplyr::n(), 
+                     .groups = "drop") %>%
+    tidyr::pivot_wider(names_from = status, values_from = c(BART_meanRounds, BART_number), names_sep = "") %>%
+    dplyr::left_join(DF_temp %>%
+                       dplyr::group_by(id) %>%
+                       dplyr::summarise(BART_totalMoney = max(as.numeric(totalMoney)), .groups = "drop"), 
+                     by = "id"
+                     ) %>% 
+    dplyr::rename_with(~paste0(., "_DIRd"), BART_meanRoundsExplode:BART_totalMoney) |> 
+    dplyr::mutate(dplyr::across(dplyr::ends_with("_DIRd"), ~tidyr::replace_na(.x, 0)))
 
   
   
@@ -133,8 +134,8 @@ prepare_BART <- function(DF_clean, short_name_scale_str) {
       names_glue = "{trialid}_{.value}") %>% 
     
     # NAs for RAW and DIR items
-    dplyr::mutate(!!names_list$name_RAW_NA := rowSums(is.na(select(., -matches(items_to_ignore) & matches("_RAW")))),
-           !!names_list$name_DIR_NA := rowSums(is.na(select(., -matches(items_to_ignore) & matches("_DIR"))))) %>% 
+    dplyr::mutate(!!names_list$name_RAW_NA := rowSums(is.na(dplyr::select(., -matches(items_to_ignore) & matches("_RAW")))),
+           !!names_list$name_DIR_NA := rowSums(is.na(dplyr::select(., -matches(items_to_ignore) & matches("_DIR"))))) %>% 
     
     
     # [ADAPT]: Scales and dimensions calculations --------------------------------
