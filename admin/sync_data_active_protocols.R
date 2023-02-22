@@ -103,8 +103,12 @@
         
         if (is.null(DF_raw$error)) {
             
-          DF_clean = create_clean_data(DF_raw$result)
+          create_clean_data_safely = purrr::safely(create_clean_data)
           
+          DF_clean = create_clean_data_safely(DF_raw$result)
+          
+          if (is.null(DF_clean$error)){
+            
           # Copy processed files to destination folder
           cli::cli_h2("Copy output processed files for project {PIDs[.x]}")
           FILES_processed = list.files(here::here("outputs/data/"), full.names = TRUE, pattern = "DF_clean|DF_raw")
@@ -116,6 +120,7 @@
           zip_files(folder_files = destination, 
                     zip_name = paste0(destination, "", "processed.zip"), 
                     remove_files = TRUE)
+          }
         
         }
       }
