@@ -2,8 +2,8 @@
 #' 
 #' Read raw data and prepare a global DF
 #'
-#' @param input_files files to read
-#' @param is_sensitive Save in .vault: TRUE / FALSE
+#' @param input_files A character vector of files to read
+#' @param is_sensitive If the data contains sensitive informacion, select TRUE to save in .vault. TRUE / FALSE
 #' @param save_output TRUE / FALSE
 #' @param workers number of threads for data.table::fread
 #'

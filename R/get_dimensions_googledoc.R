@@ -1,18 +1,27 @@
-#' get_dimensions_googledoc
-#' Get information from the main jsPsychR GoogleSheet to help creating a new task
+#' Get information from the jsPsychR GoogleSheet to help creating a new task
+#' 
+#' This function parses the information of the jsPsychR GoogleSheets to give you 
+#' pre-prepared code for the different sections of the prepare_TASK() function.
+#' Remember you can create the tasks with 
+#' `jsPsychHelpeR::create_new_task(get_info_googledoc = TRUE)`
 #'
-#' @param short_name_text .
-#' @param google_username .
-#' @param google_sheet .
+#' @param short_name_text Short name of the task. 
+#' - For a list of all tasks: `jsPsychMaker::list_available_tasks()`
+#' @param google_username Email of a google user with access to the 
+#' @param google_sheet One of: c("NEW", "All")
 #'
 #' @return Gets information from Google doc
 #' @export
-get_dimensions_googledoc <- function(short_name_text, google_username = "gorkang@gmail.com", google_sheet = "NEW") {
+get_dimensions_googledoc <- function(short_name_text, google_username = "gorkang@gmail.com", google_sheet = c("NEW", "All")) {
   
   # DEBUG
   # short_name_text = "CEL"
   # short_name_text = "LoB"
   # google_username = "gorkang@gmail.com"
+  
+  # Check google_sheet is one of the available options
+  google_sheet = rlang::arg_match(google_sheet)
+  
   
   # READ google sheet ---
   
@@ -41,11 +50,11 @@ get_dimensions_googledoc <- function(short_name_text, google_username = "gorkang
   # CHECK ---
   ## Read other tabs only if check passes
   if (nrow(DF_resumen) == 0) {
-    cli::cli_h1("{short_name_text} not found")
+    cli::cli_h1("{short_name_text} not found in {google_sheet} tasks GoogleDoc")
     cli::cli_par()
     cli::cli_text('Available tasks: {DF_resumen_ALL$short_name}\n\n')
     cli::cli_end()
-    cli::cli_abort("{short_name_text} is not in the {google_sheet} Google Doc. ")
+    cli::cli_abort("{short_name_text} is not in the {google_sheet} tasks GoogleDoc. ")
   }
   
   
@@ -265,8 +274,6 @@ get_dimensions_googledoc <- function(short_name_text, google_username = "gorkang
           if (!is.na(DF_dims_final$error_text[.x])) cli::cli_alert_danger("{.x}: {DF_dims_final$error_text[.x]}")
           })
     }
-    
-      
     
   }
   

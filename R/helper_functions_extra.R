@@ -66,6 +66,8 @@ create_formulas <- function(type, functions = "sum", dimensions = NULL) {
 #' @export
 debug_function <- function(name_function) {
 
+  # REMEMBER: See debug_function() in jsPsychMonkeys
+  
   # DEBUG
   # name_function = "prepare_CRS"
 
@@ -85,6 +87,9 @@ debug_function <- function(name_function) {
   if (substitute(name_function) != "name_function") name_function = substitute(name_function) #if (!interactive()) is so substitute do not overwrite name_function when in interactive mode
 
   # Parses _targets.R
+  # TODO: BETTER WAY?
+  # DF_function = tar_manifest() %>% filter(grepl(name_function, command)) %>% pull(command) %>% last()
+  
   code <- parse("_targets.R")
   if (file.exists("targets/targets_main.R")) code <- c(code, parse("targets/targets_main.R"))
   # code <- parse("_targets.R")
@@ -113,14 +118,15 @@ debug_function <- function(name_function) {
 
 
 
-
-#' create_new_task
-#' Create a new prepare_TASK.R file from prepare_TEMPLATE.R replacing TEMPLATE by the short name of the new task
+#' Create a new prepare_TASK.R file using prepare_TEMPLATE.R and replacing TEMPLATE by the short name of the new task
+#' All new task should be created using this template and then adapted as needed.
 #'
 #' @param short_name_task short name of the task
-#' @param overwrite FALSE / TRUE
-#' @param get_info_googledoc FALSE / TRUE
-#' @param destination "R_tasks"
+#' @param overwrite If the prepare_TASK is already present, should overwrite? FALSE / TRUE
+#' @param get_info_googledoc If TRUE, uses `get_dimensions_googledoc()` to get the 
+#' task correction information from the jsPsychR GoogleSheets, giving you 
+#' pre-prepared code for the different sections  FALSE / TRUE
+#' @param destination By default is "R_tasks"
 #'
 #' @return Creates a R_tasks/prepare_TASK.R using the prepare_TEMPLATE.R
 #' @export
@@ -327,12 +333,11 @@ update_data <- function(pid, folder) {
 
 
 
-#' check_project_and_results
 #' Check the project tasks and compare with the csv results to see if there are results or tasks missing
 #'
-#' @param participants .
-#' @param folder_protocol .
-#' @param folder_results .
+#' @param participants Number of participants
+#' @param folder_protocol Folder where the protocol tasks are
+#' @param folder_results Folder where the results are
 #'
 #' @return Message indicating if there are missing data
 #' @export
@@ -341,6 +346,7 @@ check_project_and_results <- function(participants, folder_protocol, folder_resu
   # DEBUG
   # participants = 5
   # folder_results = "data/999/"
+  # folder_protocol = "~/Downloads/protocol999/tasks"
   
   files_protocol = dir(folder_protocol)
   files_results = dir(folder_results)
@@ -353,6 +359,7 @@ check_project_and_results <- function(participants, folder_protocol, folder_resu
     cat("OK, one task per participant")
     # dir("../jsPsychMaker/canonical_protocol/tasks")
   } else {
+    cat(participants, "participants\n")
     cat(length(files_protocol), "tasks\n")
     cat(length(files_results)/participants, "files per participant\n")
   }
@@ -360,17 +367,16 @@ check_project_and_results <- function(participants, folder_protocol, folder_resu
   experiments_results = 
     tibble::tibble(filename = files_results) %>% 
     parse_filename() |> 
-    # tidyr::separate(col = filename,
-    #                 into = c("project", "experiment", "version", "datetime", "id"),
-    #                 sep = c("_"), remove = FALSE) %>%
-    # dplyr::mutate(id = gsub("(*.)\\.csv", "\\1", id)) %>% 
     dplyr::distinct(experiment) %>% 
     dplyr::pull(experiment)
   
-  missing_experiments = files_protocol[!files_protocol %in% paste0(experiments_results, ".js")]
+  tasks_from_results = paste0(experiments_results, ".js")
   
-  cat("Missing data for: ", missing_experiments)
+  missing_experiments = files_protocol[!files_protocol %in% tasks_from_results]
+  missing_results = tasks_from_results[!tasks_from_results %in% files_protocol]
   
+  if (length(missing_experiments) > 0) cat("Missing task files for: ", missing_experiments)
+  if (length(missing_results) > 0) cat("Missing results for: ", gsub("\\.js", "", missing_results))
   
 }
 
@@ -425,12 +431,15 @@ zip_files <- function(folder_files, zip_name, remove_files = FALSE) {
 
 
 
-#' get_zip
-#' Get and zip a the data or a full jsPsychMakeR protocol without the data to keep it as a backup
+#' Get and zip the data, or a full jsPsychMakeR protocol without the data, to keep it as a backup
+#' 
+#' We use this internal function to save the data of the Running protocols 
+#' (acording to the Google sheet "Codebook protocolos") to a folder SHARED with 
+#' the project's PI's
 #'
 #' @param pid project id
-#' @param what data/protocol
-#' @param where .
+#' @param what Should be one of c("data", "protocol")
+#' @param where Where to leave the zip file with the data. Leave empty to save to `SHARED-data/pid/`
 #' @param list_credentials list with the credentials. Usually source(".vault/.credentials")
 #' @param dont_ask TRUE / FALSE
 #'
@@ -447,6 +456,10 @@ get_zip <- function(pid, what, where = NULL, list_credentials = NULL, dont_ask =
   # setwd("/home/emrys/gorkang@gmail.com/RESEARCH/PROYECTOS-Code/jsPsychR/jsPsychHelpeR/")
   
   # TODO: If no data, do not download!
+  
+  # Check what is one of the available options
+  # what = rlang::arg_match(what)
+  
   
   if (!exists("what")) cli::cli_abort("parameter `what` missing. Should be `data` or `protocol`" )
   if (!what %in% c("data", "protocol")) cli::cli_abort("`what` should be `data` or `protocol`" )
@@ -500,7 +513,6 @@ get_zip <- function(pid, what, where = NULL, list_credentials = NULL, dont_ask =
             remove_files = TRUE)
   
 }
-
 
 
 

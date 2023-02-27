@@ -4,10 +4,10 @@
 #' tailoring the _targets.R file to the tasks included in the data.
 #'
 #' @param pid project id
-#' @param download_files should download the data files? FALSE / TRUE
+#' @param download_files Download the data files? FALSE / TRUE
 #' - If TRUE, requires sFTP server credentials to be located in `.vault/credentials`
 #' - See `.vault/credentials_TEMPLATE` for more details
-#' @param data_location local folder where the raw data for the project is
+#' @param data_location Local folder where the raw data for the project is located
 #' @param download_task_script should download the task scripts? (requires server credentials) FALSE / TRUE
 #' @param dont_ask answer YES to all questions so the process runs uninterrupted. This will: 
 #' @param folder location for the project
@@ -24,8 +24,9 @@
 #' sensitive_tasks = c(""), dont_ask = TRUE, open_rstudio = FALSE)
  
 run_initial_setup <- function(pid, download_files = FALSE, data_location = NULL, download_task_script = FALSE, folder =  "~/Downloads/jsPsychHelpeRtest", sensitive_tasks = c(""), dont_ask = FALSE, open_rstudio = TRUE) {
-  
+
   # CHECKS
+  if (grepl("\\.zip", data_location)) cli::cli_abort("`data_location` should be a folder ")
   if (download_files == FALSE & is.null(data_location)) cli::cli_abort("Either `download_files` or `data_location` need to be set. Otherwise, I don't have access to the project's data!")
   if (download_files == TRUE & !is.null(data_location)) cli::cli_abort("Only one of `download_files` or `data_location` must be set.")
   
