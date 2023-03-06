@@ -1,4 +1,4 @@
-#' test_testhat
+#' test_testthat
 #' 
 #' Calls all the tests in 'test/testthat'
 #'
@@ -6,7 +6,7 @@
 #'
 #' @return Calls tests
 #' @export
-test_testhat <- function(...) { # input_files_automatic_tests_str
+test_testthat <- function(...) { # input_files_automatic_tests_str
 
   # Load targets objects used in tests --------------------------------------
   
