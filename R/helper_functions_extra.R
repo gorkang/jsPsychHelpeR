@@ -434,7 +434,7 @@ zip_files <- function(folder_files, zip_name, remove_files = FALSE) {
 #' Get and zip the data, or a full jsPsychMakeR protocol without the data, to keep it as a backup
 #' 
 #' We use this internal function to save the data of the Running protocols 
-#' (acording to the Google sheet "Codebook protocolos") to a folder SHARED with 
+#' (according to the Google sheet "Codebook protocolos") to a folder SHARED with 
 #' the project's PI's
 #'
 #' @param pid project id

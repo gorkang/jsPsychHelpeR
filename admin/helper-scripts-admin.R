@@ -14,7 +14,7 @@ create_jsPsychHelpeR_zip <- function(add_renv_cache = FALSE) {
   
   
   # R folder
-  R_folder = c("R/list_input_files.R", "R/helper_functions_minimal.R", "R/run_initial_setup.R", "R/test_testhat.R")
+  R_folder = c("R/list_input_files.R", "R/helper_functions_minimal.R", "R/run_initial_setup.R", "R/test_testthat.R")
   tasks = list.files("R_tasks", full.names = TRUE)
   analysis = list.files("R", pattern = "^analysis", full.names = TRUE)
   create = list.files("R", pattern = "^create", full.names = TRUE)
