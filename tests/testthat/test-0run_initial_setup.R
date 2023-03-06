@@ -62,7 +62,7 @@ testthat::test_that("Check that the project with 999.zip runs OK with run_initia
       cli::cli_h1("{.x} - {TASK}")
       SNAP = readr::read_csv(paste0(TEMP_dir, "/inst/templates/tests/testthat/_snaps/snapshots/df_", TASK,".csv")) #, col_types = readr::cols(id = readr::col_character())
       OUT = readr::read_csv2(paste0(TEMP_dir, "/outputs/data/", FILES_tasks[.x]))
-      expect_equal(SNAP, OUT)
+      testthat::expect_equal(SNAP, OUT)
     })
   
   
