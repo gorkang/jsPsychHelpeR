@@ -40,3 +40,6 @@ _targets/
 # Uncomment if don't want to upload data and targets cache
 # _targets/objects/ ## SHOULD UPLOAD 
 docs
+
+.vault/data_public_key.txt
+admin/TODO.R
