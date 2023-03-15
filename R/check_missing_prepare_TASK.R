@@ -96,18 +96,20 @@ check_missing_prepare_TASK <- function(sync_protocols = FALSE,
         dplyr::rename(short_name = `Codigo Test`) %>% 
         dplyr::filter(!grepl("short_name", short_name)) %>% 
         dplyr::arrange(short_name) %>% 
-       dplyr::select(short_name, Nombre, Descripcion) %>% 
+        dplyr::select(short_name, Nombre, Descripcion) %>% 
         tidyr::drop_na(short_name)
       
       DF_googledoc_NEW = 
         googlesheets4::read_sheet("1LAsyTZ2ZRP_xLiUBkqmawwnKWgy8OCwq4mmWrrc_rpQ", sheet = 2, skip = 0) %>% 
         dplyr::rename(short_name = `Codigo Test`) %>% 
-        dplyr::filter(!grepl("short_name", short_name)) %>% 
+        dplyr::filter(!grepl("SIN espacios ni caracteres extraños", short_name)) %>% 
         dplyr::arrange(short_name) %>% 
-       dplyr::select(short_name, Nombre, Descripcion, EMAIL) %>% 
+        dplyr::select(short_name, Nombre, Descripcion, EMAIL) %>% 
         tidyr::drop_na(short_name)
       
-      DF_googledoc = DF_googledoc1 %>% dplyr::bind_rows(DF_googledoc_NEW) %>% dplyr::distinct(short_name)
+      DF_googledoc = DF_googledoc1 %>% 
+        dplyr::bind_rows(DF_googledoc_NEW) %>% 
+        dplyr::distinct(short_name)
       
     
    
@@ -139,7 +141,7 @@ check_missing_prepare_TASK <- function(sync_protocols = FALSE,
   # Same name as function
   if (check_trialids == TRUE) {
     
-    source(here::here("../jsPsychHelpeR/R/helper_functions.R"))
+    source(here::here("../jsPsychHelpeR/R/helper_functions_minimal.R"))
     ALL_PROTOCOLS = basename(list.dirs(local_protocols, recursive = FALSE))
     TEST_PROTOCOLS = basename(list.dirs(paste0(local_protocols, "/test/protocols_DEV/"), recursive = FALSE))
     
@@ -169,23 +171,23 @@ check_missing_prepare_TASK <- function(sync_protocols = FALSE,
     DF_googledoc_NEW_citas = 
       googlesheets4::read_sheet("1LAsyTZ2ZRP_xLiUBkqmawwnKWgy8OCwq4mmWrrc_rpQ", sheet = 3, skip = 0) %>% 
       dplyr::rename(short_name = `Codigo Test`) %>% 
-      dplyr::filter(!grepl("short_name", short_name)) %>%
+      dplyr::filter(!grepl("Identico a nombre en pestaña Resumen", short_name)) %>%
       tidyr::drop_na(short_name) %>% 
-     dplyr::select(short_name) %>% dplyr::mutate(citas = "")
+      dplyr::select(short_name) %>% dplyr::mutate(citas = "")
     
     DF_googledoc_NEW_puntajes = 
       googlesheets4::read_sheet("1LAsyTZ2ZRP_xLiUBkqmawwnKWgy8OCwq4mmWrrc_rpQ", sheet = 4, skip = 0) %>% 
       dplyr::rename(short_name = `Codigo Test`) %>% 
-      dplyr::filter(!grepl("short_name", short_name)) %>%
+      dplyr::filter(!grepl("Identico a nombre en pestaña Resumen", short_name)) %>%
       tidyr::drop_na(short_name) %>% 
-     dplyr::select(short_name) %>% dplyr::mutate(puntajes = "")
+      dplyr::select(short_name) %>% dplyr::mutate(puntajes = "")
     
     DF_googledoc_NEW_dimensiones = 
       googlesheets4::read_sheet("1LAsyTZ2ZRP_xLiUBkqmawwnKWgy8OCwq4mmWrrc_rpQ", sheet = 5, skip = 0) %>% 
       dplyr::rename(short_name = `Codigo Test`) %>% 
-      dplyr::filter(!grepl("short_name", short_name)) %>%
+      dplyr::filter(!grepl("Identico a nombre en pestaña Resumen", short_name)) %>%
       tidyr::drop_na(short_name) %>% 
-     dplyr::select(short_name) %>% dplyr::mutate(dimensiones = "")
+      dplyr::select(short_name) %>% dplyr::mutate(dimensiones = "")
     
     
   
@@ -195,14 +197,14 @@ check_missing_prepare_TASK <- function(sync_protocols = FALSE,
     
     DF_all_NEW = 
       DF_googledoc_NEW %>% dplyr::select(short_name, EMAIL) %>% dplyr::mutate(resumen = "") %>% 
-      dplyr::left_join(DF_googledoc_NEW_citas, by = "short_name") %>% 
-      dplyr::left_join(DF_googledoc_NEW_puntajes, by = "short_name") %>% 
-      dplyr::left_join(DF_googledoc_NEW_dimensiones, by = "short_name") %>% 
+      dplyr::left_join(DF_googledoc_NEW_citas, by = "short_name", multiple = "all") %>% 
+      dplyr::left_join(DF_googledoc_NEW_puntajes, by = "short_name", multiple = "all") %>% 
+      dplyr::left_join(DF_googledoc_NEW_dimensiones, by = "short_name", multiple = "all") %>% 
       dplyr::distinct(short_name, .keep_all = TRUE) %>% 
       dplyr::filter(is.na(resumen) | is.na(citas) | is.na(puntajes) | is.na(dimensiones)) %>% 
       tidyr::replace_na(replace = list(resumen = "resumen", citas = "citas", puntajes = "puntajes", dimensiones = "dimensiones")) %>% 
       dplyr::mutate(TEXT = paste0(resumen, ", ", citas, ", ", puntajes, ", ", dimensiones, sep = ", ")) %>% 
-     dplyr::select(short_name, EMAIL, TEXT) %>% 
+      dplyr::select(short_name, EMAIL, TEXT) %>% 
       dplyr::mutate(TEXT = gsub("  |^ | $| ,|^ ,|^,|, $", "", TEXT),
              TEXT = trimws(TEXT)) # Remove white space at the begining and end of the string
     
@@ -251,7 +253,7 @@ check_missing_prepare_TASK <- function(sync_protocols = FALSE,
     dplyr::full_join(DF_missing_script %>% dplyr::mutate(missing_script = task) %>% dplyr::select(-protocols), by = c("task")) %>% 
     dplyr::left_join(DF_missing_googledoc %>% dplyr::mutate(missing_gdoc = task) %>% dplyr::select(-protocols), by = c("task")) %>% 
     dplyr::bind_rows(DF_missing_JS_tasks %>% dplyr::mutate(missing_task = task) %>% dplyr::select(-Nombre, -Descripcion)) %>% 
-    dplyr::left_join(DF_googledoc1 %>% dplyr::bind_rows(DF_googledoc_NEW), by = c("task" = "short_name")) %>% 
+    dplyr::left_join(DF_googledoc1 %>% dplyr::bind_rows(DF_googledoc_NEW), by = c("task" = "short_name"), multiple = "all") %>% 
     dplyr::select(task, dplyr::starts_with("missing"), dplyr::everything())
   
 
