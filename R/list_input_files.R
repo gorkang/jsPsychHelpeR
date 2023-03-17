@@ -11,14 +11,14 @@ list_input_files <- function(pid_target) {
   # List csv and zip files in folder data/[pid]
   input_folder = paste0("data/", pid_target)
   files_raw = list.files(path = input_folder, pattern = "*.csv|*.zip", full.names = TRUE)
+  length_files = length(files_raw)
   
-
+  if (length_files == 0) cli::cli_abort("No files found in {.code {input_folder}}")
+  
   # CHECKS ------------------------------------------------------------------
   all_csvs = all(grepl("\\.csv", files_raw))
-  length_files = length(files_raw)
   all_zips = all(grepl("\\.zip", files_raw))
   
-
   # Message -----------------------------------------------------------------
 
   if (all_csvs) {
