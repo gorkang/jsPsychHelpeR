@@ -72,8 +72,8 @@ parse_filename <- function(DF, separator = "_") {
     tidyr::separate(col = filename, 
              into = c("project", "experiment", "version", "datetime", "id"), 
              sep = separator, 
-             remove = FALSE) |> 
-            # TODO: extra = "merge"
+             remove = FALSE,
+             extra = "merge") |> # OK when the id contains "_" See project 25
     
     # Clean id
     dplyr::mutate(id = gsub("(*.)\\.csv", "\\1", id))
