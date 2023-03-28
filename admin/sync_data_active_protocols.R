@@ -120,6 +120,8 @@
           zip_files(folder_files = destination, 
                     zip_name = paste0(destination, "", "processed.zip"), 
                     remove_files = TRUE)
+          } else {
+            DF_clean$error
           }
         
         }
