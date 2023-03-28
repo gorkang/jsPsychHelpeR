@@ -9,7 +9,9 @@ testthat::test_that('Tests if participants that completed the protocol are missi
   name_of_test = "missing_data"
   # cat(cli::style_underline(cli::col_yellow(paste0("\n\nRunning: ", cli::col_silver(name_of_test, paste(rep(" ", 40), collapse = " ")),"\n\n"))))
   
-  white_list = c("AIM_01", "AIM_02", "AIM_04", "AIM_05", "AIM_06", "AIM_07", "AIM_08", "AIM_09", "AIM_10", "AIM_TramoIngreso_DIRd", "AIM_DIRt", "Report_001_1", "Report_001_2", "Report_alias_DIRd", "Report_SoloContacto_DIRd", "Report_EmailFuturo_DIRd")
+  white_list = c("AIM_01", "AIM_02", "AIM_04", "AIM_05", "AIM_06", "AIM_07", "AIM_08", "AIM_09", "AIM_10", "AIM_TramoIngreso_DIRd", "AIM_DIRt", 
+                 "DEMOGR22_06",
+                 "Report_001_1", "Report_001_2", "Report_alias_DIRd", "Report_SoloContacto_DIRd", "Report_EmailFuturo_DIRd")
   
   # Test: missing data in standardized vars --------------------------------------------------------------
   
