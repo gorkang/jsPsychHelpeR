@@ -115,6 +115,7 @@
           destination = paste0(dirname(zip_name), "/processed/")
           if (!dir.exists(destination)) dir.create(destination)
           file.copy(from = FILES_processed, to = paste0(destination, basename(FILES_processed)), overwrite = TRUE)
+          file.remove(FILES_processed)
           
           # Create zip with process data
           zip_files(folder_files = destination, 
