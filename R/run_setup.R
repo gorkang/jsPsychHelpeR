@@ -15,7 +15,7 @@
 #     # Create _targets_packages and read all dependencies
 #     targets::tar_destroy(ask = FALSE) # To avoid tar_renv() error
 #     # targets::tar_renv()
-#     targets::tar_renv(extras = c("clustermq", "future", "gt", "markdown", "pingr", "rstudioapi",
+#     targets::tar_renv(extras = c("clustermq", "future", "gt", "rmarkdown", "pingr", "rstudioapi",
 #                                  "shiny", "shinybusy", "visNetwork"))
 #     
 #     packages_renv = gsub("library\\(|\\)", "", readLines("_targets_packages.R")[-1])
