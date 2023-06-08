@@ -26,7 +26,6 @@
 run_initial_setup <- function(pid, download_files = FALSE, data_location = NULL, download_task_script = FALSE, folder =  "~/Downloads/jsPsychHelpeRtest", sensitive_tasks = c(""), dont_ask = FALSE, open_rstudio = TRUE) {
 
   # CHECKS
-  if (grepl("\\.zip", data_location)) cli::cli_abort("`data_location` should be a folder ")
   if (download_files == FALSE & is.null(data_location)) cli::cli_abort("Either `download_files` or `data_location` need to be set. Otherwise, I don't have access to the project's data!")
   if (download_files == TRUE & !is.null(data_location)) cli::cli_abort("Only one of `download_files` or `data_location` must be set.")
   
@@ -81,6 +80,10 @@ run_initial_setup <- function(pid, download_files = FALSE, data_location = NULL,
       update_data(pid = pid, folder = folder) 
         
     } else if (download_files == FALSE) {
+      
+      cli::cli_h1("download_files: {download_files}")
+      # CHECK
+      if (grepl("\\.zip", data_location)) cli::cli_abort("`data_location` should be a folder ")
       
       # We will check if there is only a zip file or multiple csv's in create_targets_file(). No need to do it here too
     
