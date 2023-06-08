@@ -18,13 +18,13 @@ run_initial_setup(
 \arguments{
 \item{pid}{project id}
 
-\item{download_files}{should download the data files? FALSE / TRUE
+\item{download_files}{Download the data files? FALSE / TRUE
 \itemize{
 \item If TRUE, requires sFTP server credentials to be located in \code{.vault/credentials}
 \item See \code{.vault/credentials_TEMPLATE} for more details
 }}
 
-\item{data_location}{local folder where the raw data for the project is}
+\item{data_location}{Local folder where the raw data for the project is located}
 
 \item{download_task_script}{should download the task scripts? (requires server credentials) FALSE / TRUE}
 

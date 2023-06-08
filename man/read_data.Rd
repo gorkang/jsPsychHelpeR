@@ -7,9 +7,9 @@
 read_data(input_files, is_sensitive = FALSE, save_output = TRUE, workers = 1)
 }
 \arguments{
-\item{input_files}{files to read}
+\item{input_files}{A character vector of files to read}
 
-\item{is_sensitive}{Save in .vault: TRUE / FALSE}
+\item{is_sensitive}{If the data contains sensitive information, select TRUE to save in .vault. TRUE / FALSE}
 
 \item{save_output}{TRUE / FALSE}
 

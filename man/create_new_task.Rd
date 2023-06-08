@@ -2,8 +2,8 @@
 % Please edit documentation in R/helper_functions_extra.R
 \name{create_new_task}
 \alias{create_new_task}
-\title{create_new_task
-Create a new prepare_TASK.R file from prepare_TEMPLATE.R replacing TEMPLATE by the short name of the new task}
+\title{Create a new prepare_TASK.R file using prepare_TEMPLATE.R and replacing TEMPLATE by the short name of the new task
+All new task should be created using this template and then adapted as needed.}
 \usage{
 create_new_task(
   short_name_task,
@@ -15,16 +15,18 @@ create_new_task(
 \arguments{
 \item{short_name_task}{short name of the task}
 
-\item{overwrite}{FALSE / TRUE}
+\item{overwrite}{If the prepare_TASK is already present, should overwrite? FALSE / TRUE}
 
-\item{get_info_googledoc}{FALSE / TRUE}
+\item{get_info_googledoc}{If TRUE, uses \code{get_dimensions_googledoc()} to get the
+task correction information from the jsPsychR GoogleSheets, giving you
+pre-prepared code for the different sections  FALSE / TRUE}
 
-\item{destination}{"R_tasks"}
+\item{destination}{By default is "R_tasks"}
 }
 \value{
 Creates a R_tasks/prepare_TASK.R using the prepare_TEMPLATE.R
 }
 \description{
-create_new_task
-Create a new prepare_TASK.R file from prepare_TEMPLATE.R replacing TEMPLATE by the short name of the new task
+Create a new prepare_TASK.R file using prepare_TEMPLATE.R and replacing TEMPLATE by the short name of the new task
+All new task should be created using this template and then adapted as needed.
 }

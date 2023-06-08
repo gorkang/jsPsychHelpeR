@@ -2,22 +2,20 @@
 % Please edit documentation in R/helper_functions_extra.R
 \name{check_project_and_results}
 \alias{check_project_and_results}
-\title{check_project_and_results
-Check the project tasks and compare with the csv results to see if there are results or tasks missing}
+\title{Check the project tasks and compare with the csv results to see if there are results or tasks missing}
 \usage{
 check_project_and_results(participants, folder_protocol, folder_results)
 }
 \arguments{
-\item{participants}{.}
+\item{participants}{Number of participants}
 
-\item{folder_protocol}{.}
+\item{folder_protocol}{Folder where the protocol tasks are}
 
-\item{folder_results}{.}
+\item{folder_results}{Folder where the results are}
 }
 \value{
 Message indicating if there are missing data
 }
 \description{
-check_project_and_results
 Check the project tasks and compare with the csv results to see if there are results or tasks missing
 }

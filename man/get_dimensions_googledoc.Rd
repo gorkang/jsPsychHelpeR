@@ -2,26 +2,30 @@
 % Please edit documentation in R/get_dimensions_googledoc.R
 \name{get_dimensions_googledoc}
 \alias{get_dimensions_googledoc}
-\title{get_dimensions_googledoc
-Get information from the main jsPsychR GoogleSheet to help creating a new task}
+\title{Get information from the jsPsychR GoogleSheet to help creating a new task}
 \usage{
 get_dimensions_googledoc(
   short_name_text,
   google_username = "gorkang@gmail.com",
-  google_sheet = "NEW"
+  google_sheet = c("NEW", "All")
 )
 }
 \arguments{
-\item{short_name_text}{.}
+\item{short_name_text}{Short name of the task.
+\itemize{
+\item For a list of all tasks: \code{jsPsychMaker::list_available_tasks()}
+}}
 
-\item{google_username}{.}
+\item{google_username}{Email of a google user with access to the}
 
-\item{google_sheet}{.}
+\item{google_sheet}{One of: c("NEW", "All")}
 }
 \value{
 Gets information from Google doc
 }
 \description{
-get_dimensions_googledoc
-Get information from the main jsPsychR GoogleSheet to help creating a new task
+This function parses the information of the jsPsychR GoogleSheets to give you
+pre-prepared code for the different sections of the prepare_TASK() function.
+Remember you can create the tasks with
+\code{jsPsychHelpeR::create_new_task(get_info_googledoc = TRUE)}
 }

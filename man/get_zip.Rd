@@ -2,17 +2,16 @@
 % Please edit documentation in R/helper_functions_extra.R
 \name{get_zip}
 \alias{get_zip}
-\title{get_zip
-Get and zip a the data or a full jsPsychMakeR protocol without the data to keep it as a backup}
+\title{Get and zip the data, or a full jsPsychMakeR protocol without the data, to keep it as a backup}
 \usage{
 get_zip(pid, what, where = NULL, list_credentials = NULL, dont_ask = TRUE)
 }
 \arguments{
 \item{pid}{project id}
 
-\item{what}{data/protocol}
+\item{what}{Should be one of c("data", "protocol")}
 
-\item{where}{.}
+\item{where}{Where to leave the zip file with the data. Leave empty to save to \verb{SHARED-data/pid/}}
 
 \item{list_credentials}{list with the credentials. Usually source(".vault/.credentials")}
 
@@ -22,6 +21,7 @@ get_zip(pid, what, where = NULL, list_credentials = NULL, dont_ask = TRUE)
 A zip file
 }
 \description{
-get_zip
-Get and zip a the data or a full jsPsychMakeR protocol without the data to keep it as a backup
+We use this internal function to save the data of the Running protocols
+(according to the Google sheet "Codebook protocolos") to a folder SHARED with
+the project's PI's
 }

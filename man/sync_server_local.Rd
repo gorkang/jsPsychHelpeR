@@ -28,7 +28,7 @@ sync_server_local(
 
 \item{exclude_csv}{DO NOT INCLUDE DATA}
 
-\item{delete_nonexistent}{Delete files localy if they are NOT in server anymore}
+\item{delete_nonexistent}{Delete files locally if they are NOT in server anymore}
 
 \item{dont_ask}{For the initial setup, do not ask and proceed! DANGER}
 
