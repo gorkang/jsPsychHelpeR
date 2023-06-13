@@ -37,6 +37,13 @@
 
 
 
+# CHECK Secrets exist -----------------------------------------------------
+
+# Checks the .secrets_mysql.php exists on CSCN server.
+source(here::here("admin/helper-scripts-admin.R"))
+CHECK_secrets_OK(path_to_credentials = "/home/emrys/gorkang@gmail.com/RESEARCH/PROYECTOS-Code/jsPsychR/jsPsychHelpeR/")
+  
+
 # Sources and parameters --------------------------------------------------
 
   output_formats = c("csv", "csv2") # csv2 for Spanish locale csv
