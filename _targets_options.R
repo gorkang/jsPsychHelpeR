@@ -26,13 +26,13 @@ essential_packages = c(
 
 extra_packages = c(
                   # Extras
-                  "furrr", "patchwork", "writexl", "broom", "broom.mixed", "emmeans", "gt", "irr", "lme4", "parameters", "performance", "ggalluvial", "ggridges",
+                  "furrr", "patchwork", "writexl", "broom", "broom.mixed", "emmeans", "gt", "irr", "lme4", "parameters", "patchwork", "performance", "ggalluvial", "ggridges",
                   
                   # Non declared dependencies
                   "diffviewer", "qs", "webshot", "xml2", "jquerylib",
                   
                   # Admin
-                  "devtools", "gtools"
+                  "devtools", "gtools", "odbc"
 )
 
 
