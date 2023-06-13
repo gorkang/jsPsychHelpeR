@@ -14,7 +14,7 @@ create_jsPsychHelpeR_zip <- function(add_renv_cache = FALSE) {
   
   
   # R folder
-  R_folder = c("R/list_input_files.R", "R/helper_functions_minimal.R", "R/run_initial_setup.R", "R/test_testthat.R")
+  R_folder = c("R/list_input_files.R", "R/helper_functions_minimal.R", "R/helper_functions_extra.R", "R/run_initial_setup.R", "R/test_testthat.R")
   tasks = list.files("R_tasks", full.names = TRUE)
   analysis = list.files("R", pattern = "^analysis", full.names = TRUE)
   create = list.files("R", pattern = "^create", full.names = TRUE)
@@ -129,6 +129,55 @@ DELETE_data_server <- function(pid = NULL) {
     } else {
       cli::cli_alert_info("Nothing done")
     }
+    
+  }
+  
+}
+
+
+# Check .secrets_mysql.php file exists on CSCN server and show system message. 
+CHECK_secrets_OK <- function(path_to_secrets = "../../../../../", path_to_credentials = "") {
+  
+  # CHECKS  ------------------------
+  if (is.null(path_to_secrets)) cli::cli_abort("path_to_secrets needs a value")
+  credentials_exist = file.exists(paste0(path_to_credentials, ".vault/.credentials"))
+  SSHPASS = Sys.which("sshpass") # Check if sshpass is installed
+  
+  if (credentials_exist) {
+    # sshpass installed
+    if (SSHPASS != "") { 
+      # cli::cli_text(cli::col_green("{cli::symbol$tick} "), "`sshpass` and credentials exist")
+    } else {
+      cli::cli_abort("'sshpass' not installed")
+    }
+  } else {
+    cli::cli_abort("Can't find server credentials in '.vault/.credentials'")
+  }
+  
+  
+  # CHECK ------------------------------------------------------------------
+  
+  list_credentials = source(paste0(path_to_credentials, ".vault/.credentials")) # Get server credentials
+  file_to_check = paste0(path_to_secrets, '/.secrets_mysql.php')
+  
+  cli::cli_alert_info("Checking if Secrets file exists... This can take a while...")
+
+  SECRET_response = 
+    suppressWarnings(
+      system(
+        paste0('sshpass -p ', list_credentials$value$password, ' ssh ', list_credentials$value$user, '@', list_credentials$value$IP, ' test -e ', list_credentials$value$main_FOLDER, file_to_check, ' && echo 1 || echo 0'), 
+        intern = TRUE)
+    )
+  
+  if (SECRET_response == "0") {
+    
+    cli::cli_alert_danger("Secrets file NOT found")
+    system("notify-send 'Secrets file not found in CSCN server' 'A backup copy is in `jsPsychMaker/.vault/` For more information: https://gorkang.github.io/jsPsychR-manual/qmd/03-jsPsychMaker.html#online-offline-protocols'")
+    
+  } else {
+    
+    cli::cli_alert_success("Secrets file found")
+    system("notify-send 'Secrets file found in CSCN server' 'Daily script running fine'")
     
   }
   
