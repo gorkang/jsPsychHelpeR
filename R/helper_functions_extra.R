@@ -413,15 +413,15 @@ zip_files <- function(folder_files, zip_name, remove_files = FALSE) {
     if (!is.null(RESULT$error)) {
       cli::cli_text(RESULT$error)
     } else {
-      cli::cli_alert_success("ZIPED protocol files to {gsub(project_folder, '', zip_name)}")
+      cli::cli_alert_success("ZIPED {length(FILES_ZIP)} protocol files to {gsub(project_folder, '', zip_name)}")
     }
   }
   # Remove temp dir and content
   if (remove_files == TRUE) {
     file.remove(FILES_ZIP)
-    cli::cli_alert_success("REMOVED {length(FILES_ZIP)} source files")
+    cli::cli_alert_success("REMOVED {length(FILES_ZIP)} source files FROM {folder_files}")
   } else {
-    cli::cli_alert_info("Will NOT REMOVE {length(FILES_ZIP)} source files")
+    cli::cli_alert_info("Will NOT REMOVE {length(FILES_ZIP)} source files FROM {folder_files}")
   }
   
   # Reset the project's WD
