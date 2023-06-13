@@ -246,7 +246,7 @@ create_raw_long <- function(DF_clean, short_name_scale, numeric_responses = FALS
   
   if (nrow(DF_output) == 0) stop("No trialid's matching '", short_name_scale, "_[0-9]' found in DF_clean")
   
-  if (help_prepare == TRUE) prepare_helper(DF_output, show_trialid_questiontext = TRUE)
+  if (help_prepare == TRUE) prepare_helper(DF_long_RAW = DF_output, show_trialid_questiontext = TRUE)
   
   return(DF_output)
 }
