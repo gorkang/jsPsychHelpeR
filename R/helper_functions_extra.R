@@ -352,9 +352,9 @@ check_project_and_results <- function(participants, folder_protocol, folder_resu
   files_results = dir(folder_results)
   
   # If it's a single zip, read files inside # TODO: make more eficient
-  if (grepl("\\.zip$", basename(files_results))) files_results = read_zips(paste0(folder_results, "/", files_results), only_list = TRUE)
+  files_results = read_csv_or_zip(paste0(folder_results, "/", files_results), only_list = TRUE)
   
-  
+  # library(dplyr)
   if (length(files_protocol) / (length(files_results)/participants) == 1)  {
     cat("OK, one task per participant")
     # dir("../jsPsychMaker/canonical_protocol/tasks")
