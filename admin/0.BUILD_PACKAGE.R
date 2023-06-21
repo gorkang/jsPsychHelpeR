@@ -1,3 +1,6 @@
+# renv::install("gorkang/jsPsychAdmin")
+
+
 # Step by step instructions to build and test package
   # https://r-pkgs.org/structure.html
 
@@ -13,7 +16,7 @@
       # - Open _targets_options.R, load main_packages
       # renv::restore(packages = main_packages) 
     # 3) Recreate _targets_packages.R: 
-      # targets::tar_renv(extras = c("markdown", "rstudioapi","visNetwork"))
+      # targets::tar_renv(extras = c("rmarkdown", "rstudioapi","visNetwork"))
     # 4) Create lockfile with the installed subset
       # renv::snapshot()
 
@@ -27,12 +30,13 @@
 
   # DO THIS ALWAYS so jsPsychHelpeR.zip is updated!
   # Create jsPsychHelpeR.zip
-  source("admin/helper-scripts-admin.R")
+  # source("admin/helper-scripts-admin.R")
   
   # add_renv_cache = TRUE creates a zip file with the renv cache (initially ~ 230MB package, after cleaning up a loot, 75.6MB)
   # Very useful to avoid downloading all renv cache again, to build the docker image much faster...
   # MAX Github uploads 100MB
-  create_jsPsychHelpeR_zip(add_renv_cache = TRUE)
+
+  jsPsychAdmin::create_jsPsychHelpeR_zip(add_renv_cache = TRUE)
 
 
 
@@ -68,6 +72,9 @@
 
   # CHECK Main function 
   jsPsychHelpeR::run_initial_setup(pid = 999, data_location = "~/gorkang@gmail.com/RESEARCH/PROYECTOS-Code/jsPsychR/jsPsychHelpeR/data/999", dont_ask = TRUE)
+  
+  # This will create and open a NEW RStudio project. 
+  # It will take a long time to open, as it is downloading and installing all the necessary packages
   
   ## IN THE NEW PROJECT##
   # CHECK project works
