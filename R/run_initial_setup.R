@@ -25,13 +25,22 @@
  
 run_initial_setup <- function(pid, download_files = FALSE, data_location = NULL, download_task_script = FALSE, folder =  "~/Downloads/jsPsychHelpeRtest", sensitive_tasks = c(""), dont_ask = FALSE, open_rstudio = TRUE) {
 
+  # # pid
+  # # data_location
+  # # folder =  "~/Downloads/jsPsychHelpeRtest"
+  # download_files = FALSE
+  # download_task_script = FALSE
+  # sensitive_tasks = c("")
+  # dont_ask = FALSE
+  # open_rstudio = TRUE
+  
   # CHECKS
   if (download_files == FALSE & is.null(data_location)) cli::cli_abort("Either `download_files` or `data_location` need to be set. Otherwise, I don't have access to the project's data!")
   if (download_files == TRUE & !is.null(data_location)) cli::cli_abort("Only one of `download_files` or `data_location` must be set.")
   
   if (dont_ask == TRUE) response_prompt = 1
   folder_data = paste0(folder, "/data/", pid, "/")
-  
+
   credentials_exist = file.exists(".vault/.credentials") # TODO: location of credentials for other users. If not in jsPsychHelpeR folder, won't be able to Download
   
   # CHECK if NO files in project's folder & NO credentials to download
@@ -51,8 +60,9 @@ run_initial_setup <- function(pid, download_files = FALSE, data_location = NULL,
   if (dont_ask == FALSE)  response_prompt = menu(choices = c("Yes", "No"), 
                                                  title = 
                                                    cli_message(h1_title = "Initial SETUP", 
+                                                               var_used = folder,
                                                                info = "Do you want to run the {.pkg initial setup}?",
-                                                               details = "This will {cli::style_bold((cli::col_red('DELETE')))} the _targets/ folder, 
+                                                               details = "This will {cli::style_bold((cli::col_red('DELETE')))} the _targets/ folder of {.code {folder}}, 
                                                                          {cli::style_bold((cli::col_green('install')))} necessary packages, 
                                                                          {cli::style_bold((cli::col_green('copy')))} configuration files, 
                                                                          {cli::style_bold((cli::col_yellow('replace')))} the _targets.R, etc."))
@@ -92,7 +102,21 @@ run_initial_setup <- function(pid, download_files = FALSE, data_location = NULL,
       
       # Copy files from data_location to folder_data
       files_raw = list.files(path = data_location, pattern = "*.csv|*.zip", full.names = TRUE)
-      file.copy(from = files_raw, to = paste0(folder_data,  basename(files_raw)))
+      
+      if (length(files_raw) == 0) {
+        files_raw_extensive_search = list.files(path = data_location, pattern = "*.csv|*.zip", full.names = TRUE, recursive = TRUE, all.files = TRUE)
+        
+        if (length(files_raw_extensive_search) != 0) {
+          
+          folders_files_found = paste0(data_location, "/", unique(basename(dirname(files_raw_extensive_search))))
+          
+          cli::cli_alert_info("We found {length(files_raw_extensive_search)} .csv or .zip files in {.code {folders_files_found}}. \n\n Maybe you meant `data_location = {folders_files_found}`")
+        }
+        
+      } else {
+        file.copy(from = files_raw, to = paste0(folder_data,  basename(files_raw)))  
+      }
+      
       
       # Files present in destination (after copying)
       files_destination = list.files(folder_data, pattern = "*.csv|*.zip", full.names = FALSE)
