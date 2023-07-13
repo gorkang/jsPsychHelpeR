@@ -1284,3 +1284,26 @@ count_responses <- function(DF, max_length_strings = 50) { #, n_unique = 20
   
   return(OUT)
 }
+
+
+#' snapshot_check
+#' Check all changing snapshots. For some reason testthat::snapshot_review() does
+#'  not seem to work when multiple images change. With snapshot_check, we use 
+#'  testthat:::review_app to check all .new snapshots
+#'
+#' @param snapshot_location Locatin of the snapshots, by default "testthat/_snaps/snapshots/"
+#'
+#' @return
+#' @export
+#'
+#' @examples
+snapshot_check <- function(snapshot_location = "testthat/_snaps/snapshots/") {
+  
+  FILES = list.files(path = snapshot_location, pattern = "new", full.names = TRUE)
+  FILES_old = gsub("\\.new", "", FILES)
+  
+  testthat:::review_app(name = basename(FILES_old), 
+                        old_path = FILES_old,
+                        new_path = FILES)
+  
+}
