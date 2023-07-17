@@ -1291,12 +1291,10 @@ count_responses <- function(DF, max_length_strings = 50) { #, n_unique = 20
 #'  not seem to work when multiple images change. With snapshot_check, we use 
 #'  testthat:::review_app to check all .new snapshots
 #'
-#' @param snapshot_location Locatin of the snapshots, by default "testthat/_snaps/snapshots/"
+#' @param snapshot_location Location of the snapshots, by default "testthat/_snaps/snapshots/"
 #'
-#' @return
+#' @return Open a shiny app
 #' @export
-#'
-#' @examples
 snapshot_check <- function(snapshot_location = "testthat/_snaps/snapshots/") {
   
   FILES = list.files(path = snapshot_location, pattern = "new", full.names = TRUE)

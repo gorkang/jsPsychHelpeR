@@ -1,8 +1,8 @@
 
 # Libraries ---------------------------------------------------------------
 
-library(targets) 
-library(tarchetypes) 
+if(!require(targets)) install.packages("targets"); library(targets)
+if(!require(tarchetypes)) install.packages("tarchetypes"); library(tarchetypes)
 
 
 # Set options, load packages -----------------------------------------------

@@ -12,13 +12,21 @@
   rstudioapi::navigateToFile(".Rprofile") # If this fails, it is uncommented
 
     # 1) Delete renv/cache and renv/lib folders
-    # 2) Only install the packages explicitly mentionened in _targets_options.R main_packages 
-      # - Open _targets_options.R, load main_packages
-      # renv::restore(packages = main_packages) 
+      CACHE = list.files("renv/cache/", recursive = TRUE, full.names = TRUE)
+      LIB = list.files("renv/lib/", recursive = TRUE, full.names = TRUE)
+      file.remove(c(CACHE, LIB))
+      
+    # 2) Only install the packages explicitly mentioned in _targets_options.R essential_packages
+      # This will install targets and tarchetypes and load the vector essential_packages
+      source("_targets_options.R")
+      # Install essential_packages
+      renv::restore(packages = essential_packages)
+      
     # 3) Recreate _targets_packages.R: 
-      # targets::tar_renv(extras = c("rmarkdown", "rstudioapi","visNetwork"))
+      targets::tar_renv(extras = c("rmarkdown", "rstudioapi","visNetwork"))
+      
     # 4) Create lockfile with the installed subset
-      # renv::snapshot()
+      renv::snapshot()
 
     # Make sure project 999 runs: targets::tar_make()
   
@@ -26,16 +34,18 @@
 # Prepare files -----------------------------------------------------------
 
   # .Rprofile: make sure source("renv/activate.R") is UNCOMMENTED
-  rstudioapi::navigateToFile(".Rprofile")
+      # The issue with this being uncommented is that renv will install all the necessary packages
+      # in the first RStudio run, but without any warning, so it would seem RStudio is stuck
+  rstudioapi::navigateToFile(".Rprofile") 
 
   # DO THIS ALWAYS so jsPsychHelpeR.zip is updated!
   # Create jsPsychHelpeR.zip
-  # source("admin/helper-scripts-admin.R")
+  jsPsychAdmin::create_jsPsychHelpeR_zip()
   
-  # add_renv_cache = TRUE creates a zip file with the renv cache (initially ~ 230MB package, after cleaning up a loot, 75.6MB)
+  # add_renv_cache = TRUE creates a zip file with the renv cache (initially ~ 230MB package, after cleaning up a lot, 75.6MB)
   # Very useful to avoid downloading all renv cache again, to build the docker image much faster...
+  # Necessary for faster docker container creation
   # MAX Github uploads 100MB
-
   jsPsychAdmin::create_jsPsychHelpeR_zip(add_renv_cache = TRUE)
 
 
