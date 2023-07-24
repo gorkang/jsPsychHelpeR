@@ -85,7 +85,7 @@ sync_server_local <-
   if (credentials_exist) {
     # sshpass and rsync installed (?)
     if (SSHPASS != "" & RSYNC != "") { 
-      # cli::cli_text(cli::col_green("{cli::symbol$tick} "), "rsync installed and credentials exist")
+      cli::cli_text(cli::col_green("{cli::symbol$tick} "), "rsync installed and credentials exist")
     } else {
       cli::cli_abort("'sshpass' or 'rsync' not installed. Can't use `sync_server_local()`")
     }
@@ -160,5 +160,10 @@ sync_server_local <-
   } else {
     cli::cli_alert_info("Not doing anything...")
   }
+ 
+  if(is.null(OUT)) OUT = "Nothing done"
   
+  if (all_messages == TRUE) cli::cli_bullets_raw(OUT)
+  # return(OUT)
+
 }
