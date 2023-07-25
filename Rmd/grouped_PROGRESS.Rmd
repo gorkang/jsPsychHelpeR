@@ -16,11 +16,11 @@ params:
 # DEBUG
 # targets::tar_load(DF_analysis)
 # params = list(
-#   input_DF = DF_analysis,
-#   last_scale = "DEBRIEF_esfuerzo_DIRd",
-#   goal = 300,
-#   group_vars = c("AIM_DIRt", "DEMOGR_genero_DIRd"),
-#   n_groups = 6
+#   input_DF = DF_analysis$DF_analysis,
+#   last_scale = "Goodbye_DIRt",
+#   goal = 500,
+#   group_vars = c("DEMOGR_genero_DIRd"),
+#   n_groups = 5
 # )
 
 
