@@ -6,7 +6,7 @@
 
 # Make sure we have the minimum dependencies ------------------------------
 
-  # To have a minimal renv cache:
+  # To have a minimal renv cache (necessary for the docker creation):
 
   # .Rprofile: make sure source("renv/activate.R") is UNCOMMENTED
   rstudioapi::navigateToFile(".Rprofile") # If this fails, it is uncommented
@@ -46,7 +46,7 @@
   # Very useful to avoid downloading all renv cache again, to build the docker image much faster...
   # Necessary for faster docker container creation
   # MAX Github uploads 100MB
-  jsPsychAdmin::create_jsPsychHelpeR_zip(add_renv_cache = TRUE)
+  # jsPsychAdmin::create_jsPsychHelpeR_zip(add_renv_cache = TRUE)
 
 
 

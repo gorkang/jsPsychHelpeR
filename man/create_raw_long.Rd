@@ -9,6 +9,7 @@ create_raw_long(
   short_name_scale,
   numeric_responses = FALSE,
   is_experiment = FALSE,
+  keep_time = FALSE,
   help_prepare = FALSE
 )
 }
@@ -20,6 +21,8 @@ create_raw_long(
 \item{numeric_responses}{TRUE / FALSE}
 
 \item{is_experiment}{TRUE / FALSE}
+
+\item{keep_time}{TRUE / FALSE keep datetime in raw_long}
 
 \item{help_prepare}{TRUE / FALSE}
 }
