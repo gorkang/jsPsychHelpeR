@@ -21,12 +21,12 @@ essential_packages = c(
                   "dplyr", "forcats", "here", "janitor", "purrr", "readr", "stringr", "tibble", "tidyr",
                   
                   # Data analysis and visualization
-                  "gtsummary", "psych", "DT", "ggplot2"
+                  "gtsummary", "patchwork", "psych", "DT", "ggplot2"
                   )
 
 extra_packages = c(
                   # Extras
-                  "furrr", "patchwork", "writexl", "broom", "broom.mixed", "emmeans", "gt", "irr", "lme4", "parameters", "patchwork", "performance", "ggalluvial", "ggridges",
+                  "furrr", "patchwork", "writexl", "broom", "broom.mixed", "emmeans", "gt", "irr", "lme4", "parameters", "performance", "ggalluvial", "ggridges",
                   
                   # Non declared dependencies
                   "diffviewer", "qs", "webshot", "xml2", "jquerylib",
