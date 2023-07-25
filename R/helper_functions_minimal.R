@@ -194,19 +194,26 @@ check_NAs <- function(DF_joined) {
 #' @param short_name_scale Short name of scale
 #' @param numeric_responses TRUE / FALSE
 #' @param is_experiment TRUE / FALSE
+#' @param keep_time TRUE / FALSE keep datetime in raw_long
 #' @param help_prepare TRUE / FALSE
 #'
 #' @return A long and clean version of DF_clean for a specific task
 #' @export
-create_raw_long <- function(DF_clean, short_name_scale, numeric_responses = FALSE, is_experiment = FALSE, help_prepare = FALSE) {
+create_raw_long <- function(DF_clean, short_name_scale, numeric_responses = FALSE, is_experiment = FALSE, keep_time = FALSE, help_prepare = FALSE) {
   
   experimental_conditions = "NOTHING_SHOULD_MATCH_THIS"
   if (is_experiment == TRUE) experimental_conditions = "condition_"
   
+  # Columns selection
+  columns_selected = c("id", "experiment", "rt", "trialid", "stimulus", "response")
+  if (keep_time == TRUE) columns_selected = c(columns_selected, "datetime")
+  
+  
   DF_output = 
     DF_clean %>%
     dplyr::filter(experiment == short_name_scale) %>%
-    dplyr::select(id, experiment, rt, trialid, stimulus, response, dplyr::starts_with(eval(experimental_conditions), ignore.case = FALSE)) %>%
+    dplyr::select(all_of(columns_selected), dplyr::starts_with(eval(experimental_conditions), ignore.case = FALSE)) |> 
+    # dplyr::select(id, experiment, rt, trialid, stimulus, response, dplyr::starts_with(eval(experimental_conditions), ignore.case = FALSE)) %>%
     dplyr::mutate(response =
                     if (numeric_responses == TRUE) {
                       as.numeric(response)
@@ -502,7 +509,10 @@ create_targets_file <- function(pid = 0, folder, dont_ask = FALSE) {
           tibble::as_tibble() %>%
           dplyr::mutate(task = gsub("prepare_(.*)\\.R", "\\1", value)) %>%
           dplyr::filter(!task %in% tasks & !grepl("\\.csv", value)) %>%
+          dplyr::filter(task != "prepare_TEMPLATE") |> # Keep prepare_TEMPLATE.R
           dplyr::pull(value)
+        
+        
 
         if(length(TASKS_TO_DELETE) > 0) {
           

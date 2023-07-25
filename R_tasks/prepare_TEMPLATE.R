@@ -52,13 +52,16 @@ prepare_TEMPLATE <- function(DF_clean, short_name_scale_str) {
                                 short_name_scale = short_name_scale_str, 
                                 numeric_responses = FALSE, # [TRUE or FALSE]
                                 is_experiment = FALSE, 
+                                keep_time = FALSE, # Keep timestamp for each response
                                 help_prepare = TRUE) # Show n of items, responses,... [CHANGE to FALSE] 
   
   
   # Create long DIR ------------------------------------------------------------
   DF_long_DIR = 
     DF_long_RAW %>% 
-   dplyr::select(id, trialid, RAW) %>%
+    # If using keep_time = TRUE above, use this and add timestamp to the select() call
+    # dplyr::mutate(timestamp = as.POSIXlt(datetime, format = "%Y-%m-%dT%H%M%S")) |> 
+    dplyr::select(id, trialid, RAW) %>%
     
     
     
