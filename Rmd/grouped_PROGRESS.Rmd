@@ -60,7 +60,7 @@ if (all(params$group_vars %in% names(params$input_DF))) {
 ---  
 
 
-`r nrow(DF_analysis)` out of `r params$goal` participants completed the experiment (`r round(nrow(DF_analysis) / params$goal, 2) * 100`%). The completion criteria is reaching `r params$last_scale`.  
+`r nrow(params$input_DF)` out of `r params$goal` participants completed the experiment (`r round(nrow(params$input_DF) / params$goal, 2) * 100`%). The completion criteria is reaching `r params$last_scale`.  
 
 The final goal (`r params$goal`) is divided in `r params$n_groups` groups.  This is `r (params$goal / params$n_groups)` per group.   
 

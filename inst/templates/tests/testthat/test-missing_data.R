@@ -11,7 +11,8 @@ testthat::test_that('Tests if participants that completed the protocol are missi
   
   white_list = c("AIM_01", "AIM_02", "AIM_04", "AIM_05", "AIM_06", "AIM_07", "AIM_08", "AIM_09", "AIM_10", "AIM_TramoIngreso_DIRd", "AIM_DIRt", 
                  "DEMOGR22_06",
-                 "Report_001_1", "Report_001_2", "Report_alias_DIRd", "Report_SoloContacto_DIRd", "Report_EmailFuturo_DIRd")
+                 "Report_001_1", "Report_001_2", "Report_alias_DIRd", "Report_SoloContacto_DIRd", "Report_EmailFuturo_DIRd",
+                 "DMW_Vagabundeo_DIRd", "DMW_TipoVagabundeo_DIRd")
   
   # Test: missing data in standardized vars --------------------------------------------------------------
   

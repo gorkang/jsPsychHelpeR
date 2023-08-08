@@ -681,10 +681,11 @@ set_permissions_google_drive <- function(pid, email_IP) {
 #' Creates a Docker container named gorkang/jspsychhelper:pidPID
 #'
 #' @param PID project id
+#' @param username username
 #'
 #' @return NULL
 #' @export
-create_docker_container <- function(PID = 999) {
+create_docker_container <- function(PID = 999, username = "gorkang") {
   
   cli::cli_h1("Building container for pid {PID}")
   
@@ -705,7 +706,7 @@ create_docker_container <- function(PID = 999) {
   cat(final_file, file = "Dockerfile", sep = "\n")
   
   # system(paste0("docker build -t pid", PID, " ."))
-  system(paste0("docker build -t gorkang/jspsychhelper:pid", PID, " ."))
+  system(paste0("docker build -t ", username, "/jspsychhelper:pid", PID, " ."))
   
   
 }
@@ -718,8 +719,8 @@ create_docker_container <- function(PID = 999) {
 #' @export
 clean_renv_cache <- function() {
   
-  LIB = list.files("renv/lib/R-4.2/x86_64-pc-linux-gnu/")
-  CACHE = list.files("renv/cache/v5/R-4.2/x86_64-pc-linux-gnu", full.names = TRUE) |> tibble::as_tibble() |> dplyr::mutate(name = basename(value))
+  LIB = list.files("renv/lib/R-4.3/x86_64-pc-linux-gnu/")
+  CACHE = list.files("renv/cache/v5/R-4.3/x86_64-pc-linux-gnu", full.names = TRUE) |> tibble::as_tibble() |> dplyr::mutate(name = basename(value))
   
   DELETE = CACHE |> dplyr::filter(!CACHE$name %in% LIB)
   # LIB[!LIB %in% CACHE$name]
@@ -729,3 +730,31 @@ clean_renv_cache <- function() {
   unlink(DELETE$value, recursive = TRUE)
   
 }
+
+activate_deactivate_renv <- function(activate_deactivate = "activate") {
+  
+  renv_activate = readLines(".Rprofile")
+  line_renv_activate = which(grepl('source\\(\"renv/activate.R\"\\)', renv_activate))
+  if (length(line_renv_activate) != 1) cli::cli_abort('Did not find source("renv/activate.R") in .Rprofile')
+  
+  # If source("renv/activate.R") is commented out, uncomment
+  if (activate_deactivate == "activate"){
+    
+      renv_activate[line_renv_activate] = 'source("renv/activate.R")'
+      writeLines(renv_activate, con = ".Rprofile")
+
+  } else if (activate_deactivate == "deactivate") {
+    
+    renv_activate[line_renv_activate] = '# source("renv/activate.R")'
+    writeLines(renv_activate, con = ".Rprofile")
+
+  }
+  
+  cli::cli_alert_info('source("renv/activate.R") {activate_deactivate}d. Restarting RStudio')
+  rstudioapi::restartSession()
+  
+}
+
+
+
+

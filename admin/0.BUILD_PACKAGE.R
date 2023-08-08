@@ -7,28 +7,8 @@
 # Make sure we have the minimum dependencies ------------------------------
 
   # To have a minimal renv cache (necessary for the docker creation):
-
-  # .Rprofile: make sure source("renv/activate.R") is UNCOMMENTED
-  rstudioapi::navigateToFile(".Rprofile") # If this fails, it is uncommented
-
-    # 1) Delete renv/cache and renv/lib folders
-      CACHE = list.files("renv/cache/", recursive = TRUE, full.names = TRUE)
-      LIB = list.files("renv/lib/", recursive = TRUE, full.names = TRUE)
-      file.remove(c(CACHE, LIB))
-      
-    # 2) Only install the packages explicitly mentioned in _targets_options.R essential_packages
-      # This will install targets and tarchetypes and load the vector essential_packages
-      source("_targets_options.R")
-      # Install essential_packages
-      renv::restore(packages = essential_packages)
-      
-    # 3) Recreate _targets_packages.R: 
-      targets::tar_renv(extras = c("rmarkdown", "rstudioapi","visNetwork"))
-      
-    # 4) Create lockfile with the installed subset
-      renv::snapshot()
-
-    # Make sure project 999 runs: targets::tar_make()
+  renv::restore(lockfile = "renv.lock", prompt = FALSE)
+  # See admin/create_renv_cache.R
   
 
 # Prepare files -----------------------------------------------------------
@@ -36,15 +16,18 @@
   # .Rprofile: make sure source("renv/activate.R") is UNCOMMENTED
       # The issue with this being uncommented is that renv will install all the necessary packages
       # in the first RStudio run, but without any warning, so it would seem RStudio is stuck
-  rstudioapi::navigateToFile(".Rprofile") 
+  source("R/helper_functions_extra.R")
+  activate_deactivate_renv(activate_deactivate = "activate")
 
   # DO THIS ALWAYS so jsPsychHelpeR.zip is updated!
   # Create jsPsychHelpeR.zip
-  jsPsychAdmin::create_jsPsychHelpeR_zip()
+  jsPsychAdmin::create_jsPsychHelpeR_zip(add_renv_cache = FALSE)
   
-  # add_renv_cache = TRUE creates a zip file with the renv cache (initially ~ 230MB package, after cleaning up a lot, 75.6MB)
-  # Very useful to avoid downloading all renv cache again, to build the docker image much faster...
-  # Necessary for faster docker container creation
+  # add_renv_cache = TRUE creates a zip file with the renv cache 
+  # (initially jsPSychHelper package ~230MB, after cleaning up a lot, 75.6MB)
+  # Very useful to:
+      # - avoid downloading all renv cache again on Ubuntu
+      # - faster docker container creation
   # MAX Github uploads 100MB
   # jsPsychAdmin::create_jsPsychHelpeR_zip(add_renv_cache = TRUE)
 
@@ -53,7 +36,8 @@
 # Build package -----------------------------------------------------------
 
   # .Rprofile: make sure source("renv/activate.R") is COMMENTED
-  rstudioapi::navigateToFile(".Rprofile")
+  source("R/helper_functions_extra.R")
+  activate_deactivate_renv(activate_deactivate = "deactivate")
   
   # Build and install
   devtools::document()

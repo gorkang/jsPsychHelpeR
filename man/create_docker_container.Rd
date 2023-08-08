@@ -5,10 +5,12 @@
 \title{create_docker_container
 Creates a Docker container named gorkang/jspsychhelper:pidPID}
 \usage{
-create_docker_container(PID = 999)
+create_docker_container(PID = 999, username = "gorkang")
 }
 \arguments{
 \item{PID}{project id}
+
+\item{username}{user name}
 }
 \description{
 create_docker_container

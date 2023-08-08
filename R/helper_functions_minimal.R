@@ -432,15 +432,17 @@ create_targets_file <- function(pid = 0, folder, dont_ask = FALSE) {
       # Use dictionary to find the correct prepare function for translations
       # This can be used when the correction logic DOES not change  (e.g. BNTen -> BNT)
       DICC_equivalent_tasks = tibble::tibble(canonical = c("BNT"),
-                                     alt = c("BNTen"))
+                                             alt = c("BNTen"))
       
-      files_prepare_funs = tibble::tibble(original = tasks) |>
+      # Create vector with canonical names
+      tasks_canonical = 
+        tibble::tibble(original = tasks) |>
         dplyr::left_join(DICC_equivalent_tasks, by = c("original" = "alt")) |> 
         dplyr::mutate(tasks = ifelse(!is.na(canonical), canonical, original)) |> 
         dplyr::pull(tasks)
       
       all_prepare_funs = gsub("prepare_|\\.R", "", list.files(paste0(folder, "/R_tasks/")))
-      prepare_funs_NOT_found = files_prepare_funs[!files_prepare_funs %in% all_prepare_funs]
+      prepare_funs_NOT_found = tasks_canonical[!tasks_canonical %in% all_prepare_funs]
       
       if (length(prepare_funs_NOT_found) > 0) {
         cli::cli_alert_warning("Did not find the prepare_FUN for {length(prepare_funs_NOT_found)} task: {prepare_funs_NOT_found}. 
@@ -453,7 +455,7 @@ create_targets_file <- function(pid = 0, folder, dont_ask = FALSE) {
     template = readLines(paste0(folder, "/inst/templates/_targets_TEMPLATE.R"))
     
     # Prepare targets section and joins section
-    targets = paste0("   tar_target(df_", tasks, ", prepare_", files_prepare_funs, "(DF_clean, short_name_scale_str = '", tasks,"')),\n") %>% paste(., collapse = "")
+    targets = paste0("   tar_target(df_", tasks, ", prepare_", tasks_canonical, "(DF_clean, short_name_scale_str = '", tasks,"')),\n") %>% paste(., collapse = "")
     joins = paste0("\t\t\t\t\t\t\t df_", tasks, ",\n") %>% paste(., collapse = "") %>% gsub(",\n$", "", .)
   
     # Replace targets and joins sections 
@@ -508,7 +510,7 @@ create_targets_file <- function(pid = 0, folder, dont_ask = FALSE) {
           list.files(paste0(folder, "/R_tasks/")) %>%
           tibble::as_tibble() %>%
           dplyr::mutate(task = gsub("prepare_(.*)\\.R", "\\1", value)) %>%
-          dplyr::filter(!task %in% tasks & !grepl("\\.csv", value)) %>%
+          dplyr::filter(!task %in% tasks_canonical & !grepl("\\.csv", value)) %>%
           dplyr::filter(task != "prepare_TEMPLATE") |> # Keep prepare_TEMPLATE.R
           dplyr::pull(value)
         

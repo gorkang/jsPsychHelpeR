@@ -1,3 +1,11 @@
+# jsPsychHelpeR 0.2.6
+
+Minor updates
+
+* Fixed issues with translated tasks (BNTen)
+* Fixed group report
+
+
 # jsPsychHelpeR 0.2.5
 
 Major updates  

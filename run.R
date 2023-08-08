@@ -20,7 +20,7 @@
   targets::tar_load(DF_analysis)
   
   # See DF_analysis dataframe
-  DF_analysis
+  DF_analysis$DF_analysis |> View()
   
   
 # Edit report ---------------------------------------------------------------

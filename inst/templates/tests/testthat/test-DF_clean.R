@@ -14,6 +14,7 @@ testthat::test_that('Check if any of the items appear more or less than the othe
                  "DEMOGR24_12", "DEMOGR24_14",
                  "IDQ_10", "IDQ_12", "IDQ_14",
                  "INFCONS_01", "INFCONS_02", "INFCONS_03", "INFCONS_04", "INFCONS_05", "INFCONS_06", "INFCONS_07", "INFCONS_08", "INFCONS_09", "INFCONS_10", "INFCONS_11", "INFCONS_12", "INFCONS_13", "INFCONS_14", "INFCONS_15", "INFCONS_16", "INFCONS_17", "INFCONS_18", "INFCONS_19", "INFCONS_20", "INFCONS_21", "INFCONS_22", 
+                 "DMW_01", "DMW_02", "DMW_03", "DMW_04", "DMW_05",
                  "OTRASRELIG_07", "OTRASRELIG_09",
                  "PRFBM_02", "PRFBM_03", "PRFBMpost_02", "PRFBMpost_03",
                  "PVC_001_1",
