@@ -22,7 +22,8 @@
   # DO THIS ALWAYS so jsPsychHelpeR.zip is updated!
   # Create jsPsychHelpeR.zip
   jsPsychAdmin::create_jsPsychHelpeR_zip(add_renv_cache = FALSE)
-  
+  # NO CACHE: 310KB
+
   # add_renv_cache = TRUE creates a zip file with the renv cache 
   # (initially jsPSychHelper package ~230MB, after cleaning up a lot, 75.6MB)
   # Very useful to:
@@ -57,9 +58,8 @@
 
   # Build
   devtools::build()
-  
-  # devtools::install()
-  renv::install("/home/emrys/gorkang@gmail.com/RESEARCH/PROYECTOS-Code/jsPsychR/jsPsychHelpeR_0.2.5.tar.gz") # Install package from file
+  devtools::install()
+  # renv::install("/home/emrys/gorkang@gmail.com/RESEARCH/PROYECTOS-Code/jsPsychR/jsPsychHelpeR_0.2.6.tar.gz") # Install package from file
 
 
 # CHECK functions ----------------------------------------------------------
