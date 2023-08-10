@@ -35,8 +35,7 @@ prepare_CMApre <- function(DF_clean, short_name_scale_str) {
   ## Add lines as needed. If there are no dimensions, keep as is
   items_dimensions = list(
     PresentMemory = c("01"),
-    MemoryChange = c("02"),
-    MemoryCondition = c("03")
+    MemoryChange = c("02")
   )
   
   # [END ADAPT 1/3]: ***********************************************************
@@ -133,7 +132,6 @@ prepare_CMApre <- function(DF_clean, short_name_scale_str) {
       # Score Dimensions (see standardized_names(help_names = TRUE) for instructions)
       !!names_list$name_DIRd[1] := rowSums(select(., paste0(short_name_scale_str, "_", items_dimensions[[1]], "_DIR")), na.rm = TRUE), 
       !!names_list$name_DIRd[2] := rowSums(select(., paste0(short_name_scale_str, "_", items_dimensions[[2]], "_DIR")), na.rm = TRUE),
-      !!names_list$name_DIRd[3] := rowSums(select(., paste0(short_name_scale_str, "_", items_dimensions[[3]], "_DIR")), na.rm = TRUE),
       
       # Reliability Dimensions (see standardized_names(help_names = TRUE) for instructions)
       # !!names_list$name_RELd[1] := rowMeans(select(., paste0(short_name_scale_str, "_", items_RELd1, "_DIR")), na.rm = TRUE), 

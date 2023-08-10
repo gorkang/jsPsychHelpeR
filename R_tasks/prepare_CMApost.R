@@ -65,7 +65,7 @@ prepare_CMApost <- function(DF_clean, short_name_scale_str) {
     # GET CMApre items to EXTRACT condition (list of words shown)
     DICC_MemoryCondition = 
       # Get data from CMApre TASK
-      DF_clean |> dplyr::filter(trialid == "CMApre_03") |>dplyr::select(id, stimulus) |> 
+      DF_clean |> dplyr::filter(trialid == "CMApre_04") |> dplyr::select(id, stimulus) |>  
       # Split stimulus to get a 10 item vector
       dplyr::rowwise() |> 
       dplyr::mutate(WORDSseen = stringr::str_split(gsub("\\[|\\]", "", stimulus), pattern = ","))

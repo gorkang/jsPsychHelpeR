@@ -1,12 +1,12 @@
-##' Prepare AntiBots
+##' Prepare ALL
 ##'
 ##' Template for the functions to prepare specific tasks. Most of this file should not be changed
 ##' Things to change: 
-##'   - Name of function: prepare_AntiBots -> prepare_[value of short_name_scale_str] 
+##'   - Name of function: prepare_DMW -> prepare_[value of short_name_scale_str] 
 ##'   - dimensions parameter in standardized_names()
 ##'   - 2 [ADAPT] chunks
 ##'
-##' @title prepare_AntiBots
+##' @title prepare_DMW
 ##'
 ##' @param short_name_scale_str 
 ##' @param DF_clean
@@ -14,11 +14,11 @@
 ##' @return
 ##' @author gorkang
 ##' @export
-prepare_AntiBots <- function(DF_clean, short_name_scale_str) {
+prepare_DMW <- function(DF_clean, short_name_scale_str) {
 
   # DEBUG
   # targets::tar_load_globals()
-  # debug_function(prepare_AntiBots)
+  # debug_function(prepare_DMW)
 
   
   
@@ -34,8 +34,8 @@ prepare_AntiBots <- function(DF_clean, short_name_scale_str) {
   ## Inside each c() create a vector of the item numbers for the dimension
   ## Add lines as needed. If there are no dimensions, keep as is
   items_dimensions = list(
-    GoodHuman = c("01", "02", "03", "04"),
-    Calculator = c("05")
+    RUT = c("01"),
+    NameDimension2 = c("00")
   )
   
   # [END ADAPT 1/3]: ***********************************************************
@@ -52,13 +52,15 @@ prepare_AntiBots <- function(DF_clean, short_name_scale_str) {
                                 short_name_scale = short_name_scale_str, 
                                 numeric_responses = FALSE, # [TRUE or FALSE]
                                 is_experiment = FALSE, 
+                                keep_time = TRUE,
                                 help_prepare = FALSE) # Show n of items, responses,... [CHANGE to FALSE] 
   
   
   # Create long DIR ------------------------------------------------------------
   DF_long_DIR = 
     DF_long_RAW %>% 
-   dplyr::select(id, trialid, RAW) %>%
+    dplyr::mutate(DMW_timestamp_DIRd = as.POSIXlt(datetime, format = "%Y-%m-%dT%H%M%S")) |> 
+    dplyr::select(id, DMW_timestamp_DIRd, trialid, RAW) %>%
     
     
     
@@ -69,36 +71,28 @@ prepare_AntiBots <- function(DF_clean, short_name_scale_str) {
     dplyr::mutate(
       DIR =
        dplyr::case_when(
-          trialid == "AntiBots_01" & RAW == "No, never" ~ 1,
-          trialid == "AntiBots_01" & RAW != "No, never" ~ 0,
+          trialid == "DMW_01" ~ RAW,
+          trialid == "DMW_02" ~ RAW,
           
-          trialid == "AntiBots_02" & RAW == "Toyota; Honda; Chevrolet; Ford; Mercedes-Benz" ~ 1,
-          trialid == "AntiBots_02" & RAW != "Toyota; Honda; Chevrolet; Ford; Mercedes-Benz" ~ 0,
+          trialid == "DMW_03" & RAW == "Si" ~ "1",
+          trialid == "DMW_03" & RAW == "No" ~ "0",
           
-          trialid == "AntiBots_03" & !RAW %in% c("Very little", "Almost no") ~ 1,
-          trialid == "AntiBots_03" & RAW %in% c("Very little", "Almost no") ~ 0,
+          trialid == "DMW_04" & grepl("\\(A\\)", RAW) ~ "1",
+          trialid == "DMW_04" & grepl("\\(B\\)", RAW) ~ "2",
+          trialid == "DMW_04" & grepl("\\(C\\)", RAW) ~ "3",
+          trialid == "DMW_04" & grepl("\\(D\\)", RAW) ~ "4",
           
-          trialid == "AntiBots_04" & RAW == "Yes" ~ 1,
-          trialid == "AntiBots_04" & RAW == "No" ~ 0,
+          trialid == "DMW_05" & grepl("\\(A\\)", RAW) ~ "1",
+          trialid == "DMW_05" & grepl("\\(B\\)", RAW) ~ "2",
+          trialid == "DMW_05" & grepl("\\(C\\)", RAW) ~ "3",
+          trialid == "DMW_05" & grepl("\\(D\\)", RAW) ~ "4",
           
-          trialid == "AntiBots_05" & RAW == "Yes" ~ 1,
-          trialid == "AntiBots_05" & RAW == "No" ~ 0,
-          
-          is.na(RAW) ~ NA_real_, # OR NA_character_,
-          grepl(items_to_ignore, trialid) ~ NA_real_, # OR NA_character_,
-          TRUE ~ 9999 # OR "9999"
-        )
-    ) %>% 
-    
-    # Invert items [CAN BE DELETED IF NOT USED or DIR is non-numeric]
-    dplyr::mutate(
-      DIR = 
-       dplyr::case_when(
-          DIR == 9999 ~ DIR, # To keep the missing values unchanged
-          trialid %in% paste0(short_name_scale_str, "_", items_to_reverse) ~ (6 - DIR), # REVIEW and replace 6 by MAX + 1
-          TRUE ~ DIR
+          is.na(RAW) ~ NA_character_,
+          grepl(items_to_ignore, trialid) ~ NA_character_,
+          TRUE ~ "9999"
         )
     )
+    
     
   # [END ADAPT 2/3]: ***********************************************************
   # ****************************************************************************
@@ -135,9 +129,12 @@ prepare_AntiBots <- function(DF_clean, short_name_scale_str) {
       # [CHECK] Using correct formula? rowMeans() / rowSums()
       
       # Score Dimensions (see standardized_names(help_names = TRUE) for instructions)
-      !!names_list$name_DIRd[1] := rowSums(select(., paste0(short_name_scale_str, "_", items_dimensions[[1]], "_DIR")), na.rm = TRUE), 
-      !!names_list$name_DIRd[2] := rowSums(select(., paste0(short_name_scale_str, "_", items_dimensions[[2]], "_DIR")), na.rm = TRUE)
-      
+      !!names_list$name_DIRd[1] := get(paste0(short_name_scale_str, "_", items_dimensions[[1]], "_DIR"))
+      # !!names_list$name_DIRd[2] := rowSums(select(., paste0(short_name_scale_str, "_", items_dimensions[[2]], "_DIR")), na.rm = TRUE),
+      # 
+      # Reliability Dimensions (see standardized_names(help_names = TRUE) for instructions)
+      # !!names_list$name_RELd[1] := rowMeans(select(., paste0(short_name_scale_str, "_", items_RELd1, "_DIR")), na.rm = TRUE), 
+
       # Score Scale
       # !!names_list$name_DIRt := rowSums(select(., matches("_DIR$")), na.rm = TRUE)
       
