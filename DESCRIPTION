@@ -38,9 +38,11 @@ Imports:
     stringr, 
     stringi,
     tarchetypes, 
-    targets, 
+    targets,
+    testthat (>= 3.0.0),
     tibble, 
-    tidyr
+    tidyr,
+    visNetwork
 Suggests: 
     covr,
     knitr,
@@ -58,8 +60,6 @@ Suggests:
     performance, 
     qs, 
     scales, 
-    testthat (>= 3.0.0),
-    visNetwork, 
     webshot,
     writexl, 
     xml2
