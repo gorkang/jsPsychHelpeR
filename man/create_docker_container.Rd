@@ -10,7 +10,7 @@ create_docker_container(PID = 999, username = "gorkang")
 \arguments{
 \item{PID}{project id}
 
-\item{username}{user name}
+\item{username}{username}
 }
 \description{
 create_docker_container
