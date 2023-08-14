@@ -8,11 +8,5 @@ Sys.setenv(
 
 options(encoding = "UTF-8")
 
-get_branch = purrr::safely(gert::git_branch)
-branch = get_branch()
-if (!is.null(branch$result)) cli::cli_alert_info("Git active, branch: [{branch$result}]")
-rm("get_branch", "branch")
-
-
 # source("renv/activate.R")
 # renv::restore(prompt = FALSE, clean = TRUE)
