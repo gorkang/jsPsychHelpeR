@@ -413,7 +413,7 @@ zip_files <- function(folder_files, zip_name, remove_files = FALSE) {
     if (!is.null(RESULT$error)) {
       cli::cli_text(RESULT$error)
     } else {
-      cli::cli_alert_success("ZIPED {length(FILES_ZIP)} protocol files to {gsub(project_folder, '', zip_name)}")
+      cli::cli_alert_success("ZIPPED {length(FILES_ZIP)} protocol files to {gsub(project_folder, '', zip_name)}")
     }
   }
   # Remove temp dir and content
@@ -442,13 +442,15 @@ zip_files <- function(folder_files, zip_name, remove_files = FALSE) {
 #' @param where Where to leave the zip file with the data. Leave empty to save to `SHARED-data/pid/`
 #' @param list_credentials list with the credentials. Usually source(".vault/.credentials")
 #' @param dont_ask TRUE / FALSE
+#' @param all_messages Show all rsync messages? TRUE / FALSE
+#' @param tempdir_location You can choose a tempdir_location (for example, to extract contents of an existing zip and sync only new files)
 #'
 #' @return A zip file
 #' @export
-get_zip <- function(pid, what, where = NULL, list_credentials = NULL, dont_ask = TRUE) {
+get_zip <- function(pid, what, where = NULL, list_credentials = NULL, dont_ask = TRUE, all_messages = FALSE, tempdir_location = NULL) {
   
   # DEBUG
-  # pid = "230"
+  # pid = "23"
   # what = "data"
   # where = NULL
   # dont_ask = TRUE
@@ -495,20 +497,22 @@ get_zip <- function(pid, what, where = NULL, list_credentials = NULL, dont_ask =
   
   
   # Create temp dir to download the protocol
-  TEMP_DIR = tempdir(check = TRUE)
+  if (is.null(tempdir_location)) tempdir_location = tempdir(check = TRUE)
   
-  sync_server_local(server_folder = server_folder, 
-                    local_folder = TEMP_DIR,
-                    direction = "server_to_local", 
-                    only_test = FALSE, 
-                    exclude_csv = exclude_csv,
-                    delete_nonexistent = TRUE,
-                    dont_ask = dont_ask, 
-                    all_messages = FALSE, 
-                    list_credentials = list_credentials)
+  OUT = sync_server_local(server_folder = server_folder, 
+                          local_folder = tempdir_location,
+                          direction = "server_to_local", 
+                          only_test = FALSE, 
+                          exclude_csv = exclude_csv,
+                          delete_nonexistent = TRUE,
+                          dont_ask = dont_ask, 
+                          all_messages = all_messages, 
+                          list_credentials = list_credentials)
   
+  if (length(OUT) > 0) cli::cli_alert_info(OUT)
+        
   # ZIP ---
-  zip_files(folder_files = TEMP_DIR, 
+  zip_files(folder_files = tempdir_location, 
             zip_name = zip_name, 
             remove_files = TRUE)
   
