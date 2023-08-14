@@ -4,7 +4,15 @@
 \alias{get_zip}
 \title{Get and zip the data, or a full jsPsychMakeR protocol without the data, to keep it as a backup}
 \usage{
-get_zip(pid, what, where = NULL, list_credentials = NULL, dont_ask = TRUE)
+get_zip(
+  pid,
+  what,
+  where = NULL,
+  list_credentials = NULL,
+  dont_ask = TRUE,
+  all_messages = FALSE,
+  tempdir_location = NULL
+)
 }
 \arguments{
 \item{pid}{project id}
@@ -16,6 +24,10 @@ get_zip(pid, what, where = NULL, list_credentials = NULL, dont_ask = TRUE)
 \item{list_credentials}{list with the credentials. Usually source(".vault/.credentials")}
 
 \item{dont_ask}{TRUE / FALSE}
+
+\item{all_messages}{Show all rsync messages? TRUE / FALSE}
+
+\item{tempdir_location}{You can choose a tempdir_location (for example, to extract contents of an existing zip and sync only new files)}
 }
 \value{
 A zip file
