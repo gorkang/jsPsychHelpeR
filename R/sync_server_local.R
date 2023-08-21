@@ -7,6 +7,7 @@
 #' @param only_test TRUE/FALSE
 #' @param exclude_csv DO NOT INCLUDE DATA
 #' @param delete_nonexistent  Delete files locally if they are NOT in server anymore
+#' @param ignore_existing If TRUE, does not overwrite existing files even if they are newer. Good for .data/, Bad for rest
 #' @param dont_ask For the initial setup, do not ask and proceed! DANGER
 #' @param all_messages show all messages
 #' @param list_credentials where are the credentials
@@ -20,6 +21,7 @@ sync_server_local <-
            only_test = TRUE,
            exclude_csv = FALSE,
            delete_nonexistent = FALSE,
+           ignore_existing = FALSE,
            dont_ask = FALSE,
            all_messages = TRUE,
            list_credentials = NULL) {
@@ -61,6 +63,13 @@ sync_server_local <-
     } else {
       delete_nonexistent_files = ""
     }
+    
+    if (ignore_existing) {
+      ignore_existing_text = " --ignore-existing " # Ignore existing does not overwrite existing files (ok for data, bad for rest)
+    } else {
+      ignore_existing_text = ""
+    }
+    
     
     # Check and prepare local folder and path
     if (!file.exists(local_folder)) dir.create(local_folder)
@@ -137,7 +146,7 @@ sync_server_local <-
             system(
               paste0('sshpass -p ', list_credentials$value$password, ' rsync -av ', dry_run, ' --rsh=ssh ', 
                      delete_nonexistent_files, # Delete files from destination if they are NOT in origin anymore
-                     " --ignore-existing ", # Ignore existing files
+                     ignore_existing_text, # Ignore existing files
                      exclude_files, # exclude CSV files
                      list_credentials$value$user, "@", list_credentials$value$IP, ":", list_credentials$value$main_FOLDER, server_folder, '/ ',
                      here::here(local_folder_terminal), '/ '

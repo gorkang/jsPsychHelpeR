@@ -12,6 +12,7 @@ sync_server_local(
   only_test = TRUE,
   exclude_csv = FALSE,
   delete_nonexistent = FALSE,
+  ignore_existing = FALSE,
   dont_ask = FALSE,
   all_messages = TRUE,
   list_credentials = NULL
@@ -29,6 +30,8 @@ sync_server_local(
 \item{exclude_csv}{DO NOT INCLUDE DATA}
 
 \item{delete_nonexistent}{Delete files locally if they are NOT in server anymore}
+
+\item{ignore_existing}{If TRUE, does not overwrite existing files even if they are newer. Good for .data/, Bad for rest}
 
 \item{dont_ask}{For the initial setup, do not ask and proceed! DANGER}
 
