@@ -10,6 +10,7 @@ get_zip(
   where = NULL,
   list_credentials = NULL,
   dont_ask = TRUE,
+  ignore_existing = FALSE,
   all_messages = FALSE,
   tempdir_location = NULL
 )
@@ -24,6 +25,8 @@ get_zip(
 \item{list_credentials}{list with the credentials. Usually source(".vault/.credentials")}
 
 \item{dont_ask}{TRUE / FALSE}
+
+\item{ignore_existing}{If TRUE, does not overwrite existing files even if they are newer. Good for .data/, Bad for rest}
 
 \item{all_messages}{Show all rsync messages? TRUE / FALSE}
 

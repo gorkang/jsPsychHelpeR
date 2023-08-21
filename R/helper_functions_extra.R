@@ -447,12 +447,13 @@ zip_files <- function(folder_files, zip_name, remove_files = FALSE) {
 #' @param where Where to leave the zip file with the data. Leave empty to save to `SHARED-data/pid/`
 #' @param list_credentials list with the credentials. Usually source(".vault/.credentials")
 #' @param dont_ask TRUE / FALSE
+#' @param ignore_existing If TRUE, does not overwrite existing files even if they are newer. Good for .data/, Bad for rest
 #' @param all_messages Show all rsync messages? TRUE / FALSE
 #' @param tempdir_location You can choose a tempdir_location (for example, to extract contents of an existing zip and sync only new files)
 #'
 #' @return A zip file
 #' @export
-get_zip <- function(pid, what, where = NULL, list_credentials = NULL, dont_ask = TRUE, all_messages = FALSE, tempdir_location = NULL) {
+get_zip <- function(pid, what, where = NULL, list_credentials = NULL, dont_ask = TRUE, ignore_existing = FALSE, all_messages = FALSE, tempdir_location = NULL) {
   
   # DEBUG
   # pid = "23"
@@ -510,6 +511,7 @@ get_zip <- function(pid, what, where = NULL, list_credentials = NULL, dont_ask =
                           only_test = FALSE, 
                           exclude_csv = exclude_csv,
                           delete_nonexistent = TRUE,
+                          ignore_existing = ignore_existing,
                           dont_ask = dont_ask, 
                           all_messages = all_messages, 
                           list_credentials = list_credentials)
