@@ -391,9 +391,14 @@ check_project_and_results <- function(participants, folder_protocol, folder_resu
 #' @return NULL
 #' @export
 zip_files <- function(folder_files, zip_name, remove_files = FALSE) {
-  
+
   project_folder = getwd()
+
+  # Make folder_files absolute so list.files will work
+  folder_files = normalizePath(folder_files)
+  zip_name = paste0(normalizePath(dirname(zip_name)), "/", basename(zip_name))
   
+    
   # Set Temp folder as working folder so the files in zip WONT have the temp path
   setwd(folder_files)
   
