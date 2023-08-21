@@ -18,7 +18,6 @@ Imports:
     DT, 
     ggplot2,
     glue,
-    googledrive,
     googlesheets4,
     gtools, 
     gtsummary, 
