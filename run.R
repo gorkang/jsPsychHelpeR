@@ -8,6 +8,11 @@
   # Visualize targets tree
   targets::tar_visnetwork(targets_only = TRUE, label = "time")
 
+  # In case of an error --- 
+    # See: https://books.ropensci.org/targets/debugging.html#workspaces
+    # tar_workspaces() # Lists the available workspaces (e.g. DF_clean)
+    # tar_workspace(DF_clean) # Loads the errored workspace
+  
 
 # Check results -----------------------------------------------------------
   

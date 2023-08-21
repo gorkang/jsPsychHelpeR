@@ -43,8 +43,16 @@ packages_to_load = purrr::discard(c(essential_packages), is.na)
 
 
 # target options (packages, errors...)
-tar_option_set(packages = packages_to_load, # Load packages for all targets
-               workspace_on_error = TRUE) # Needed to load workspace on error to debug
+tar_option_set(
+  
+  # Load packages for all targets
+  packages = packages_to_load,
+  
+  # If there is an error:
+  # tar_workspaces() # Lists the available workspaces (e.g. DF_clean)
+  # tar_workspace(DF_clean) # Loads the errored workspace
+  workspace_on_error = TRUE
+  )
 
 
 # Make sure tests run always
