@@ -36,7 +36,7 @@ DF =
  DF_analysis$DF_analysis %>% 
   
   # Update with your variable names
-  select(id, AIM_DIRt, ends_with("_DIRt"))
+  select(id, ends_with("_DIRd"), ends_with("_DIRt"))
   
   # Continue your data preparation, if needed
   #   filter() %>% 
@@ -52,7 +52,7 @@ Tabla 1. Descripción de la tabla 1. Tabla 2. ...
 ```{r descriptive-table}
 
 table1 = DF %>% 
-  select(-id) %>% 
+  select(-id, -Goodbye_DIRt) %>% 
   gtsummary::tbl_summary(
     by = AIM_DIRt,
     type = list(everything() ~ 'continuous')
@@ -83,7 +83,7 @@ plot1
 
 ```{r analysis}
 
-model1 = lm(IRI_TomaPerspectiva_DIRd ~ AIM_DIRt, DF)
+model1 = lm(EAR_DIRt ~ IRI_DIRt, DF)
 
 table_model = gtsummary::tbl_regression(model1, intercept = TRUE) %>% 
   # add_global_p() %>%
@@ -95,7 +95,7 @@ table_model
 
 # report::report(model1)
 
-paste0("Socio economic level was not asignificant predictor of WEBEXEC_DIRt, beta = ", 
-       gtsummary::inline_text(table_model, variable = AIM_DIRt))
+paste0("IRI was not asignificant predictor of EAR, beta = ", 
+       gtsummary::inline_text(table_model, variable = IRI_DIRt))
 
 ```
