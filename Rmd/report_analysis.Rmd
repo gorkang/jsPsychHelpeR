@@ -33,10 +33,10 @@ Descripción del proceso de preparación de datos.
 ```{r data-preparation}
 
 DF =
- DF_analysis %>% 
+ DF_analysis$DF_analysis %>% 
   
   # Update with your variable names
-  select(id, AIM_DIRt, BART_totalMoney_DIRd, WEBEXEC_DIRt)
+  select(id, AIM_DIRt, ends_with("_DIRt"))
   
   # Continue your data preparation, if needed
   #   filter() %>% 
@@ -70,7 +70,7 @@ Figura 1. Descripción de la Figura 1. Figura 2. ...
 
 plot1 =
   DF %>%
-  ggplot(aes(BART_totalMoney_DIRd, WEBEXEC_DIRt)) +
+  ggplot(aes(EAR_DIRt, IRI_TomaPerspectiva_DIRd)) +
   geom_jitter() +
   geom_smooth(method = "lm")
 
@@ -83,7 +83,7 @@ plot1
 
 ```{r analysis}
 
-model1 = lm(WEBEXEC_DIRt ~ AIM_DIRt * BART_totalMoney_DIRd, DF)
+model1 = lm(IRI_TomaPerspectiva_DIRd ~ AIM_DIRt, DF)
 
 table_model = gtsummary::tbl_regression(model1, intercept = TRUE) %>% 
   # add_global_p() %>%
