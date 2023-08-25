@@ -12,10 +12,11 @@ params:
 
 ```{r setup, include=FALSE}
 
-knitr::opts_chunk$set(echo = TRUE)
+# knitr::opts_chunk$set(echo = TRUE)
 
-# Makes sure all libraries and functions are available to work interactivelly
-targets::tar_load_globals() # Loads all libraries
+# DEBUG
+  # Makes sure all libraries and functions are available to work interactivelly
+  # targets::tar_load_globals() # Loads all libraries
 
 # Loads DF_analysis
 targets::tar_load(DF_analysis)
