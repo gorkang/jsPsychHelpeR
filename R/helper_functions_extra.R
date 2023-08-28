@@ -527,103 +527,6 @@ get_zip <- function(pid, what, where = NULL, list_credentials = NULL, dont_ask =
 
 
 
-#' check_trialids
-#'
-#'Checks that trialid's of an experiment in a folder follow the standard expected rules
-#'
-#' @param local_folder_protocol .
-#' @param show_all_messages .
-#'
-#' @return cli messages with information
-#' @export
-check_trialids <- function(local_folder_protocol, show_all_messages = FALSE) {
-
-  scripts = dir(path = paste0(local_folder_protocol, "/tasks"), pattern = ".js", recursive = TRUE, full.names = TRUE)
-  if (length(scripts) == 0) {
-    
-    if (show_all_messages == TRUE) {
-      cli::cli_h1("Checking /{basename(local_folder_protocol)}")
-      cli::cli_alert_danger("Can't find anything in {local_folder_protocol}")
-    }
-    
-    
-  } else {
-    
-    find_trialids <- function(file_name) {
-      
-      # DEBUG
-      # file_name = scripts[51]
-      
-      script = readr::read_file(file_name) 
-      # expres = ".*?trialid: '(.*?)'.*?"
-      # trialid = gsub(expres, "\\1; \n", script) %>% gsub("^(.*; \n).*", "\\1", .) %>% gsub(";", "", .) %>% gsub(" number \n", "", .)
-      expres = ".*?trialid: (.*?),.*?"
-      trialid = 
-        gsub(expres, "\\1; \n", script) %>% 
-        gsub("^(.*; \n).*", "\\1", .) %>% 
-        gsub(";", "", .) %>% 
-        gsub(" number \n", "", .) %>% 
-        gsub("'", "", .) %>% # Get rid of '
-        gsub('"', '', .) %>% # Get rid of " 
-        gsub("  ", " ", .) # Get rid of "  "
-      
-      if (grepl("This document was made with test_maker", trialid)) trialid = ""
-      strsplit(trialid, " \n")[[1]] %>% tibble::as_tibble() %>% 
-        dplyr::mutate(file = file_name) %>% 
-        dplyr::rename(trialid = value) %>% 
-        dplyr::filter(!grepl("^Instructions|^Instructions_[0-9]{2}|^Fullscreen|jsPsych.timelineVariable", trialid))
-      
-    }
-    
-    
-    DF_all_trialids = purrr::map_df(scripts, find_trialids)
-    
-    rule_check_trialids = "^[a-zA-Z0-9]{1,100}_[0-9]{2,3}$|^[a-zA-Z0-9]{1,100}_[0-9]{2,3}_[0-9]{1,3}$|^[a-zA-Z0-9]{1,100}_[0-9]{2,3}_if$|^[a-zA-Z0-9]{1,100}_[0-9]{2,3}_[0-9]{1,3}_if$" # NAME_001, NAMEexperiment_001_1
-    # rule_check_trialids = "NAMEtest_01\NAMEtest_01_1\NAMEtest_01_if|NAMEtest_01_1_if" 
-    
-    # DF_problematic_trialids = 
-    #   DF_all_trialids %>% 
-    #   dplyr::filter(!grepl(rule_check_trialids, trialid)) %>% 
-    #   dplyr::mutate(experiment = basename(file)) %>% 
-    #  dplyr::select(-file)
-    
-    DF_problematic_trialids =
-      DF_all_trialids %>% 
-      tidyr::separate(trialid, into = c("task", "num", "subnum"), sep = "_", extra = "merge", fill = "right", remove = FALSE) %>% 
-      dplyr::mutate(experiment = gsub(".js", "", basename(file))) %>% 
-      dplyr::filter(
-        !(
-          # shortname_itemNumber_otherStuff
-          task == experiment & # Task name == experiment
-            (grepl("[0-9]{2,3}", num) | grepl("\\+ pad|\\+ String", num)) & # itemNumber hardcoded or automatically generated 
-            (is.na(subnum) | subnum == "if" | grepl("[0-9]{1}", subnum) | grepl("if_[0-9]{1}", subnum) | grepl("\\+ num", subnum))
-        )
-      ) %>% 
-      
-      # dplyr::filter(!grepl(rule_check_trialids, trialid)) %>% 
-      # dplyr::mutate(experiment = basename(file)) %>% 
-      dplyr::select(-file)
-    
-    if (nrow(DF_problematic_trialids) > 0) {
-      
-      cli::cli_h1("Checking /{basename(local_folder_protocol)}")
-      cat(cli::col_red(nrow(DF_problematic_trialids), " ISSUES:\n"), 
-          "- experiment:", paste(DF_problematic_trialids %>% dplyr::pull(experiment) %>% unique(.), collapse = ", "), "\n",
-          "- trialid:   ", paste(DF_problematic_trialids %>% dplyr::pull(trialid) %>% unique(.), collapse = ", "), "\n")
-      
-    } else {
-      
-      if (show_all_messages == TRUE) {
-        cli::cli_h1("Checking /{basename(local_folder_protocol)}")
-        cli::cli_alert_success("All trialid's look great!\n")
-      }
-      
-    }
-    
-  }
-}
-
-
 #' create_docker_container
 #' Creates a Docker container named gorkang/jspsychhelper:pidPID
 #'
@@ -664,10 +567,10 @@ create_docker_container <- function(PID = 999, username = "gorkang") {
 #'
 #' @return Cleans the renv cache
 #' @export
-clean_renv_cache <- function() {
+clean_renv_cache <- function(lib_location = "renv/lib/R-4.3/x86_64-pc-linux-gnu/", cache_location = "renv/cache/v5/R-4.3/x86_64-pc-linux-gnu")  {
   
-  LIB = list.files("renv/lib/R-4.3/x86_64-pc-linux-gnu/")
-  CACHE = list.files("renv/cache/v5/R-4.3/x86_64-pc-linux-gnu", full.names = TRUE) |> tibble::as_tibble() |> dplyr::mutate(name = basename(value))
+  LIB = list.files(lib_location)
+  CACHE = list.files(cache_location, full.names = TRUE) |> tibble::as_tibble() |> dplyr::mutate(name = basename(value))
   
   DELETE = CACHE |> dplyr::filter(!CACHE$name %in% LIB)
   # LIB[!LIB %in% CACHE$name]
