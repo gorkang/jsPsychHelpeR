@@ -17,7 +17,8 @@
 prepare_RMET <- function(DF_clean, short_name_scale_str) {
 
   # DEBUG
-  debug_function(prepare_RMET)
+  # targets::tar_load_globals()
+  # debug_function(prepare_RMET)
 
   # [ADAPT]: Items to ignore and reverse ---------------------------------------
   # ****************************************************************************
