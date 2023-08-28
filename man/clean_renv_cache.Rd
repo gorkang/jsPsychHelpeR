@@ -5,7 +5,10 @@
 \title{clean_renv_cache
 Gets rid of cache packages not in lib}
 \usage{
-clean_renv_cache()
+clean_renv_cache(
+  lib_location = "renv/lib/R-4.3/x86_64-pc-linux-gnu/",
+  cache_location = "renv/cache/v5/R-4.3/x86_64-pc-linux-gnu"
+)
 }
 \value{
 Cleans the renv cache
