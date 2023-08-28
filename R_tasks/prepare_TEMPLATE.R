@@ -78,7 +78,7 @@ prepare_TEMPLATE <- function(DF_clean, short_name_scale_str) {
           RAW == "Bastante" ~ 4,
           RAW == "Mucho" ~ 5,
           is.na(RAW) ~ NA_real_, # OR NA_character_,
-          grepl(items_to_ignore, trialid) ~ NA_real_, # OR NA_character_,
+          trialid %in% paste0(short_name_scale_str, "_", items_to_ignore) ~ NA_real_, # OR NA_character_,
           TRUE ~ 9999 # OR "9999"
         )
     ) %>% 
