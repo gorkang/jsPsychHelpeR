@@ -37,13 +37,13 @@ get_dimensions_googledoc <- function(short_name_text, google_username = "gorkang
   googlesheets4::local_gs4_quiet() # No googlesheets4::read_sheet messages
   
   # We use this to get the number of items
-  DF_resumen_ALL = googlesheets4::read_sheet(google_sheet_ID, sheet = 2, skip = 0) %>% 
-    dplyr::rename(short_name = `Codigo Test`) %>% 
-    dplyr::filter(!grepl("short_name.*", short_name)) %>% 
+  DF_resumen_ALL = googlesheets4::read_sheet(google_sheet_ID, sheet = 2, skip = 0) |> 
+    dplyr::rename(short_name = `Codigo Test`) |> 
+    dplyr::filter(!grepl("short_name.*", short_name)) |> 
     tidyr::drop_na(short_name) 
   
-  DF_resumen = DF_resumen_ALL %>% 
-    dplyr::filter(short_name == short_name_text) %>% 
+  DF_resumen = DF_resumen_ALL |> 
+    dplyr::filter(short_name == short_name_text) |> 
     janitor::clean_names()
   
   
@@ -58,17 +58,17 @@ get_dimensions_googledoc <- function(short_name_text, google_username = "gorkang
   }
   
   
-  DF_dimensions = googlesheets4::read_sheet(google_sheet_ID, sheet = 5, skip = 0) %>% 
-    dplyr::rename(short_name = `Codigo Test`) %>% 
-    tidyr::drop_na(short_name) %>% 
-    dplyr::filter(short_name == short_name_text) %>% 
+  DF_dimensions = googlesheets4::read_sheet(google_sheet_ID, sheet = 5, skip = 0) |> 
+    dplyr::rename(short_name = `Codigo Test`) |> 
+    tidyr::drop_na(short_name) |> 
+    dplyr::filter(short_name == short_name_text) |> 
     janitor::clean_names()
   
   
-  DF_items = googlesheets4::read_sheet(google_sheet_ID, sheet = 4, skip = 0) %>% 
-    dplyr::rename(short_name = `Codigo Test`) %>% 
-    tidyr::drop_na(short_name) %>% 
-    dplyr::filter(short_name == short_name_text) %>% 
+  DF_items = googlesheets4::read_sheet(google_sheet_ID, sheet = 4, skip = 0) |> 
+    dplyr::rename(short_name = `Codigo Test`) |> 
+    tidyr::drop_na(short_name) |> 
+    dplyr::filter(short_name == short_name_text) |> 
     janitor::clean_names()
   
   # CHECK2 ---
@@ -91,19 +91,40 @@ get_dimensions_googledoc <- function(short_name_text, google_username = "gorkang
     cli::cli_end()
     
     # For each of the rows in the google doc
-    1:nrow(DF_items) %>% 
+    1:nrow(DF_items) |> 
       purrr::walk(~
              {
                #.x = 1
-               numbers_RAW = DF_items[.x,"items_invertidos"] %>% dplyr::pull(items_invertidos)
+               numbers_RAW = DF_items[.x,"items_invertidos"] |> dplyr::pull(items_invertidos)
                
                # Extract numbers from cell with individual numbers and intervals as (1-7)
                NUMBERS_formatted = create_number_series(numbers_RAW)
                
                # Create R vector
-               paste0('items_to_reverse = c("', paste(NUMBERS_formatted, collapse = '", "'), '")\n') %>% cat()
+               paste0('items_to_reverse = c("', paste(NUMBERS_formatted, collapse = '", "'), '")\n') |> cat()
              })
     
+    
+    ## Items ignorados ---
+    
+    cli::cli_par()
+    cli::cli_text("")
+    cli::cli_h1("Items to ignore")
+    cli::cli_end()
+    
+    # For each of the rows in the google doc
+    1:nrow(DF_items) |> 
+      purrr::walk(~
+                    {
+                      #.x = 1
+                      numbers_RAW = DF_items[.x,"items_ignorados"] |> dplyr::pull(items_ignorados)
+                      
+                      # Extract numbers from cell with individual numbers and intervals as (1-7)
+                      NUMBERS_formatted = create_number_series(numbers_RAW)
+                      
+                      # Create R vector
+                      paste0('items_to_ignore = c("', paste(NUMBERS_formatted, collapse = '", "'), '")\n') |> cat()
+                    })
     
     
     ## Conversion numerica -------------------------------------------------
@@ -114,25 +135,25 @@ get_dimensions_googledoc <- function(short_name_text, google_username = "gorkang
     cli::cli_end()
     
     
-    short_name = DF_items[1,"short_name"] %>% dplyr::pull(short_name)
+    short_name = DF_items[1,"short_name"] |> dplyr::pull(short_name)
     number_items = unlist(DF_resumen$items)
     
     # For each of the rows in the google doc
-    1:nrow(DF_items) %>%
+    1:nrow(DF_items) |>
       purrr::walk(~
              {
                
                cli::cli_text()
                ## Items to apply the numeric conversion
                # .x = 1
-               numbers_RAW = DF_items[.x,"items"] %>% dplyr::pull(items)
+               numbers_RAW = DF_items[.x,"items"] |> dplyr::pull(items)
                
                # Extract numbers from cell with individual numbers and intervals as (1-7)
                NUMBERS_formatted = create_number_series(numbers_RAW)
                
                
                ## Specific numeric conversion
-               numeric_conversion = DF_items[.x,"conversion_numerica"] %>% dplyr::pull(conversion_numerica)
+               numeric_conversion = DF_items[.x,"conversion_numerica"] |> dplyr::pull(conversion_numerica)
                numbers_chunks_all = stringi::stri_extract_all(str = gsub("=| = ", "=", numeric_conversion) %>% gsub("$", "\n", .), regex = ".*\n") %>% unlist() %>% gsub("\n", "", .)
                numbers_chunks_destination = stringi::stri_extract_all(str = numbers_chunks_all, regex = ".*=") %>% unlist() %>% gsub("=", "", .)
                numbers_chunks_origin = stringi::stri_extract_all(str = numbers_chunks_all, regex = "=.*") %>% unlist() %>% gsub("=", "", .)
