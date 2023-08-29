@@ -15,7 +15,7 @@ Imports:
     cli, 
     data.table, 
     dplyr, 
-    DT, 
+    DT (>= 0.28.5), 
     ggplot2,
     glue,
     googlesheets4,
