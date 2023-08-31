@@ -1,6 +1,7 @@
 # RUN pipeline -------------------------------------------------------------
 
-  # Your pipeline is in the file _targets.R
+  # Your full pipeline is in the file _targets.R. You can open the file with:
+  # rstudioapi::navigateToFile("_targets.R")
   
   # Run data preparation 
   targets::tar_make()
@@ -21,7 +22,7 @@
   # List available objects
   targets::tar_objects()
   
-  # Load DF_analysis file
+  # Load one of the objects (e.g. DF_analysis)
   targets::tar_load(DF_analysis)
   
   # See DF_analysis dataframe
@@ -30,26 +31,28 @@
   
 # Edit report ---------------------------------------------------------------
 
-  # Open report_analysis.Rmd and edit
+  # Open report_analysis.Rmd and adapt the code:
   rstudioapi::navigateToFile("Rmd/report_analysis.Rmd")
   
-  # After editing it:
+  # After editing it you need to open _targets.R and uncomment the
+    # Analysis report tar_render() lines there:
+  rstudioapi::navigateToFile("_targets.R")
+  
+  # And finally run the full pipeline:
   targets::tar_make()
 
   
 # Other commands ----------------------------------------------------------
   
-  # _targets.R contains the full pipeline
-  rstudioapi::navigateToFile("_targets.R") # Open _targets.R file
+  # Destroy pipeline
+  # targets::tar_destroy() # This will force the full pipeline to start from 0
   
   # CHECK warnings
   targets::tar_meta() %>% dplyr::select(name, warnings) %>%tidyr::drop_na()
 
 
 # Create docker container -------------------------------------------------
-  
-  # Install jsPsychHelpeR package:
-  if (!require('remotes')) utils::install.packages('remotes'); remotes::install_github('gorkang/jsPsychHelpeR')
+
   # system("docker builder prune --all -f") # Clean all docker builder cache
   
   PID = 999
