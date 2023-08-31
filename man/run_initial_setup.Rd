@@ -11,6 +11,7 @@ run_initial_setup(
   download_task_script = FALSE,
   folder = "~/Downloads/jsPsychHelpeRtest",
   sensitive_tasks = c(""),
+  credentials_file = ".vault/.credentials",
   dont_ask = FALSE,
   open_rstudio = TRUE
 )
@@ -20,7 +21,8 @@ run_initial_setup(
 
 \item{download_files}{Download the data files? FALSE / TRUE
 \itemize{
-\item If TRUE, requires sFTP server credentials to be located in \code{.vault/credentials}
+\item If TRUE, requires sFTP server credentials to be located in \code{credentials_file},
+by default: \code{.vault/credentials}
 \item See \code{.vault/credentials_TEMPLATE} for more details
 }}
 
@@ -31,6 +33,8 @@ run_initial_setup(
 \item{folder}{location for the project}
 
 \item{sensitive_tasks}{short names of the sensitive tasks in the protocol, if any}
+
+\item{credentials_file}{Path to .credentials file. By default: \code{.vault/.credentials}}
 
 \item{dont_ask}{answer YES to all questions so the process runs uninterrupted. This will:}
 
@@ -44,9 +48,13 @@ run_initial_setup() will read your data and create a jsPsychHelpeR project
 tailoring the _targets.R file to the tasks included in the data.
 }
 \examples{
+
 run_initial_setup(pid = 999, download_files = FALSE,
-data_location = system.file("extdata", package = "jsPsychHelpeR"),
-download_task_script = FALSE, 
-folder = tempdir(), 
-sensitive_tasks = c(""), dont_ask = TRUE, open_rstudio = FALSE)
+                  data_location = system.file("extdata", package = "jsPsychHelpeR"),
+                  download_task_script = FALSE, 
+                  folder = tempdir(),
+                  sensitive_tasks = c(""), 
+                  credentials_file = ".vault/.credentials",
+                  dont_ask = TRUE, 
+                  open_rstudio = FALSE)
 }

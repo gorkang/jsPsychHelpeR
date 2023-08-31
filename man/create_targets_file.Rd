@@ -19,3 +19,10 @@ Creates a _targets.R file
 \description{
 Create _targets.R file from a protocol folder
 }
+\examples{
+\dontrun{
+create_targets_file(pid = 999, 
+                    folder = "/home/emrys/Downloads/jsPsychHelpeRtest/",
+                    dont_ask = FALSE)
+}
+}

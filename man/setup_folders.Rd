@@ -5,10 +5,10 @@
 \title{setup_folders
 Extract jsPsychHelpeR.zip and make sure we have all necessary folders in a specific location}
 \usage{
-setup_folders(pid, folder, extract_zip = FALSE)
+setup_folders(pid_data_folder, folder, extract_zip = FALSE)
 }
 \arguments{
-\item{pid}{project id}
+\item{pid_data_folder}{project id data folder inside data/}
 
 \item{folder}{destination folder for the project}
 
