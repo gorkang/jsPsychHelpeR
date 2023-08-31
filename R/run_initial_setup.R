@@ -5,51 +5,52 @@
 #'
 #' @param pid project id
 #' @param download_files Download the data files? FALSE / TRUE
-#' - If TRUE, requires sFTP server credentials to be located in `.vault/credentials`
+#' - If TRUE, requires sFTP server credentials to be located in `credentials_file`,
+#' by default: `.vault/credentials`
 #' - See `.vault/credentials_TEMPLATE` for more details
 #' @param data_location Local folder where the raw data for the project is located
 #' @param download_task_script should download the task scripts? (requires server credentials) FALSE / TRUE
 #' @param dont_ask answer YES to all questions so the process runs uninterrupted. This will: 
 #' @param folder location for the project
+#' @param credentials_file Path to .credentials file. By default: `.vault/.credentials`
 #' @param sensitive_tasks short names of the sensitive tasks in the protocol, if any
 #' @param open_rstudio Open RStudio with the new project TRUE / FALSE
 #'
 #' @return Opens a new RStudio project
 #' @export
 #' @examples 
+#' 
 #' run_initial_setup(pid = 999, download_files = FALSE,
-#' data_location = system.file("extdata", package = "jsPsychHelpeR"),
-#' download_task_script = FALSE, 
-#' folder = tempdir(), 
-#' sensitive_tasks = c(""), dont_ask = TRUE, open_rstudio = FALSE)
+#'                   data_location = system.file("extdata", package = "jsPsychHelpeR"),
+#'                   download_task_script = FALSE, 
+#'                   folder = tempdir(),
+#'                   sensitive_tasks = c(""), 
+#'                   credentials_file = ".vault/.credentials",
+#'                   dont_ask = TRUE, 
+#'                   open_rstudio = FALSE)
  
-run_initial_setup <- function(pid, download_files = FALSE, data_location = NULL, download_task_script = FALSE, folder =  "~/Downloads/jsPsychHelpeRtest", sensitive_tasks = c(""), dont_ask = FALSE, open_rstudio = TRUE) {
+run_initial_setup <- function(pid, download_files = FALSE, data_location = NULL, download_task_script = FALSE, folder =  "~/Downloads/jsPsychHelpeRtest", sensitive_tasks = c(""), credentials_file = ".vault/.credentials", dont_ask = FALSE, open_rstudio = TRUE) {
 
-  # # pid
-  # # data_location
-  # # folder =  "~/Downloads/jsPsychHelpeRtest"
-  # download_files = FALSE
-  # download_task_script = FALSE
-  # sensitive_tasks = c("")
-  # dont_ask = FALSE
-  # open_rstudio = TRUE
-  
   # CHECKS
   if (download_files == FALSE & is.null(data_location)) cli::cli_abort("Either `download_files` or `data_location` need to be set. Otherwise, I don't have access to the project's data!")
   if (download_files == TRUE & !is.null(data_location)) cli::cli_abort("Only one of `download_files` or `data_location` must be set.")
+  credentials_exist = file.exists(credentials_file)
+  
   
   if (dont_ask == TRUE) response_prompt = 1
-  folder_data = paste0(folder, "/data/", pid, "/")
+  
+  # Folder where the jsPsychHelper will store the data
+  pid_data_folder = gsub("/", "_", pid)
+  folder_data_helper = paste0(folder, "/data/", pid_data_folder, "/") # With the gsub we avoid sub-folders
 
-  credentials_exist = file.exists(".vault/.credentials") # TODO: location of credentials for other users. If not in jsPsychHelpeR folder, won't be able to Download
   
   # CHECK if NO files in project's folder & NO credentials to download
   if (is.null(data_location) & credentials_exist == FALSE) {
     
     cli_message(var_used = pid, 
                 h1_title = "ERROR", 
-                danger = "Can't access .csv files for protocol `{pid}`:\n- No files in `data/{pid}`\n- `data_location` parameter is empty \n- `.vault/credentials` file not present",
-                info = "You can either:\n- manually download files to `data/{pid}`\n- edit `.vault/credentials_TEMPLATE` and rename it to `.vault/credentials`")
+                danger = "Can't access .csv files for protocol `{pid}`:\n- No files in `data/{gsub('/', '_', pid)}/`\n- `data_location` parameter is empty \n- `{credentials_file}` file not present",
+                info = "You can either:\n- manually download files to `data/{pid}`\n- edit `.vault/credentials_TEMPLATE` and rename it to `{credentials_file}`")
     
     cli::cli_abort("No way to get the protocol's .csv files")
     
@@ -74,7 +75,7 @@ run_initial_setup <- function(pid, download_files = FALSE, data_location = NULL,
     # 1) Run to make sure you have all the necessary packages and folders -------
     
     cli_message(h1_title = "Setup")
-    setup_folders(pid = pid, folder = folder, extract_zip = TRUE)
+    setup_folders(pid_data_folder = pid_data_folder, folder = folder, extract_zip = TRUE)
     
     
   
@@ -100,7 +101,7 @@ run_initial_setup <- function(pid, download_files = FALSE, data_location = NULL,
     
       cli::cli_alert_info("Will copy files from {.code {data_location}}")
       
-      # Copy files from data_location to folder_data
+      # Copy files from data_location to folder_data_helper
       files_raw = list.files(path = data_location, pattern = "*.csv|*.zip", full.names = TRUE)
       
       if (length(files_raw) == 0) {
@@ -114,12 +115,12 @@ run_initial_setup <- function(pid, download_files = FALSE, data_location = NULL,
         }
         
       } else {
-        file.copy(from = files_raw, to = paste0(folder_data,  basename(files_raw)))  
+        file.copy(from = files_raw, to = paste0(folder_data_helper,  basename(files_raw)))  
       }
       
       
       # Files present in destination (after copying)
-      files_destination = list.files(folder_data, pattern = "*.csv|*.zip", full.names = FALSE)
+      files_destination = list.files(folder_data_helper, pattern = "*.csv|*.zip", full.names = FALSE)
       cli::cli_alert_info("{length(files_destination)} files in 'data/{pid}'")
       
     }
@@ -128,7 +129,7 @@ run_initial_setup <- function(pid, download_files = FALSE, data_location = NULL,
     move_sensitive_tasks_to_vault(pid = pid, folder = folder, sensitive_tasks = sensitive_tasks)
     
     # Files present in destination (after copying)
-    files_pid = list.files(folder_data, pattern = "*.csv|*.zip", full.names = FALSE)
+    files_pid = list.files(folder_data_helper, pattern = "*.csv|*.zip", full.names = FALSE)
       
       if (download_task_script == TRUE) {
         
@@ -174,8 +175,7 @@ run_initial_setup <- function(pid, download_files = FALSE, data_location = NULL,
       cli_message(info = "Opening new RStudio project")
       
       rstudioapi::openProject(folder, newSession = TRUE)
-      # invisible(rstudioapi::navigateToFile("_targets.R"))
-      # invisible(rstudioapi::navigateToFile("run.R"))
+
     } else {
       
       cli_message(var_used = folder, info = "Your RStudio project is in  {.code {folder}}")
