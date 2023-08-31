@@ -11,7 +11,7 @@
   "Packages": {
     "DT": {
       "Package": "DT",
-      "Version": "0.28.5",
+      "Version": "0.29",
       "Source": "Repository",
       "Repository": "RSPM",
       "Requirements": [
