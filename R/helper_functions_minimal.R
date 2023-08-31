@@ -2,14 +2,14 @@
 #' Extract jsPsychHelpeR.zip and make sure we have all necessary folders in a specific location
 #'
 #' @param folder destination folder for the project
-#' @param pid project id
+#' @param pid_data_folder project id data folder inside data/
 #' @param extract_zip If TRUE, extracts jsPsychHelpeR.zip to folder
 #'
 #' @return NULL
 #' @export
 #'
 #' @examples setup_folders(999, tempdir())
-setup_folders <- function(pid, folder, extract_zip = FALSE) {
+setup_folders <- function(pid_data_folder, folder, extract_zip = FALSE) {
 
   # TODO: ADD check about empty folder and ASK user if we should delete contents
   
@@ -33,7 +33,7 @@ setup_folders <- function(pid, folder, extract_zip = FALSE) {
   }
   
   # Necessary folders
-  necessary_folders = c(paste0("data/", pid), # data/manual_correction
+  necessary_folders = c(paste0("data/", pid_data_folder), # data/manual_correction
                         "outputs/backup", "outputs/data", "outputs/plots", "outputs/reliability", "outputs/reports", "outputs/tables", "outputs/tests_outputs", 
                         ".vault/data_vault", ".vault/Rmd", ".vault/outputs/data", ".vault/outputs/reports")
   
@@ -345,8 +345,7 @@ prepare_helper <- function(DF_long_RAW, show_trialid_questiontext = FALSE) {
               .groups = "drop") 
 
   
-
-  # OUTPUTS -----------------------------------------------------------------
+  # OUTPUTS ---
 
   # PRINT OUTPUT (used inside another function)
   count_responses(DF_long_RAW |> 
@@ -388,12 +387,16 @@ prepare_helper <- function(DF_long_RAW, show_trialid_questiontext = FALSE) {
 #'
 #' @return Creates a _targets.R file
 #' @export
+#' @examples 
+#' \dontrun{
+#' create_targets_file(pid = 999, 
+#'                     folder = "/home/emrys/Downloads/jsPsychHelpeRtest/",
+#'                     dont_ask = FALSE)
+#' }
+
 create_targets_file <- function(pid = 0, folder, dont_ask = FALSE) {
 
-  # DEBUG
-  # pid = "999"
-
-  folder_data = paste0(folder, "/data/", pid, "/")
+  folder_data_helper = paste0(folder, "/data/", pid, "/")
   folder_data_vault = paste0(folder, "/.vault/data_vault/")
   
   # If old _targets_automatic_file.R exists, delete
@@ -402,54 +405,58 @@ create_targets_file <- function(pid = 0, folder, dont_ask = FALSE) {
     file.remove(paste0(folder, "/_targets_automatic_file.R"))
   }
   
-  # List js files or parse data files
-  # if (is.null(folder_data) & !is.null(folder_tasks)) {
-  #   
-  #   files = gsub(".js", "", basename(list.files(folder_tasks, recursive = FALSE, pattern = ".js")))
-  # 
-  # } else if (!is.null(folder_data) & is.null(folder_tasks)) {
-    
     # List files in data folder
-    input_files_temp = list.files(path = folder_data, pattern = "*.csv|*.zip", full.names = TRUE)
-    input_files_temp_vailt = list.files(path = folder_data_vault, pattern = "*.csv|*.zip", full.names = TRUE) 
+    input_files_temp = list.files(path = folder_data_helper, pattern = "*.csv|*.zip", full.names = TRUE)
+    input_files_temp_vault = list.files(path = folder_data_vault, pattern = "*.csv|*.zip", full.names = TRUE) 
     
     # If zip, read_csv_or_zip will read the zip and list files, If csv, will list after cleaning empty files
     input_files = read_csv_or_zip(input_files = input_files_temp, only_list = TRUE)
-    input_files_vault = read_csv_or_zip(input_files = input_files_temp_vailt, only_list = TRUE)
+    input_files_vault = read_csv_or_zip(input_files = input_files_temp_vault, only_list = TRUE)
     
     # Get distinct tasks/experiments
     tasks = tibble::tibble(filename = c(input_files, input_files_vault)) |> 
       parse_filename() |> 
       dplyr::distinct(experiment) |> 
       dplyr::pull(experiment)
-    
-  # }
+
   
   if (length(tasks) > 0) {
     
     # Equivalent tasks DICC ---
     
-      # Use dictionary to find the correct prepare function for translations
-      # This can be used when the correction logic DOES not change  (e.g. BNTen -> BNT)
+      # Use dictionary to find the correct prepare function for translations or adaptations
+      # This can be used when the correction logic DOES not change (e.g. BNTen -> BNT)
       DICC_equivalent_tasks = tibble::tibble(canonical = c("BNT"),
                                              alt = c("BNTen"))
       
-      # Create vector with canonical names
+      # Create vector with canonical names using dictionary
       tasks_canonical = 
         tibble::tibble(original = tasks) |>
         dplyr::left_join(DICC_equivalent_tasks, by = c("original" = "alt")) |> 
         dplyr::mutate(tasks = ifelse(!is.na(canonical), canonical, original)) |> 
         dplyr::pull(tasks)
       
-      all_prepare_funs = gsub("prepare_|\\.R", "", list.files(paste0(folder, "/R_tasks/")))
-      prepare_funs_NOT_found = tasks_canonical[!tasks_canonical %in% all_prepare_funs]
+      # END DICC ---
+      
+      
+      all_files_all = list.files(paste0(folder, "/R_tasks/"))
+      all_files = all_files_all[!all_files_all %in% "prepare_TEMPLATE.R"] # Do not remove prepare_TEMPLATE
+      all_prepare_funs = all_files[grepl("\\.R$", all_files)]
+      all_supporting_files = all_files[grepl("\\.csv$", all_files)]
+      
+      # Create named vectors to use names to filter but keep filenames
+      names(all_prepare_funs) <- gsub("^prepare_(.*)\\.R$", "\\1", all_prepare_funs)
+      names(all_supporting_files) <- gsub("^prepare_(.*)-.*\\.csv$", "\\1", all_supporting_files)
+      
+      # prepare_TASKS not found
+      prepare_funs_NOT_found = tasks_canonical[!tasks_canonical %in% names(all_prepare_funs)]
       
       if (length(prepare_funs_NOT_found) > 0) {
         cli::cli_alert_warning("Did not find the prepare_FUN for {length(prepare_funs_NOT_found)} task: {prepare_funs_NOT_found}. 
                                 -If it is a translation, add it to `DICC_equivalent_tasks` in `create_targets_file()`.
                                 -If it is a new task, create the prepare_FUN with `create_new_task()`")
       }
-    # END DICC ---
+    
 
     # Read template
     template = readLines(paste0(folder, "/inst/templates/_targets_TEMPLATE.R"))
@@ -475,7 +482,7 @@ create_targets_file <- function(pid = 0, folder, dont_ask = FALSE) {
     
   } else {
   
-    cli::cli_abort("0 tasks found for protocol '{pid}'. Please make sure data is in {.code {folder_data}}")  
+    cli::cli_abort("0 tasks found for protocol '{pid}'. Please make sure data is in {.code {folder_data_helper}}")  
 
   }
   
@@ -505,38 +512,34 @@ create_targets_file <- function(pid = 0, folder, dont_ask = FALSE) {
       # RENAME _targets_automatic_file.R as _targets.R. _targets_automatic_file.R was created in the previous step
       file.rename(from = paste0(folder, "/_targets_automatic_file.R"), to = paste0(folder, "/_targets.R"))
       
-      # DELETE UNUSED tasks
-        TASKS_TO_DELETE =
-          list.files(paste0(folder, "/R_tasks/")) %>%
-          tibble::as_tibble() %>%
-          dplyr::mutate(task = gsub("prepare_(.*)\\.R", "\\1", value)) %>%
-          dplyr::filter(!task %in% tasks_canonical & !grepl("\\.csv", value)) %>%
-          dplyr::filter(task != "prepare_TEMPLATE") |> # Keep prepare_TEMPLATE.R
-          dplyr::pull(value)
-        
-        
+      
+      # DELETE UNUSED tasks and supporting folders
+        tasks_TO_DELETE = all_prepare_funs[!names(all_prepare_funs) %in% tasks_canonical]
+        supporting_files_TO_DELETE = all_supporting_files[!names(all_supporting_files) %in% tasks_canonical]
 
-        if(length(TASKS_TO_DELETE) > 0) {
+        # Join Tasks and supporting files        
+        files_TO_DELETE = c(tasks_TO_DELETE, supporting_files_TO_DELETE) |> as.character()
+        
+        if(length(files_TO_DELETE) > 0) {
           
           # relative so zip works, absolute to delete 
-          TASKS_TO_DELETE_relative = TASKS_TO_DELETE %>% paste0("R_tasks/", .)
-          TASKS_TO_DELETE_absolute = TASKS_TO_DELETE %>% paste0(folder, "/R_tasks/", .)
-          
+          files_TO_DELETE_relative = files_TO_DELETE %>% paste0("R_tasks/", .)
+          files_TO_DELETE_absolute = files_TO_DELETE %>% paste0(folder, "/R_tasks/", .)
 
           if (dont_ask == FALSE) {
             
             delete_prompt = menu(choices = c("Yes", "NO"),
-                                 title = cli_message(var_used = TASKS_TO_DELETE,
+                                 title = cli_message(var_used = files_TO_DELETE,
                                                      h2_title = "Clean up",
-                                                     info = "{cli::style_bold((cli::col_red('DELETE')))} the following {length(TASKS_TO_DELETE)} unused tasks from 'R_tasks/'?:",
-                                                     details = "{.pkg {basename(TASKS_TO_DELETE)}}")
+                                                     info = "{cli::style_bold((cli::col_red('DELETE')))} the following {length(files_TO_DELETE)} unused tasks and supporting files from 'R_tasks/'?:",
+                                                     details = "{.pkg {basename(files_TO_DELETE)}}")
             )
             
           } else {
-            cli_message(var_used = TASKS_TO_DELETE,
+            cli_message(var_used = files_TO_DELETE,
                         h2_title = "Clean up",
-                        info = "{cli::style_bold((cli::col_red('DELETED')))} the following {length(TASKS_TO_DELETE)} unused tasks from 'R_tasks/':",
-                        details = "{.pkg {basename(TASKS_TO_DELETE)}}")
+                        info = "{cli::style_bold((cli::col_red('DELETED')))} the following {length(files_TO_DELETE)} unused tasks and supporting files from 'R_tasks/':",
+                        details = "{.pkg {basename(files_TO_DELETE)}}")
             delete_prompt = 1
           }
           
@@ -549,13 +552,13 @@ create_targets_file <- function(pid = 0, folder, dont_ask = FALSE) {
               # TODO: zip_files() only works with full folder
               project_folder = getwd()
               setwd(folder) # Set Temp folder as working folder so the files in zip WONT have the temp path
-              utils::zip(zipfile = paste0(folder, "/outputs/backup/deleted_tasks.zip"), files = TASKS_TO_DELETE_relative, flags = "-q") # Silent flags = "-q"
+              utils::zip(zipfile = paste0(folder, "/outputs/backup/deleted_tasks.zip"), files = files_TO_DELETE_relative, flags = "-q") # Silent flags = "-q"
               setwd(project_folder)
             # ---
             
             # Remove files
-            file.remove(TASKS_TO_DELETE_absolute)
-            cli::cli_alert_success(paste0("Deleted ", length(TASKS_TO_DELETE), " unused tasks. Backup in {.code {paste0(folder, '/outputs/backup/deleted_tasks.zip')}}"))
+            file.remove(files_TO_DELETE_absolute)
+            cli::cli_alert_success(paste0("Deleted ", length(files_TO_DELETE), " unused tasks. Backup in {.code {paste0(folder, '/outputs/backup/deleted_tasks.zip')}}"))
           }
         }
       
