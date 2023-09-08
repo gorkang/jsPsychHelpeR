@@ -52,6 +52,10 @@ Tabla 1. Descripción de la tabla 1. Tabla 2. ...
 
 ```{r descriptive-table}
 
+# You can add a variable to the `by` argument and uncomment
+# names(DF) shows the variables you hava available
+
+
 table1 = DF %>% 
   select(-id, -Goodbye_DIRt) %>% 
   gtsummary::tbl_summary(
@@ -69,6 +73,8 @@ Figura 1. Descripción de la Figura 1. Figura 2. ...
 
 ```{r plots}
 
+# Remember to change the variables in your plot
+
 plot1 =
   DF %>%
   ggplot(aes(EAR_DIRt, IRI_TomaPerspectiva_DIRd)) +
@@ -83,6 +89,8 @@ plot1
 ## Analysis
 
 ```{r analysis}
+
+# Remember to change the variables used in your model and inline_text 
 
 model1 = lm(EAR_DIRt ~ IRI_DIRt, DF)
 
