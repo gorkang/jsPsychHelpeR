@@ -5,7 +5,7 @@
 \title{zip_files
 zip files of a folder}
 \usage{
-zip_files(folder_files, zip_name, remove_files = FALSE)
+zip_files(folder_files, zip_name, remove_files = FALSE, all_messages = TRUE)
 }
 \arguments{
 \item{folder_files}{folder to zip}
@@ -13,6 +13,8 @@ zip_files(folder_files, zip_name, remove_files = FALSE)
 \item{zip_name}{name of output zip}
 
 \item{remove_files}{remove source files TRUE / FALSE}
+
+\item{all_messages}{show all messages FALSE / TRUE}
 }
 \description{
 zip_files

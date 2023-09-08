@@ -66,7 +66,8 @@ create_formulas <- function(type, functions = "sum", dimensions = NULL) {
 #' @export
 debug_function <- function(name_function) {
 
-  # REMEMBER: See debug_function() in jsPsychMonkeys
+  # SEE jsPsychAdmin::get_parameters_of_function()
+  # REMEMBER: See jsPsychMonkeys::debug_function()
   
   # DEBUG
   # name_function = "prepare_CRS"
@@ -387,10 +388,14 @@ check_project_and_results <- function(participants, folder_protocol, folder_resu
 #' @param folder_files folder to zip
 #' @param zip_name name of output zip
 #' @param remove_files remove source files TRUE / FALSE
+#' @param all_messages show all messages FALSE / TRUE
 #'
 #' @return NULL
 #' @export
-zip_files <- function(folder_files, zip_name, remove_files = FALSE) {
+zip_files <- function(folder_files, zip_name, remove_files = FALSE, all_messages = TRUE) {
+  
+  # WIP: Now we append the files if the zip exists
+    # If some files were deleted from source but not a previous zip, they remain there
 
   project_folder = getwd()
 
@@ -398,7 +403,6 @@ zip_files <- function(folder_files, zip_name, remove_files = FALSE) {
   folder_files = normalizePath(folder_files)
   zip_name = paste0(normalizePath(dirname(zip_name)), "/", basename(zip_name))
   
-    
   # Set Temp folder as working folder so the files in zip WONT have the temp path
   setwd(folder_files)
   
@@ -410,7 +414,7 @@ zip_files <- function(folder_files, zip_name, remove_files = FALSE) {
   zip_safely = purrr::safely(utils::zip)
   
   if (length(FILES_ZIP) == 0) {
-    cli::cli_alert_danger("NO files found")
+    if (all_messages == TRUE) cli::cli_alert_danger("NO files found")
   } else {
     # ZIP zilently (flags = "-q")
     RESULT = zip_safely(zipfile = zip_name, files = FILES_ZIP, flags = "-q")
@@ -424,9 +428,9 @@ zip_files <- function(folder_files, zip_name, remove_files = FALSE) {
   # Remove temp dir and content
   if (remove_files == TRUE) {
     file.remove(FILES_ZIP)
-    cli::cli_alert_success("REMOVED {length(FILES_ZIP)} source files FROM {folder_files}")
+    if (all_messages == TRUE) cli::cli_alert_success("REMOVED {length(FILES_ZIP)} source files FROM {folder_files}")
   } else {
-    cli::cli_alert_info("Will NOT REMOVE {length(FILES_ZIP)} source files FROM {folder_files}")
+    if (all_messages == TRUE) cli::cli_alert_info("Will NOT REMOVE {length(FILES_ZIP)} source files FROM {folder_files}")
   }
   
   # Reset the project's WD
@@ -456,12 +460,10 @@ zip_files <- function(folder_files, zip_name, remove_files = FALSE) {
 get_zip <- function(pid, what, where = NULL, list_credentials = NULL, dont_ask = TRUE, ignore_existing = FALSE, all_messages = FALSE, tempdir_location = NULL) {
   
   # DEBUG
-  # pid = "23"
+  # jsPsychAdmin::get_parameters_of_function("jsPsychHelpeR::get_zip()")
+  # pid = "999"
   # what = "data"
-  # where = NULL
-  # dont_ask = TRUE
   # list_credentials = source(".vault/.credentials")
-  # setwd("/home/emrys/gorkang@gmail.com/RESEARCH/PROYECTOS-Code/jsPsychR/jsPsychHelpeR/")
   
   # TODO: If no data, do not download!
   
@@ -521,7 +523,8 @@ get_zip <- function(pid, what, where = NULL, list_credentials = NULL, dont_ask =
   # ZIP ---
   zip_files(folder_files = tempdir_location, 
             zip_name = zip_name, 
-            remove_files = TRUE)
+            remove_files = TRUE, 
+            all_messages = all_messages)
   
 }
 

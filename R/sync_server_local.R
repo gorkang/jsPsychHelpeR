@@ -27,18 +27,12 @@ sync_server_local <-
            list_credentials = NULL) {
     
     # DEBUG
-    # pid = "999"
-    # project_folder = getwd()
+    # jsPsychAdmin::get_parameters_of_function("jsPsychHelpeR::sync_server_local()")
+    
     # TEMP_DIR = tempdir(check = TRUE)
     # server_folder = pid
     # local_folder = TEMP_DIR
     # direction = "server_to_local"
-    # only_test = FALSE
-    # exclude_csv = TRUE
-    # delete_nonexistent = TRUE
-    # dont_ask = TRUE
-    # all_messages = TRUE
-    
     
     
     # Parameters --------------------------------------------------------------
@@ -96,7 +90,7 @@ sync_server_local <-
     if (credentials_exist) {
       # sshpass and rsync installed (?)
       if (SSHPASS != "" & RSYNC != "") { 
-        cli::cli_text(cli::col_green("{cli::symbol$tick} "), "rsync installed and credentials exist")
+        if (all_messages == TRUE) cli::cli_alert_success("rsync installed and credentials exist")
       } else {
         cli::cli_abort("'sshpass' or 'rsync' not installed. Can't use `sync_server_local()`")
       }

@@ -71,15 +71,15 @@ prepare_EQ <- function(DF_clean, short_name_scale_str) {
     dplyr::mutate(
       DIR =
        dplyr::case_when(
-         trialid %in% c("EQ_01", "EQ_06", "EQ_19", "EQ_22", "EQ_25", "EQ_26", "EQ_35", "EQ_36", "EQ_37", "EQ_38", "EQ_41", "EQ_42", "EQ_43", "EQ_44", "EQ_52", "EQ_54", "EQ_55", "EQ_57", "EQ_58", "EQ_59", "EQ_60") & RAW == "Totalmentede acuerdo" ~ 2,
-         trialid %in% c("EQ_01", "EQ_06", "EQ_19", "EQ_22", "EQ_25", "EQ_26", "EQ_35", "EQ_36", "EQ_37", "EQ_38", "EQ_41", "EQ_42", "EQ_43", "EQ_44", "EQ_52", "EQ_54", "EQ_55", "EQ_57", "EQ_58", "EQ_59", "EQ_60") & RAW == "Un pocode acuerdo" ~ 1,
-         trialid %in% c("EQ_01", "EQ_06", "EQ_19", "EQ_22", "EQ_25", "EQ_26", "EQ_35", "EQ_36", "EQ_37", "EQ_38", "EQ_41", "EQ_42", "EQ_43", "EQ_44", "EQ_52", "EQ_54", "EQ_55", "EQ_57", "EQ_58", "EQ_59", "EQ_60") & RAW == "Un pocode desacuerdo" ~ 0,
-         trialid %in% c("EQ_01", "EQ_06", "EQ_19", "EQ_22", "EQ_25", "EQ_26", "EQ_35", "EQ_36", "EQ_37", "EQ_38", "EQ_41", "EQ_42", "EQ_43", "EQ_44", "EQ_52", "EQ_54", "EQ_55", "EQ_57", "EQ_58", "EQ_59", "EQ_60") & RAW == "Totalmentedesacuerdo" ~ 0,
+         trialid %in% c("EQ_01", "EQ_06", "EQ_19", "EQ_22", "EQ_25", "EQ_26", "EQ_35", "EQ_36", "EQ_37", "EQ_38", "EQ_41", "EQ_42", "EQ_43", "EQ_44", "EQ_52", "EQ_54", "EQ_55", "EQ_57", "EQ_58", "EQ_59", "EQ_60") & RAW == "Totalmente de acuerdo" ~ 2,
+         trialid %in% c("EQ_01", "EQ_06", "EQ_19", "EQ_22", "EQ_25", "EQ_26", "EQ_35", "EQ_36", "EQ_37", "EQ_38", "EQ_41", "EQ_42", "EQ_43", "EQ_44", "EQ_52", "EQ_54", "EQ_55", "EQ_57", "EQ_58", "EQ_59", "EQ_60") & RAW == "Un poco de acuerdo" ~ 1,
+         trialid %in% c("EQ_01", "EQ_06", "EQ_19", "EQ_22", "EQ_25", "EQ_26", "EQ_35", "EQ_36", "EQ_37", "EQ_38", "EQ_41", "EQ_42", "EQ_43", "EQ_44", "EQ_52", "EQ_54", "EQ_55", "EQ_57", "EQ_58", "EQ_59", "EQ_60") & RAW == "Un poco de desacuerdo" ~ 0,
+         trialid %in% c("EQ_01", "EQ_06", "EQ_19", "EQ_22", "EQ_25", "EQ_26", "EQ_35", "EQ_36", "EQ_37", "EQ_38", "EQ_41", "EQ_42", "EQ_43", "EQ_44", "EQ_52", "EQ_54", "EQ_55", "EQ_57", "EQ_58", "EQ_59", "EQ_60") & RAW == "Totalmente desacuerdo" ~ 0,
          
-         trialid %in% c("EQ_04", "EQ_08", "EQ_10", "EQ_11", "EQ_12", "EQ_14", "EQ_15", "EQ_18", "EQ_21", "EQ_27", "EQ_28", "EQ_29", "EQ_32", "EQ_34", "EQ_39", "EQ_46", "EQ_48", "EQ_49", "EQ_50") & RAW == "Totalmentede acuerdo" ~ 0,
-         trialid %in% c("EQ_04", "EQ_08", "EQ_10", "EQ_11", "EQ_12", "EQ_14", "EQ_15", "EQ_18", "EQ_21", "EQ_27", "EQ_28", "EQ_29", "EQ_32", "EQ_34", "EQ_39", "EQ_46", "EQ_48", "EQ_49", "EQ_50") & RAW == "Un pocode acuerdo" ~ 0,
-         trialid %in% c("EQ_04", "EQ_08", "EQ_10", "EQ_11", "EQ_12", "EQ_14", "EQ_15", "EQ_18", "EQ_21", "EQ_27", "EQ_28", "EQ_29", "EQ_32", "EQ_34", "EQ_39", "EQ_46", "EQ_48", "EQ_49", "EQ_50") & RAW == "Un pocode desacuerdo" ~ 1,
-         trialid %in% c("EQ_04", "EQ_08", "EQ_10", "EQ_11", "EQ_12", "EQ_14", "EQ_15", "EQ_18", "EQ_21", "EQ_27", "EQ_28", "EQ_29", "EQ_32", "EQ_34", "EQ_39", "EQ_46", "EQ_48", "EQ_49", "EQ_50") & RAW == "Totalmentedesacuerdo" ~ 2,
+         trialid %in% c("EQ_04", "EQ_08", "EQ_10", "EQ_11", "EQ_12", "EQ_14", "EQ_15", "EQ_18", "EQ_21", "EQ_27", "EQ_28", "EQ_29", "EQ_32", "EQ_34", "EQ_39", "EQ_46", "EQ_48", "EQ_49", "EQ_50") & RAW == "Totalmente de acuerdo" ~ 0,
+         trialid %in% c("EQ_04", "EQ_08", "EQ_10", "EQ_11", "EQ_12", "EQ_14", "EQ_15", "EQ_18", "EQ_21", "EQ_27", "EQ_28", "EQ_29", "EQ_32", "EQ_34", "EQ_39", "EQ_46", "EQ_48", "EQ_49", "EQ_50") & RAW == "Un poco de acuerdo" ~ 0,
+         trialid %in% c("EQ_04", "EQ_08", "EQ_10", "EQ_11", "EQ_12", "EQ_14", "EQ_15", "EQ_18", "EQ_21", "EQ_27", "EQ_28", "EQ_29", "EQ_32", "EQ_34", "EQ_39", "EQ_46", "EQ_48", "EQ_49", "EQ_50") & RAW == "Un poco de desacuerdo" ~ 1,
+         trialid %in% c("EQ_04", "EQ_08", "EQ_10", "EQ_11", "EQ_12", "EQ_14", "EQ_15", "EQ_18", "EQ_21", "EQ_27", "EQ_28", "EQ_29", "EQ_32", "EQ_34", "EQ_39", "EQ_46", "EQ_48", "EQ_49", "EQ_50") & RAW == "Totalmente desacuerdo" ~ 2,
          
           is.na(RAW) ~ NA_real_, # OR NA_character_,
           trialid %in% paste0(short_name_scale_str, "_", items_to_ignore) ~ NA_real_, # OR NA_character_,
