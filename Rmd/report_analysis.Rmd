@@ -23,7 +23,7 @@ targets::tar_load(DF_analysis)
 
 # In this document you will find a template to run analysis, plots, and tables
 # You will need to adapt to the contents of your DF_analysis
-# names(DF_analysis) # Show variable names in DF_analysis
+# names(DF_analysis$DF_analysis) # Show variable names in DF_analysis
 
 ```
 
@@ -55,7 +55,7 @@ Tabla 1. Descripción de la tabla 1. Tabla 2. ...
 table1 = DF %>% 
   select(-id, -Goodbye_DIRt) %>% 
   gtsummary::tbl_summary(
-    by = AIM_DIRt,
+    # by = AIM_DIRt,
     type = list(everything() ~ 'continuous')
     )
 
@@ -96,7 +96,8 @@ table_model
 
 # report::report(model1)
 
-paste0("IRI was not asignificant predictor of EAR, beta = ", 
+paste0("IRI was not a significant predictor of EAR", 
+       ", beta = ", 
        gtsummary::inline_text(table_model, variable = IRI_DIRt))
 
 ```
