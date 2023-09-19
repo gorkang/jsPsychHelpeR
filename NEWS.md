@@ -1,9 +1,25 @@
+# jsPsychHelpeR 0.2.7
+
+Major updates
+* Adapted to work with targets 1.3.0
+
+Minor updates
+
+* Improved some messages
+* Delete snaps if not in protocol 999
+* Improved input_files test
+* Some small fixes to renv cache
+* Updated DT version to avoid a false positive in Google malware detector
+
+
 # jsPsychHelpeR 0.2.6
 
 Minor updates
 
 * Fixed issues with translated tasks (BNTen)
 * Fixed group report
+* Other minor fixes and clean ups
+
 
 
 # jsPsychHelpeR 0.2.5

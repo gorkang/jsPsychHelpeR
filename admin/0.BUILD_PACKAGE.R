@@ -66,7 +66,7 @@
 
   # CHECK Main function 
   rstudioapi::restartSession()
-  jsPsychHelpeR::run_initial_setup(pid = 1999, data_location = "~/gorkang@gmail.com/RESEARCH/PROYECTOS-Code/jsPsychR/jsPsychHelpeR/data/999", dont_ask = TRUE)
+  jsPsychHelpeR::run_initial_setup(pid = 999, data_location = "~/gorkang@gmail.com/RESEARCH/PROYECTOS-Code/jsPsychR/jsPsychHelpeR/data/999", dont_ask = TRUE)
   
   # This will create and open a NEW RStudio project. 
   # It will take a long time to open, as it is downloading and installing all the necessary packages
@@ -89,7 +89,7 @@
 # CHECK package -----------------------------------------------------------
   
   devtools::test() # Run all tests for the package (This includes test-0run_initial_setup.R, which will create a full project and run the protocol tests in the tmp/project) (~47s): [ FAIL 0 | WARN 0 | SKIP 0 | PASS 115 ]
-devtools::check() # Check package # tests will fail. See Monkeys for solutions 
+  devtools::check() # Check package # tests will fail. See Monkeys for solutions 
   # Package Tests are in tests/testthat/
   # Protocol tests are in inst/templates/tests/testthat/
   # Snapshots in inst/templates/tests/testthat/_snaps/snapshots/
