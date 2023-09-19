@@ -9,7 +9,7 @@
 list_input_files <- function(pid_target) {
   
   # List csv and zip files in folder data/[pid]
-  input_folder = paste0("data/", pid_target)
+  input_folder = here::here(paste0("data/", pid_target))
   files_raw = list.files(path = input_folder, pattern = "*.csv|*.zip", full.names = TRUE)
   length_files = length(files_raw)
   
