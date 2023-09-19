@@ -65,7 +65,8 @@
 # CHECK functions ----------------------------------------------------------
 
   # CHECK Main function 
-  jsPsychHelpeR::run_initial_setup(pid = 999, data_location = "~/gorkang@gmail.com/RESEARCH/PROYECTOS-Code/jsPsychR/jsPsychHelpeR/data/999", dont_ask = TRUE)
+  rstudioapi::restartSession()
+  jsPsychHelpeR::run_initial_setup(pid = 1999, data_location = "~/gorkang@gmail.com/RESEARCH/PROYECTOS-Code/jsPsychR/jsPsychHelpeR/data/999", dont_ask = TRUE)
   
   # This will create and open a NEW RStudio project. 
   # It will take a long time to open, as it is downloading and installing all the necessary packages
