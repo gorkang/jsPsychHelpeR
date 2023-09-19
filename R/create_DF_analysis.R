@@ -35,19 +35,12 @@ create_DF_analysis <- function(DF_joined, last_task, save_output = TRUE, DVars =
     
   } else if (DVars == "") {
     
-    cli_message(h1_title = "WARNING DF_analysis",
-                info = "`DVars` is empty. Will not create DF_analysis_blinded",
-                # var_used = "var",
-                details = "If you define your dependent variables, jsPsychHelpeR will create a blinded version of the analysis DF.",
-                list = c("Fix it in `_targets.R`: {.pkg create_DF_analysys(DVars = c(''))}",
-                         "For more info about blinded analysis see {.url https://doi.org/10.1038/526187a} or {.url https://doi.org/10.1177/25152459221128319}")
-                )
-    
+    cli::cli_alert_info("`create_DF_analysys(DVars)` is empty. Will not create DF_analysis_blinded. \nFor more information about blinded analysis: https://gorkang.github.io/jsPsychRmanual/qmd/05-jsPsychHelpeR.html#blinded-analysis")
     DF_analysis_blinded = NULL
     
   } else {
     
-    cli::cli_abort("Some of DVars not found in DF_analysis")
+    cli::cli_abort("Some of the vars in `DVars` not found in DF_analysis")
     
   }
   
