@@ -14,7 +14,12 @@ test_testthat <- function(...) { # input_files_automatic_tests_str
   arguments = lapply(argnames[-1], as.character) %>% unlist()
   
   # Load targets
-  targets::tar_load(dplyr::all_of(arguments), envir = .GlobalEnv)
+  # Since targets 1.3.0 cannot use tar_load() in a running pipeline
+  1:length(arguments) |> 
+    walk(~{
+      if (file.exists(paste0("_targets/objects/", arguments[.x]))) assign(arguments[.x], readRDS(paste0("_targets/objects/", arguments[.x])), envir = .GlobalEnv)
+    })
+  
   
   # Print
   num_tests = list.files("tests/testthat/", pattern = ".R") %>% length()

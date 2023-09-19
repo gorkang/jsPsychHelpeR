@@ -32,7 +32,11 @@ create_joined <- function(...) {
   # Loads and gets all the targets in a single list -------------------------
 
   # Loads all the prepared targets
-  targets::tar_load(!!final_prepared_files, envir = .GlobalEnv)
+  # Since targets 1.3.0 cannot use tar_load() in a running pipeline
+  1:length(final_prepared_files) |> 
+    walk(~{
+      assign(final_prepared_files[.x], readRDS(paste0("_targets/objects/", final_prepared_files[.x])), envir = .GlobalEnv)
+    })
   
   # List with all the input DF's
   input_list <- purrr::map(final_prepared_files, get)
