@@ -30,7 +30,7 @@
 #'                   open_rstudio = FALSE)
  
 run_initial_setup <- function(pid, download_files = FALSE, data_location = NULL, download_task_script = FALSE, folder =  "~/Downloads/jsPsychHelpeRtest", sensitive_tasks = c(""), credentials_file = ".vault/.credentials", dont_ask = FALSE, open_rstudio = TRUE) {
-
+  
   # CHECKS
   if (download_files == FALSE & is.null(data_location)) cli::cli_abort("Either `download_files` or `data_location` need to be set. Otherwise, I don't have access to the project's data!")
   if (download_files == TRUE & !is.null(data_location)) cli::cli_abort("Only one of `download_files` or `data_location` must be set.")
@@ -158,6 +158,10 @@ run_initial_setup <- function(pid, download_files = FALSE, data_location = NULL,
     folder_destination_snaps = paste0(folder, "/tests/testthat/_snaps/snapshots/") # Create needed folders
     if(!dir.exists(folder_destination_snaps)) dir.create(folder_destination_snaps, recursive = TRUE)
     file.copy(tests_templates_origin, tests_templates_destination, overwrite = TRUE)
+    
+    # If the pid is not 999 (is not the canonical protocol), delete the snaps folder
+      # The snaps folder contains tests for jsPsychHelpeR development
+    if (pid != 999) unlink(folder_destination_snaps, recursive = TRUE)
     
     
     cli_message(var_used = folder, h1_title = "Initial setup successful", 
