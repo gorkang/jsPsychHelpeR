@@ -19,6 +19,8 @@ prepare_fauxPasEv <- function(DF_clean, short_name_scale_str) {
   # DEBUG
   # targets::tar_load_globals()
   # debug_function(prepare_fauxPasEv)
+  # short_name_scale_str = "fauxPasEv"
+  # targets::tar_load(DF_clean)
   
   
   
@@ -100,104 +102,109 @@ prepare_fauxPasEv <- function(DF_clean, short_name_scale_str) {
     DIR =
      dplyr::case_when(
         
-        # Stories
-        trialid %in% items_Q1 ~ NA_real_,
-        
-        # Stories without FauxPas ---
-        trialid %in% items_noFP_Q2 & RAW == 'No' ~ 2,
-        trialid %in% items_noFP_Q2 & RAW != 'No' ~ 0,
-        
-        # Do not score items 3 to 7 (old Questions 2 to 6) 
-        trialid %in% items_noFP_Q3_Q7 ~ 0,
-        
-        
-        # Stories with FauxPas ---
-        trialid %in% items_FP_Q2 & RAW == 'Si' ~ 1,
-        trialid %in% items_FP_Q2 & RAW != 'Si' ~ 0,
-        
-        # Items 3 to 7
-        trialid %in% c("fauxPasEv_012") & RAW == "Sara" ~ 1,
-        trialid %in% c("fauxPasEv_012") & RAW != "Sara" ~ 0,
-        trialid %in% c("fauxPasEv_030") & RAW == "Alicia" ~ 1,
-        trialid %in% c("fauxPasEv_030") & RAW == "Julia" ~ 0,
-        trialid %in% c("fauxPasEv_015", "fauxPasEv_033","fauxPasEv_060","fauxPasEv_096","fauxPasEv_105","fauxPasEv_114","fauxPasEv_123","fauxPasEv_132","fauxPasEv_141","fauxPasEv_159") & RAW == "No" ~ 1,
-        trialid %in% c("fauxPasEv_015", "fauxPasEv_033","fauxPasEv_060","fauxPasEv_096","fauxPasEv_105","fauxPasEv_114","fauxPasEv_123","fauxPasEv_132","fauxPasEv_141","fauxPasEv_159") & RAW == "Si" ~ 0,
-        trialid %in% c("fauxPasEv_057") & RAW == "La vecina María" ~ 1,
-        trialid %in% c("fauxPasEv_057") & RAW != "La vecina María" ~ 0,
-        trialid %in% c("fauxPasEv_093") & RAW == "Roberto, el ingeniero" ~ 1,
-        trialid %in% c("fauxPasEv_093") & RAW != "Roberto, el ingeniero" ~ 0,
-        trialid %in% c("fauxPasEv_102") & RAW == "José" ~ 1,
-        trialid %in% c("fauxPasEv_102") & RAW != "José" ~ 0,
-        trialid %in% c("fauxPasEv_111") & RAW == "Sergio, el primo de Karina" ~ 1,
-        trialid %in% c("fauxPasEv_111") & RAW == "Karina" ~ 0,
-        trialid %in% c("fauxPasEv_120") & RAW == "Ana" ~ 1,
-        trialid %in% c("fauxPasEv_120") & RAW == "Josefina" ~ 0,
-        trialid %in% c("fauxPasEv_129") & RAW == "Julian" ~ 1,
-        trialid %in% c("fauxPasEv_129") & RAW == "Cristina" ~ 0,
-        trialid %in% c("fauxPasEv_138") & RAW == "Tito" ~ 1,
-        trialid %in% c("fauxPasEv_138") & RAW != "Tito" ~ 0,
-        trialid %in% c("fauxPasEv_156") & RAW == "Clara" ~ 1,
-        trialid %in% c("fauxPasEv_156") & RAW != "Clara" ~ 0,
-        
-        
-        # SIN FAUX PAS. Items 8 & 9 ---------------------
-        trialid %in% c("fauxPasEv_008") & RAW == "Casa de Oscar" ~ 1,
-        trialid %in% c("fauxPasEv_008") & RAW != "Casa de Oscar" ~ 0,
-        trialid %in% c("fauxPasEv_009") & RAW == "No" ~ 1,
-        trialid %in% c("fauxPasEv_009") & RAW == "Si" ~ 0,
-        trialid %in% c("fauxPasEv_026") & RAW == "una camisa" ~ 1,
-        trialid %in% c("fauxPasEv_026") & RAW != "una camisa" ~ 0,
-        trialid %in% c("fauxPasEv_027") & RAW == "más grande" ~ 1,
-        trialid %in% c("fauxPasEv_027") & RAW != "más grande" ~ 0,
-        trialid %in% c("fauxPasEv_053") & RAW == "bencina" ~ 1,
-        trialid %in% c("fauxPasEv_053") & RAW != "bencina" ~ 0,
-        trialid %in% c("fauxPasEv_054") & RAW == "no aceptó tarjeta" ~ 1,
-        trialid %in% c("fauxPasEv_054") & RAW != "no aceptó tarjeta" ~ 0,
-        trialid %in% c("fauxPasEv_071") & RAW == "parque" ~ 1,
-        trialid %in% c("fauxPasEv_071") & RAW != "parque" ~ 0,
-        trialid %in% c("fauxPasEv_072") & RAW == "Sultan persigue pichones" ~ 1,
-        trialid %in% c("fauxPasEv_072") & RAW != "Sultan persigue pichones" ~ 0,
-        trialid %in% c("fauxPasEv_080") & RAW == "rol principal" ~ 1,
-        trialid %in% c("fauxPasEv_080") & RAW != "rol principal" ~ 0,
-        trialid %in% c("fauxPasEv_081") & RAW == "debe estar decepcionada" ~ 1,
-        trialid %in% c("fauxPasEv_081") & RAW != "debe estar decepcionada" ~ 0,
-        trialid %in% c("fauxPasEv_089") & RAW == "trepar el gran cañon" ~ 1,
-        trialid %in% c("fauxPasEv_089") & RAW != "trepar el gran cañon" ~ 0,
-        trialid %in% c("fauxPasEv_090") & RAW == "no tenia credencial" ~ 1,
-        trialid %in% c("fauxPasEv_090") & RAW != "no tenia credencial" ~ 0,
-        trialid %in% c("fauxPasEv_152") & RAW == "porque no venía" ~ 1,
-        trialid %in% c("fauxPasEv_152") & RAW != "porque no venía" ~ 0,
-        trialid %in% c("fauxPasEv_153") & RAW == "no" ~ 1,
-        trialid %in% c("fauxPasEv_153") & RAW != "no" ~ 0,
-        trialid %in% c("fauxPasEv_170") & RAW == "por un rayón" ~ 1,
-        trialid %in% c("fauxPasEv_170") & RAW != "por un rayón" ~ 0,
-        trialid %in% c("fauxPasEv_171") & RAW == "no se enojó" ~ 1,
-        trialid %in% c("fauxPasEv_171") & RAW != "no se enojó" ~ 0,
-        trialid %in% c("fauxPasEv_179") & RAW == "carnicería" ~ 1,
-        trialid %in% c("fauxPasEv_179") & RAW != "carnicería" ~ 0,
-        trialid %in% c("fauxPasEv_180") & RAW == "porque no escuchó" ~ 1,
-        trialid %in% c("fauxPasEv_180") & RAW != "porque no escuchó" ~ 0,
-        
-        
-        # CON FAUX PAS. Items 8 & 9 ---------------------
-        
-        trialid %in% c("fauxPasEv_017") & RAW == "Elena" ~ 1,
-        trialid %in% c("fauxPasEv_017") & RAW != "Elena" ~ 0,
-        trialid %in% c("fauxPasEv_018") & RAW == "Sara" ~ 1,
-        trialid %in% c("fauxPasEv_018") & RAW != "Sara" ~ 0,
-        trialid %in% c("fauxPasEv_134") & RAW == "Julian" ~ 1,
-        trialid %in% c("fauxPasEv_134") & RAW != "Julian" ~ 0,
-        trialid %in% c("fauxPasEv_135") & RAW == "No" ~ 1,
-        trialid %in% c("fauxPasEv_135") & RAW != "No" ~ 0,
-        
-        
-        # For manual correction
-        # trialid %in% c(
-        #   "fauxPasEv_014", "fauxPasEv_016", "fauxPasEv_032", "fauxPasEv_034", "fauxPasEv_061", 
-        #   "fauxPasEv_095", "fauxPasEv_097", "fauxPasEv_104", "fauxPasEv_106", "fauxPasEv_113", 
-        #   "fauxPasEv_115", "fauxPasEv_122", "fauxPasEv_124", "fauxPasEv_131", "fauxPasEv_133", 
-        #   "fauxPasEv_140", "fauxPasEv_142", "fauxPasEv_158", "fauxPasEv_160"
-        #   ) ~ 123456789,
+       # Stories
+       trialid %in% items_Q1 ~ NA_real_,
+       
+       # Stories without FauxPas ---
+       trialid %in% items_noFP_Q2 & RAW == 'No' ~ 2,
+       trialid %in% items_noFP_Q2 & RAW != 'No' ~ 0,
+       
+       # Do not score items 3 to 7 of NO FauxPas items (old Questions 2 to 6) 
+       trialid %in% items_noFP_Q3_Q7 ~ 0,
+       
+       
+       # Stories with FauxPas ---
+       trialid %in% items_FP_Q2 & RAW == 'Si' ~ 1,
+       trialid %in% items_FP_Q2 & RAW != 'Si' ~ 0,
+       
+       # Items 3 to 7 - Closed questions
+       trialid %in% c("fauxPasEv_012") & RAW == "Sara" ~ 1,
+       trialid %in% c("fauxPasEv_012") & RAW != "Sara" ~ 0,
+       trialid %in% c("fauxPasEv_030") & RAW == "Alicia" ~ 1,
+       trialid %in% c("fauxPasEv_030") & RAW == "Julia" ~ 0,
+       trialid %in% c("fauxPasEv_015", "fauxPasEv_033","fauxPasEv_060","fauxPasEv_096","fauxPasEv_105","fauxPasEv_114","fauxPasEv_123","fauxPasEv_132","fauxPasEv_141","fauxPasEv_159") & RAW == "No" ~ 1,
+       trialid %in% c("fauxPasEv_015", "fauxPasEv_033","fauxPasEv_060","fauxPasEv_096","fauxPasEv_105","fauxPasEv_114","fauxPasEv_123","fauxPasEv_132","fauxPasEv_141","fauxPasEv_159") & RAW == "Si" ~ 0,
+       trialid %in% c("fauxPasEv_057") & RAW == "La vecina María" ~ 1,
+       trialid %in% c("fauxPasEv_057") & RAW != "La vecina María" ~ 0,
+       trialid %in% c("fauxPasEv_093") & RAW == "Roberto, el ingeniero" ~ 1,
+       trialid %in% c("fauxPasEv_093") & RAW != "Roberto, el ingeniero" ~ 0,
+       trialid %in% c("fauxPasEv_102") & RAW == "José" ~ 1,
+       trialid %in% c("fauxPasEv_102") & RAW != "José" ~ 0,
+       trialid %in% c("fauxPasEv_111") & RAW == "Sergio, el primo de Karina" ~ 1,
+       trialid %in% c("fauxPasEv_111") & RAW == "Karina" ~ 0,
+       trialid %in% c("fauxPasEv_120") & RAW == "Ana" ~ 1,
+       trialid %in% c("fauxPasEv_120") & RAW == "Josefina" ~ 0,
+       trialid %in% c("fauxPasEv_129") & RAW == "Julian" ~ 1,
+       trialid %in% c("fauxPasEv_129") & RAW == "Cristina" ~ 0,
+       trialid %in% c("fauxPasEv_138") & RAW == "Tito" ~ 1,
+       trialid %in% c("fauxPasEv_138") & RAW != "Tito" ~ 0,
+       trialid %in% c("fauxPasEv_156") & RAW == "Clara" ~ 1,
+       trialid %in% c("fauxPasEv_156") & RAW != "Clara" ~ 0,
+       
+       
+       # SIN FAUX PAS. Items 8 & 9 - Closed questions ---------------------
+       trialid %in% c("fauxPasEv_009") & RAW == "No" ~ 1,
+       trialid %in% c("fauxPasEv_009") & RAW == "Si" ~ 0,
+       
+       # These are OPEN QUESTIONS. Correct manually
+       # trialid %in% c("fauxPasEv_008") & RAW == "Casa de Oscar" ~ 1,
+       # trialid %in% c("fauxPasEv_008") & RAW != "Casa de Oscar" ~ 0,
+       # trialid %in% c("fauxPasEv_026") & RAW == "una camisa" ~ 1,
+       # trialid %in% c("fauxPasEv_026") & RAW != "una camisa" ~ 0,
+       # trialid %in% c("fauxPasEv_027") & RAW == "más grande" ~ 1,
+       # trialid %in% c("fauxPasEv_027") & RAW != "más grande" ~ 0,
+       # trialid %in% c("fauxPasEv_053") & RAW == "bencina" ~ 1,
+       # trialid %in% c("fauxPasEv_053") & RAW != "bencina" ~ 0,
+       # trialid %in% c("fauxPasEv_054") & RAW == "no aceptó tarjeta" ~ 1,
+       # trialid %in% c("fauxPasEv_054") & RAW != "no aceptó tarjeta" ~ 0,
+       # trialid %in% c("fauxPasEv_071") & RAW == "parque" ~ 1,
+       # trialid %in% c("fauxPasEv_071") & RAW != "parque" ~ 0,
+       # trialid %in% c("fauxPasEv_072") & RAW == "Sultan persigue pichones" ~ 1,
+       # trialid %in% c("fauxPasEv_072") & RAW != "Sultan persigue pichones" ~ 0,
+       # trialid %in% c("fauxPasEv_080") & RAW == "rol principal" ~ 1,
+       # trialid %in% c("fauxPasEv_080") & RAW != "rol principal" ~ 0,
+       # trialid %in% c("fauxPasEv_081") & RAW == "debe estar decepcionada" ~ 1,
+       # trialid %in% c("fauxPasEv_081") & RAW != "debe estar decepcionada" ~ 0,
+       # trialid %in% c("fauxPasEv_089") & RAW == "trepar el gran cañon" ~ 1,
+       # trialid %in% c("fauxPasEv_089") & RAW != "trepar el gran cañon" ~ 0,
+       # trialid %in% c("fauxPasEv_090") & RAW == "no tenia credencial" ~ 1,
+       # trialid %in% c("fauxPasEv_090") & RAW != "no tenia credencial" ~ 0,
+       # trialid %in% c("fauxPasEv_152") & RAW == "porque no venía" ~ 1,
+       # trialid %in% c("fauxPasEv_152") & RAW != "porque no venía" ~ 0,
+       # trialid %in% c("fauxPasEv_153") & RAW == "no" ~ 1,
+       # trialid %in% c("fauxPasEv_153") & RAW != "no" ~ 0,
+       # trialid %in% c("fauxPasEv_170") & RAW == "por un rayón" ~ 1,
+       # trialid %in% c("fauxPasEv_170") & RAW != "por un rayón" ~ 0,
+       # trialid %in% c("fauxPasEv_171") & RAW == "no se enojó" ~ 1,
+       # trialid %in% c("fauxPasEv_171") & RAW != "no se enojó" ~ 0,
+       # trialid %in% c("fauxPasEv_179") & RAW == "carnicería" ~ 1,
+       # trialid %in% c("fauxPasEv_179") & RAW != "carnicería" ~ 0,
+       # trialid %in% c("fauxPasEv_180") & RAW == "porque no escuchó" ~ 1,
+       # trialid %in% c("fauxPasEv_180") & RAW != "porque no escuchó" ~ 0,
+       
+       
+       # CON FAUX PAS. Items 8 & 9 - Closed questions ---------------------
+       
+       trialid %in% c("fauxPasEv_017") & RAW == "Elena" ~ 1,
+       trialid %in% c("fauxPasEv_017") & RAW != "Elena" ~ 0,
+       trialid %in% c("fauxPasEv_018") & RAW == "Sara" ~ 1,
+       trialid %in% c("fauxPasEv_018") & RAW != "Sara" ~ 0,
+       trialid %in% c("fauxPasEv_134") & RAW == "Julian" ~ 1,
+       trialid %in% c("fauxPasEv_134") & RAW != "Julian" ~ 0,
+       trialid %in% c("fauxPasEv_135") & RAW == "No" ~ 1,
+       trialid %in% c("fauxPasEv_135") & RAW != "No" ~ 0,
+       
+       
+       # For manual correction (survey-html-form)
+       trialid %in% c("fauxPasEv_008", "fauxPasEv_013", "fauxPasEv_014", "fauxPasEv_016","fauxPasEv_026", "fauxPasEv_027", "fauxPasEv_031", "fauxPasEv_032",
+       "fauxPasEv_034", "fauxPasEv_035", "fauxPasEv_036", "fauxPasEv_044", "fauxPasEv_045", "fauxPasEv_053", "fauxPasEv_054", "fauxPasEv_058",
+       "fauxPasEv_059", "fauxPasEv_061", "fauxPasEv_062", "fauxPasEv_063", "fauxPasEv_071", "fauxPasEv_072", "fauxPasEv_080", "fauxPasEv_081",
+       "fauxPasEv_089", "fauxPasEv_090", "fauxPasEv_094", "fauxPasEv_095", "fauxPasEv_097", "fauxPasEv_098", "fauxPasEv_099", "fauxPasEv_103",
+       "fauxPasEv_104", "fauxPasEv_106", "fauxPasEv_107", "fauxPasEv_108", "fauxPasEv_112", "fauxPasEv_113", "fauxPasEv_115", "fauxPasEv_116",
+       "fauxPasEv_117", "fauxPasEv_121", "fauxPasEv_122", "fauxPasEv_124", "fauxPasEv_125", "fauxPasEv_126", "fauxPasEv_130", "fauxPasEv_131",
+       "fauxPasEv_133", "fauxPasEv_139", "fauxPasEv_140", "fauxPasEv_142", "fauxPasEv_143", "fauxPasEv_144", "fauxPasEv_152", "fauxPasEv_153",
+       "fauxPasEv_157", "fauxPasEv_158", "fauxPasEv_160", "fauxPasEv_161", "fauxPasEv_162", "fauxPasEv_170", "fauxPasEv_171", "fauxPasEv_179",
+       "fauxPasEv_180") ~ 123456789,
         
         is.na(RAW) ~ NA_real_,
         grepl(items_to_ignore, trialid) ~ NA_real_,
