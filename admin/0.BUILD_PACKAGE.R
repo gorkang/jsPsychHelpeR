@@ -59,7 +59,6 @@
   # Build
   devtools::build()
   devtools::install()
-  # renv::install("/home/emrys/gorkang@gmail.com/RESEARCH/PROYECTOS-Code/jsPsychR/jsPsychHelpeR_0.2.6.tar.gz") # Install package from file
 
 
 # CHECK functions ----------------------------------------------------------
