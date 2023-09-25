@@ -1,12 +1,12 @@
-##' Prepare PBS
+##' Prepare PBSr
 ##'
 ##' Template for the functions to prepare specific tasks. Most of this file should not be changed
 ##' Things to change: 
-##'   - Name of function: prepare_PBS -> prepare_[value of short_name_scale_str] 
+##'   - Name of function: prepare_PBSr -> prepare_[value of short_name_scale_str] 
 ##'   - dimensions parameter in standardized_names()
 ##'   - 2 [ADAPT] chunks
 ##'
-##' @title prepare_PBS
+##' @title prepare_PBSr
 ##'
 ##' @param short_name_scale_str 
 ##' @param DF_clean
@@ -14,10 +14,10 @@
 ##' @return
 ##' @author gorkang
 ##' @export
-prepare_PBS <- function(DF_clean, short_name_scale_str) {
+prepare_PBSr <- function(DF_clean, short_name_scale_str) {
 
   # DEBUG
-  # debug_function(prepare_PBS)
+  # debug_function(prepare_PBSr)
 
   
   # [ADAPT]: Items to ignore, reverse and dimensions ---------------------------------------
