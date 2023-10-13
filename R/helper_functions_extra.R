@@ -422,7 +422,7 @@ zip_files <- function(folder_files, zip_name, remove_files = FALSE, all_messages
     if (!is.null(RESULT$error)) {
       cli::cli_text(RESULT$error)
     } else {
-      cli::cli_alert_success("ZIPPED {length(FILES_ZIP)} protocol files to {gsub(project_folder, '', zip_name)}")
+      cli::cli_alert_success("ZIPPED {length(FILES_ZIP)} files to {fs::path_rel(gsub(project_folder, '', zip_name))}")
     }
   }
   # Remove temp dir and content
