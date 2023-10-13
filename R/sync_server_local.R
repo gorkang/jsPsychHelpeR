@@ -177,7 +177,7 @@ sync_server_local <-
     if (all_messages == TRUE) {
 
       cli::cli_bullets_raw(OUT_clean)
-      cli::cli_alert_info("SYNCED {length(OUT_clean) - 1} NEW files to {local_folder_terminal}")
+      cli::cli_alert_info("{length(OUT_clean) - 1} NEW files SYNCED to {local_folder_terminal}")
       cli::cli_alert_info("{length(FILES_in_local_folder)} files initially in {local_folder_terminal}")
       
       OUT_messages = ""
