@@ -1,12 +1,12 @@
-##' Prepare EQ
+##' Prepare BDI
 ##'
 ##' Template for the functions to prepare specific tasks. Most of this file should not be changed
 ##' Things to change: 
-##'   - Name of function: prepare_EQ -> prepare_[value of short_name_scale_str] 
+##'   - Name of function: prepare_BDI -> prepare_[value of short_name_scale_str] 
 ##'   - dimensions parameter in standardized_names()
 ##'   - 2 [ADAPT] chunks
 ##'
-##' @title prepare_EQ
+##' @title prepare_BDI
 ##'
 ##' @param short_name_scale_str 
 ##' @param DF_clean
@@ -14,12 +14,14 @@
 ##' @return
 ##' @author gorkang
 ##' @export
-prepare_EQ <- function(DF_clean, short_name_scale_str) {
+prepare_BDI <- function(DF_clean, short_name_scale_str) {
 
   # DEBUG
   # targets::tar_load_globals()
-  # debug_function(prepare_EQ)
+  # debug_function(prepare_BDI)
 
+  ### WORK IN PROGRESS ###
+  cli::cli_alert_info("***prepare_BDI NOT REVIEWED***")
   
   
   # [ADAPT 1/3]: Items to ignore and reverse, dimensions -----------------------
@@ -27,14 +29,15 @@ prepare_EQ <- function(DF_clean, short_name_scale_str) {
   
   description_task = "" # Brief description here
   
-  items_to_ignore = c("02", "03", "05", "07", "09", "13", "16", "17", "20", "23", "24", "30", "31", "33", "40", "45", "47", "51", "53", "56") # Ignore these items: If nothing to ignore, keep as is
+  items_to_ignore = c("000") # Ignore these items: If nothing to ignore, keep as is
   items_to_reverse = c("000") # Reverse these items: If nothing to reverse, keep as is
   
   ## NameDimension1, NameDimension2 should be the names of the dimensions
   ## Inside each c() create a vector of the item numbers for the dimension
   ## Add lines as needed. If there are no dimensions, keep as is
   items_dimensions = list(
-    CoeficienteEmpatia = c("01", "06", "19", "22", "25", "26", "35", "36", "37", "38", "41", "42", "43", "44", "52", "54", "55", "57", "58", "59", "60", "04", "08", "10", "11", "12", "14", "15", "18", "21", "27", "28", "29", "32", "34", "39", "46", "48", "49", "50")
+    NameDimension1 = c("000"),
+    NameDimension2 = c("000")
   )
   
   # [END ADAPT 1/3]: ***********************************************************
@@ -69,23 +72,8 @@ prepare_EQ <- function(DF_clean, short_name_scale_str) {
   
     # Transformations
     dplyr::mutate(
-      DIR =
-       dplyr::case_when(
-         trialid %in% c("EQ_01", "EQ_06", "EQ_19", "EQ_22", "EQ_25", "EQ_26", "EQ_35", "EQ_36", "EQ_37", "EQ_38", "EQ_41", "EQ_42", "EQ_43", "EQ_44", "EQ_52", "EQ_54", "EQ_55", "EQ_57", "EQ_58", "EQ_59", "EQ_60") & RAW %in% c("Totalmente de acuerdo", "Totalmentede acuerdo") ~ 2,
-         trialid %in% c("EQ_01", "EQ_06", "EQ_19", "EQ_22", "EQ_25", "EQ_26", "EQ_35", "EQ_36", "EQ_37", "EQ_38", "EQ_41", "EQ_42", "EQ_43", "EQ_44", "EQ_52", "EQ_54", "EQ_55", "EQ_57", "EQ_58", "EQ_59", "EQ_60") & RAW %in% c("Un poco de acuerdo", "Un pocode acuerdo") ~ 1,
-         trialid %in% c("EQ_01", "EQ_06", "EQ_19", "EQ_22", "EQ_25", "EQ_26", "EQ_35", "EQ_36", "EQ_37", "EQ_38", "EQ_41", "EQ_42", "EQ_43", "EQ_44", "EQ_52", "EQ_54", "EQ_55", "EQ_57", "EQ_58", "EQ_59", "EQ_60") & RAW %in% c("Un poco de desacuerdo", "Un pocode desacuerdo") ~ 0,
-         trialid %in% c("EQ_01", "EQ_06", "EQ_19", "EQ_22", "EQ_25", "EQ_26", "EQ_35", "EQ_36", "EQ_37", "EQ_38", "EQ_41", "EQ_42", "EQ_43", "EQ_44", "EQ_52", "EQ_54", "EQ_55", "EQ_57", "EQ_58", "EQ_59", "EQ_60") & RAW %in% c( "Totalmente desacuerdo", "Totalmentedesacuerdo") ~ 0,
-         
-         trialid %in% c("EQ_04", "EQ_08", "EQ_10", "EQ_11", "EQ_12", "EQ_14", "EQ_15", "EQ_18", "EQ_21", "EQ_27", "EQ_28", "EQ_29", "EQ_32", "EQ_34", "EQ_39", "EQ_46", "EQ_48", "EQ_49", "EQ_50") & RAW %in% c("Totalmente de acuerdo", "Totalmentede acuerdo") ~ 0,
-         trialid %in% c("EQ_04", "EQ_08", "EQ_10", "EQ_11", "EQ_12", "EQ_14", "EQ_15", "EQ_18", "EQ_21", "EQ_27", "EQ_28", "EQ_29", "EQ_32", "EQ_34", "EQ_39", "EQ_46", "EQ_48", "EQ_49", "EQ_50") & RAW %in% c("Un poco de acuerdo", "Un pocode acuerdo") ~ 0,
-         trialid %in% c("EQ_04", "EQ_08", "EQ_10", "EQ_11", "EQ_12", "EQ_14", "EQ_15", "EQ_18", "EQ_21", "EQ_27", "EQ_28", "EQ_29", "EQ_32", "EQ_34", "EQ_39", "EQ_46", "EQ_48", "EQ_49", "EQ_50") & RAW %in% c("Un poco de desacuerdo", "Un pocode desacuerdo") ~ 1,
-         trialid %in% c("EQ_04", "EQ_08", "EQ_10", "EQ_11", "EQ_12", "EQ_14", "EQ_15", "EQ_18", "EQ_21", "EQ_27", "EQ_28", "EQ_29", "EQ_32", "EQ_34", "EQ_39", "EQ_46", "EQ_48", "EQ_49", "EQ_50") & RAW %in% c( "Totalmente desacuerdo", "Totalmentedesacuerdo") ~ 2,
-         
-          is.na(RAW) ~ NA_real_, # OR NA_character_,
-          trialid %in% paste0(short_name_scale_str, "_", items_to_ignore) ~ NA_real_, # OR NA_character_,
-          TRUE ~ 9999 # OR "9999"
-        )
-    ) %>% 
+      DIR = as.numeric(stringr::str_extract(RAW, "[0-9]"))
+      ) %>% 
     
     # Invert items [CAN BE DELETED IF NOT USED or DIR is non-numeric]
     dplyr::mutate(
@@ -132,7 +120,11 @@ prepare_EQ <- function(DF_clean, short_name_scale_str) {
       # [CHECK] Using correct formula? rowMeans() / rowSums()
       
       # Score Dimensions (see standardized_names(help_names = TRUE) for instructions)
-      !!names_list$name_DIRd[1] := rowSums(select(., paste0(short_name_scale_str, "_", items_dimensions[[1]], "_DIR")), na.rm = TRUE)
+      # !!names_list$name_DIRd[1] := rowMeans(select(., paste0(short_name_scale_str, "_", items_dimensions[[1]], "_DIR")), na.rm = TRUE), 
+      
+      # Score Scale
+      !!names_list$name_DIRt := rowSums(select(., matches("_DIR$")), na.rm = TRUE)
+      
     )
     
   # [END ADAPT 3/3]: ***********************************************************
