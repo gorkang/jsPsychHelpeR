@@ -15,5 +15,5 @@ options(encoding = "UTF-8")
 cli::cli_alert_info(c("Welcome to your jsPsychHelpeR project. To start, open `run.R` and `_targets.R`:\n\n", "rstudioapi::navigateToFile('run.R')\n", "rstudioapi::navigateToFile('_targets.R')"))
 
 # If we are in interactive mode, load all functions
-if (rlang::is_interactive()) devtools::load_all()
+# if (rlang::is_interactive()) devtools::load_all()
 

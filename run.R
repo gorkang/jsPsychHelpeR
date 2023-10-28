@@ -2,12 +2,12 @@
 
   # Your full pipeline is in the file _targets.R. You can open the file with:
   # rstudioapi::navigateToFile("_targets.R")
-  
-  # Run data preparation 
-  targets::tar_make()
 
   # Visualize targets tree
   targets::tar_visnetwork(targets_only = TRUE, label = "time")
+
+  # Run data preparation 
+  targets::tar_make()
 
   # In case of an error --- 
     # See: https://books.ropensci.org/targets/debugging.html#workspaces
