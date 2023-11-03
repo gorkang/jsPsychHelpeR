@@ -1,6 +1,6 @@
-# RUN pipeline -------------------------------------------------------------
+# Run pipeline -------------------------------------------------------------
 
-  # Your full pipeline is in the file _targets.R. You can open the file with:
+  # The full pipeline is in the file _targets.R. Open it with:
   # rstudioapi::navigateToFile("_targets.R")
 
   # Visualize targets tree
@@ -8,7 +8,10 @@
 
   # Run data preparation 
   targets::tar_make()
-
+  
+  # Missing new task
+  # jsPsychHelpeR::create_new_task("Slider")
+  
   # In case of an error --- 
     # See: https://books.ropensci.org/targets/debugging.html#workspaces
     # tar_workspaces() # Lists the available workspaces (e.g. DF_clean)

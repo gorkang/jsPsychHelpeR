@@ -52,8 +52,8 @@ prepare_TEMPLATE <- function(DF_clean, short_name_scale_str) {
                                 short_name_scale = short_name_scale_str, 
                                 numeric_responses = FALSE, # [TRUE or FALSE]
                                 is_experiment = FALSE, 
-                                keep_time = FALSE, # Keep timestamp for each response
-                                help_prepare = TRUE) # Show n of items, responses,... [CHANGE to FALSE] 
+                                keep_time = FALSE, # Keep time stamp for each response
+                                help_prepare = FALSE) # Show n of items, responses,... [CHANGE to TRUE to debug] 
   
   
   # Create long DIR ------------------------------------------------------------
