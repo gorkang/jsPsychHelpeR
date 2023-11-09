@@ -394,6 +394,10 @@ check_project_and_results <- function(participants, folder_protocol, folder_resu
 #' @export
 zip_files <- function(folder_files, zip_name, remove_files = FALSE, all_messages = TRUE) {
   
+  if (remove_files == TRUE){
+    if (!grepl("^/tmp/", folder_files)) cli::cli_abort("folder_files should be a subfolder in `/tmp/` when remove_files = TRUE")  
+  }
+  
   # WIP: Now we append the files if the zip exists
     # If some files were deleted from source but not a previous zip, they remain there
 
@@ -427,7 +431,8 @@ zip_files <- function(folder_files, zip_name, remove_files = FALSE, all_messages
   }
   # Remove temp dir and content
   if (remove_files == TRUE) {
-    file.remove(FILES_ZIP)
+    # file.remove(FILES_ZIP)
+    unlink(folder_files, recursive = TRUE)
     if (all_messages == TRUE) cli::cli_alert_success("REMOVED {length(FILES_ZIP)} source files FROM {folder_files}")
   } else {
     if (all_messages == TRUE) cli::cli_alert_info("Will NOT REMOVE {length(FILES_ZIP)} source files FROM {folder_files}")
@@ -454,11 +459,21 @@ zip_files <- function(folder_files, zip_name, remove_files = FALSE, all_messages
 #' @param ignore_existing If TRUE, does not overwrite existing files even if they are newer. Good for .data/, Bad for rest
 #' @param all_messages Show all rsync messages? TRUE / FALSE
 #' @param tempdir_location You can choose a tempdir_location (for example, to extract contents of an existing zip and sync only new files)
+#' @param file_name Name of zip file. If NULL, the default, will apply simple rules to create name.
 #'
 #' @return A zip file
 #' @export
-get_zip <- function(pid, what, where = NULL, list_credentials = NULL, dont_ask = TRUE, ignore_existing = FALSE, all_messages = FALSE, tempdir_location = NULL) {
-  
+get_zip <-
+  function(pid,
+           what,
+           where = NULL,
+           list_credentials = NULL,
+           dont_ask = TRUE,
+           ignore_existing = FALSE,
+           all_messages = FALSE,
+           tempdir_location = NULL,
+           file_name = NULL) {
+    
   # DEBUG
   # jsPsychAdmin::get_parameters_of_function("jsPsychHelpeR::get_zip()")
   # pid = "999"
@@ -469,8 +484,6 @@ get_zip <- function(pid, what, where = NULL, list_credentials = NULL, dont_ask =
   
   # Check what is one of the available options
   # what = rlang::arg_match(what)
-  
-  
   if (!exists("what")) cli::cli_abort("parameter `what` missing. Should be `data` or `protocol`" )
   if (!what %in% c("data", "protocol")) cli::cli_abort("`what` should be `data` or `protocol`" )
   
@@ -486,10 +499,13 @@ get_zip <- function(pid, what, where = NULL, list_credentials = NULL, dont_ask =
     
     download_folder = "../SHARED-data/"
     if (!is.null(where)) download_folder = where
-
+    
     server_folder = paste0(pid, "/.data")
     exclude_csv = FALSE
+    
     zip_name = here::here(paste0(download_folder, pid, "/", pid_safe, ".zip"))
+    if (!is.null(file_name)) zip_name = here::here(paste0(download_folder, pid, "/", file_name))
+    
     dir.create(dirname(zip_name), recursive = TRUE, showWarnings = FALSE)
     
   } else if (what == "protocol") {
@@ -499,13 +515,15 @@ get_zip <- function(pid, what, where = NULL, list_credentials = NULL, dont_ask =
     
     server_folder = pid
     exclude_csv = TRUE
-    zip_name = paste0(project_folder, download_folder, pid_safe, ".zip")
+    
+    zip_name = paste0(download_folder, pid_safe, ".zip")
+    if (!is.null(file_name)) zip_name = here::here(paste0(download_folder, file_name))
     
   }
   
   
   # Create temp dir to download the protocol
-  if (is.null(tempdir_location)) tempdir_location = tempdir(check = TRUE)
+  if (is.null(tempdir_location)) tempdir_location = paste0(tempdir(check = TRUE), "/get_zip/")
   
   OUT = sync_server_local(server_folder = server_folder, 
                           local_folder = tempdir_location,

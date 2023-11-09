@@ -12,7 +12,8 @@ get_zip(
   dont_ask = TRUE,
   ignore_existing = FALSE,
   all_messages = FALSE,
-  tempdir_location = NULL
+  tempdir_location = NULL,
+  file_name = NULL
 )
 }
 \arguments{
@@ -31,6 +32,8 @@ get_zip(
 \item{all_messages}{Show all rsync messages? TRUE / FALSE}
 
 \item{tempdir_location}{You can choose a tempdir_location (for example, to extract contents of an existing zip and sync only new files)}
+
+\item{file_name}{Name of zip file. If NULL, the default, will apply simple rules to create name.}
 }
 \value{
 A zip file
