@@ -89,7 +89,7 @@ run_initial_setup <- function(pid, download_files = FALSE, data_location = NULL,
       if (!credentials_exist) cli::cli_abort("Can't find server credentials in '.vault/.credentials'")
       
       # update_data(pid = pid, folder = folder)
-      get_zip(pid = pid, what = "data", where = paste0(folder, "/data/"), dont_ask = TRUE, list_credentials = source(".vault/.credentials"))
+      get_zip(pid = pid, what = "data", where = paste0(folder, "/data/"), dont_ask = TRUE, list_credentials = source(credentials_file))
         
     } else if (download_files == FALSE) {
       
