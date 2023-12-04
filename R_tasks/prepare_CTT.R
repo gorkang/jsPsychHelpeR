@@ -132,7 +132,9 @@ prepare_CTT <- function(DF_clean, short_name_scale_str) {
       # Score Scale
       # !!names_list$name_DIRt := rowSums(select(., matches("_DIR$")), na.rm = TRUE)
       
-    )
+    ) |> 
+    mutate(CTT_ConditionBetween_DIRd = condition_between)
+  
     
   # [END ADAPT 3/3]: ***********************************************************
   # ****************************************************************************
