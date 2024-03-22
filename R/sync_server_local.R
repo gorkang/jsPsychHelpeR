@@ -38,7 +38,7 @@ sync_server_local <-
     # Parameters --------------------------------------------------------------
     
     if (only_test == TRUE) {
-      extra_message = paste0(cli::col_red("THIS IS A dry-run"))
+      extra_message = paste0("||| THIS IS A dry-run |||")
       dry_run = " --dry-run "
     } else {
       extra_message = ""
@@ -103,9 +103,11 @@ sync_server_local <-
     # CHECK -------------------------------------------------------------------
     
     if (direction == "server_to_local") {
-      message_text = paste0(cli::col_yellow("Will sync: "), cli::col_silver("cscn.uai.cl/", server_folder, " -->> ", local_folder), "\n", extra_message)
+      message_text = paste0("\n", extra_message, "\n", cli::col_yellow("Will sync: "), cli::col_silver("cscn.uai.cl/lab/protocols/", server_folder, " -->> ", local_folder))
+      message_text_simple = paste0("\n", extra_message, "\n cscn.uai.cl/lab/protocols/", server_folder, " -->> ", local_folder)
     } else if (direction == "local_to_server") {
-      message_text = paste0(cli::col_yellow("Will sync: "), cli::col_silver(local_folder, " -->> ", "cscn.uai.cl/", server_folder), "\n", extra_message)
+      message_text = paste0("\n", extra_message, "\n", cli::col_yellow("Will sync: "), cli::col_silver(local_folder, " -->> ", "cscn.uai.cl/lab/protocols/", server_folder))
+      message_text_simple = paste0("\n", extra_message, "\n", local_folder, " -->> cscn.uai.cl/lab/protocols/", server_folder)
     } else {
       cli::cli_abort("`direction` should be either 'server_to_local' or 'local_to_server'")
     }
@@ -118,8 +120,9 @@ sync_server_local <-
       if (all_messages == TRUE) {
         cli::cli_par()
         cli::cli_end()
+        cat(message_text)
         # cli::cli_text(paste0(cli::col_yellow("BACKUP of full protocol WITHOUT data: "), cli::col_silver("cscn.uai.cl/", server_folder, " -->> data/protocol_", local_folder), "\n", extra_message))
-        cli::cli_text(paste0(cli::col_yellow("Will sync: "), cli::col_silver("cscn.uai.cl/", server_folder, " -->> ", local_folder), "\n", extra_message))
+        # cli::cli_text(paste0(cli::col_yellow("Will sync: "), cli::col_silver("cscn.uai.cl/lab/protocols/", server_folder, " -->> ", local_folder), "\n", extra_message))
       }
       
     } else {
@@ -171,21 +174,20 @@ sync_server_local <-
     
     
     # Clean OUT so only filenames remain
-    OUT_clean = OUT[!grepl("^deleting|^receiving incremental file list|^sent|\\.\\/|^total", OUT)]
+    OUT_clean = OUT[!grepl("^deleting|^receiving incremental file list|^sent|\\.\\/|^total|sending incremental file list", OUT)]
     
     # Show messages and create output
     if (all_messages == TRUE) {
 
       cli::cli_bullets_raw(OUT_clean)
-      cli::cli_alert_info("{length(OUT_clean) - 1} NEW files SYNCED to {local_folder_terminal}")
+      cli::cli_alert_info("{length(OUT_clean) - 1} NEW files SYNCED {message_text_simple}")
       cli::cli_alert_info("{length(FILES_in_local_folder)} files initially in {local_folder_terminal}")
       
       OUT_messages = ""
       
     } else {
       
-      OUT_messages = paste0(length(OUT_clean) - 1, " NEW files SYNCED to ", local_folder_terminal,
-                            " | ", length(FILES_in_local_folder), " files initially ")
+      OUT_messages = paste0(length(OUT_clean) - 1, " NEW files SYNCED ", message_text_simple)
       
     }
     
