@@ -8,6 +8,9 @@
 #' @export
 test_testthat <- function(...) { # input_files_automatic_tests_str
 
+  # DEBUG
+  # arguments = c("df_AIM", "df_Consent")
+  
   # Load targets objects used in tests --------------------------------------
   
   argnames <- sys.call()

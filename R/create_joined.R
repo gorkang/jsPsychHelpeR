@@ -9,6 +9,8 @@
 create_joined <- function(...) {
   
   # DEBUG
+  # targets::tar_load_globals()
+  # debug_function("create_joined")
   # arguments = c("df_SBS", "df_CRT7")
   
   
