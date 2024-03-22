@@ -714,7 +714,7 @@ move_sensitive_tasks_to_vault <- function(pid, folder, sensitive_tasks = c("")) 
   
   data_folder = paste0(folder, '/data/' , pid, '/')
   
-  # TODO: filesshould be inside .vault/data_vault/`pid`?
+  # TODO: files should be inside .vault/data_vault/`pid`?
   
   if (sensitive_tasks != "") {
     # MOVE sensitive data to .vault
@@ -754,14 +754,9 @@ show_progress_pid <- function(pid = 3, files_vector, last_task = "Goodbye", goal
   # Prepare data ---
   
   # Read files in csv or zip
-  DF_files = read_csv_or_zip(files_vector) |> 
+  DF_files = tibble(filename = read_csv_or_zip(files_vector, only_list = TRUE)) |> 
     parse_filename()
-    # tidyr::separate(col = filename,
-    #                 into = c("project", "experiment", "version", "datetime", "id"),
-    #                 sep = c("_"), remove = FALSE) %>%
-    # dplyr::mutate(id = gsub("(*.)\\.csv", "\\1", id))
-  
-  
+
   DF_progress =
     DF_files %>%
     dplyr::filter(experiment == last_task) %>%#"COVIDCONTROL"
@@ -1094,7 +1089,7 @@ read_csv_or_zip <- function(input_files, workers = 1, only_list = FALSE) {
 #' @export
 #'
 #' @examples read_zips(system.file("extdata/", "999.zip", package = "jsPsychHelpeR"))
-read_zips = function(input_files, workers = 1, unzip_dir = file.path(dirname(input_files), sprintf("csvtemp_%s", sub(".zip", "", basename(input_files)))), silent = FALSE, do_cleanup = TRUE, only_list = FALSE){
+read_zips = function(input_files, workers = 1, unzip_dir = file.path(tempdir(), sprintf("csvtemp_%s", sub(".zip", "", basename(input_files)))), silent = FALSE, do_cleanup = TRUE, only_list = FALSE){
   
   dir.create(unzip_dir, showWarnings = FALSE)
   
@@ -1104,7 +1099,7 @@ read_zips = function(input_files, workers = 1, unzip_dir = file.path(dirname(inp
   } else if (tools::file_ext(input_files) %in% c("tar", "xz")) {
     utils::untar(input_files, exdir = unzip_dir) 
   } else {
-    cat(paste0("The file extension is '.", tools::file_ext(input_files), "' but needs to be either '.zip' or '.tar.xz'\n"))
+    cli::cli_abort(paste0("The file extension is '.", tools::file_ext(input_files), "' but needs to be either '.zip' or '.tar.xz'\n"))
   }
   
   # Read only the csv's inside the zip
