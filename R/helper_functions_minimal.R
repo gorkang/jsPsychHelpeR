@@ -779,6 +779,8 @@ show_progress_pid <- function(pid = 3, files_vector, last_task = "Goodbye", goal
     date_breaks = "days"
   }
   
+  # Nudge proportionally with a minimum of 5
+  nudge_value = ifelse(goal/50 < 5, 5, goal/50)
   
   PLOT_progress =
     DF_progress %>%
@@ -786,6 +788,7 @@ show_progress_pid <- function(pid = 3, files_vector, last_task = "Goodbye", goal
     ggplot2::geom_line() +
     ggplot2::geom_bar(ggplot2::aes(fecha_registro, numero_registros), stat = "identity", alpha = .5) +
     ggplot2::geom_point() +
+    ggplot2::geom_text(aes(label = suma_total), nudge_y = nudge_value) +
     ggplot2::geom_hline(yintercept = goal, linetype = "dashed", color = "grey") +
     ggplot2::theme_minimal(base_size = 16) +
     ggplot2::scale_x_date(date_breaks = date_breaks, guide = ggplot2::guide_axis(angle = 90)) +
