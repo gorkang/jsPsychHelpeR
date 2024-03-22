@@ -8,7 +8,7 @@ Function to unzip and read csv files. This is used in read_csv_or_zip()}
 read_zips(
   input_files,
   workers = 1,
-  unzip_dir = file.path(dirname(input_files), sprintf("csvtemp_\%s", sub(".zip", "",
+  unzip_dir = file.path(tempdir(), sprintf("csvtemp_\%s", sub(".zip", "",
     basename(input_files)))),
   silent = FALSE,
   do_cleanup = TRUE,

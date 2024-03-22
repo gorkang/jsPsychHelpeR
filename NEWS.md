@@ -10,6 +10,8 @@ Minor updates
 * Improved input_files test
 * Some small fixes to renv cache
 * Updated DT version to avoid a false positive in Google malware detector
+* Fixed a couple bugs in report_PROGRESS
+* Add tasks
 
 
 # jsPsychHelpeR 0.2.6
