@@ -92,7 +92,10 @@ ggplot2::ggsave(filename_plot, DF$PLOT_progress, width = 16, height = 10, bg = "
 ### All tasks
 
 ```{r all-tasks, echo=FALSE}
-DT::datatable(DF$DF_files %>% dplyr::count(experiment) %>% dplyr::arrange(dplyr::desc(n)),
+DT::datatable(DF$DF_files |> 
+                distinct(id, experiment) |>  
+                dplyr::count(experiment) |> 
+                dplyr::arrange(dplyr::desc(n)),
               width = "50%",
               rownames = FALSE,
               options = list(dom = 't',
