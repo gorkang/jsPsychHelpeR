@@ -132,16 +132,15 @@ prepare_AntiBots <- function(DF_clean, short_name_scale_str) {
     DF_wide_RAW %>% 
     dplyr::mutate(
 
-      # [CHECK] Using correct formula? rowMeans() / rowSums()
-      
       # Score Dimensions (see standardized_names(help_names = TRUE) for instructions)
       !!names_list$name_DIRd[1] := rowSums(select(., paste0(short_name_scale_str, "_", items_dimensions[[1]], "_DIR")), na.rm = TRUE), 
       !!names_list$name_DIRd[2] := rowSums(select(., paste0(short_name_scale_str, "_", items_dimensions[[2]], "_DIR")), na.rm = TRUE)
       
-      # Score Scale
-      # !!names_list$name_DIRt := rowSums(select(., matches("_DIR$")), na.rm = TRUE)
-      
-    )
+    ) |> 
+    
+    # Convert to 0-1 range
+    dplyr::mutate(!!names_list$name_DIRd[1] := get(names_list$name_DIRd[1])/4)
+  
     
   # [END ADAPT 3/3]: ***********************************************************
   # ****************************************************************************
