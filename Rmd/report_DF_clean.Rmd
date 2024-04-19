@@ -260,27 +260,25 @@ DT::datatable(DF_dims,
 ```
 
 
-### Responses (numeric and categorical)
+### Responses
 
-Only showing multi-choice, slider and liker scales.  
+<!-- Only showing multi-choice, slider and liker scales.   -->
 
 
 ```{r echo=FALSE}
 
 # Alternatives responses for each scale
-responses_table = DF %>% 
+responses_table = DF |> 
   # distinct(trial_type)
-  select(experiment, trial_type, trialid, response) %>% 
-  filter(trial_type %in% c("survey-multi-choice-vertical", "survey-multi-choice-horizontal", "likert", "html-slider-response")) %>% 
-  group_by(experiment) %>% 
+  select(experiment, trial_type, trialid, response) |> 
+  # filter(trial_type %in% c("survey-multi-choice-vertical", "survey-multi-choice-horizontal", "likert", "html-slider-response")) |> 
+  group_by(experiment) |> 
   distinct(trialid, response) 
-
 
 DT::datatable(responses_table, 
               filter = 'top', 
               options = list(dom = 'ltip', 
                              pageLength = 15))
-
 
 ```
 
