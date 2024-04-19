@@ -1,3 +1,10 @@
+# jsPsychHelpeR 0.2.7.900
+
+Minor updates
+
+* clean_names_analysis() to go from `TEST_DimensionName_DIRd` to `TEST Dimension Name`. Should be useful for tables, plots, etc.
+
+
 # jsPsychHelpeR 0.2.7
 
 Major updates
