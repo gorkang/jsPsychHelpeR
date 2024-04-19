@@ -1318,3 +1318,30 @@ snapshot_check <- function(snapshot_location = "testthat/_snaps/snapshots/") {
                         new_path = FILES)
   
 }
+
+#' clean_names_analysis
+#' Clean names of columns to use in output tables and plots
+#'
+#' @param DF 
+#'
+#' @return The same data frame after renaming the DIRd, DIRt and other similar variables
+#' @export
+#'
+#' @examples clean_names_analysis(tibble::tibble(IdParticipant = 1, TASK_SimpleThing_DIRd = 1, TASK3_NotSoSimple_DIRt = 1))
+clean_names_analysis <- function(DF) {
+
+  cols_to_rename = DF |> 
+    select(ends_with(c("DIRd", "DIRt", "RELd", "STDd"))) |> 
+    names()
+  
+  new_names = gsub(" DIRd| DIRt| RELd| STDd", "",
+       gsub("([a-z0-9])([A-Z])", "\\1 \\2", 
+            gsub("_", " ", cols_to_rename)))
+
+  DF_output = DF |> 
+    rename_with(~ new_names[which(cols_to_rename == .x)], 
+                .cols = all_of(cols_to_rename))
+  
+  return(DF_output)
+     
+}
