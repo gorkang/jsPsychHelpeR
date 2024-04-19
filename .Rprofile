@@ -1,4 +1,4 @@
-options(repos = c(CRAN = "https://packagemanager.rstudio.com/all/__linux__/jammy/latest"))
+options(repos = c(CRAN = "https://packagemanager.posit.co/all/__linux__/jammy/latest"))
 
 Sys.setenv(
   RENV_PATHS_LIBRARY = file.path("renv/lib")
