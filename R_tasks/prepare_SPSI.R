@@ -38,10 +38,10 @@ prepare_SPSI <- function(DF_clean, short_name_scale_str) {
     PositiveProblemOrientation = c("007", "009", "019", "028", "038"),
     NegativeProblemOrientation = c("001", "002", "006", "012", "013", "017", "032", "036", "041", "050"),
     RationalProblemSolving = c("011", "029", "033", "044", "049", "005", "020", "039", "047", "048", "018", "024", "040", "043", "046", "025", "026", "027", "035", "037"),
-    ProblemDefinitionAndFormulation = c("011", "029", "033", "044", "049"),
-    GenerationOfAlternativeSolutions = c("005", "020", "039", "047", "048"),
+    ProblemDefinitionFormulation = c("011", "029", "033", "044", "049"),
+    GenerationAlternativeSolutions = c("005", "020", "039", "047", "048"),
     DecisionMaking = c("018", "024", "040", "043", "046"),
-    SolutionImplementationAndVerification = c("025", "026", "027", "035", "037"),
+    SolutionImplementationVerification = c("025", "026", "027", "035", "037"),
     ImpulsivityCarelessnessStyle = c("003", "004", "008", "015", "021", "022", "034", "045", "051", "052"),
     AvoidanceStyle = c("010", "014", "016", "023", "030", "031", "042")
   )

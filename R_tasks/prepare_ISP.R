@@ -36,9 +36,9 @@ prepare_ISP <- function(DF_clean, short_name_scale_str) {
   ## Add lines as needed. If there are no dimensions, keep as is
   items_dimensions = list(
     ProblemasEjecucion = c("001", "002", "003", "006", "007", "008", "009", "011", "012", "014", "015", "017", "019", "020", "021", "024", "026", "029", "030", "031", "032", "035", "038", "040", "046"),
-    Problemascontrolejecutivo = c("006", "008", "009", "012", "015", "018", "021", "026", "030", "032", "035", "040"),
-    Problemasatencionales = c("002", "003", "007", "011", "017", "020", "031"),
-    Problemasmotivacionales = c("001", "014", "019", "024", "029", "038", "046"),
+    ProblemasControlEjecutivo = c("006", "008", "009", "012", "015", "018", "021", "026", "030", "032", "035", "040"),
+    ProblemasAtencionales = c("002", "003", "007", "011", "017", "020", "031"),
+    ProblemasMotivacionales = c("001", "014", "019", "024", "029", "038", "046"),
     ProblemasConducta = c("010", "016", "023", "027", "028", "033", "037", "039", "042", "043", "044", "045"),
     ProblemasControl = c("004", "005", "013", "022", "025", "034", "036", "041")
   )
