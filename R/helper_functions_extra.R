@@ -185,13 +185,14 @@ create_new_task <- function(short_name_task, overwrite = FALSE, get_info_googled
 #' Create a number series from a vector of numbers including individual numbers 
 #' and intervals such as c(1, "3-8", 11, "22-24")
 #' 
-#' @param numbers_RAW A vector of numbers or ranges
+#' @param numbers_RAW A vector of numbers or ranges'
+#' @param digits number of digits for the trialid's (3 by default)
 #'
 #' @return A character vector with numbers preceded by a 0, if needed
 #' @export
 #'
 #' @examples create_number_series(c(1, "3-8", 11, "22-24"))
-create_number_series <- function(numbers_RAW) {
+create_number_series <- function(numbers_RAW, digits = 3) {
   
   # Get rid of spaces
   numbers_RAW_clean = gsub(" ", "", numbers_RAW) #gsub(" - ", "-", numbers_RAW) %>% 
@@ -200,7 +201,7 @@ create_number_series <- function(numbers_RAW) {
   numbers_chunks = stringi::stri_extract_all(str = gsub(",|, ", ",", numbers_RAW_clean), regex = "[0-9]{1,3},|[0-9]{1,3}-[0-9]{1,3}|[0-9]{1,3}$") %>% unlist() %>% gsub(",", "", .)
   
   # For each of the chunks in numero_item_dimension_o_sub_escala
-  NUMBERS = 1:length(numbers_chunks) %>% 
+  NUMBERS = 1:length(numbers_chunks) |> 
     purrr::map(~ 
           {
             # If there is a "-" create sequence
@@ -210,9 +211,9 @@ create_number_series <- function(numbers_RAW) {
               as.numeric(numbers_chunks[.x])
             }
           }
-    ) %>% unlist()
+    ) |>  unlist()
   
-  NUMBERS_formatted = sprintf("%02d", NUMBERS)
+  NUMBERS_formatted = sprintf(paste0("%0", digits, "d"), NUMBERS)
   
   if (all(NUMBERS_formatted == "NA")) NUMBERS_formatted = "000"
   
@@ -230,9 +231,9 @@ create_number_series <- function(numbers_RAW) {
 #' @export
 #'
 #' @examples create_vector_items(VECTOR = c( 5, 9, 14, 16, 18))
-create_vector_items <- function(VECTOR, collapse_string = "|") {
+create_vector_items <- function(VECTOR, collapse_string = "|", digits = 3) {
   
-  cat(paste(sprintf("%02d", VECTOR), collapse = collapse_string))
+  cat(paste(sprintf(paste0("%0", digits, "d"), VECTOR), collapse = collapse_string))
 }
 
 
@@ -264,73 +265,7 @@ number_items_tasks <- function(DF_joined) {
 }
 
 
-
-#' update_data
-#' Download 'pid/.data/' server folder to 'data/pid' using rsync. If there are sensitive tasks, move those to .vault/data_vault
-#'
-#' @param pid protocol id
-#' @param folder project folder. Data will be downloaded to folder/data/pid
-#'
-#' @return Downloads data from server to the folder
-#' @export
-update_data <- function(pid, folder) {
-
-  # CHECKS --
-  # Avoid spaces in folder path because rsync won´t work if there are spaces
-  if (grepl(" ", folder)) cli::cli_abort("The folder path should NOT have spaces. You can replace {.code {folder}} for {.code {gsub(' ', '', folder)}}")
-  
-  
-  credentials_exist = file.exists(".vault/.credentials")
-  SSHPASS = Sys.which("sshpass") # Check if sshpass is installed
-  RSYNC = Sys.which("rsync") # Check if rsync is installed
-  
-  destination_folder = paste0(folder, '/data/' , pid, '/')
-  
-  # Creates pid folder inside data/
-  if (!dir.exists(destination_folder)) dir.create(destination_folder, recursive = TRUE)
-  
-  if (!credentials_exist) {
-    cli::cli_abort(
-      c("The file '.vault/.credentials' does NOT exist. Follow the steps in: ", 
-        'rstudioapi::navigateToFile("setup/setup_server_credentials.R")'))
-  }
-   
-  if (SSHPASS != "" & RSYNC != "") { 
-    
-      # Download files --
-    
-      cli::cli_alert_info("Synching files from pid {pid} to 'data/{pid}'")
-      
-      # WD = gsub(" ", "\\ ", getwd(), fixed = TRUE) # Replace " " in path to avoid error
-      list_credentials = source(".vault/.credentials")
-      result = system(paste0('sshpass -p ', list_credentials$value$password, 
-                    ' rsync -av --rsh=ssh ', 
-                    # From
-                    list_credentials$value$user, "@", list_credentials$value$IP, ":", list_credentials$value$main_FOLDER, pid, '/', '.data', '/ ', 
-                    # To
-                    # WD, '/', folder, '/' , pid, '/'), 
-                    destination_folder),
-                    intern = TRUE)
-      
-      if (length(result) == 4) {
-        cli::cli_alert_info("All files already in 'data/{pid}'")
-      } else {
-        cli::cli_alert_success("Downloaded {length(result) - 5} files to 'data/{pid}'")
-        
-        # destination_folder = paste0(WD, '/', folder, '/' , pid, '/')
-        files_destination = list.files(destination_folder)
-        cli::cli_alert_info("{length(files_destination)} files in 'data/{pid}'")
-      }
-      
-
-  } else {
-    
-    cli::cli_alert_danger("'sshpass' or 'rsync' not installed. Can't use `update_data()`")
-    cli::cli_alert_info("You need to manually download the files to '{paste0('data/', pid, '/')}'")
-    
-  }
-  
-}
+# update_data() Deprecated by get_zip()
 
 
 
