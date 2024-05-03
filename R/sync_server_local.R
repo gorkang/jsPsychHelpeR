@@ -135,6 +135,25 @@ sync_server_local <-
     
     if (out == 1) {
       
+      # Delete initial /
+      server_folder = gsub("^/", "", server_folder)
+      
+      # Full path in server
+      FOLDER_server = paste0(list_credentials$value$main_FOLDER, server_folder)
+      
+      # Public folder, only to show a simple message
+      FOLDER_URL = gsub("/srv/users/user-cscn/apps/uai-cscn/public/", "", list_credentials$value$main_FOLDER)
+      
+      # If it's a dev protocol delete protocol/ as protocols_DEV comes in pid
+      if (grepl("protocols_DEV", FOLDER_server)) {
+        FOLDER_URL = gsub("protocols/", "", FOLDER_URL)
+        FOLDER_server = gsub("protocols/", "", FOLDER_server)
+      }
+      
+      cli::cli_alert_info("Checking files in {.pkg https://cscn.uai.cl/{FOLDER_URL}{server_folder}}. This can take a while...")
+      
+      
+      
       if (direction == "server_to_local") {
         
         # DOWNLOAD server to local
@@ -145,7 +164,8 @@ sync_server_local <-
                      delete_nonexistent_files, # Delete files from destination if they are NOT in origin anymore
                      ignore_existing_text, # Ignore existing files
                      exclude_files, # exclude CSV files
-                     list_credentials$value$user, "@", list_credentials$value$IP, ":", list_credentials$value$main_FOLDER, server_folder, '/ ',
+                     # list_credentials$value$user, "@", list_credentials$value$IP, ":", list_credentials$value$main_FOLDER, server_folder, '/ ',
+                     list_credentials$value$user, "@", list_credentials$value$IP, ":", FOLDER_server, '/ ',
                      here::here(local_folder_terminal), '/ '
               ), intern = TRUE
             )
@@ -160,7 +180,9 @@ sync_server_local <-
             system(
               paste0('sshpass -p ', list_credentials$value$password, ' rsync -av ', dry_run, ' --rsh=ssh ', 
                      here::here(local_folder_terminal), '/ ',
-                     list_credentials$value$user, "@", list_credentials$value$IP, ":", list_credentials$value$main_FOLDER, server_folder, '/ '
+                     # list_credentials$value$user, "@", list_credentials$value$IP, ":", list_credentials$value$main_FOLDER, server_folder, '/ '
+                     list_credentials$value$user, "@", list_credentials$value$IP, ":", FOLDER_server, '/ '
+                     
               ), intern = TRUE)
           )
         
