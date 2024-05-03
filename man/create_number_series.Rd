@@ -6,10 +6,12 @@
 Create a number series from a vector of numbers including individual numbers
 and intervals such as c(1, "3-8", 11, "22-24")}
 \usage{
-create_number_series(numbers_RAW)
+create_number_series(numbers_RAW, digits = 3)
 }
 \arguments{
-\item{numbers_RAW}{A vector of numbers or ranges}
+\item{numbers_RAW}{A vector of numbers or ranges'}
+
+\item{digits}{number of digits for the trialid's (3 by default)}
 }
 \value{
 A character vector with numbers preceded by a 0, if needed

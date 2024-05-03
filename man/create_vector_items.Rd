@@ -5,7 +5,7 @@
 \title{create_vector_items
 Create an OR vector for the grepl() and other functions. From c(1,2) to "1|2"}
 \usage{
-create_vector_items(VECTOR, collapse_string = "|")
+create_vector_items(VECTOR, collapse_string = "|", digits = 3)
 }
 \arguments{
 \item{VECTOR}{numeric vector}
