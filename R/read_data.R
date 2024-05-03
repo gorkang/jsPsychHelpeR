@@ -30,7 +30,7 @@ read_data <- function(input_files, is_sensitive = FALSE, save_output = TRUE, wor
   # Wide version ------------------------------------------------------------
   DF_raw_wide = 
     DF_raw %>% 
-    dplyr::filter(!grepl("Instructions", trialid)) %>%
+    dplyr::filter(!grepl("[Ii]nstructions", trialid)) %>%
     dplyr::filter(trialid != "") %>% 
     dplyr::rename(RAW = response) %>%
     dplyr::select(id, trialid, RAW) %>%
