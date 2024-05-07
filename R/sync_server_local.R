@@ -10,7 +10,7 @@
 #' @param ignore_existing If TRUE, does not overwrite existing files even if they are newer. Good for .data/, Bad for rest
 #' @param dont_ask For the initial setup, do not ask and proceed! DANGER
 #' @param all_messages show all messages
-#' @param list_credentials where are the credentials
+#' @param credentials_file Path to .credentials file. Usually: `.vault/.credentials`
 #'
 #' @return Sync folders
 #' @export
@@ -24,7 +24,7 @@ sync_server_local <-
            ignore_existing = FALSE,
            dont_ask = FALSE,
            all_messages = TRUE,
-           list_credentials = NULL) {
+           credentials_file = NULL) {
     
     # DEBUG
     # jsPsychAdmin::get_parameters_of_function("jsPsychHelpeR::sync_server_local()")
@@ -75,11 +75,12 @@ sync_server_local <-
     # CHECKS we have credentials and necessary software ------------------------
     
     # Get server credentials
-    if (is.null(list_credentials)) {
+    if (is.null(credentials_file)) {
       list_credentials = source(here::here(".vault/.credentials")) 
       credentials_exist = file.exists(here::here(".vault/.credentials"))
     } else {
       credentials_exist = TRUE
+      list_credentials = source(here::here(credentials_file)) 
     }
     
     

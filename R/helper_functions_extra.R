@@ -389,7 +389,7 @@ zip_files <- function(folder_files, zip_name, remove_files = FALSE, all_messages
 #' @param pid project id
 #' @param what Should be one of c("data", "protocol")
 #' @param where Where to leave the zip file with the data. Leave empty to save to `SHARED-data/pid/`
-#' @param list_credentials list with the credentials. Usually source(".vault/.credentials")
+#' @param credentials_file Path to .credentials file. Usually: `.vault/.credentials`
 #' @param dont_ask TRUE / FALSE
 #' @param ignore_existing If TRUE, does not overwrite existing files even if they are newer. Good for .data/, Bad for rest
 #' @param all_messages Show all rsync messages? TRUE / FALSE
@@ -402,7 +402,7 @@ get_zip <-
   function(pid,
            what,
            where = NULL,
-           list_credentials = NULL,
+           credentials_file = NULL,
            dont_ask = TRUE,
            ignore_existing = FALSE,
            all_messages = FALSE,
@@ -413,7 +413,7 @@ get_zip <-
   # jsPsychAdmin::get_parameters_of_function("jsPsychHelpeR::get_zip()")
   # pid = "999"
   # what = "data"
-  # list_credentials = source(".vault/.credentials")
+  # credentials_file = ".vault/.credentials"
   
   # TODO: If no data, do not download!
   
@@ -469,7 +469,7 @@ get_zip <-
                           ignore_existing = ignore_existing,
                           dont_ask = dont_ask, 
                           all_messages = all_messages, 
-                          list_credentials = list_credentials)
+                          credentials_file = credentials_file)
   
   if (length(OUT) > 0) cli::cli_alert_info(OUT)
         
