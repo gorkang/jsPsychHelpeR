@@ -59,11 +59,10 @@ prepare_DASS21 <- function(DF_clean, short_name_scale_str) {
   dplyr::mutate(
     DIR =
      dplyr::case_when(
-        RAW == "0 No me aplicó" ~ 0,
-        RAW == "0 (No me aplicó)" ~ 0,
-        RAW == "1 Me aplicó un poco, o durante parte del tiempo" ~ 1,
-        RAW == "2 Me aplicó bastante, o durante una buena parte del tiempo" ~ 2,
-        RAW == "3 Me aplicó mucho, o la mayor parte del tiempo" ~ 3,
+       RAW %in% c("0 No me aplicó", "0 (No me aplicó)", "No me ha ocurrido") ~ 0,
+       RAW %in% c("1 Me aplicó un poco, o durante parte del tiempo", "Me ha ocurrido un poco, o durante parte del tiempo") ~ 1,
+       RAW %in% c("2 Me aplicó bastante, o durante una buena parte del tiempo", "Me ha ocurrido bastante, o durante una buena parte del tiempo") ~ 2,
+       RAW %in% c("3 Me aplicó mucho, o la mayor parte del tiempo", "Me ha ocurrido mucho, o la mayor parte del tiempo") ~ 3,
         is.na(RAW) ~ NA_real_,
         grepl(items_to_ignore, trialid) ~ NA_real_,
         TRUE ~ 9999

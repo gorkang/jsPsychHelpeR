@@ -1,12 +1,12 @@
-##' Prepare LSNS
+##' Prepare SDQ20
 ##'
 ##' Template for the functions to prepare specific tasks. Most of this file should not be changed
 ##' Things to change: 
-##'   - Name of function: prepare_LSNS -> prepare_[value of short_name_scale_str] 
+##'   - Name of function: prepare_SDQ20 -> prepare_[value of short_name_scale_str] 
 ##'   - dimensions parameter in standardized_names()
 ##'   - 2 [ADAPT] chunks
 ##'
-##' @title prepare_LSNS
+##' @title prepare_SDQ20
 ##'
 ##' @param short_name_scale_str 
 ##' @param DF_clean
@@ -14,12 +14,13 @@
 ##' @return
 ##' @author gorkang
 ##' @export
-prepare_LSNS <- function(DF_clean, short_name_scale_str) {
+prepare_SDQ20 <- function(DF_clean, short_name_scale_str) {
 
   # DEBUG
-  # debug_function(prepare_LSNS)
-  # get_dimensions_googledoc(short_name_text = "LSNS")
+  # targets::tar_load_globals()
+  # jsPsychHelpeR::debug_function(prepare_SDQ20)
   
+
   
   
   # [ADAPT 1/3]: Items to ignore and reverse, dimensions -----------------------
@@ -34,9 +35,15 @@ prepare_LSNS <- function(DF_clean, short_name_scale_str) {
   ## Inside each c() create a vector of the item numbers for the dimension
   ## Add lines as needed. If there are no dimensions, keep as is
   items_dimensions = list(
-    Familiares = c("01", "02", "03", "04", "05", "06"),
-    Amistados = c("07", "08", "09", "10", "11", "12")
-    )
+    SintomasDisociativosTractoGenitoUrinario = c("001", "010", "028"),
+    AlteracionesExteroSensoriales = c("004", "007", "016", "025", "031", "034", "037", "040"),
+    AlteracionesInteroceptivas = c("013", "022", "043", "058"),
+    AlteracionesMotoras = c("019", "046", "049", "052", "055")
+  )
+  
+  # TEXT_items = c("SDQ20_003", "SDQ20_006", "SDQ20_009", "SDQ20_012", "SDQ20_015", "SDQ20_018", "SDQ20_021", "SDQ20_024", "SDQ20_027", "SDQ20_030", "SDQ20_033", "SDQ20_036", "SDQ20_039", "SDQ20_042", "SDQ20_045", "SDQ20_048", "SDQ20_051", "SDQ20_054", "SDQ20_057", "SDQ20_060")
+  
+  
   
   # [END ADAPT 1/3]: ***********************************************************
   # ****************************************************************************
@@ -52,13 +59,16 @@ prepare_LSNS <- function(DF_clean, short_name_scale_str) {
                                 short_name_scale = short_name_scale_str, 
                                 numeric_responses = FALSE, # [TRUE or FALSE]
                                 is_experiment = FALSE, 
-                                help_prepare = FALSE) # Show n of items, responses,... [CHANGE to FALSE] 
+                                keep_time = FALSE, # Keep time stamp for each response
+                                help_prepare = FALSE) # Show n of items, responses,... [CHANGE to TRUE to debug] 
   
   
   # Create long DIR ------------------------------------------------------------
   DF_long_DIR = 
     DF_long_RAW %>% 
-   dplyr::select(id, trialid, RAW) %>%
+    # If using keep_time = TRUE above, use this and add timestamp to the select() call
+    # dplyr::mutate(timestamp = as.POSIXlt(datetime, format = "%Y-%m-%dT%H%M%S")) |> 
+    dplyr::select(id, trialid, RAW) %>%
     
     
     
@@ -69,35 +79,17 @@ prepare_LSNS <- function(DF_clean, short_name_scale_str) {
     dplyr::mutate(
       DIR =
        dplyr::case_when(
-          trialid %in% c("LSNS_01", "LSNS_03", "LSNS_04", "LSNS_07", "LSNS_09", "LSNS_10") & RAW == "Ninguno" ~ 0,
-          trialid %in% c("LSNS_01", "LSNS_03", "LSNS_04", "LSNS_07", "LSNS_09", "LSNS_10") & RAW == "Uno" ~ 1,
-          trialid %in% c("LSNS_01", "LSNS_03", "LSNS_04", "LSNS_07", "LSNS_09", "LSNS_10") & RAW == "Dos" ~ 2,
-          trialid %in% c("LSNS_01", "LSNS_03", "LSNS_04", "LSNS_07", "LSNS_09", "LSNS_10") & RAW == "Tres o cuatro" ~ 3,
-          trialid %in% c("LSNS_01", "LSNS_03", "LSNS_04", "LSNS_07", "LSNS_09", "LSNS_10") & RAW == "De cinco a ocho" ~ 4,
-          trialid %in% c("LSNS_01", "LSNS_03", "LSNS_04", "LSNS_07", "LSNS_09", "LSNS_10") & RAW == "Nueve o más" ~ 5,
-          trialid %in% c("LSNS_01", "LSNS_03", "LSNS_04", "LSNS_07", "LSNS_09", "LSNS_10") & RAW == "Nueve o má" ~ 5,
-          
-          trialid %in% c("LSNS_02", "LSNS_08") & RAW == "Menos de mensual" ~ 0,
-          trialid %in% c("LSNS_02", "LSNS_08") & RAW == "Menos de una vez por mes" ~ 0,
-          trialid %in% c("LSNS_02", "LSNS_08") & RAW == "Mensualmente" ~ 1,
-          trialid %in% c("LSNS_02", "LSNS_08") & RAW == "Mensual" ~ 1,
-          trialid %in% c("LSNS_02", "LSNS_08") & RAW == "Pocas veces al mes" ~ 2,
-          trialid %in% c("LSNS_02", "LSNS_08") & RAW == "Algunas veces al mes" ~ 2,
-          trialid %in% c("LSNS_02", "LSNS_08") & RAW == "Semanalmente" ~ 3,
-          trialid %in% c("LSNS_02", "LSNS_08") & RAW == "Algunas veces por semana" ~ 4,
-          trialid %in% c("LSNS_02", "LSNS_08") & RAW == "Diariamente" ~ 5,
-          
-          trialid %in% c("LSNS_05", "LSNS_06", "LSNS_11", "LSNS_12") & RAW == "Nunca" ~ 0,
-          trialid %in% c("LSNS_05", "LSNS_06", "LSNS_11", "LSNS_12") & RAW == "Rara vez" ~ 1,
-          trialid %in% c("LSNS_05", "LSNS_06", "LSNS_11", "LSNS_12") & RAW == "A veces" ~ 2,
-          trialid %in% c("LSNS_05", "LSNS_06", "LSNS_11", "LSNS_12") & RAW == "Con frecuencia" ~ 3,
-          trialid %in% c("LSNS_05", "LSNS_06", "LSNS_11", "LSNS_12") & RAW == "A menudo" ~ 3,
-          trialid %in% c("LSNS_05", "LSNS_06", "LSNS_11", "LSNS_12") & RAW == "Con mucha frecuencia" ~ 4,
-          trialid %in% c("LSNS_05", "LSNS_06", "LSNS_11", "LSNS_12") & RAW == "Muy a menudo" ~ 4,
-          trialid %in% c("LSNS_05", "LSNS_06", "LSNS_11", "LSNS_12") & RAW == "Siempre" ~ 5,
-          
+         RAW == "Si" ~ 1,
+         RAW == "No" ~ 0,
+         
+         RAW == "Nunca" ~ 1,
+         RAW == "Pocas veces" ~ 2,
+         RAW == "De vez en cuando" ~ 3,
+         RAW == "Frecuentemente" ~ 4,
+         RAW == "Casi todo el tiempo" ~ 5,
+         RAW == "Casi todo o todo el tiempo" ~ 5,
           is.na(RAW) ~ NA_real_, # OR NA_character_,
-          grepl(items_to_ignore, trialid) ~ NA_real_, # OR NA_character_,
+          trialid %in% paste0(short_name_scale_str, "_", items_to_ignore) ~ NA_real_, # OR NA_character_,
           TRUE ~ 9999 # OR "9999"
         )
     ) %>% 
@@ -134,7 +126,7 @@ prepare_LSNS <- function(DF_clean, short_name_scale_str) {
   # ****************************************************************************
   
   # Reliability -------------------------------------------------------------
-  # REL1 = auto_reliability(DF_wide_RAW, short_name_scale = short_name_scale_str, items = items_DIRd1)
+  # REL1 = auto_reliability(DF_wide_RAW, short_name_scale = short_name_scale_str, items = items_dimensions[[1]])
   # items_RELd1 = REL1$item_selection_string
     
   
@@ -147,14 +139,15 @@ prepare_LSNS <- function(DF_clean, short_name_scale_str) {
       # [CHECK] Using correct formula? rowMeans() / rowSums()
       
       # Score Dimensions (see standardized_names(help_names = TRUE) for instructions)
-      !!names_list$name_DIRd[1] := rowSums(select(., paste0(short_name_scale_str, "_", items_dimensions[[1]], "_DIR")), na.rm = TRUE), 
+      !!names_list$name_DIRd[1] := rowSums(select(., paste0(short_name_scale_str, "_", items_dimensions[[1]], "_DIR")), na.rm = TRUE),
       !!names_list$name_DIRd[2] := rowSums(select(., paste0(short_name_scale_str, "_", items_dimensions[[2]], "_DIR")), na.rm = TRUE),
-      
+      !!names_list$name_DIRd[3] := rowSums(select(., paste0(short_name_scale_str, "_", items_dimensions[[3]], "_DIR")), na.rm = TRUE),
+      !!names_list$name_DIRd[4] := rowSums(select(., paste0(short_name_scale_str, "_", items_dimensions[[4]], "_DIR")), na.rm = TRUE)
       # Reliability Dimensions (see standardized_names(help_names = TRUE) for instructions)
       # !!names_list$name_RELd[1] := rowMeans(select(., paste0(short_name_scale_str, "_", items_RELd1, "_DIR")), na.rm = TRUE), 
 
       # Score Scale
-      !!names_list$name_DIRt := rowSums(select(., matches("_DIR$")), na.rm = TRUE)
+      # !!names_list$name_DIRt := rowSums(select(., matches("_DIR$")), na.rm = TRUE)
       
     )
     
