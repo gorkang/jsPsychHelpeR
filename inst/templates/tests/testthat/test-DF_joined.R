@@ -102,7 +102,8 @@ testthat::test_that('Check DF_joined', {
   
   testthat::expect_equal(DF_999 %>% nrow(),
                          0,
-                         label = paste0("Number of 9999 values (errors from RAW to DIR) [", paste(DF_999 %>% dplyr::pull(name), collapse = ", "), "] ")
+                         label = paste0("Number of 9999 values (errors from RAW to DIR) [", paste(DF_999 %>% dplyr::pull(name), collapse = ", "), "] "),
+                         info = "Items with of 9999 values"
   )
   
 })
