@@ -15,7 +15,7 @@ sync_server_local(
   ignore_existing = FALSE,
   dont_ask = FALSE,
   all_messages = TRUE,
-  list_credentials = NULL
+  credentials_file = NULL
 )
 }
 \arguments{
@@ -37,7 +37,7 @@ sync_server_local(
 
 \item{all_messages}{show all messages}
 
-\item{list_credentials}{where are the credentials}
+\item{credentials_file}{Path to .credentials file. Usually: \code{.vault/.credentials}}
 }
 \value{
 Sync folders

@@ -8,7 +8,7 @@ get_zip(
   pid,
   what,
   where = NULL,
-  list_credentials = NULL,
+  credentials_file = NULL,
   dont_ask = TRUE,
   ignore_existing = FALSE,
   all_messages = FALSE,
@@ -23,7 +23,7 @@ get_zip(
 
 \item{where}{Where to leave the zip file with the data. Leave empty to save to \verb{SHARED-data/pid/}}
 
-\item{list_credentials}{list with the credentials. Usually source(".vault/.credentials")}
+\item{credentials_file}{Path to .credentials file. Usually: \code{.vault/.credentials}}
 
 \item{dont_ask}{TRUE / FALSE}
 

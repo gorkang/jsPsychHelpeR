@@ -1,10 +1,12 @@
-# jsPsychHelpeR 0.2.7.900
+# jsPsychHelpeR 0.3.5.900
 
 Minor updates
 
+* Sync version number with admin, maker, monkeys and manual
 * clean_names_analysis() to go from `TEST_DimensionName_DIRd` to `TEST Dimension Name`. Should be useful for tables, plots, etc.
 * sync_server_local() and run_initial_setup() should work now for development protocols.
 * Add digits parameter to create_number_series() so create_new_task(get_info_googledoc = TRUE) will output 3 digit trialid's  
+* All credentials parameters are now credentials_file instead of list_credentials
 
 
 # jsPsychHelpeR 0.2.7
