@@ -35,10 +35,13 @@ prepare_DES <- function(DF_clean, short_name_scale_str) {
   ## Inside each c() create a vector of the item numbers for the dimension
   ## Add lines as needed. If there are no dimensions, keep as is
   items_dimensions = list(
-    Ensimismamiento = c("002", "014", "015", "017", "018", "019", "020", "021", "022", "023", "024", "025"),
+    Ensimismamiento = c("002", "014", "015", "017", "018", "019", "020", "021", "022", "023", "024"),
     EstadosDisociativos = c("003", "004", "005", "006", "008", "010", "025", "026"),
-    Despersonalizacion = c("001", "007", "011", "012", "013", "016", "027", "028")
+    Despersonalizacion = c("001", "007", "011", "012", "013", "016", "027", "028"),
+    DesT = c("003", "005", "007", "008", "012", "013", "022")
   )
+  
+
   
   # [END ADAPT 1/3]: ***********************************************************
   # ****************************************************************************
@@ -129,9 +132,8 @@ prepare_DES <- function(DF_clean, short_name_scale_str) {
       !!names_list$name_DIRd[1] := rowMeans(select(., paste0(short_name_scale_str, "_", items_dimensions[[1]], "_DIR")), na.rm = TRUE),
       !!names_list$name_DIRd[2] := rowMeans(select(., paste0(short_name_scale_str, "_", items_dimensions[[2]], "_DIR")), na.rm = TRUE),
       !!names_list$name_DIRd[3] := rowMeans(select(., paste0(short_name_scale_str, "_", items_dimensions[[3]], "_DIR")), na.rm = TRUE),
-      # Reliability Dimensions (see standardized_names(help_names = TRUE) for instructions)
-      # !!names_list$name_RELd[1] := rowMeans(select(., paste0(short_name_scale_str, "_", items_RELd1, "_DIR")), na.rm = TRUE), 
-
+      !!names_list$name_DIRd[4] := rowMeans(select(., paste0(short_name_scale_str, "_", items_dimensions[[4]], "_DIR")), na.rm = TRUE),
+      
       # Score Scale
       !!names_list$name_DIRt := rowSums(select(., matches("_DIR$")), na.rm = TRUE)
       

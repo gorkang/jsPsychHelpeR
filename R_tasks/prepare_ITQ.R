@@ -20,8 +20,6 @@ prepare_ITQ <- function(DF_clean, short_name_scale_str) {
   # targets::tar_load_globals()
   # jsPsychHelpeR::debug_function(prepare_ITQ)
   
-
-  
   
   # [ADAPT 1/3]: Items to ignore and reverse, dimensions -----------------------
   # ****************************************************************************
@@ -30,10 +28,8 @@ prepare_ITQ <- function(DF_clean, short_name_scale_str) {
   
   items_to_ignore = c("000") # Ignore these items: If nothing to ignore, keep as is
   items_to_reverse = c("000") # Reverse these items: If nothing to reverse, keep as is
-  
-  ## NameDimension1, NameDimension2 should be the names of the dimensions
-  ## Inside each c() create a vector of the item numbers for the dimension
-  ## Add lines as needed. If there are no dimensions, keep as is
+
+    
   items_dimensions = list(
     
     ExperienciaTraumatica = c("001"),
@@ -51,15 +47,7 @@ prepare_ITQ <- function(DF_clean, short_name_scale_str) {
     AlteracionesRelaciones = c("016", "017"),
     AlteracionesAutoOrganizacion = c("012", "013", "014", "015", "016", "017")
     
-    # PTSDdiagnostico
-    # DeterioroFuncionalTept = c("009", "010", "011"),
-    # AutoOrganizacionC = c("018", "019", "020"),
-    
   )
-  
-  # HAY 10 DIMENSIONES DIAGNOSTICAS (SI/NO) Y 10 DIMENSIONES SUMATORIAS.
-  # DEFINIR SI SE HACEN LAS 20, O SOLO 10.
-  
   
   
   
@@ -109,15 +97,6 @@ prepare_ITQ <- function(DF_clean, short_name_scale_str) {
         )
     ) 
     
-    # Invert items [CAN BE DELETED IF NOT USED or DIR is non-numeric]
-    # dplyr::mutate(
-    #   DIR = 
-    #    dplyr::case_when(
-    #       DIR == 9999 ~ DIR, # To keep the missing values unchanged
-    #       trialid %in% paste0(short_name_scale_str, "_", items_to_reverse) ~ (6 - DIR), # REVIEW and replace 6 by MAX + 1
-    #       TRUE ~ DIR
-    #     )
-    # )
     
   # [END ADAPT 2/3]: ***********************************************************
   # ****************************************************************************
@@ -177,18 +156,18 @@ prepare_ITQ <- function(DF_clean, short_name_scale_str) {
     mutate(
       
       # PTSDDiag
-      ITQ_ReExperimentacionDiag_DIRd = ifelse(ITQ_003_DIR > 2 | ITQ_004_DIR > 2, 1, 0),
-      ITQ_EvitacionDiag_DIRd = ifelse(ITQ_005_DIR > 2 | ITQ_006_DIR > 2, 1, 0),
-      ITQ_SensacionAmenzaDiag_DIRd = ifelse(ITQ_007_DIR > 2 | ITQ_008_DIR > 2, 1, 0),
-      ITQ_DeterioroFuncionalDiag_DIRd = ifelse(ITQ_009_DIR > 2 | ITQ_010_DIR > 2 | ITQ_011_DIR > 2, 1, 0),
+      ITQ_ReExperimentacionDiag_DIRd = ifelse(ITQ_003_DIR >= 2 | ITQ_004_DIR >= 2, 1, 0),
+      ITQ_EvitacionDiag_DIRd = ifelse(ITQ_005_DIR >= 2 | ITQ_006_DIR >= 2, 1, 0),
+      ITQ_SensacionAmenzaDiag_DIRd = ifelse(ITQ_007_DIR >= 2 | ITQ_008_DIR >= 2, 1, 0),
+      ITQ_DeterioroFuncionalDiag_DIRd = ifelse(ITQ_009_DIR >= 2 | ITQ_010_DIR >= 2 | ITQ_011_DIR >= 2, 1, 0),
       PTSDDiag_TEMP = ifelse(ITQ_ReExperimentacionDiag_DIRd == 1 & ITQ_EvitacionDiag_DIRd == 1 & ITQ_SensacionAmenzaDiag_DIRd == 1 & ITQ_DeterioroFuncionalDiag_DIRd == 1, 1, 0),
       
       
       # PTSDComplexDiag
-      ITQ_DesregulacionAfectivaDiag_DIRd = ifelse(ITQ_012_DIR > 2 | ITQ_013_DIR > 2, 1, 0),
-      ITQ_AutoconceptoNegativoDiag_DIRd = ifelse(ITQ_014_DIR > 2 | ITQ_015_DIR > 2, 1, 0),
-      ITQ_AlteracionesRelacionesDiag_DIRd = ifelse(ITQ_016_DIR > 2 | ITQ_017_DIR > 2, 1, 0),
-      ITQ_DeterioroFuncionalAutoOrgDiag_DIRd = ifelse(ITQ_018_DIR > 2 | ITQ_019_DIR > 2 | ITQ_020_DIR > 2, 1, 0),
+      ITQ_DesregulacionAfectivaDiag_DIRd = ifelse(ITQ_012_DIR >= 2 | ITQ_013_DIR >= 2, 1, 0),
+      ITQ_AutoconceptoNegativoDiag_DIRd = ifelse(ITQ_014_DIR >= 2 | ITQ_015_DIR >= 2, 1, 0),
+      ITQ_AlteracionesRelacionesDiag_DIRd = ifelse(ITQ_016_DIR >= 2 | ITQ_017_DIR >= 2, 1, 0),
+      ITQ_DeterioroFuncionalAutoOrgDiag_DIRd = ifelse(ITQ_018_DIR >= 2 | ITQ_019_DIR >= 2 | ITQ_020_DIR >= 2, 1, 0),
       
       # Diagnostico
       # Se cumplen los criterios de PTSDDiag y NO el de DeterioroFuncionalAutoOrgDiag
@@ -199,7 +178,10 @@ prepare_ITQ <- function(DF_clean, short_name_scale_str) {
     ) |> 
     select(-PTSDDiag_TEMP)
   
-
+  # CHECK
+  # DF_wide_RAW_DIR |> select(ITQ_ReExperimentacionDiag_DIRd:ITQ_PTSDComplexDiag_DIRd) |> select(ITQ_DeterioroFuncionalAutoOrgDiag_DIRd, PTSDDiag_TEMP, ITQ_PTSDDiag_DIRd, ITQ_PTSDComplexDiag_DIRd, everything()) |> View()
+  # DF_wide_RAW_DIR |> filter(id==100) |> mutate(id = as.numeric(id)) |>  select(-ends_with("RAW"), -ITQ_001_DIR, -ITQ_002_DIR, -ITQ_ExperienciaTraumatica_DIRd, -ITQ_CuandoOcurrio_DIRd) |> pivot_longer(everything()) |> View()
+  
     
   # [END ADAPT 3/3]: ***********************************************************
   # ****************************************************************************

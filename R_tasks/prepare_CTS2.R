@@ -36,7 +36,12 @@ prepare_CTS2 <- function(DF_clean, short_name_scale_str) {
     PsychAggression = c("003", "013", "015", "018", "025", "033", "034", "035"),
     PhysicalAssault = c("004", "005", "009", "011", "014", "017", "019", "022", "023", "027", "031", "037"),
     SexualCoercion = c("008", "010", "024", "026", "029", "032", "038"),
-    Injury = c("006", "012", "016", "021", "028", "036")
+    Injury = c("006", "012", "016", "021", "028", "036"),
+    
+    PsychAggressionPrevalence = c("003", "013", "015", "018", "025", "033", "034", "035"),
+    PhysicalAssaultPrevalence = c("004", "005", "009", "011", "014", "017", "019", "022", "023", "027", "031", "037"),
+    SexualCoercionPrevalence = c("008", "010", "024", "026", "029", "032", "038"),
+    InjuryPrevalence = c("006", "012", "016", "021", "028", "036")
   )
   
   # [END ADAPT 1/3]: ***********************************************************
@@ -74,8 +79,8 @@ prepare_CTS2 <- function(DF_clean, short_name_scale_str) {
       DIR =
        dplyr::case_when(
          RAW == "Esto nunca ha ocurrido" ~ 0,
-         RAW == "No en el último año pero si ha ocurrido antes" ~ 1,
-         RAW == "No en el último año, pero si ha ocurrido antes" ~ 1,
+         RAW == "No en el último año pero si ha ocurrido antes" ~ 0,
+         RAW == "No en el último año, pero si ha ocurrido antes" ~ 0,
          RAW == "Una vez en el último año" ~ 1,
          RAW == "Dos veces en el último año" ~ 2,
          RAW == "3 a 5 veces en el último año pero ha ocurrido antes" ~ 4,
@@ -86,16 +91,23 @@ prepare_CTS2 <- function(DF_clean, short_name_scale_str) {
          is.na(RAW) ~ NA_real_, # OR NA_character_,
          trialid %in% paste0(short_name_scale_str, "_", items_to_ignore) ~ NA_real_, # OR NA_character_,
          TRUE ~ 9999 # OR "9999"
-        )
-    ) %>% 
-    
-    # Invert items [CAN BE DELETED IF NOT USED or DIR is non-numeric]
-    dplyr::mutate(
-      DIR = 
-       dplyr::case_when(
-          DIR == 9999 ~ DIR, # To keep the missing values unchanged
-          trialid %in% paste0(short_name_scale_str, "_", items_to_reverse) ~ (6 - DIR), # REVIEW and replace 6 by MAX + 1
-          TRUE ~ DIR
+        ),
+      # Needed for prevalence, as the option No en el último año is 0 for the scale, but 1 for prevalence
+      DIR_prev =
+        dplyr::case_when(
+          RAW == "Esto nunca ha ocurrido" ~ 0,
+          RAW == "No en el último año pero si ha ocurrido antes" ~ 1,
+          RAW == "No en el último año, pero si ha ocurrido antes" ~ 1,
+          RAW == "Una vez en el último año" ~ 1,
+          RAW == "Dos veces en el último año" ~ 1,
+          RAW == "3 a 5 veces en el último año pero ha ocurrido antes" ~ 1,
+          RAW == "3 a 5 veces en el último año" ~ 1,
+          RAW == "6 a 10 veces en el último año" ~ 1,
+          RAW == "11 a 20 veces en el último año" ~ 1,
+          RAW == "Más de 20 veces en el último año" ~ 1,
+          is.na(RAW) ~ NA_real_, # OR NA_character_,
+          trialid %in% paste0(short_name_scale_str, "_", items_to_ignore) ~ NA_real_, # OR NA_character_,
+          TRUE ~ 9999 # OR "9999"
         )
     )
     
@@ -108,7 +120,7 @@ prepare_CTS2 <- function(DF_clean, short_name_scale_str) {
     DF_long_DIR %>% 
     tidyr::pivot_wider(
       names_from = trialid, 
-      values_from = c(RAW, DIR),
+      values_from = c(RAW, DIR, DIR_prev),
       names_glue = "{trialid}_{.value}") %>% 
     
     # NAs for RAW and DIR items
@@ -137,15 +149,19 @@ prepare_CTS2 <- function(DF_clean, short_name_scale_str) {
       !!names_list$name_DIRd[4] := rowSums(select(., paste0(short_name_scale_str, "_", items_dimensions[[4]], "_DIR")), na.rm = TRUE),
       !!names_list$name_DIRd[5] := rowSums(select(., paste0(short_name_scale_str, "_", items_dimensions[[5]], "_DIR")), na.rm = TRUE),
 
-    ) |> 
 
     # Prevalence
-    mutate(
-      CTS2_PsychAggressionPrevalence_DIRd = ifelse(names_list$name_DIRd[2] > 0, 1, 0),
-      CTS2_PhysicalAssaultPrevalence_DIRd = ifelse(names_list$name_DIRd[3] > 0, 1, 0),
-      CTS2_SexualCoercionPrevalence_DIRd = ifelse(names_list$name_DIRd[4] > 0, 1, 0),
-      CTS2_InjuryPrevalence_DIRd = ifelse(names_list$name_DIRd[5] > 0, 1, 0)
-    )
+      !!names_list$name_DIRd[6] := rowSums(select(., paste0(short_name_scale_str, "_", items_dimensions[[6]], "_DIR_prev")), na.rm = TRUE),
+      !!names_list$name_DIRd[7] := rowSums(select(., paste0(short_name_scale_str, "_", items_dimensions[[7]], "_DIR_prev")), na.rm = TRUE),
+      !!names_list$name_DIRd[8] := rowSums(select(., paste0(short_name_scale_str, "_", items_dimensions[[8]], "_DIR_prev")), na.rm = TRUE),
+      !!names_list$name_DIRd[9] := rowSums(select(., paste0(short_name_scale_str, "_", items_dimensions[[9]], "_DIR_prev")), na.rm = TRUE)
+      
+      # CTS2_PsychAggressionPrevalence_DIRd = ifelse(names_list$name_DIRd[2] > 0, 1, 0),
+      # CTS2_PhysicalAssaultPrevalence_DIRd = ifelse(names_list$name_DIRd[3] > 0, 1, 0),
+      # CTS2_SexualCoercionPrevalence_DIRd = ifelse(names_list$name_DIRd[4] > 0, 1, 0),
+      # CTS2_InjuryPrevalence_DIRd = ifelse(names_list$name_DIRd[5] > 0, 1, 0)
+    ) |> 
+    select(-ends_with("_DIR_prev"))
     
   # [END ADAPT 3/3]: ***********************************************************
   # ****************************************************************************

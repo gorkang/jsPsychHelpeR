@@ -25,12 +25,17 @@ prepare_DASS21 <- function(DF_clean, short_name_scale_str) {
   items_to_ignore = c("000") # Ignore these items: If nothing to ignore, keep items_to_ignore = c("00")
   items_to_reverse = c("000") # Reverse these items: If nothing to reverse, keep  items_to_reverse = c("00")
   
-  names_dimensions = c("depresion", "ansiedad", "estres") # If no dimensions, keep names_dimensions = c("")
-  
-  items_DIRd1 = c("003", "005", "010", "013", "016", "017", "021")
-  items_DIRd2 = c("002", "004", "007", "009", "015", "019", "020")
-  items_DIRd3 = c("001", "006", "008", "011", "012", "014", "018")
-  
+  # names_dimensions = c("depresion", "ansiedad", "estres") # If no dimensions, keep names_dimensions = c("")
+  # 
+  # items_DIRd1 = c("003", "005", "010", "013", "016", "017", "021")
+  # items_DIRd2 = c("002", "004", "007", "009", "015", "019", "020")
+  # items_DIRd3 = c("001", "006", "008", "011", "012", "014", "018")
+  # 
+  items_dimensions = list(
+    depresion = c("003", "005", "010", "013", "016", "017", "021"),
+    ansiedad = c("002", "004", "007", "009", "015", "019", "020"),
+    estres = c("001", "006", "008", "011", "012", "014", "018")
+    )
   
   # [END ADAPT]: ***************************************************************
   # ****************************************************************************
@@ -38,11 +43,17 @@ prepare_DASS21 <- function(DF_clean, short_name_scale_str) {
   
   # Standardized names ------------------------------------------------------
   names_list = standardized_names(short_name_scale = short_name_scale_str, 
-                     dimensions = names_dimensions, # Use names of dimensions, "" or comment out line
-                     help_names = FALSE) # help_names = FALSE once the script is ready
+                                  dimensions = names(items_dimensions),
+                                  help_names = FALSE) # [KEEP as FALSE]
   
   # Create long -------------------------------------------------------------
-  DF_long_RAW = create_raw_long(DF_clean, short_name_scale = short_name_scale_str, numeric_responses = FALSE, help_prepare = FALSE)
+  DF_long_RAW = create_raw_long(DF_clean, 
+                                short_name_scale = short_name_scale_str, 
+                                numeric_responses = FALSE, # [TRUE or FALSE]
+                                is_experiment = FALSE, 
+                                keep_time = FALSE, # Keep time stamp for each response
+                                help_prepare = FALSE) # Show n of items, responses,... [CHANGE to TRUE to debug] 
+  
   
   
   # Create long DIR ------------------------------------------------------------
@@ -59,10 +70,10 @@ prepare_DASS21 <- function(DF_clean, short_name_scale_str) {
   dplyr::mutate(
     DIR =
      dplyr::case_when(
-       RAW %in% c("0 No me aplicó", "0 (No me aplicó)", "No me ha ocurrido") ~ 0,
-       RAW %in% c("1 Me aplicó un poco, o durante parte del tiempo", "Me ha ocurrido un poco, o durante parte del tiempo") ~ 1,
-       RAW %in% c("2 Me aplicó bastante, o durante una buena parte del tiempo", "Me ha ocurrido bastante, o durante una buena parte del tiempo") ~ 2,
-       RAW %in% c("3 Me aplicó mucho, o la mayor parte del tiempo", "Me ha ocurrido mucho, o la mayor parte del tiempo") ~ 3,
+        RAW %in% c("0 No me aplicó", "0 (No me aplicó)", "No me ha ocurrido") ~ 0,
+        RAW %in% c("1 Me aplicó un poco, o durante parte del tiempo", "Me ha ocurrido un poco, o durante parte del tiempo") ~ 1,
+        RAW %in% c("2 Me aplicó bastante, o durante una buena parte del tiempo", "Me ha ocurrido bastante, o durante una buena parte del tiempo") ~ 2,
+        RAW %in% c("3 Me aplicó mucho, o la mayor parte del tiempo", "Me ha ocurrido mucho, o la mayor parte del tiempo") ~ 3,
         is.na(RAW) ~ NA_real_,
         grepl(items_to_ignore, trialid) ~ NA_real_,
         TRUE ~ 9999
@@ -93,17 +104,9 @@ prepare_DASS21 <- function(DF_clean, short_name_scale_str) {
     
     # NAs for RAW and DIR items
     dplyr::mutate(!!names_list$name_RAW_NA := rowSums(is.na(select(., -matches(paste0(short_name_scale_str, "_", items_to_ignore, "_RAW")) & matches("_RAW$")))),
-           !!names_list$name_DIR_NA := rowSums(is.na(select(., -matches(paste0(short_name_scale_str, "_", items_to_ignore, "_DIR")) & matches("_DIR$")))))
+                  !!names_list$name_DIR_NA := rowSums(is.na(select(., -matches(paste0(short_name_scale_str, "_", items_to_ignore, "_DIR")) & matches("_DIR$")))))
   
   
-  # Reliability -------------------------------------------------------------
-  
-  # REL1 = auto_reliability(DF_wide_RAW, short_name_scale = short_name_scale_str, items = items_DIRd1)
-  # REL2 = auto_reliability(DF_wide_RAW, short_name_scale = short_name_scale_str, items = items_DIRd2)
-  # 
-  # items_RELd1 = REL1$item_selection_string
-  # items_RELd2 = REL2$item_selection_string
-
   
   # [ADAPT]: Scales and dimensions calculations --------------------------------
   # ****************************************************************************
@@ -113,20 +116,11 @@ prepare_DASS21 <- function(DF_clean, short_name_scale_str) {
     DF_wide_RAW %>% 
     dplyr::mutate(
       
-      # Make sure to use the correct formula: rowMeans() / rowSums()
-      
-      # Score Dimensions (see standardized_names(help_names = TRUE) for instructions)
-      !!names_list$name_DIRd[1] := rowSums(select(., paste0(short_name_scale_str, "_", items_DIRd1, "_DIR")), na.rm = TRUE) * 2, 
-      !!names_list$name_DIRd[2] := rowSums(select(., paste0(short_name_scale_str, "_", items_DIRd2, "_DIR")), na.rm = TRUE) * 2,
-      !!names_list$name_DIRd[3] := rowSums(select(., paste0(short_name_scale_str, "_", items_DIRd3, "_DIR")), na.rm = TRUE) * 2
-      
-      # Reliability Dimensions (see standardized_names(help_names = TRUE) for instructions)
-      # !!names_list$name_RELd[1] := rowSums(select(., paste0(short_name_scale_str, "_", items_RELd1, "_DIR")), na.rm = TRUE), 
-      # !!names_list$name_RELd[2] := rowSums(select(., paste0(short_name_scale_str, "_", items_RELd2, "_DIR")), na.rm = TRUE),
-      
-      # Score Scale
-      # !!names_list$name_DIRt := rowSums(select(., matches("_DIR$")), na.rm = TRUE)
-      
+      # Multiplied by 2 to make the scores equivalent to the complete DASS scale. See DASS21_en-AU.pdf Note 3 in Table 3.
+      !!names_list$name_DIRd[1] := rowSums(select(., paste0(short_name_scale_str, "_", items_dimensions[[1]], "_DIR")), na.rm = TRUE) * 2,
+      !!names_list$name_DIRd[2] := rowSums(select(., paste0(short_name_scale_str, "_", items_dimensions[[2]], "_DIR")), na.rm = TRUE) * 2,
+      !!names_list$name_DIRd[3] := rowSums(select(., paste0(short_name_scale_str, "_", items_dimensions[[3]], "_DIR")), na.rm = TRUE) * 2
+
     )
   
   # [END ADAPT]: ***************************************************************

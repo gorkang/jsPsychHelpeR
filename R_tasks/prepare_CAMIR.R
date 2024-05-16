@@ -20,8 +20,6 @@ prepare_CAMIR <- function(DF_clean, short_name_scale_str) {
   # targets::tar_load_globals()
   # jsPsychHelpeR::debug_function(prepare_CAMIR)
   
-
-  
   
   # [ADAPT 1/3]: Items to ignore and reverse, dimensions -----------------------
   # ****************************************************************************
@@ -43,6 +41,25 @@ prepare_CAMIR <- function(DF_clean, short_name_scale_str) {
     AutosuficienciaRencorPadres = c("008", "009", "016", "024"),
     TraumatismoInfantil = c("001", "010", "017", "023", "028")
   )
+   
+    
+    items_dimensionsT = list(
+      
+    # T scores: (((Ss mean - Study mean)/Study SD)*10)+50
+    SeguridadDisponibilidadApoyoFigurasApegoT = "",
+    PreocupacionFamiliarT = "",
+    InterferenciaPadresT = "",
+    ValorAutoridadPadresT = "",
+    PermisividadParentalT = "",
+    AutosuficienciaRencorPadresT = "",
+    TraumatismoInfantilT = ""
+    
+  )
+    
+    names_listT = standardized_names(short_name_scale = short_name_scale_str, 
+                                    dimensions = names(items_dimensionsT),
+                                    help_names = FALSE)$name_DIRd 
+    
   
   # [END ADAPT 1/3]: ***********************************************************
   # ****************************************************************************
@@ -127,7 +144,7 @@ prepare_CAMIR <- function(DF_clean, short_name_scale_str) {
   
   # [USE STANDARD NAMES FOR Scales and dimensions: names_list$name_DIRd[1], names_list$name_DIRt,...] 
   # CHECK with: create_formulas(type = "dimensions_DIR", functions = "sum", names(items_dimensions))
-  DF_wide_RAW_DIR =
+  DF_wide_RAW_DIR_temp =
     DF_wide_RAW %>% 
     dplyr::mutate(
 
@@ -141,14 +158,41 @@ prepare_CAMIR <- function(DF_clean, short_name_scale_str) {
       !!names_list$name_DIRd[5] := rowMeans(select(., paste0(short_name_scale_str, "_", items_dimensions[[5]], "_DIR")), na.rm = TRUE),
       !!names_list$name_DIRd[6] := rowMeans(select(., paste0(short_name_scale_str, "_", items_dimensions[[6]], "_DIR")), na.rm = TRUE),
       !!names_list$name_DIRd[7] := rowMeans(select(., paste0(short_name_scale_str, "_", items_dimensions[[7]], "_DIR")), na.rm = TRUE),
-      # Reliability Dimensions (see standardized_names(help_names = TRUE) for instructions)
-      # !!names_list$name_RELd[1] := rowMeans(select(., paste0(short_name_scale_str, "_", items_RELd1, "_DIR")), na.rm = TRUE), 
-
+      
+        
       # Score Scale
       !!names_list$name_DIRt := rowSums(select(., matches("_DIR$")), na.rm = TRUE)
       
-    )
+    ) 
+    # select(names_list$name_DIRd[1])
     
+  # names_list$name_DIRd
+  DF_summary = DF_wide_RAW_DIR_temp |> 
+    select(names_list$name_DIRd) |> 
+    pivot_longer(cols = everything()) |> 
+    group_by(name) |> 
+    summarise(MEAN = mean(value), SD = sd(value))
+  
+  # DF_summary[1,]$MEAN
+  # X2 = (((get(names_list$name_DIRd[1]) - DF_summary[DF_summary$name == names_list$name_DIRd[1],]$MEAN))),
+  
+  
+  DF_wide_RAW_DIR = 
+    DF_wide_RAW_DIR_temp |>
+    # select(names_list$name_DIRd[1]) %>% 
+    mutate(   
+      # T scores: (((Ss mean - Study mean)/Study SD)*10)+50
+      !!names_listT[1] := (((get(names_list$name_DIRd[1]) - DF_summary[DF_summary$name == names_list$name_DIRd[1], ]$MEAN) / DF_summary[DF_summary$name == names_list$name_DIRd[1], ]$SD) * 10) + 50, 
+      !!names_listT[2] := (((get(names_list$name_DIRd[2]) - DF_summary[DF_summary$name == names_list$name_DIRd[2], ]$MEAN) / DF_summary[DF_summary$name == names_list$name_DIRd[2], ]$SD) * 10) + 50, 
+      !!names_listT[3] := (((get(names_list$name_DIRd[3]) - DF_summary[DF_summary$name == names_list$name_DIRd[3], ]$MEAN) / DF_summary[DF_summary$name == names_list$name_DIRd[3], ]$SD) * 10) + 50, 
+      !!names_listT[4] := (((get(names_list$name_DIRd[4]) - DF_summary[DF_summary$name == names_list$name_DIRd[4], ]$MEAN) / DF_summary[DF_summary$name == names_list$name_DIRd[4], ]$SD) * 10) + 50, 
+      !!names_listT[5] := (((get(names_list$name_DIRd[5]) - DF_summary[DF_summary$name == names_list$name_DIRd[5], ]$MEAN) / DF_summary[DF_summary$name == names_list$name_DIRd[5], ]$SD) * 10) + 50,
+      !!names_listT[6] := (((get(names_list$name_DIRd[6]) - DF_summary[DF_summary$name == names_list$name_DIRd[6], ]$MEAN) / DF_summary[DF_summary$name == names_list$name_DIRd[6], ]$SD) * 10) + 50,
+      !!names_listT[7] := (((get(names_list$name_DIRd[7]) - DF_summary[DF_summary$name == names_list$name_DIRd[7], ]$MEAN) / DF_summary[DF_summary$name == names_list$name_DIRd[7], ]$SD) * 10) + 50
+    )
+  
+  
+  
   # [END ADAPT 3/3]: ***********************************************************
   # ****************************************************************************
 
