@@ -1,7 +1,7 @@
 Package: jsPsychHelpeR
 Title: Standardize and automatize data preparation and analysis of jsPsych experiments created with jsPsychMaker
-Version: 0.3.5.900
-Date: 2024-05-07
+Version: 0.3.5.901
+Date: 2024-07-03
 Authors@R: c(person("Gorka", "Navarrete", email = "gorkang@gmail.com", role = c("aut", "cre"), comment = c(ORCID = "0000-0001-7678-8656")))
 Description: Automatize and standardize data preparation for jsPsychMaker protocols.
 Maintainer: Gorka Navarrete <gorkang@gmail.com>
@@ -27,7 +27,6 @@ Imports:
     patchwork,
     psych, 
     purrr, 
-    readr, 
     readxl, 
     renv, 
     rlang,
@@ -67,5 +66,5 @@ VignetteBuilder:
 LazyData: FALSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2
 Config/testthat/edition: 3

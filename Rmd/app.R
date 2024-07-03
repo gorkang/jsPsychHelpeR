@@ -4,13 +4,9 @@ library(readr)
 library(shiny)
 library(tidyr)
 
-DF_analysis = readr::read_csv(here::here("outputs/data/DF_analysis.csv"),
-                       col_types =
-                         cols(
-                           .default = col_double(),
-                           id = col_integer(),
-                           AIM_DIRt = col_character()
-                         ))
+
+DF_analysis = data.table::fread(here::here("outputs/data/DF_analysis.csv"))
+                              
 
 # targets::tar_load(DF_analysis)
 

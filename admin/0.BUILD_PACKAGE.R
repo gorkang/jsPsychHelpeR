@@ -1,3 +1,7 @@
+# Can set a dev profile and a production one? Maybe also a docker one?
+# https://rstudio.github.io/renv/articles/profiles.html
+
+
 # renv::install("gorkang/jsPsychAdmin")
 
 
@@ -22,7 +26,7 @@
   # DO THIS ALWAYS so jsPsychHelpeR.zip is updated!
   # Create jsPsychHelpeR.zip
   jsPsychAdmin::create_jsPsychHelpeR_zip(add_renv_cache = FALSE)
-  # NO CACHE: 310KB
+  # NO CACHE: 355KB
 
   # add_renv_cache = TRUE creates a zip file with the renv cache 
   # (initially jsPSychHelper package ~230MB, after cleaning up a lot, 75.6MB)
@@ -57,8 +61,10 @@
 # Install package ---------------------------------------------------------
 
   # Build
-  devtools::build()
-  devtools::install()
+  # devtools::build()
+  # devtools::install()
+  pak::local_install()
+  # pak::pak_cleanup()
 
 
 # CHECK functions ----------------------------------------------------------

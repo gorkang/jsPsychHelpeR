@@ -35,7 +35,7 @@ testthat::test_that('Check if the trialid question_text are unique', {
   
   if (length(non_unique_trialid) > 0) {
     
-    readr::write_csv(non_unique_trialid %>% tibble::as_tibble(), here::here(paste0("outputs/tests_outputs/test-", name_of_test, ".csv")))
+    data.table::fwrite(non_unique_trialid %>% tibble::as_tibble(), here::here(paste0("outputs/tests_outputs/test-", name_of_test, ".csv")))
     
     cat(cli::col_red("\nERROR in", paste0("test-", name_of_test), "\n"),
         cli::col_red("  - Some of the trialid's are not unique:"), non_unique_trialid, "\n",

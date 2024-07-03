@@ -270,36 +270,27 @@ create_raw_long <- function(DF_clean, short_name_scale, numeric_responses = FALS
 #' @param is_scale = TRUE
 #' @param output_formats One or more of the following: csv, csv2 or rds
 #' @param is_sensitive = TRUE
+#' @importFrom data.table fwrite
+#' @importFrom cli cli_abort
 #'
 #' @return NULL
 #' @export
 save_files <- function(DF, short_name_scale, is_scale = TRUE, is_sensitive = FALSE, output_formats = c("csv", "csv2")) {
 
-  # Select path based on nature of the data
-  if (is_sensitive == TRUE) {
-    data_path = ".vault/outputs/data/"
-  } else {
-    data_path = "outputs/data/"
-  }
-  
-
+  # CHECK
   implemented_formats = c("csv", "csv2", "rds")
   if (!all(output_formats %in% implemented_formats)) cli::cli_abort("output_formats should be one of {.code {implemented_formats}}")
   
-  # Save data. Use "df_" if it's a scale otherwise use "DF_"
-  if (is_scale == TRUE) {
-
-    if ("csv" %in% output_formats) readr::write_csv(DF, here::here(paste0(data_path, "df_", short_name_scale , ".csv")))
-    if ("csv2" %in% output_formats) readr::write_csv2(DF, here::here(paste0(data_path, "df_", short_name_scale , "_sp.csv")))
-    if ("rds" %in% output_formats) readr::write_rds(DF, here::here(paste0(data_path, "df_", short_name_scale , ".rds")))
-
-  } else {
-
-    if ("csv" %in% output_formats) readr::write_csv(DF, here::here(paste0(data_path, "DF_", short_name_scale , ".csv")))
-    if ("csv2" %in% output_formats) readr::write_csv2(DF, here::here(paste0(data_path, "DF_", short_name_scale , "_sp.csv")))
-    if ("rds" %in% output_formats) readr::write_rds(DF, here::here(paste0(data_path, "DF_", short_name_scale , ".rds")))
-
-  }
+  # Select path based on nature of the data
+  data_path = ifelse(is_sensitive == TRUE, ".vault/outputs/data/", "outputs/data/")
+  
+  # Use "df_" if it's a scale, otherwise use "DF_"
+  prefix = ifelse(is_scale == TRUE, "df_", "DF_")
+  
+  # Save data
+    if ("csv" %in% output_formats) data.table::fwrite(DF, here::here(paste0(data_path, prefix, short_name_scale , ".csv")))
+    if ("csv2" %in% output_formats) data.table::fwrite(DF, here::here(paste0(data_path, prefix, short_name_scale , "_sp.csv")), sep = ";")
+    if ("rds" %in% output_formats) saveRDS(DF, here::here(paste0(data_path, prefix, short_name_scale , ".rds")))
 
 }
 
@@ -694,8 +685,8 @@ auto_reliability = function(DF, short_name_scale = short_name_scale_str, items =
          delete_items_warnings = delete_items_warnings,
          item_selection_string = item_selection_string)
 
-  readr::write_rds(reliability_output, paste0("outputs/reliability/", short_name_scale, ".rds"))
-
+  saveRDS(reliability_output, paste0("outputs/reliability/", short_name_scale, ".rds"))
+  
   return(reliability_output)
 
 }

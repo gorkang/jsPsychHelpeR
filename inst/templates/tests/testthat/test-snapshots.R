@@ -13,7 +13,7 @@ testthat::test_that('Check if the snapshots do not change', {
   
   # Automatically create snapshots and test existent outputs
   TARGETS = list.files(here::here("outputs/data/"), pattern = "^df_(.*)csv$", ignore.case = FALSE, full.names = TRUE)
-  SNAPS <- 1:length(TARGETS) %>% 
+  SNAPS <- 1:length(TARGETS)  |>  
     purrr::map(~ {
       test_snap = expect_snapshot_file_safely(here::here(TARGETS[.x]))
       if(!is.null(test_snap$error)) cli::cli_alert_danger("SNAP {basename(TARGETS[.x])} CHANGED, use `testthat::snapshot_review()`")

@@ -37,12 +37,7 @@ prepare_DEMOGR <- function(DF_clean, short_name_scale_str) {
   
   
   # OUTSIDE FILES -----------------------------------------------------------
-  DF_lookup = readr::read_csv("R_tasks/prepare_DEMOGR-lookup.csv", 
-                       col_types = 
-                         cols(
-                           DEMOGR_comuna_DIRd = col_integer(), #idcomuna
-                           comuna = col_character()
-                         ))
+  DF_lookup = data.table::fread("R_tasks/prepare_DEMOGR-lookup.csv")
   
   # Standardized names ------------------------------------------------------
   names_list = standardized_names(short_name_scale = short_name_scale_str, 

@@ -88,8 +88,8 @@ debug_function <- function(name_function) {
   if (substitute(name_function) != "name_function") name_function = substitute(name_function) #if (!interactive()) is so substitute do not overwrite name_function when in interactive mode
 
   # Parses _targets.R
-  # TODO: BETTER WAY?
-  # DF_function = tar_manifest() %>% filter(grepl(name_function, command)) %>% pull(command) %>% last()
+  # TODO: BETTER WAY? (lots of messages)
+  # DF_function = tar_manifest() |> filter(grepl(name_function, command)) |> pull(command) |> last()
   
   code <- parse("_targets.R")
   if (file.exists("targets/targets_main.R")) code <- c(code, parse("targets/targets_main.R"))

@@ -21,15 +21,8 @@ prepare_AIM <- function(DF_clean, short_name_scale_str) {
 
   
   # OUTSIDE FILES -----------------------------------------------------------
-  DF_lookup = readr::read_csv("R_tasks/prepare_AIM-lookup.csv", 
-                       col_types = 
-                         cols(
-                           AIM_01_DIR = col_double(),
-                           AIM_02_DIR = col_double(),
-                           AIM_TramoIngreso_DIRd = col_double(),
-                           AIM_DIRt = col_character()
-                         ))
-  
+  DF_lookup = data.table::fread("R_tasks/prepare_AIM-lookup.csv")
+                              
   
   # Standardized names ------------------------------------------------------
   names_list = standardized_names(short_name_scale = short_name_scale_str, 

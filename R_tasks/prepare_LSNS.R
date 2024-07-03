@@ -18,8 +18,6 @@ prepare_LSNS <- function(DF_clean, short_name_scale_str) {
 
   # DEBUG
   # debug_function(prepare_LSNS)
-  # get_dimensions_googledoc(short_name_text = "LSNS")
-  
   
   
   # [ADAPT 1/3]: Items to ignore and reverse, dimensions -----------------------

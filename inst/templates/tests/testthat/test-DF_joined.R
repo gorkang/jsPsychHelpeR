@@ -1,6 +1,7 @@
 testthat::test_that('Check DF_joined', {
   
   # DEBUG
+  # targets::tar_load_globals()
   # targets::tar_load(c(DF_joined, DICTIONARY_tasks))
   
   # Name of test (should reflect the name of the file) ----------------------
@@ -11,8 +12,8 @@ testthat::test_that('Check DF_joined', {
   
   # TEST 1: NON canonical names --------------------------------------------------------------------
   
-  expected_names = grep("condition_between|condition_within|^.*_RAW$|^.*_DIR$|^.*_DIRt$|^.*_DIRd$|^.*_RELt$|^.*_RELd$|^.*_STDt$|^.*_STDd|^.*DIR_NA$|^.*RAW_NA$", names(DF_joined %>% dplyr::select(-id)), ignore.case = FALSE, fixed = FALSE, value = TRUE)
-  non_canonical_names = names(DF_joined %>% dplyr::select(-id))[!names(DF_joined %>% dplyr::select(-id)) %in% expected_names]
+  expected_names = grep("condition_between|condition_within|^.*_RAW$|^.*_DIR$|^.*_DIRt$|^.*_DIRd$|^.*_RELt$|^.*_RELd$|^.*_STDt$|^.*_STDd|^.*DIR_NA$|^.*RAW_NA$", names(DF_joined |> dplyr::select(-id)), ignore.case = FALSE, fixed = FALSE, value = TRUE)
+  non_canonical_names = names(DF_joined |> dplyr::select(-id))[!names(DF_joined |> dplyr::select(-id)) %in% expected_names]
   
   if (length(non_canonical_names) > 0) cat(cli::col_red(paste0("\nERROR: DF_joined contains non-standard columns: ", cli::col_silver(paste(non_canonical_names, collapse = ", ")), "\n\n")))
   
@@ -29,16 +30,16 @@ testthat::test_that('Check DF_joined', {
   
   # Dictionary
   tasks_in_dictionary = 
-    DICTIONARY_tasks %>% 
-    dplyr::distinct(names = `short_name: from trialid`) %>% 
-    dplyr::filter(!names %in% white_list) %>% 
+    DICTIONARY_tasks |> 
+    dplyr::distinct(names = `short_name: from trialid`) |> 
+    dplyr::filter(!names %in% white_list) |> 
     dplyr::pull()
   
   # DF_joined
   tasks_joined = 
-    names(DF_joined) %>% tibble::as_tibble() %>%
-    dplyr::filter(grepl("DIR_NA", value)) %>% 
-    dplyr::mutate(name = gsub("_DIR_NA", "", value)) %>% 
+    names(DF_joined) |> tibble::as_tibble() |>
+    dplyr::filter(grepl("DIR_NA", value)) |> 
+    dplyr::mutate(name = gsub("_DIR_NA", "", value)) |> 
     dplyr::pull(name)
   
   
@@ -64,10 +65,10 @@ testthat::test_that('Check DF_joined', {
   
   # TEST 3: Number of 9999 values  ------------------------------------------------------------------
   
-  DF_999 = DF_joined %>% 
-    tidyr::pivot_longer(2:ncol(.), values_transform = list(value = as.character)) %>% 
-    dplyr::filter(value == "9999") %>% # Solved the issue below with DIR == 9999 ~ DIR,?
-    # dplyr::filter(grepl("999", value)) %>% # We reverse items after transforming to dir... sometimes the 9999 gets transform to -9993 or others,,,
+  DF_999 = DF_joined %>%
+    tidyr::pivot_longer(2:ncol(DF_joined), values_transform = list(value = as.character)) |> 
+    dplyr::filter(value == "9999") |> # Solved the issue below with DIR == 9999 ~ DIR,?
+    # dplyr::filter(grepl("999", value)) |> # We reverse items after transforming to dir... sometimes the 9999 gets transform to -9993 or others,,,
     dplyr::distinct(name, value, .keep_all = FALSE)
   
   
@@ -76,17 +77,17 @@ testthat::test_that('Check DF_joined', {
   
   if (length(missing_from_DF_joined) > 0 | length(targets_joined) > 0) {
     
-    df_missing = missing_from_DF_joined %>% 
-      tibble::as_tibble() %>% 
-      dplyr::mutate(what = "In dictionary, missing in join") %>%
+    df_missing = missing_from_DF_joined |> 
+      tibble::as_tibble() |> 
+      dplyr::mutate(what = "In dictionary, missing in join") |>
       dplyr::bind_rows(
-        targets_joined %>% 
-          tibble::as_tibble() %>% 
+        targets_joined |> 
+          tibble::as_tibble() |> 
           dplyr::mutate(what = "In targets, missing in join")
       )
     
-    readr::write_csv(df_missing, here::here(paste0("outputs/tests_outputs/test-", name_of_test, ".csv")))
-    
+    data.table::fwrite(df_missing, here::here(paste0("outputs/tests_outputs/test-", name_of_test, ".csv")))
+
     cat(cli::col_red("\nERROR in", paste0("test-", name_of_test), "\n"),
         cli::col_red("  - Some tasks are in DF_clean but not in DF_joined:"), "", "\n",
         cli::col_green("  - # of Issues: "), cli::col_red(nrow(df_missing)), "\n",
@@ -100,9 +101,9 @@ testthat::test_that('Check DF_joined', {
   testthat::expect_length(missing_from_DF_joined, 0)
   testthat::expect_length(targets_joined, 0)
   
-  testthat::expect_equal(DF_999 %>% nrow(),
+  testthat::expect_equal(DF_999 |> nrow(),
                          0,
-                         label = paste0("Number of 9999 values (errors from RAW to DIR) [", paste(DF_999 %>% dplyr::pull(name), collapse = ", "), "] "),
+                         label = paste0("Number of 9999 values (errors from RAW to DIR) [", paste(DF_999 |> dplyr::pull(name), collapse = ", "), "] "),
                          info = "Items with of 9999 values"
   )
   

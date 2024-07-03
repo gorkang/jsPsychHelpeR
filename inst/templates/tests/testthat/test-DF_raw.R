@@ -1,6 +1,7 @@
 testthat::test_that('Check if DF_raw', {
   
   # DEBUG
+  # targets::tar_load_globals()
   # targets::tar_load(c(DF_raw))
   
   # Name of test (should reflect the name of the file) ----------------------
@@ -11,20 +12,20 @@ testthat::test_that('Check if DF_raw', {
   # Test: trialids are correctly build  ----------------------------------------------------------------
   
   DF_problematic_trialids = 
-    DF_raw %>%
-    dplyr::filter(!grepl("[a-zA-Z0-9]{1,100}_[0-9]{2}|^Instructions|^Fullscreen", trialid)) %>% 
-    dplyr::filter(trial_type != "fullscreen") %>% 
-    dplyr::distinct(trialid, experiment) %>% 
+    DF_raw |>
+    dplyr::filter(!grepl("[a-zA-Z0-9]{1,100}_[0-9]{2}|^Instructions|^Fullscreen", trialid)) |> 
+    dplyr::filter(trial_type != "fullscreen") |> 
+    dplyr::distinct(trialid, experiment) |> 
    tidyr::drop_na(trialid) 
   
   offenders =
-    DF_problematic_trialids %>% 
-    dplyr::distinct(trialid, .keep_all = TRUE) %>% 
+    DF_problematic_trialids |> 
+    dplyr::distinct(trialid, .keep_all = TRUE) |> 
     dplyr::mutate(message = 
             dplyr::case_when(
                is.na(trialid) ~ paste0(experiment, ": NA"),
                trialid == "" ~ paste0(experiment, ": empty"),
-               TRUE ~ paste0(experiment, ": ", trialid))) %>% 
+               TRUE ~ paste0(experiment, ": ", trialid))) |> 
     dplyr::pull(message)
   
 
@@ -44,7 +45,8 @@ testthat::test_that('Check if DF_raw', {
   
   if (nrow(DF_problematic_trialids) > 0) {
     
-    readr::write_csv(DF_problematic_trialids, here::here(paste0("outputs/tests_outputs/test-", name_of_test, ".csv")))
+    data.table::fwrite(DF_problematic_trialids, here::here(paste0("outputs/tests_outputs/test-", name_of_test, ".csv")))
+    
     
     cat(cli::col_red("\nERROR in", paste0("test-", name_of_test), "\n"),
         cli::col_red("  - Some of the items have non-supported trialids:"), offenders, "\n",
@@ -55,7 +57,7 @@ testthat::test_that('Check if DF_raw', {
   
   if (length(non_canonical_names) > 0) {
     
-    # readr::write_csv(non_canonical_names, here::here(paste0("outputs/tests_outputs/test-", name_of_test, ".csv")))
+    # data.table::fwrite(non_canonical_names, here::here(paste0("outputs/tests_outputs/test-", name_of_test, ".csv")))
     
     cat(cli::col_red("\nERROR in", paste0("test-", name_of_test), "\n"),
         cli::col_red("  - Some of the items have non-canonical names:"), non_canonical_names, "\n",
@@ -77,6 +79,4 @@ testthat::test_that('Check if DF_raw', {
   testthat::expect_true(all(names(DF_raw) %in% canonical_names_columns))
   # testthat::expect_equal(canonical_names_columns, names(DF_raw))
 
-  
-  
 })

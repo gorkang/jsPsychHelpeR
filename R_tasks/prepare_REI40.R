@@ -14,8 +14,8 @@
 prepare_REI40 <- function(DF_clean, short_name_scale_str, needs_v02_fix = FALSE) {
 
   # DEBUG
+  # targets::tar_load_globals()
   # debug_function(prepare_REI40)
-  
   
   # [ADAPT]: Items to ignore and reverse ---------------------------------------
   # ****************************************************************************
@@ -47,7 +47,7 @@ prepare_REI40 <- function(DF_clean, short_name_scale_str, needs_v02_fix = FALSE)
 
   # TEMPORAL FIX ------------------------------------------------------------
   if (needs_v02_fix == TRUE) {
-    DF_dicc = readr::read_csv("R_tasks/prepare_REI40-dictionary.csv", show_col_types = FALSE)
+    DF_dicc = data.table::fread("R_tasks/prepare_REI40-diccionary.csv")
     DF_long_RAW = DF_long_RAW %>% 
       dplyr::left_join(DF_dicc, by = "trialid") %>% 
       dplyr::mutate(trialid = trialid_OK) %>% 

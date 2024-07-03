@@ -55,7 +55,7 @@ testthat::test_that('Check all input files have the essential columns', {
     )
   
   # Store file with files missing essential columns
-  if (nrow(DF_files_missing_some_essential_columns) > 0) readr::write_csv(DF_files_missing_some_essential_columns, here::here(paste0("outputs/tests_outputs/test-", name_of_test, "_missing_essential.csv")))
+  if (nrow(DF_files_missing_some_essential_columns) > 0) data.table::fwrite(DF_files_missing_some_essential_columns, here::here(paste0("outputs/tests_outputs/test-", name_of_test, "_missing_essential.csv")))
 
   
 
@@ -74,7 +74,7 @@ testthat::test_that('Check all input files have the essential columns', {
   
   # if (length(names_missing_columns) > 0) {
   #   
-  #   readr::write_csv(check_input_files_DF, here::here(paste0("outputs/tests_outputs/test-", name_of_test, ".csv")))
+  #   data.table::fwrite(check_input_files_DF, here::here(paste0("outputs/tests_outputs/test-", name_of_test, ".csv")))
   #   
   #   cat(cli::col_red("\nERROR in", paste0("test-", name_of_test), "\n"),
   #       cli::col_red("  - Some of the essential columns are not in all input_files:"), names_missing_columns, "\n",

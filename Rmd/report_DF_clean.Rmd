@@ -12,7 +12,7 @@ params:
 
 ```{r setup, include=FALSE}
 # DEBUG
-# source(here::here("_packages.R"))
+# targets::tar_load_globals()
 # DF_clean = read_rds(here::here("_targets/objects/DF_clean"))
 # DF_raw = read_rds(here::here("_targets/objects/DF_raw"))
 # params = list(

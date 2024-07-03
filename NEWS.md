@@ -1,4 +1,4 @@
-# jsPsychHelpeR 0.3.5.900
+# jsPsychHelpeR 0.3.5.901
 
 Minor updates
 
@@ -7,6 +7,10 @@ Minor updates
 * sync_server_local() and run_initial_setup() should work now for development protocols.
 * Add digits parameter to create_number_series() so create_new_task(get_info_googledoc = TRUE) will output 3 digit trialid's  
 * All credentials parameters are now credentials_file instead of list_credentials
+* Replace all readr instances for data.table to reduce dependencies and speed up things
+* Simplify save_files
+* Get rid of some unused files/functions
+* Started replacing %>% by |>
 
 
 # jsPsychHelpeR 0.2.7

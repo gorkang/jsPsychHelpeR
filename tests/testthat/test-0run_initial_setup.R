@@ -56,16 +56,25 @@ testthat::test_that("Check that the project with 999.zip runs OK with run_initia
   # IRI = readr::read_csv(paste0(TEMP_dir, "/outputs/data/df_IRI.csv"))
   # expect_equal(IRI_snap, IRI)
   
+  # seq_along(FILES_tasks) |> 
+  #   purrr::walk(~{
+  #     TASK = gsub("df_(.*)_sp\\.csv", "\\1", FILES_tasks[.x])
+  #     cli::cli_h1("{.x} - {TASK}")
+  #     SNAP = readr::read_csv(paste0(TEMP_dir, "/inst/templates/tests/testthat/_snaps/snapshots/df_", TASK,".csv"))
+  #     OUT = readr::read_csv2(paste0(TEMP_dir, "/outputs/data/", FILES_tasks[.x]))
+  #     testthat::expect_equal(SNAP, OUT)
+  #   })
+  
+
   seq_along(FILES_tasks) |> 
     purrr::walk(~{
       TASK = gsub("df_(.*)_sp\\.csv", "\\1", FILES_tasks[.x])
       cli::cli_h1("{.x} - {TASK}")
-      SNAP = readr::read_csv(paste0(TEMP_dir, "/inst/templates/tests/testthat/_snaps/snapshots/df_", TASK,".csv")) #, col_types = readr::cols(id = readr::col_character())
-      OUT = readr::read_csv2(paste0(TEMP_dir, "/outputs/data/", FILES_tasks[.x]))
+      SNAP = data.table::fread(paste0(TEMP_dir, "/inst/templates/tests/testthat/_snaps/snapshots/df_", TASK,".csv"), sep = ",")
+      OUT = data.table::fread(paste0(TEMP_dir, "/outputs/data/", FILES_tasks[.x]), sep = ";")
       testthat::expect_equal(SNAP, OUT)
     })
-  
-  
+
   # Check that the snapshots we have in /inst/templates/tests/_snaps/snapshots/ EQUAL to the ones created
   # SNAPS_new = list.files(paste0(TEMP_dir, "/tests/testthat/_snaps/snapshots/"), recursive = TRUE, full.names = TRUE)
   # SNAPS_stored = list.files(paste0(TEMP_dir, "/inst/templates/tests/testthat/_snaps/snapshots/"), recursive = TRUE, full.names = TRUE)
