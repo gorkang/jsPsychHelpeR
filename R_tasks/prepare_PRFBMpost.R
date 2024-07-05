@@ -14,10 +14,11 @@
 ##' @return
 ##' @author gorkang
 ##' @export
-prepare_PRFBMpost <- function(DF_clean, short_name_scale_str) {
+prepare_PRFBMpost <- function(DF_clean, short_name_scale_str, output_formats) {
 
   # DEBUG
-  # debug_function(prepare_PRFBMpost)
+  # targets::tar_load_globals()
+  # jsPsychHelpeR::debug_function(prepare_PRFBMpost)
 
   # Standardized names ------------------------------------------------------
   names_list = standardized_names(short_name_scale = short_name_scale_str, 
@@ -41,8 +42,8 @@ prepare_PRFBMpost <- function(DF_clean, short_name_scale_str) {
   
   
   DF_long_DIR = 
-    DF_long_RAW %>% 
-   dplyr::select(id, trialid, RAW) %>%
+    DF_long_RAW |> 
+   dplyr::select(id, trialid, RAW) |>
     
     
   # [ADAPT]: RAW to DIR for individual items -----------------------------------
@@ -65,17 +66,17 @@ prepare_PRFBMpost <- function(DF_clean, short_name_scale_str) {
           trialid != "PRFBMpost_01" ~ as.numeric(RAW),
           
           is.na(RAW) ~ NA_real_,
-          grepl(items_to_ignore, trialid) ~ NA_real_,
+          trialid %in% paste0(short_name_scale_str, "_", items_to_ignore) ~ NA_real_, # OR NA_character_
           TRUE ~ 9999
         )
-    ) %>% 
+    ) |> 
     
     # Invert items
     dplyr::mutate(
       DIR = 
        dplyr::case_when(
           DIR == 9999 ~ DIR, # To keep the missing values unchanged
-          grepl(items_to_reverse, trialid) ~ (6 - DIR),
+          trialid %in% paste0(short_name_scale_str, "_", items_to_reverse) ~ (6 - DIR),
           TRUE ~ DIR
         )
     )
@@ -85,22 +86,24 @@ prepare_PRFBMpost <- function(DF_clean, short_name_scale_str) {
     
 
   # Create DF_wide_RAW_DIR -----------------------------------------------------
-  DF_wide_RAW_DIR =
-    DF_long_DIR %>% 
+  DF_wide_RAW =
+    DF_long_DIR |> 
     tidyr::pivot_wider(
       names_from = trialid, 
       values_from = c(RAW, DIR),
-      names_glue = "{trialid}_{.value}") %>% 
+      names_glue = "{trialid}_{.value}") |> 
     
     # NAs for RAW and DIR items
-    dplyr::mutate(!!names_list$name_RAW_NA := rowSums(is.na(select(., -matches(items_to_ignore) & matches("_RAW")))),
-           !!names_list$name_DIR_NA := rowSums(is.na(select(., -matches(items_to_ignore) & matches("_DIR"))))) %>% 
-      
-    
-  # [ADAPT]: Scales and dimensions calculations --------------------------------
-  # ****************************************************************************
-    # [USE STANDARD NAMES FOR Scales and dimensions: name_DIRt, name_DIRd1, etc.] Check with: standardized_names(help_names = TRUE)
+    dplyr::mutate(!!names_list$name_RAW_NA := rowSums(is.na(across((-matches(paste0(short_name_scale_str, "_", items_to_ignore, "_RAW")) & matches("_RAW$"))))),
+                  !!names_list$name_DIR_NA := rowSums(is.na(across((-matches(paste0(short_name_scale_str, "_", items_to_ignore, "_DIR")) & matches("_DIR$"))))))
+  
 
+  
+  # [ADAPT 3/3]: Scales and dimensions calculations ----------------------------
+  # ****************************************************************************
+  
+  DF_wide_RAW_DIR =
+    DF_wide_RAW  |>  
     dplyr::mutate(
 
       # Score Dimensions (see standardized_names(help_names = TRUE) for instructions)
@@ -112,7 +115,7 @@ prepare_PRFBMpost <- function(DF_clean, short_name_scale_str) {
       !!names_list$name_DIRd[6] := rowMeans(select(., matches("05_daño|07_daño") & matches("_DIR$")), na.rm = TRUE)
       
       # Score Scale
-      # !!names_list$name_DIRt := rowSums(select(., matches("_DIR$")), na.rm = TRUE)
+      # !!names_list$name_DIRt := rowSums(across(all_of(matches("_DIR$"))), na.rm = TRUE)
       
     )
     
@@ -124,7 +127,7 @@ prepare_PRFBMpost <- function(DF_clean, short_name_scale_str) {
   check_NAs(DF_wide_RAW_DIR)
   
   # Save files --------------------------------------------------------------
-  save_files(DF_wide_RAW_DIR, short_name_scale = short_name_scale_str, is_scale = TRUE)
+  save_files(DF_wide_RAW_DIR, short_name_scale = short_name_scale_str, is_scale = TRUE, output_formats = output_formats)
   
   # Output of function ---------------------------------------------------------
   return(DF_wide_RAW_DIR) 

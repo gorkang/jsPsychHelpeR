@@ -14,10 +14,11 @@
 ##' @return
 ##' @author gorkang
 ##' @export
-prepare_DEMOGR3 <- function(DF_clean, short_name_scale_str) {
+prepare_DEMOGR3 <- function(DF_clean, short_name_scale_str, output_formats) {
 
   # DEBUG
-  # debug_function(prepare_DEMOGR3)
+  # targets::tar_load_globals()
+  # jsPsychHelpeR::debug_function(prepare_DEMOGR3)
 
 
   # NOTE --------------------------------------------------------------------
@@ -55,8 +56,8 @@ prepare_DEMOGR3 <- function(DF_clean, short_name_scale_str) {
   
   
   DF_long_DIR = 
-    DF_long_RAW %>% 
-   dplyr::select(id, trialid, RAW) %>%
+    DF_long_RAW |> 
+   dplyr::select(id, trialid, RAW) |>
     
     
   # [ADAPT]: RAW to DIR for individual items -----------------------------------
@@ -98,33 +99,34 @@ prepare_DEMOGR3 <- function(DF_clean, short_name_scale_str) {
       
       
       is.na(RAW) ~ NA_character_,
-      grepl(items_to_ignore, trialid) ~ NA_character_,
+      trialid %in% paste0(short_name_scale_str, "_", items_to_ignore) ~ NA_real_,
       TRUE ~ "9999"
       )
-    ) %>% 
+    ) |> 
     dplyr::mutate(DIR = as.numeric(DIR))
     
 
 
   # Create DF_wide_RAW_DIR -----------------------------------------------------
   DF_wide_RAW_DIR =
-    DF_long_DIR %>% 
+    DF_long_DIR |> 
     tidyr::pivot_wider(
       names_from = trialid, 
       values_from = c(RAW, DIR),
-      names_glue = "{trialid}_{.value}") %>% 
+      names_glue = "{trialid}_{.value}") |> 
     
     # NAs for RAW and DIR items
-    dplyr::mutate(!!names_list$name_RAW_NA := rowSums(is.na(select(., -matches(items_to_ignore) & matches("_RAW")))),
-           !!names_list$name_DIR_NA := rowSums(is.na(select(., -matches(items_to_ignore) & matches("_DIR"))))) 
+    dplyr::mutate(!!names_list$name_RAW_NA := rowSums(is.na(across((-matches(paste0(short_name_scale_str, "_", items_to_ignore, "_RAW")) & matches("_RAW$"))))),
+                  !!names_list$name_DIR_NA := rowSums(is.na(across((-matches(paste0(short_name_scale_str, "_", items_to_ignore, "_DIR")) & matches("_DIR$"))))))
+   
       
     
 
   # SENSITIVE ---------------------------------------------------------------
 
   # Item DEMOGR3_09 contains sensitive data
-  DF_output = DF_wide_RAW_DIR %>% dplyr::select(-dplyr::starts_with("DEMOGR3_09"))
-  DF_sensitive = DF_wide_RAW_DIR %>% dplyr::select(id, dplyr::starts_with("DEMOGR3_09"))
+  DF_output = DF_wide_RAW_DIR |> dplyr::select(-dplyr::starts_with("DEMOGR3_09"))
+  DF_sensitive = DF_wide_RAW_DIR |> dplyr::select(id, dplyr::starts_with("DEMOGR3_09"))
   
 
   # CHECK NAs -------------------------------------------------------------------

@@ -56,8 +56,8 @@ Tabla 1. Descripción de la tabla 1. Tabla 2. ...
 # names(DF) shows the variables you hava available
 
 
-table1 = DF %>% 
-  select(-id, -Goodbye_DIRt) %>% 
+table1 = DF |>
+  dplyr::select(where(is.numeric), -id, -Goodbye_DIRt) |> 
   gtsummary::tbl_summary(
     # by = AIM_DIRt,
     type = list(everything() ~ 'continuous')

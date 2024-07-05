@@ -14,32 +14,48 @@
 ##' @return
 ##' @author gorkang
 ##' @export
-prepare_AIM <- function(DF_clean, short_name_scale_str) {
+prepare_AIM <- function(DF_clean, short_name_scale_str, output_formats = output_formats) {
 
   # DEBUG
+  # targets::tar_load_globals()
   # debug_function(prepare_AIM)
 
-  
   # OUTSIDE FILES -----------------------------------------------------------
   DF_lookup = data.table::fread("R_tasks/prepare_AIM-lookup.csv")
-                              
+           
+  
+  # [ADAPT 1/3]: Items to ignore and reverse, dimensions -----------------------
+  # ****************************************************************************
+  
+  description_task = "" # Brief description here
+  
+  items_to_ignore = c("000") # Ignore these items: If nothing to ignore, keep as is
+  items_to_reverse = c("000") # Reverse these items: If nothing to reverse, keep as is
+  
+  items_dimensions = list(
+    TramoIngreso = c("004", "005", "006", "007", "008", "009", "010")
+    )
+  
+  # [END ADAPT 1/3]: ***********************************************************
+  # ****************************************************************************
+  
   
   # Standardized names ------------------------------------------------------
   names_list = standardized_names(short_name_scale = short_name_scale_str, 
-                     dimensions = c("TramoIngreso"), # Use names of dimensions, "" or comment out line
+                     dimensions = names(items_dimensions), # Use names of dimensions, "" or comment out line
                      help_names = FALSE) # help_names = FALSE once the script is ready
   
   # Create long -------------------------------------------------------------
   DF_long_RAW = create_raw_long(DF_clean, short_name_scale = short_name_scale_str, numeric_responses = FALSE, help_prepare = FALSE)
   
-
+  
   # Create long DIR ------------------------------------------------------------
   DF_long_DIR = 
-    DF_long_RAW %>% 
-   dplyr::select(id, trialid, RAW) %>%
+    DF_long_RAW |> 
+   dplyr::select(id, trialid, RAW) |>
     
     
-    # [ADAPT]: RAW to DIR for individual items -----------------------------------
+  # [ADAPT]: RAW to DIR for individual items -----------------------------------
   # ****************************************************************************
   
   # Transformations
@@ -72,7 +88,7 @@ prepare_AIM <- function(DF_clean, short_name_scale_str) {
         
         
         # These are numbers. Need to store them as characters here and postpone the processing
-        trialid == "AIM_03" ~ RAW, 
+        trialid == "AIM_003" ~ RAW, 
         
         RAW == "Menos de 120 mil" ~ "1", 
         RAW == "120 mil – 207 mil" ~ "2", 
@@ -139,17 +155,17 @@ prepare_AIM <- function(DF_clean, short_name_scale_str) {
         
         is.na(RAW) ~ NA_character_,
         TRUE ~ "9999"
-      )) %>% 
+      )) |> 
     
     # When a task combines numbers and characters in RAW, we need to first create a DIR var with numbers as characters and then convert all to numbers 
-    dplyr::mutate(DIR = as.numeric(DIR)) %>% 
+    dplyr::mutate(DIR = as.numeric(DIR)) |> 
     
     # Here we process the AIM_03 numbers
     dplyr::mutate(DIR = 
             dplyr::case_when(
-               trialid == "AIM_03" & DIR < 1 ~ 1,
-               trialid == "AIM_03" & DIR < 7 ~ DIR,
-               trialid == "AIM_03" & DIR >= 7 ~ 7,
+               trialid == "AIM_003" & DIR < 1 ~ 1,
+               trialid == "AIM_003" & DIR < 7 ~ DIR,
+               trialid == "AIM_003" & DIR >= 7 ~ 7,
                TRUE ~ DIR
              ))
   
@@ -159,45 +175,31 @@ prepare_AIM <- function(DF_clean, short_name_scale_str) {
     
 
   # Create DF_wide_RAW_DIR -----------------------------------------------------
-  DF_wide_RAW_DIR =
-    DF_long_DIR %>%
+  DF_wide_RAW =
+    DF_long_DIR |>
     tidyr::pivot_wider(
       names_from = trialid, 
       values_from = c(RAW, DIR),
-      names_glue = "{trialid}_{.value}") %>% 
+      names_glue = "{trialid}_{.value}") |> 
     
     # NAs for RAW and DIR items
-    dplyr::mutate(!!names_list$name_RAW_NA := rowSums(is.na(select(., matches("_RAW")))),
-           !!names_list$name_DIR_NA := rowSums(is.na(select(., matches("_DIR"))))) %>% 
-      
+    dplyr::mutate(!!names_list$name_RAW_NA := rowSums(is.na(across((-matches(paste0(short_name_scale_str, "_", items_to_ignore, "_RAW")) & matches("_RAW$"))))),
+                  !!names_list$name_DIR_NA := rowSums(is.na(across((-matches(paste0(short_name_scale_str, "_", items_to_ignore, "_DIR")) & matches("_DIR$"))))))
+  
+  
     
-  # [ADAPT]: Scales and dimensions calculations --------------------------------
+  # [ADAPT 3/3]: Scales and dimensions calculations ----------------------------
   # ****************************************************************************
-    # [USE STANDARD NAMES FOR Scales and dimensions: name_DIRt, name_DIRd1, etc.] Check with: standardized_names(help_names = TRUE)
-
+  
+  DF_wide_RAW_DIR =
+    DF_wide_RAW  |>  
     dplyr::mutate(
-
-      # Score Dimensions (see standardized_names(help_names = TRUE) for instructions)
-      !!names_list$name_DIRd[1] := rowSums(select(., matches("04|05|06|07|08|09|10") & matches("_DIR$")), na.rm = TRUE)
-      
-      # Score Scale
-      # !!names_list$name_DIRt := rowSums(select(., matches("_DIR$")), na.rm = TRUE)
-      
-    ) %>% 
+      !!names_list$name_DIRd[1] := rowMeans(across(any_of(paste0(short_name_scale_str, "_", items_dimensions[[1]], "_DIR"))), na.rm = TRUE)
+      ) |> 
+    # Join DF_lookup to find AIM_DIRt 
+    dplyr::left_join(DF_lookup, by = c("AIM_001_DIR", "AIM_002_DIR", "AIM_TramoIngreso_DIRd"))
     
-    dplyr::left_join(DF_lookup, by = c("AIM_01_DIR", "AIM_02_DIR", "AIM_TramoIngreso_DIRd"))
-    
-  
-  
-  ## GET protocol id ---------------
-  # DF_wide_RAW_DIR = 
-  #   DF_wide_RAW_DIR %>% 
-  #   dplyr::rename(id_form = id) %>% 
-  #   # dplyr::left_join(DF_DICTIONARY_id, by = "id_form") %>% 
-  #  dplyr::select(id, RUT, dplyr::everything())
-  
-  
-  # [END ADAPT]: ***************************************************************
+  # [END ADAPT 3/3]: ***********************************************************
   # ****************************************************************************
 
 
@@ -206,17 +208,10 @@ prepare_AIM <- function(DF_clean, short_name_scale_str) {
   
   
   # Save files --------------------------------------------------------------
-  
-  # Save sensitive version (with RUT) in .vault
-  # save_files(DF_wide_RAW_DIR, short_name_scale = short_name_scale_str, is_scale = TRUE, is_sensitive = TRUE)
-  # DF_wide_RAW_DIR = DF_wide_RAW_DIR %>% dplyr::select(-RUT, -id_form) %>%tidyr::drop_na(id)
-  
-  # Save clean version (only id's) in outputs/data
-  save_files(DF_wide_RAW_DIR, short_name_scale = short_name_scale_str, is_scale = TRUE)
+  save_files(DF_wide_RAW_DIR, short_name_scale = short_name_scale_str, is_scale = TRUE, output_formats = output_formats)
 
   
   # Output of function ---------------------------------------------------------
   return(DF_wide_RAW_DIR) 
-  # return(DF_wide_RAW_DIR %>% dplyr::select(-RUT) %>%tidyr::drop_na(id)) 
-  
+
 }

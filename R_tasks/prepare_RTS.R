@@ -14,10 +14,11 @@
 ##' @return
 ##' @author gorkang
 ##' @export
-prepare_RTS <- function(DF_clean, short_name_scale_str) {
+prepare_RTS <- function(DF_clean, short_name_scale_str, output_formats) {
 
   # DEBUG
-  # debug_function(prepare_RTS)
+  # targets::tar_load_globals()
+  # jsPsychHelpeR::debug_function(prepare_RTS)
 
   # [ADAPT]: Items to ignore, reverse and dimensions ---------------------------------------
   # ****************************************************************************
@@ -25,7 +26,10 @@ prepare_RTS <- function(DF_clean, short_name_scale_str) {
   items_to_ignore = c("01", "06", "07", "10", "11", "14", "15", "17", "23", "24", "27", "28") # Ignore these items: If nothing to ignore, keep items_to_ignore = c("00")
   items_to_reverse = c("00") # Reverse these items: If nothing to reverse, keep  items_to_reverse = c("00")
   
-  names_dimensions = c("") # If no dimensions, keep names_dimensions = c("")
+  items_dimensions = list(
+    NameDimension1 = c("000")
+  )
+  
   
   # [END ADAPT]: ***************************************************************
   # ****************************************************************************
@@ -33,7 +37,7 @@ prepare_RTS <- function(DF_clean, short_name_scale_str) {
   
   # Standardized names ------------------------------------------------------
   names_list = standardized_names(short_name_scale = short_name_scale_str, 
-                     dimensions = names_dimensions,
+                     dimensions = names(items_dimensions),
                      help_names = FALSE) # help_names = FALSE once the script is ready
   
   
@@ -44,8 +48,8 @@ prepare_RTS <- function(DF_clean, short_name_scale_str) {
   # Create long DIR ------------------------------------------------------------
 
   DF_long_DIR = 
-    DF_long_RAW %>% 
-   dplyr::select(id, trialid, RAW) %>%
+    DF_long_RAW |> 
+   dplyr::select(id, trialid, RAW) |>
     
     
   # [ADAPT]: RAW to DIR for individual items -----------------------------------
@@ -68,23 +72,23 @@ prepare_RTS <- function(DF_clean, short_name_scale_str) {
 
   # Create DF_wide_RAW_DIR -----------------------------------------------------
   DF_wide_RAW =
-    DF_long_DIR %>% 
+    DF_long_DIR |> 
     tidyr::pivot_wider(
       names_from = trialid, 
       values_from = c(RAW, DIR),
-      names_glue = "{trialid}_{.value}") %>% 
+      names_glue = "{trialid}_{.value}") |> 
     
     # NAs for RAW and DIR items
-    dplyr::mutate(!!names_list$name_RAW_NA := rowSums(is.na(select(., -matches(paste0(short_name_scale_str, "_", items_to_ignore, "_RAW")) & matches("_RAW$")))),
-           !!names_list$name_DIR_NA := rowSums(is.na(select(., -matches(paste0(short_name_scale_str, "_", items_to_ignore, "_DIR")) & matches("_DIR$")))))
-      
+    dplyr::mutate(!!names_list$name_RAW_NA := rowSums(is.na(across((-matches(paste0(short_name_scale_str, "_", items_to_ignore, "_RAW")) & matches("_RAW$"))))),
+                  !!names_list$name_DIR_NA := rowSums(is.na(across((-matches(paste0(short_name_scale_str, "_", items_to_ignore, "_DIR")) & matches("_DIR$"))))))
+        
     
   # [ADAPT]: Scales and dimensions calculations --------------------------------
   # ****************************************************************************
     # [USE STANDARD NAMES FOR Scales and dimensions: name_DIRt, name_DIRd1, etc.] Check with: standardized_names(help_names = TRUE)
 
   DF_wide_RAW_DIR = 
-    DF_wide_RAW %>% 
+    DF_wide_RAW |> 
     dplyr::mutate(
 
       # # Score Dimensions (use 3 digit item numbers)
@@ -92,7 +96,7 @@ prepare_RTS <- function(DF_clean, short_name_scale_str) {
       # !!names_list$name_DIRd[2] := rowSums(select(., matches("01|03|08") & matches("_DIR$")), na.rm = TRUE), 
       
       # Score Scale
-      !!names_list$name_DIRt := rowSums(select(., matches("_DIR$")), na.rm = TRUE),
+      !!names_list$name_DIRt := rowSums(across(all_of(matches("_DIR$"))), na.rm = TRUE),
       
       # Rasch scores
       !!names_list$name_STDt :=  
@@ -127,7 +131,7 @@ prepare_RTS <- function(DF_clean, short_name_scale_str) {
   check_NAs(DF_wide_RAW_DIR)
   
   # Save files --------------------------------------------------------------
-  save_files(DF_wide_RAW_DIR, short_name_scale = short_name_scale_str, is_scale = TRUE)
+  save_files(DF_wide_RAW_DIR, short_name_scale = short_name_scale_str, is_scale = TRUE, output_formats = output_formats)
   
   # Output of function ---------------------------------------------------------
   return(DF_wide_RAW_DIR) 

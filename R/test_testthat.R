@@ -39,7 +39,7 @@ test_testthat <- function(...) { # input_files_automatic_tests_str
   # Run all the tests ------------------------------------------------------
 
   testthat::test_dir(path = here::here("tests/testthat/"), env = .GlobalEnv, stop_on_failure = FALSE, reporter = ProgressReporter)# ProgressReporter StopReporter
-  
-  cat(cli::col_blue(cli::style_underline(cli::style_bold(paste0("\n\n[END tests]:", paste(rep(" ", 65), collapse = " ")), " \n\n\n"))))
+
+  cli::cli_h1("[END tests]")  
   
 }

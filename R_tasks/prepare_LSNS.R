@@ -14,10 +14,11 @@
 ##' @return
 ##' @author gorkang
 ##' @export
-prepare_LSNS <- function(DF_clean, short_name_scale_str) {
+prepare_LSNS <- function(DF_clean, short_name_scale_str, output_formats) {
 
   # DEBUG
-  # debug_function(prepare_LSNS)
+  # targets::tar_load_globals()
+  # jsPsychHelpeR::debug_function(prepare_LSNS)
   
   
   # [ADAPT 1/3]: Items to ignore and reverse, dimensions -----------------------
@@ -32,8 +33,8 @@ prepare_LSNS <- function(DF_clean, short_name_scale_str) {
   ## Inside each c() create a vector of the item numbers for the dimension
   ## Add lines as needed. If there are no dimensions, keep as is
   items_dimensions = list(
-    Familiares = c("01", "02", "03", "04", "05", "06"),
-    Amistados = c("07", "08", "09", "10", "11", "12")
+    Familiares = c("001", "002", "003", "004", "005", "006"),
+    Amistados = c("007", "008", "009", "010", "011", "012")
     )
   
   # [END ADAPT 1/3]: ***********************************************************
@@ -55,8 +56,8 @@ prepare_LSNS <- function(DF_clean, short_name_scale_str) {
   
   # Create long DIR ------------------------------------------------------------
   DF_long_DIR = 
-    DF_long_RAW %>% 
-   dplyr::select(id, trialid, RAW) %>%
+    DF_long_RAW |> 
+   dplyr::select(id, trialid, RAW) |>
     
     
     
@@ -67,38 +68,39 @@ prepare_LSNS <- function(DF_clean, short_name_scale_str) {
     dplyr::mutate(
       DIR =
        dplyr::case_when(
-          trialid %in% c("LSNS_01", "LSNS_03", "LSNS_04", "LSNS_07", "LSNS_09", "LSNS_10") & RAW == "Ninguno" ~ 0,
-          trialid %in% c("LSNS_01", "LSNS_03", "LSNS_04", "LSNS_07", "LSNS_09", "LSNS_10") & RAW == "Uno" ~ 1,
-          trialid %in% c("LSNS_01", "LSNS_03", "LSNS_04", "LSNS_07", "LSNS_09", "LSNS_10") & RAW == "Dos" ~ 2,
-          trialid %in% c("LSNS_01", "LSNS_03", "LSNS_04", "LSNS_07", "LSNS_09", "LSNS_10") & RAW == "Tres o cuatro" ~ 3,
-          trialid %in% c("LSNS_01", "LSNS_03", "LSNS_04", "LSNS_07", "LSNS_09", "LSNS_10") & RAW == "De cinco a ocho" ~ 4,
-          trialid %in% c("LSNS_01", "LSNS_03", "LSNS_04", "LSNS_07", "LSNS_09", "LSNS_10") & RAW == "Nueve o más" ~ 5,
-          trialid %in% c("LSNS_01", "LSNS_03", "LSNS_04", "LSNS_07", "LSNS_09", "LSNS_10") & RAW == "Nueve o má" ~ 5,
+          trialid %in% c("LSNS_001", "LSNS_003", "LSNS_004", "LSNS_007", "LSNS_009", "LSNS_010") & RAW == "ninguno" ~ 0,
+          trialid %in% c("LSNS_001", "LSNS_003", "LSNS_004", "LSNS_007", "LSNS_009", "LSNS_010") & RAW == "uno" ~ 1,
+          trialid %in% c("LSNS_001", "LSNS_003", "LSNS_004", "LSNS_007", "LSNS_009", "LSNS_010") & RAW == "dos" ~ 2,
+          trialid %in% c("LSNS_001", "LSNS_003", "LSNS_004", "LSNS_007", "LSNS_009", "LSNS_010") & RAW == "tres o cuatro" ~ 3,
+          trialid %in% c("LSNS_001", "LSNS_003", "LSNS_004", "LSNS_007", "LSNS_009", "LSNS_010") & RAW == "de cinco a ocho" ~ 4,
+          trialid %in% c("LSNS_001", "LSNS_003", "LSNS_004", "LSNS_007", "LSNS_009", "LSNS_010") & RAW == "nueve o más" ~ 5,
+          trialid %in% c("LSNS_001", "LSNS_003", "LSNS_004", "LSNS_007", "LSNS_009", "LSNS_010") & RAW == "nueve o má" ~ 5,
           
-          trialid %in% c("LSNS_02", "LSNS_08") & RAW == "Menos de mensual" ~ 0,
-          trialid %in% c("LSNS_02", "LSNS_08") & RAW == "Menos de una vez por mes" ~ 0,
-          trialid %in% c("LSNS_02", "LSNS_08") & RAW == "Mensualmente" ~ 1,
-          trialid %in% c("LSNS_02", "LSNS_08") & RAW == "Mensual" ~ 1,
-          trialid %in% c("LSNS_02", "LSNS_08") & RAW == "Pocas veces al mes" ~ 2,
-          trialid %in% c("LSNS_02", "LSNS_08") & RAW == "Algunas veces al mes" ~ 2,
-          trialid %in% c("LSNS_02", "LSNS_08") & RAW == "Semanalmente" ~ 3,
-          trialid %in% c("LSNS_02", "LSNS_08") & RAW == "Algunas veces por semana" ~ 4,
-          trialid %in% c("LSNS_02", "LSNS_08") & RAW == "Diariamente" ~ 5,
+          trialid %in% c("LSNS_002", "LSNS_008") & RAW == "menos de mensual" ~ 0,
+          trialid %in% c("LSNS_002", "LSNS_008") & RAW == "menos de una vez por mes" ~ 0,
+          trialid %in% c("LSNS_002", "LSNS_008") & RAW == "mensualmente" ~ 1,
+          trialid %in% c("LSNS_002", "LSNS_008") & RAW == "mensual" ~ 1,
+          trialid %in% c("LSNS_002", "LSNS_008") & RAW == "pocas veces al mes" ~ 2,
+          trialid %in% c("LSNS_002", "LSNS_008") & RAW == "algunas veces al mes" ~ 2,
+          trialid %in% c("LSNS_002", "LSNS_008") & RAW == "semanalmente" ~ 3,
+          trialid %in% c("LSNS_002", "LSNS_008") & RAW == "algunas veces por semana" ~ 4,
+          trialid %in% c("LSNS_002", "LSNS_008") & RAW == "diariamente" ~ 5,
           
-          trialid %in% c("LSNS_05", "LSNS_06", "LSNS_11", "LSNS_12") & RAW == "Nunca" ~ 0,
-          trialid %in% c("LSNS_05", "LSNS_06", "LSNS_11", "LSNS_12") & RAW == "Rara vez" ~ 1,
-          trialid %in% c("LSNS_05", "LSNS_06", "LSNS_11", "LSNS_12") & RAW == "A veces" ~ 2,
-          trialid %in% c("LSNS_05", "LSNS_06", "LSNS_11", "LSNS_12") & RAW == "Con frecuencia" ~ 3,
-          trialid %in% c("LSNS_05", "LSNS_06", "LSNS_11", "LSNS_12") & RAW == "A menudo" ~ 3,
-          trialid %in% c("LSNS_05", "LSNS_06", "LSNS_11", "LSNS_12") & RAW == "Con mucha frecuencia" ~ 4,
-          trialid %in% c("LSNS_05", "LSNS_06", "LSNS_11", "LSNS_12") & RAW == "Muy a menudo" ~ 4,
-          trialid %in% c("LSNS_05", "LSNS_06", "LSNS_11", "LSNS_12") & RAW == "Siempre" ~ 5,
+          trialid %in% c("LSNS_005", "LSNS_006", "LSNS_011", "LSNS_012") & RAW == "nunca" ~ 0,
+          trialid %in% c("LSNS_005", "LSNS_006", "LSNS_011", "LSNS_012") & RAW == "rara vez" ~ 1,
+          trialid %in% c("LSNS_005", "LSNS_006", "LSNS_011", "LSNS_012") & RAW == "a veces" ~ 2,
+          trialid %in% c("LSNS_005", "LSNS_006", "LSNS_011", "LSNS_012") & RAW == "con frecuencia" ~ 3,
+          trialid %in% c("LSNS_005", "LSNS_006", "LSNS_011", "LSNS_012") & RAW == "a menudo" ~ 3,
+          trialid %in% c("LSNS_005", "LSNS_006", "LSNS_011", "LSNS_012") & RAW == "con mucha frecuencia" ~ 4,
+          trialid %in% c("LSNS_005", "LSNS_006", "LSNS_011", "LSNS_012") & RAW == "muy a menudo" ~ 4,
+          trialid %in% c("LSNS_005", "LSNS_006", "LSNS_011", "LSNS_012") & RAW == "siempre" ~ 5,
           
           is.na(RAW) ~ NA_real_, # OR NA_character_,
-          grepl(items_to_ignore, trialid) ~ NA_real_, # OR NA_character_,
+          trialid %in% paste0(short_name_scale_str, "_", items_to_ignore) ~ NA_real_, # OR NA_character_,
+
           TRUE ~ 9999 # OR "9999"
         )
-    ) %>% 
+    ) |> 
     
     # Invert items [CAN BE DELETED IF NOT USED or DIR is non-numeric]
     dplyr::mutate(
@@ -116,43 +118,43 @@ prepare_LSNS <- function(DF_clean, short_name_scale_str) {
 
   # Create DF_wide_RAW_DIR -----------------------------------------------------
   DF_wide_RAW =
-    DF_long_DIR %>% 
+    DF_long_DIR |> 
     tidyr::pivot_wider(
       names_from = trialid, 
       values_from = c(RAW, DIR),
-      names_glue = "{trialid}_{.value}") %>% 
+      names_glue = "{trialid}_{.value}") |> 
     
     # NAs for RAW and DIR items
-    dplyr::mutate(!!names_list$name_RAW_NA := rowSums(is.na(select(., -matches(paste0(short_name_scale_str, "_", items_to_ignore, "_RAW")) & matches("_RAW$")))),
-           !!names_list$name_DIR_NA := rowSums(is.na(select(., -matches(paste0(short_name_scale_str, "_", items_to_ignore, "_DIR")) & matches("_DIR$")))))
-
+    dplyr::mutate(!!names_list$name_RAW_NA := rowSums(is.na(across((-matches(paste0(short_name_scale_str, "_", items_to_ignore, "_RAW")) & matches("_RAW$"))))),
+                  !!names_list$name_DIR_NA := rowSums(is.na(across((-matches(paste0(short_name_scale_str, "_", items_to_ignore, "_DIR")) & matches("_DIR$"))))))
+  
 
   
   # [ADAPT 3/3]: Scales and dimensions calculations ----------------------------
   # ****************************************************************************
   
   # Reliability -------------------------------------------------------------
-  # REL1 = auto_reliability(DF_wide_RAW, short_name_scale = short_name_scale_str, items = items_DIRd1)
+  # REL1 = auto_reliability(DF_wide_RAW, short_name_scale = short_name_scale_str, items = items_dimensions[[1]])
   # items_RELd1 = REL1$item_selection_string
     
   
   # [USE STANDARD NAMES FOR Scales and dimensions: names_list$name_DIRd[1], names_list$name_DIRt,...] 
   # CHECK with: create_formulas(type = "dimensions_DIR", functions = "sum", names(items_dimensions))
   DF_wide_RAW_DIR =
-    DF_wide_RAW %>% 
+    DF_wide_RAW |> 
     dplyr::mutate(
 
       # [CHECK] Using correct formula? rowMeans() / rowSums()
       
       # Score Dimensions (see standardized_names(help_names = TRUE) for instructions)
-      !!names_list$name_DIRd[1] := rowSums(select(., paste0(short_name_scale_str, "_", items_dimensions[[1]], "_DIR")), na.rm = TRUE), 
-      !!names_list$name_DIRd[2] := rowSums(select(., paste0(short_name_scale_str, "_", items_dimensions[[2]], "_DIR")), na.rm = TRUE),
+      !!names_list$name_DIRd[1] := rowSums(across(all_of(paste0(short_name_scale_str, "_", items_dimensions[[1]], "_DIR"))), na.rm = TRUE), 
+      !!names_list$name_DIRd[2] := rowSums(across(all_of(paste0(short_name_scale_str, "_", items_dimensions[[2]], "_DIR"))), na.rm = TRUE),
       
       # Reliability Dimensions (see standardized_names(help_names = TRUE) for instructions)
-      # !!names_list$name_RELd[1] := rowMeans(select(., paste0(short_name_scale_str, "_", items_RELd1, "_DIR")), na.rm = TRUE), 
+      # !!names_list$name_RELd[1] := rowMeans(across(all_of(paste0(short_name_scale_str, "_", items_RELd1, "_DIR"))), na.rm = TRUE), 
 
       # Score Scale
-      !!names_list$name_DIRt := rowSums(select(., matches("_DIR$")), na.rm = TRUE)
+      !!names_list$name_DIRt := rowSums(across(all_of(matches("_DIR$"))), na.rm = TRUE)
       
     )
     
@@ -164,7 +166,7 @@ prepare_LSNS <- function(DF_clean, short_name_scale_str) {
   check_NAs(DF_wide_RAW_DIR)
   
   # Save files --------------------------------------------------------------
-  save_files(DF_wide_RAW_DIR, short_name_scale = short_name_scale_str, is_scale = TRUE)
+  save_files(DF_wide_RAW_DIR, short_name_scale = short_name_scale_str, is_scale = TRUE, output_formats = output_formats)
   
   # Output of function ---------------------------------------------------------
   return(DF_wide_RAW_DIR) 

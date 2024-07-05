@@ -26,7 +26,7 @@
   # DO THIS ALWAYS so jsPsychHelpeR.zip is updated!
   # Create jsPsychHelpeR.zip
   jsPsychAdmin::create_jsPsychHelpeR_zip(add_renv_cache = FALSE)
-  # NO CACHE: 355KB
+  # NO CACHE: 369KB
 
   # add_renv_cache = TRUE creates a zip file with the renv cache 
   # (initially jsPSychHelper package ~230MB, after cleaning up a lot, 75.6MB)

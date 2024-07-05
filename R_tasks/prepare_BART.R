@@ -14,10 +14,11 @@
 ##' @return
 ##' @author gorkang
 ##' @export
-prepare_BART <- function(DF_clean, short_name_scale_str) {
+prepare_BART <- function(DF_clean, short_name_scale_str, output_formats) {
   
   # DEBUG
-  # debug_function(prepare_BART)
+  # targets::tar_load_globals()
+  # jsPsychHelpeR::debug_function(prepare_BART)
   
   # Numero de infladas de cada globo que no revento
   # en que inflada reventaron 
@@ -56,8 +57,8 @@ prepare_BART <- function(DF_clean, short_name_scale_str) {
   
   
   DF_long_DIR = 
-    DF_long_RAW %>% 
-   dplyr::select(id, trialid, RAW) %>%
+    DF_long_RAW |> 
+   dplyr::select(id, trialid, RAW) |>
     
     
     # [ADAPT]: RAW to DIR for individual items -----------------------------------
@@ -87,8 +88,8 @@ prepare_BART <- function(DF_clean, short_name_scale_str) {
   # METHOD 1 -----------------------
   
   DF_temp =
-    DF_long_RAW %>%
-   dplyr::select(id, trialid, RAW) %>%
+    DF_long_RAW |>
+   dplyr::select(id, trialid, RAW) |>
 
     # Should be fixed
     # dplyr::mutate(trialid =
@@ -96,24 +97,24 @@ prepare_BART <- function(DF_clean, short_name_scale_str) {
     #            grepl("round_money", trialid) ~ gsub("(.*)round_money", "\\1RoundMoney", trialid),
     #            grepl("total_money", trialid) ~ gsub("(.*)total_money", "\\1TotalMoney", trialid),
     #            grepl("explode_rounds", trialid) ~ gsub("(.*)explode_rounds", "\\1ExplodeRounds", trialid),
-    #            TRUE ~ trialid)) %>%
-    tidyr::separate(trialid, into = c("BART", "trialnum", "variable"), sep = "_") %>%
-    tidyr::pivot_wider(names_from = variable, values_from = RAW) %>% 
+    #            TRUE ~ trialid)) |>
+    tidyr::separate(trialid, into = c("BART", "trialnum", "variable"), sep = "_") |>
+    tidyr::pivot_wider(names_from = variable, values_from = RAW) |> 
     dplyr::mutate(status = stringr::str_to_sentence(status))
 
 
   DF_wide_Dimensions =
-    DF_temp %>%
-    dplyr::group_by(id, status) %>%
+    DF_temp |>
+    dplyr::group_by(id, status) |>
     dplyr::summarise(BART_meanRounds = mean(as.numeric(rounds), na.rm = TRUE),
                      BART_number = dplyr::n(), 
-                     .groups = "drop") %>%
-    tidyr::pivot_wider(names_from = status, values_from = c(BART_meanRounds, BART_number), names_sep = "") %>%
-    dplyr::left_join(DF_temp %>%
-                       dplyr::group_by(id) %>%
+                     .groups = "drop") |>
+    tidyr::pivot_wider(names_from = status, values_from = c(BART_meanRounds, BART_number), names_sep = "") |>
+    dplyr::left_join(DF_temp |>
+                       dplyr::group_by(id) |>
                        dplyr::summarise(BART_totalMoney = max(as.numeric(totalMoney)), .groups = "drop"), 
                      by = "id"
-                     ) %>% 
+                     ) |> 
     dplyr::rename_with(~paste0(., "_DIRd"), BART_meanRoundsExplode:BART_totalMoney) |> 
     dplyr::mutate(dplyr::across(dplyr::ends_with("_DIRd"), ~tidyr::replace_na(.x, 0)))
 
@@ -127,15 +128,15 @@ prepare_BART <- function(DF_clean, short_name_scale_str) {
   
   
   DF_wide_RAW_DIR =
-    DF_long_DIR %>% 
+    DF_long_DIR |> 
     tidyr::pivot_wider(
       names_from = trialid, 
       values_from = c(RAW, DIR),
-      names_glue = "{trialid}_{.value}") %>% 
+      names_glue = "{trialid}_{.value}") |> 
     
     # NAs for RAW and DIR items
     dplyr::mutate(!!names_list$name_RAW_NA := rowSums(is.na(dplyr::select(., -matches(items_to_ignore) & matches("_RAW")))),
-           !!names_list$name_DIR_NA := rowSums(is.na(dplyr::select(., -matches(items_to_ignore) & matches("_DIR"))))) %>% 
+           !!names_list$name_DIR_NA := rowSums(is.na(dplyr::select(., -matches(items_to_ignore) & matches("_DIR"))))) |> 
     
     
     # [ADAPT]: Scales and dimensions calculations --------------------------------
@@ -154,7 +155,7 @@ prepare_BART <- function(DF_clean, short_name_scale_str) {
   #   
   #   
   #   # Score Scale
-  #   # !!names_list$name_DIRt := rowSums(select(., matches("_DIR$")), na.rm = TRUE)
+  #   # !!names_list$name_DIRt := rowSums(across(all_of(matches("_DIR$"))), na.rm = TRUE)
   #   
   # )  
       
@@ -167,7 +168,7 @@ prepare_BART <- function(DF_clean, short_name_scale_str) {
   check_NAs(DF_wide_RAW_DIR)
   
   # Save files --------------------------------------------------------------
-  save_files(DF_wide_RAW_DIR, short_name_scale = short_name_scale_str, is_scale = TRUE)
+  save_files(DF_wide_RAW_DIR, short_name_scale = short_name_scale_str, is_scale = TRUE, output_formats = output_formats)
   
   # Output of function ---------------------------------------------------------
   return(DF_wide_RAW_DIR) 

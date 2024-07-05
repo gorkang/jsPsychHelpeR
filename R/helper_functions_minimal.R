@@ -453,7 +453,7 @@ create_targets_file <- function(pid = 0, folder, dont_ask = FALSE) {
     template = readLines(paste0(folder, "/inst/templates/_targets_TEMPLATE.R"))
     
     # Prepare targets section and joins section
-    targets = paste0("   tar_target(df_", tasks, ", prepare_", tasks_canonical, "(DF_clean, short_name_scale_str = '", tasks,"')),\n") %>% paste(., collapse = "")
+    targets = paste0("   tar_target(df_", tasks, ", prepare_", tasks_canonical, "(DF_clean, short_name_scale_str = '", tasks,"', output_formats = output_formats)),\n") %>% paste(., collapse = "")
     joins = paste0("\t\t\t\t\t\t\t df_", tasks, ",\n") %>% paste(., collapse = "") %>% gsub(",\n$", "", .)
   
     # Replace targets and joins sections 
@@ -585,7 +585,7 @@ auto_reliability = function(DF, short_name_scale = short_name_scale_str, items =
   # DEBUG
   # DF = DF_wide_RAW
   # short_name_scale = short_name_scale_str
-  # items =  items_DIRd1
+  # items =  items_dimensions[[1]]
   # min_rdrop = 0.2
   # items =  NULL
   
@@ -673,9 +673,13 @@ auto_reliability = function(DF, short_name_scale = short_name_scale_str, items =
 
 
   }
-
-  item_selection_string = gsub(".*([0-9]{2,3}).*", "\\1", keep_items)
-
+  
+  # Extract 3-digits trialid numbers. If not found, try 2 digits
+  item_selection_string = gsub(".*([0-9]{3}).*", "\\1", keep_items)
+  if (any(grepl("[A-Za-z]", item_selection_string))) item_selection_string = gsub(".*([0-9]{2}).*", "\\1", keep_items)
+  if (any(grepl("[A-Za-z]", item_selection_string))) cli::cli_alert_danger("Could not extract numbers from: {item_selection_string}")
+  
+  
   reliability_output =
     list(min_rdrop = min_rdrop,
          alpha_initial = alpha_initial,

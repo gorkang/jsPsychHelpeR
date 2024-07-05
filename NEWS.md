@@ -1,4 +1,9 @@
-# jsPsychHelpeR 0.3.5.901
+# jsPsychHelpeR 0.3.5.903
+
+Major updates
+
+* All prepare_TASK() are using the same format now (closes #4)
+* All prepare_TASK() are using the new pipe (|>) and are a bit faster now
 
 Minor updates
 
@@ -10,7 +15,8 @@ Minor updates
 * Replace all readr instances for data.table to reduce dependencies and speed up things
 * Simplify save_files
 * Get rid of some unused files/functions
-* Started replacing %>% by |>
+* Started replacing %>% by |> elsewhere
+* Add output_formats parameter (closes #33)
 
 
 # jsPsychHelpeR 0.2.7

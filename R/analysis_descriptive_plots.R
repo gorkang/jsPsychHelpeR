@@ -12,7 +12,8 @@
 analysis_descriptive_plots <- function(DF_joined, DF_raw, DF_clean, save_plots = FALSE) {
   
   # DEBUG
-  # debug_function(analysis_descriptive_plots)
+  # targets::tar_load_globals()
+  # jsPsychHelpeR::debug_function(analysis_descriptive_plots)
   
   # DF_joined
   all_scales = grep(".*_DIRt$|.*_STDt$|.*_RELt$|.*_REdt$|.*_DIRd$|.*STDd$", names(DF_joined), value = TRUE, perl = TRUE)

@@ -14,10 +14,11 @@
 ##' @return
 ##' @author gorkang
 ##' @export
-prepare_STAI <- function(DF_clean, short_name_scale_str) {
+prepare_STAI <- function(DF_clean, short_name_scale_str, output_formats) {
 
   # DEBUG
-  # debug_function(prepare_STAI)
+  # targets::tar_load_globals()
+  # jsPsychHelpeR::debug_function(prepare_STAI)
 
   # [ADAPT]: Items to ignore and reverse ---------------------------------------
   # ****************************************************************************
@@ -25,10 +26,11 @@ prepare_STAI <- function(DF_clean, short_name_scale_str) {
   items_to_ignore = c("00") # Ignore these items: If nothing to ignore, keep items_to_ignore = c("00")
   items_to_reverse = c("01", "02", "05", "08", "10", "11", "15", "16", "19", "20", "21", "23", "26", "27", "30", "33", "34", "36", "39") # Reverse these items: If nothing to reverse, keep  items_to_reverse = c("00")
   
-  names_dimensions = c("estado", "rasgo") # If no dimensions, keep names_dimensions = c("")
+  items_dimensions = list(
+    estado = c("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20"), 
+    rasgo = c("21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40")
+  )
 
-  items_DIRd1 = c("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20")
-  items_DIRd2 = c("21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40")
   
   # [END ADAPT]: ***************************************************************
   # ****************************************************************************
@@ -36,7 +38,7 @@ prepare_STAI <- function(DF_clean, short_name_scale_str) {
   
   # Standardized names ------------------------------------------------------
   names_list = standardized_names(short_name_scale = short_name_scale_str, 
-                     dimensions = names_dimensions, # Use names of dimensions, "" or comment out line
+                     dimensions = names(items_dimensions), # Use names of dimensions, "" or comment out line
                      help_names = FALSE) # help_names = FALSE once the script is ready
   
   # Create long -------------------------------------------------------------
@@ -46,8 +48,8 @@ prepare_STAI <- function(DF_clean, short_name_scale_str) {
   # Create long DIR ------------------------------------------------------------
   
   DF_long_DIR = 
-    DF_long_RAW %>% 
-   dplyr::select(id, trialid, RAW) %>%
+    DF_long_RAW |> 
+   dplyr::select(id, trialid, RAW) |>
     
     
   # [ADAPT]: RAW to DIR for individual items -----------------------------------
@@ -62,10 +64,10 @@ prepare_STAI <- function(DF_clean, short_name_scale_str) {
           RAW == "BASTANTE" ~ 3,
           RAW == "MUCHO" ~ 4,
           is.na(RAW) ~ NA_real_,
-          grepl(items_to_ignore, trialid) ~ NA_real_,
+          trialid %in% paste0(short_name_scale_str, "_", items_to_ignore) ~ NA_real_, # OR NA_character_
           TRUE ~ 9999
         )
-    ) %>% 
+    ) |> 
     
     # Invert items
     dplyr::mutate(
@@ -83,20 +85,20 @@ prepare_STAI <- function(DF_clean, short_name_scale_str) {
 
   # Create DF_wide_RAW_DIR -----------------------------------------------------
   DF_wide_RAW =
-    DF_long_DIR %>% 
+    DF_long_DIR |> 
     tidyr::pivot_wider(
       names_from = trialid, 
       values_from = c(RAW, DIR),
-      names_glue = "{trialid}_{.value}") %>% 
+      names_glue = "{trialid}_{.value}") |> 
     
     # NAs for RAW and DIR items
-    dplyr::mutate(!!names_list$name_RAW_NA := rowSums(is.na(select(., -matches(paste0(short_name_scale_str, "_", items_to_ignore, "_RAW")) & matches("_RAW$")))),
-           !!names_list$name_DIR_NA := rowSums(is.na(select(., -matches(paste0(short_name_scale_str, "_", items_to_ignore, "_DIR")) & matches("_DIR$")))))
-  
+    dplyr::mutate(!!names_list$name_RAW_NA := rowSums(is.na(across((-matches(paste0(short_name_scale_str, "_", items_to_ignore, "_RAW")) & matches("_RAW$"))))),
+                  !!names_list$name_DIR_NA := rowSums(is.na(across((-matches(paste0(short_name_scale_str, "_", items_to_ignore, "_DIR")) & matches("_DIR$"))))))
+    
   
   # Reliability -------------------------------------------------------------
   
-  # REL1 = auto_reliability(DF_wide_RAW, short_name_scale = short_name_scale_str, items = items_DIRd1)
+  # REL1 = auto_reliability(DF_wide_RAW, short_name_scale = short_name_scale_str, items = items_dimensions[[1]])
   # items_RELd1 = REL1$item_selection_string
     
   
@@ -105,20 +107,20 @@ prepare_STAI <- function(DF_clean, short_name_scale_str) {
     # [USE STANDARD NAMES FOR Scales and dimensions: name_DIRt, name_DIRd1, etc.] Check with: standardized_names(help_names = TRUE)
 
   DF_wide_RAW_DIR =
-    DF_wide_RAW %>% 
+    DF_wide_RAW |> 
     dplyr::mutate(
 
       # Make sure to use the correct formula: rowMeans() / rowSums()
       
       # Score Dimensions (see standardized_names(help_names = TRUE) for instructions)
-      !!names_list$name_DIRd[1] := rowSums(select(., paste0(short_name_scale_str, "_", items_DIRd1, "_DIR")), na.rm = TRUE), 
-      !!names_list$name_DIRd[2] := rowSums(select(., paste0(short_name_scale_str, "_", items_DIRd2, "_DIR")), na.rm = TRUE),
+      !!names_list$name_DIRd[1] := rowSums(across(all_of(paste0(short_name_scale_str, "_", items_dimensions[[1]], "_DIR"))), na.rm = TRUE), 
+      !!names_list$name_DIRd[2] := rowSums(across(all_of(paste0(short_name_scale_str, "_", items_dimensions[[2]], "_DIR"))), na.rm = TRUE),
       
       # Reliability Dimensions (see standardized_names(help_names = TRUE) for instructions)
-      # !!names_list$name_RELd[1] := rowMeans(select(., paste0(short_name_scale_str, "_", items_RELd1, "_DIR")), na.rm = TRUE), 
+      # !!names_list$name_RELd[1] := rowMeans(across(all_of(paste0(short_name_scale_str, "_", items_RELd1, "_DIR"))), na.rm = TRUE), 
 
       # Score Scale
-      !!names_list$name_DIRt := rowSums(select(., matches("_DIR$")), na.rm = TRUE)
+      !!names_list$name_DIRt := rowSums(across(all_of(matches("_DIR$"))), na.rm = TRUE)
       
     )
     
@@ -130,7 +132,7 @@ prepare_STAI <- function(DF_clean, short_name_scale_str) {
   check_NAs(DF_wide_RAW_DIR)
   
   # Save files --------------------------------------------------------------
-  save_files(DF_wide_RAW_DIR, short_name_scale = short_name_scale_str, is_scale = TRUE)
+  save_files(DF_wide_RAW_DIR, short_name_scale = short_name_scale_str, is_scale = TRUE, output_formats = output_formats)
   
   # Output of function ---------------------------------------------------------
   return(DF_wide_RAW_DIR) 

@@ -14,10 +14,11 @@
 ##' @return
 ##' @author gorkang
 ##' @export
-prepare_PBSr <- function(DF_clean, short_name_scale_str) {
+prepare_PBSr <- function(DF_clean, short_name_scale_str, output_formats) {
 
   # DEBUG
-  # debug_function(prepare_PBSr)
+  # targets::tar_load_globals()
+  # jsPsychHelpeR::debug_function(prepare_PBSr)
 
   
   # [ADAPT]: Items to ignore, reverse and dimensions ---------------------------------------
@@ -26,15 +27,16 @@ prepare_PBSr <- function(DF_clean, short_name_scale_str) {
   items_to_ignore = c("000") # Ignore these items: If nothing to ignore, keep items_to_ignore = c("00")
   items_to_reverse = c("023") # Reverse these items: If nothing to reverse, keep  items_to_reverse = c("00")
   
-  names_dimensions = c("CreenciasReligiosasTradicionales", "psi", "brujeria", "supersticion", "espiritismo", "FormasVidaExtraordinaria", "precognicion") # If no dimensions, keep names_dimensions = c("")
+  items_dimensions = list(
+    CreenciasReligiosasTradicionales = c("001", "008", "015", "022"), 
+    psi = c("002", "009", "016", "023"), 
+    brujeria = c("003", "010", "017", "024"), 
+    supersticion = c("004", "011", "018"), 
+    espiritismo = c("005", "012", "019", "025"), 
+    FormasVidaExtraordinaria = c("006", "013", "020"), 
+    precognicion = c("007", "014", "021", "026")
+  )
   
-  items_DIRd1 = c("001", "008", "015", "022")
-  items_DIRd2 = c("002", "009", "016", "023")
-  items_DIRd3 = c("003", "010", "017", "024")
-  items_DIRd4 = c("004", "011", "018")
-  items_DIRd5 = c("005", "012", "019", "025")
-  items_DIRd6 = c("006", "013", "020")
-  items_DIRd7 = c("007", "014", "021", "026")
 
   # [END ADAPT]: ***************************************************************
   # ****************************************************************************
@@ -42,7 +44,7 @@ prepare_PBSr <- function(DF_clean, short_name_scale_str) {
   
   # Standardized names ------------------------------------------------------
   names_list = standardized_names(short_name_scale = short_name_scale_str, 
-                     dimensions = names_dimensions, 
+                     dimensions = names(items_dimensions), 
                      help_names = FALSE) # help_names = FALSE once the script is ready
   
   # Create long -------------------------------------------------------------
@@ -51,8 +53,8 @@ prepare_PBSr <- function(DF_clean, short_name_scale_str) {
   
   # Create long DIR ------------------------------------------------------------
   DF_long_DIR = 
-    DF_long_RAW %>% 
-   dplyr::select(id, trialid, RAW) %>%
+    DF_long_RAW |> 
+   dplyr::select(id, trialid, RAW) |>
     
     
   # [ADAPT]: RAW to DIR for individual items -----------------------------------
@@ -70,7 +72,7 @@ prepare_PBSr <- function(DF_clean, short_name_scale_str) {
           RAW == '7 Muy de acuerdo' ~ 7,
           TRUE ~ 9999
         )
-    ) %>% 
+    ) |> 
     
     # Invert items 23
     # [TODO]: Item id's will be 3 digits: 023
@@ -89,36 +91,37 @@ prepare_PBSr <- function(DF_clean, short_name_scale_str) {
 
   # Create DF_wide_RAW_DIR -----------------------------------------------------
   DF_wide_RAW =
-    DF_long_DIR %>% 
+    DF_long_DIR |> 
     tidyr::pivot_wider(
       names_from = trialid, 
       values_from = c(RAW, DIR),
-      names_glue = "{trialid}_{.value}") %>% 
+      names_glue = "{trialid}_{.value}") |> 
     
     # NAs for RAW and DIR items
-    dplyr::mutate(!!names_list$name_RAW_NA := rowSums(is.na(select(., -matches(paste0(short_name_scale_str, "_", items_to_ignore, "_RAW")) & matches("_RAW$")))),
-           !!names_list$name_DIR_NA := rowSums(is.na(select(., -matches(paste0(short_name_scale_str, "_", items_to_ignore, "_DIR")) & matches("_DIR$")))))
-      
+    dplyr::mutate(!!names_list$name_RAW_NA := rowSums(is.na(across((-matches(paste0(short_name_scale_str, "_", items_to_ignore, "_RAW")) & matches("_RAW$"))))),
+                  !!names_list$name_DIR_NA := rowSums(is.na(across((-matches(paste0(short_name_scale_str, "_", items_to_ignore, "_DIR")) & matches("_DIR$"))))))
+        
     
   # [ADAPT]: Scales and dimensions calculations --------------------------------
   # ****************************************************************************
     # [USE STANDARD NAMES FOR Scales and dimensions: name_DIRt, name_DIRd1, etc.] Check with: standardized_names(help_names = TRUE)
   
   DF_wide_RAW_DIR =
-    DF_wide_RAW %>% 
+    DF_wide_RAW |> 
     dplyr::mutate(
 
       # Score Dimensions (use 3 digit item numbers)
-      !!names_list$name_DIRd[1] := rowMeans(select(., paste0(short_name_scale_str, "_", items_DIRd1, "_DIR")), na.rm = TRUE), 
-      !!names_list$name_DIRd[2] := rowMeans(select(., paste0(short_name_scale_str, "_", items_DIRd2, "_DIR")), na.rm = TRUE),
-      !!names_list$name_DIRd[3] := rowMeans(select(., paste0(short_name_scale_str, "_", items_DIRd3, "_DIR")), na.rm = TRUE), 
-      !!names_list$name_DIRd[4] := rowMeans(select(., paste0(short_name_scale_str, "_", items_DIRd4, "_DIR")), na.rm = TRUE),
-      !!names_list$name_DIRd[5] := rowMeans(select(., paste0(short_name_scale_str, "_", items_DIRd5, "_DIR")), na.rm = TRUE),
-      !!names_list$name_DIRd[6] := rowMeans(select(., paste0(short_name_scale_str, "_", items_DIRd6, "_DIR")), na.rm = TRUE),
-      !!names_list$name_DIRd[7] := rowMeans(select(., paste0(short_name_scale_str, "_", items_DIRd7, "_DIR")), na.rm = TRUE),
+      !!names_list$name_DIRd[1] := rowMeans(across(all_of(paste0(short_name_scale_str, "_", items_dimensions[[1]], "_DIR"))), na.rm = TRUE), 
+      !!names_list$name_DIRd[2] := rowMeans(across(all_of(paste0(short_name_scale_str, "_", items_dimensions[[2]], "_DIR"))), na.rm = TRUE),
+      !!names_list$name_DIRd[3] := rowMeans(across(all_of(paste0(short_name_scale_str, "_", items_dimensions[[3]], "_DIR"))), na.rm = TRUE), 
+      !!names_list$name_DIRd[4] := rowMeans(across(all_of(paste0(short_name_scale_str, "_", items_dimensions[[4]], "_DIR"))), na.rm = TRUE),
+      !!names_list$name_DIRd[5] := rowMeans(across(all_of(paste0(short_name_scale_str, "_", items_dimensions[[5]], "_DIR"))), na.rm = TRUE),
+      !!names_list$name_DIRd[6] := rowMeans(across(all_of(paste0(short_name_scale_str, "_", items_dimensions[[6]], "_DIR"))), na.rm = TRUE),
+      !!names_list$name_DIRd[7] := rowMeans(across(all_of(paste0(short_name_scale_str, "_", items_dimensions[[7]], "_DIR"))), na.rm = TRUE),
       
       # Score Scale
-      !!names_list$name_DIRt := rowMeans(select(., matches("_DIR$")), na.rm = TRUE)
+            !!names_list$name_DIRt := rowMeans(across(all_of(matches("_DIR$"))), na.rm = TRUE)
+
       
     )
     
@@ -130,7 +133,7 @@ prepare_PBSr <- function(DF_clean, short_name_scale_str) {
   check_NAs(DF_wide_RAW_DIR)
   
   # Save files --------------------------------------------------------------
-  save_files(DF_wide_RAW_DIR, short_name_scale = short_name_scale_str, is_scale = TRUE)
+  save_files(DF_wide_RAW_DIR, short_name_scale = short_name_scale_str, is_scale = TRUE, output_formats = output_formats)
   
   # Output of function ---------------------------------------------------------
   return(DF_wide_RAW_DIR) 

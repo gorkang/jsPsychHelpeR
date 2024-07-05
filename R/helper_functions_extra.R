@@ -3,14 +3,14 @@
 #' PROBABLY NOT NEEDED, as we SHOULD do all this automatically in get_dimensions_google_doc()
 #' Maybe useful when there are some non-standard elements to the calculations? e.g. See prepare_CS
 #'
-#' @param type One of: c("dimensions_DIR", "dimensions_STD", "dimensions_REL", "total_DIR", "total_REL", "total_STD")
+#' @param type One of: c("DIRd", "STDd", "RELd", "DIRt", "RELt", "STDt")
 #' @param functions One of: c("sum"|"mean")
 #' @param dimensions character vector with the dimensions names
 #'
 #' @return prints the formula for the prepare_TASK() function
 #' @export
 #'
-#' @examples  create_formulas(type = "dimensions_DIR", functions = "sum", dimensions = c("ONE"))
+#' @examples  create_formulas(type = "DIRd", functions = "sum", dimensions = c("ONE"))
 create_formulas <- function(type, functions = "sum", dimensions = NULL) {
 
   if (functions == "sum") {
@@ -22,16 +22,16 @@ create_formulas <- function(type, functions = "sum", dimensions = NULL) {
   }
   
   
-  if (type %in% c("dimensions_DIR", "dimensions_STD", "dimensions_REL")) {
+  if (type %in% c("DIRd", "STDd", "RELd")) {
     
     if (!is.null(dimensions)) {
       
       if (functions == "sum") {
-        # !!names_list$names_dimensions_DIR[1] := rowSums(select(., paste0(short_name_scale_str, "_", items_DIRd1, "_DIR")), na.rm = TRUE), 
-        cat('', paste0('!!names_list$names_', type, '[', 1:length(dimensions), '] := rowSums(select(., paste0(short_name_scale_str, "_", items_DIRd', 1:length(dimensions), ', "_DIR")), na.rm = TRUE),\n'))
+        # OLD: !!names_list$names_dimensions_DIR[1] := rowSums(across(all_of(paste0(short_name_scale_str, "_", items_dimensions[[1]], "_DIR"))), na.rm = TRUE), 
+        # NEW: !!names_list$name_DIRd[1] := rowSums(across(all_of(paste0(short_name_scale_str, "_", items_dimensions[[1]], "_DIR"))), na.rm = TRUE),  
+        cat('', paste0('!!names_list$name_', type, '[', 1:length(dimensions), '] := rowSums(across(all_of(paste0(short_name_scale_str, "_", items_dimensions[[', 1:length(dimensions), ']], "_DIR"))), na.rm = TRUE),\n'))
       } else if (functions == "mean") {
-        # !!names_list$names_dimensions_DIR[1] := rowSums(select(., paste0(short_name_scale_str, "_", items_DIRd1, "_DIR")), na.rm = TRUE), 
-        cat('', paste0('!!names_list$names_', type, '[', 1:length(dimensions), '] := rowMeans(select(., paste0(short_name_scale_str, "_", items_DIRd', 1:length(dimensions), ', "_DIR")), na.rm = TRUE),\n'))
+        cat('', paste0('!!names_list$name_', type, '[', 1:length(dimensions), '] := rowMeans(across(all_of(paste0(short_name_scale_str, "_", items_dimensions[[', 1:length(dimensions), ']], "_DIR"))), na.rm = TRUE),\n'))
       }
       
     } else {
@@ -39,16 +39,16 @@ create_formulas <- function(type, functions = "sum", dimensions = NULL) {
       
     }
     
-  } else if (type %in% c("total_DIR", "total_REL", "total_STD")) {
+  } else if (type %in% c("DIRt", "RELt", "STDt")) {
     
     if (functions == "sum") {
-      cat(paste0('!!name_DIRt := rowSums(select(., paste0(short_name_scale_str, "_", all_items, "_DIR")), na.rm = TRUE)'))
+      cat(paste0('!!name_DIRt := rowSums(across(all_of(paste0(short_name_scale_str, "_", all_items, "_DIR"))), na.rm = TRUE)'))
     } else if (functions == "mean") {
-      cat(paste0('!!name_DIRt := rowMeans(select(., paste0(short_name_scale_str, "_", all_items, "_DIR")), na.rm = TRUE)'))
+      cat(paste0('!!name_DIRt := rowMeans(across(all_of(paste0(short_name_scale_str, "_", all_items, "_DIR"))), na.rm = TRUE)'))
     }
     
   } else {
-    cli::cli_abort(paste0("'type' should be one of: ", paste(c("dimensions_DIR", "dimensions_STD", "dimensions_REL", "total_DIR", "total_REL", "total_STD"), collapse = ", ")))
+    cli::cli_abort(paste0("'type' should be one of: ", paste(c("DIRd", "STDd", "RELd", "DIRt", "RELt", "STDt"), collapse = ", ")))
   }
   
   

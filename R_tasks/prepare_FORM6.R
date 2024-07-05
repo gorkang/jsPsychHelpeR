@@ -35,19 +35,19 @@ prepare_FORM6 <- function(files_status, DF_DICTIONARY_id, short_name_scale_str) 
   # Create long -------------------------------------------------------------
   
   DF_long_RAW = 
-    DF_clean_status %>% 
-    # dplyr::filter(experiment == name_scale) %>% 
-    dplyr::filter(grepl(paste0(short_name_scale_str, "_[0-9]"), trialid)) %>% 
-   dplyr::select(id, datetime, trialid,response) %>% 
-   tidyr::drop_na(trialid) %>% 
-    dplyr::rename(RAW = response) %>% 
+    DF_clean_status |> 
+    # dplyr::filter(experiment == name_scale) |> 
+    dplyr::filter(grepl(paste0(short_name_scale_str, "_[0-9]"), trialid)) |> 
+    dplyr::select(id, datetime, trialid,response) |> 
+    tidyr::drop_na(trialid) |> 
+    dplyr::rename(RAW = response) |> 
     dplyr::arrange(trialid, id)
   
   
 
   # Create DF_wide_RAW_DIR -----------------------------------------------------
   DF_wide_RAW_DIR =
-    DF_long_RAW %>%
+    DF_long_RAW |>
       tidyr::pivot_wider(
         names_from = trialid, 
         values_from = c(RAW),
@@ -56,10 +56,10 @@ prepare_FORM6 <- function(files_status, DF_DICTIONARY_id, short_name_scale_str) 
   
   ## GET protocol id ---------------
   DF_wide_RAW_DIR = 
-    DF_wide_RAW_DIR %>% 
-    dplyr::rename(RUT = id) %>% 
-    # dplyr::mutate(rut = FORM6_01_RAW) %>% 
-    dplyr::left_join(DF_DICTIONARY_id, by = "RUT") %>% 
+    DF_wide_RAW_DIR |> 
+    dplyr::rename(RUT = id) |> 
+    # dplyr::mutate(rut = FORM6_01_RAW) |> 
+    dplyr::left_join(DF_DICTIONARY_id, by = "RUT") |> 
    dplyr::select(id, RUT, dplyr::everything())
   
   

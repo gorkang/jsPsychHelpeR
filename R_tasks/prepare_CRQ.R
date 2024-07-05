@@ -14,12 +14,11 @@
 ##' @return
 ##' @author gorkang
 ##' @export
-prepare_CRQ <- function(DF_clean, short_name_scale_str) {
+prepare_CRQ <- function(DF_clean, short_name_scale_str, output_formats) {
 
   # DEBUG
-  # debug_function(prepare_CRQ)
-  # get_dimensions_googledoc(short_name_text = "CRQ")
-  
+  # targets::tar_load_globals()
+  # jsPsychHelpeR::debug_function(prepare_CRQ)
   
   
   # [ADAPT 1/3]: Items to ignore and reverse, dimensions -----------------------
@@ -56,7 +55,7 @@ prepare_CRQ <- function(DF_clean, short_name_scale_str) {
   
   # All items and their questions
   questions_per_item = c("", "_Q1", "_Q2")
-  all_items = paste0(short_name_scale_str, "_", items_dimensions %>% unlist())
+  all_items = paste0(short_name_scale_str, "_", items_dimensions |> unlist())
   all_items_questions = paste0(rep(all_items, each = length(questions_per_item)), questions_per_item, sep = "")
   
   
@@ -80,8 +79,8 @@ prepare_CRQ <- function(DF_clean, short_name_scale_str) {
   
   # Create long DIR ------------------------------------------------------------
   DF_long_DIR = 
-    DF_long_RAW %>% 
-   dplyr::select(id, trialid, RAW) %>%
+    DF_long_RAW |> 
+    dplyr::select(id, trialid, RAW) |>
     
     
     
@@ -96,10 +95,11 @@ prepare_CRQ <- function(DF_clean, short_name_scale_str) {
           trialid %in% all_items_questions ~ as.numeric(RAW),
           
           is.na(RAW) ~ NA_real_, # OR NA_character_,
-          grepl(items_to_ignore, trialid) ~ NA_real_, # OR NA_character_,
+          trialid %in% paste0(short_name_scale_str, "_", items_to_ignore) ~ NA_real_, # OR NA_character_,
+
           TRUE ~ 9999 # OR "9999"
         )
-    ) %>% 
+    ) |> 
     
     # Invert items [CAN BE DELETED IF NOT USED or DIR is non-numeric]
     dplyr::mutate(
@@ -117,56 +117,56 @@ prepare_CRQ <- function(DF_clean, short_name_scale_str) {
 
   # Create DF_wide_RAW_DIR -----------------------------------------------------
   DF_wide_RAW =
-    DF_long_DIR %>% 
+    DF_long_DIR |> 
     tidyr::pivot_wider(
       names_from = trialid, 
       values_from = c(RAW, DIR),
-      names_glue = "{trialid}_{.value}") %>% 
+      names_glue = "{trialid}_{.value}") |> 
     
     # NAs for RAW and DIR items
-    dplyr::mutate(!!names_list$name_RAW_NA := rowSums(is.na(select(., -matches(paste0(short_name_scale_str, "_", items_to_ignore, "_RAW")) & matches("_RAW$")))),
-           !!names_list$name_DIR_NA := rowSums(is.na(select(., -matches(paste0(short_name_scale_str, "_", items_to_ignore, "_DIR")) & matches("_DIR$")))))
-
+    dplyr::mutate(!!names_list$name_RAW_NA := rowSums(is.na(across((-matches(paste0(short_name_scale_str, "_", items_to_ignore, "_RAW")) & matches("_RAW$"))))),
+                  !!names_list$name_DIR_NA := rowSums(is.na(across((-matches(paste0(short_name_scale_str, "_", items_to_ignore, "_DIR")) & matches("_DIR$"))))))
+  
 
   
   # [ADAPT 3/3]: Scales and dimensions calculations ----------------------------
   # ****************************************************************************
   
   # Reliability -------------------------------------------------------------
-  # REL1 = auto_reliability(DF_wide_RAW, short_name_scale = short_name_scale_str, items = items_DIRd1)
+  # REL1 = auto_reliability(DF_wide_RAW, short_name_scale = short_name_scale_str, items = items_dimensions[[1]])
   # items_RELd1 = REL1$item_selection_string
     
   
   # [USE STANDARD NAMES FOR Scales and dimensions: names_list$name_DIRd[1], names_list$name_DIRt,...] 
   # CHECK with: create_formulas(type = "dimensions_DIR", functions = "sum", names(items_dimensions))
   DF_wide_RAW_DIR =
-    DF_wide_RAW %>% 
+    DF_wide_RAW |> 
     dplyr::mutate(
 
       # [CHECK] Using correct formula? rowMeans() / rowSums()
       
       # Score Dimensions (see standardized_names(help_names = TRUE) for instructions)
-      !!names_list$name_DIRd[1] := rowSums(select(., paste0(short_name_scale_str, "_", items_dimensions[[1]], questions_per_item[1], "_DIR")), na.rm = TRUE),
-      !!names_list$name_DIRd[2] := rowSums(select(., paste0(short_name_scale_str, "_", items_dimensions[[2]], questions_per_item[2], "_DIR")), na.rm = TRUE),
-      !!names_list$name_DIRd[3] := rowSums(select(., paste0(short_name_scale_str, "_", items_dimensions[[3]], questions_per_item[3], "_DIR")), na.rm = TRUE),
+      !!names_list$name_DIRd[1] := rowSums(across(all_of(paste0(short_name_scale_str, "_", items_dimensions[[1]], questions_per_item[1], "_DIR"))), na.rm = TRUE),
+      !!names_list$name_DIRd[2] := rowSums(across(all_of(paste0(short_name_scale_str, "_", items_dimensions[[2]], questions_per_item[2], "_DIR"))), na.rm = TRUE),
+      !!names_list$name_DIRd[3] := rowSums(across(all_of(paste0(short_name_scale_str, "_", items_dimensions[[3]], questions_per_item[3], "_DIR"))), na.rm = TRUE),
       
-      !!names_list$name_DIRd[4] := rowSums(select(., paste0(short_name_scale_str, "_", items_dimensions[[4]], questions_per_item[1], "_DIR")), na.rm = TRUE),
-      !!names_list$name_DIRd[5] := rowSums(select(., paste0(short_name_scale_str, "_", items_dimensions[[5]], questions_per_item[2], "_DIR")), na.rm = TRUE),
-      !!names_list$name_DIRd[6] := rowSums(select(., paste0(short_name_scale_str, "_", items_dimensions[[6]], questions_per_item[3], "_DIR")), na.rm = TRUE),
+      !!names_list$name_DIRd[4] := rowSums(across(all_of(paste0(short_name_scale_str, "_", items_dimensions[[4]], questions_per_item[1], "_DIR"))), na.rm = TRUE),
+      !!names_list$name_DIRd[5] := rowSums(across(all_of(paste0(short_name_scale_str, "_", items_dimensions[[5]], questions_per_item[2], "_DIR"))), na.rm = TRUE),
+      !!names_list$name_DIRd[6] := rowSums(across(all_of(paste0(short_name_scale_str, "_", items_dimensions[[6]], questions_per_item[3], "_DIR"))), na.rm = TRUE),
       
-      !!names_list$name_DIRd[7] := rowSums(select(., paste0(short_name_scale_str, "_", items_dimensions[[7]], questions_per_item[1], "_DIR")), na.rm = TRUE),
-      !!names_list$name_DIRd[8] := rowSums(select(., paste0(short_name_scale_str, "_", items_dimensions[[8]], questions_per_item[2], "_DIR")), na.rm = TRUE),
-      !!names_list$name_DIRd[9] := rowSums(select(., paste0(short_name_scale_str, "_", items_dimensions[[9]], questions_per_item[3], "_DIR")), na.rm = TRUE),
+      !!names_list$name_DIRd[7] := rowSums(across(all_of(paste0(short_name_scale_str, "_", items_dimensions[[7]], questions_per_item[1], "_DIR"))), na.rm = TRUE),
+      !!names_list$name_DIRd[8] := rowSums(across(all_of(paste0(short_name_scale_str, "_", items_dimensions[[8]], questions_per_item[2], "_DIR"))), na.rm = TRUE),
+      !!names_list$name_DIRd[9] := rowSums(across(all_of(paste0(short_name_scale_str, "_", items_dimensions[[9]], questions_per_item[3], "_DIR"))), na.rm = TRUE),
       
-      !!names_list$name_DIRd[10] := rowSums(select(., paste0(short_name_scale_str, "_", items_dimensions[[10]], questions_per_item[1], "_DIR")), na.rm = TRUE),
-      !!names_list$name_DIRd[11] := rowSums(select(., paste0(short_name_scale_str, "_", items_dimensions[[11]], questions_per_item[2], "_DIR")), na.rm = TRUE),
-      !!names_list$name_DIRd[12] := rowSums(select(., paste0(short_name_scale_str, "_", items_dimensions[[12]], questions_per_item[3], "_DIR")), na.rm = TRUE)
+      !!names_list$name_DIRd[10] := rowSums(across(all_of(paste0(short_name_scale_str, "_", items_dimensions[[10]], questions_per_item[1], "_DIR"))), na.rm = TRUE),
+      !!names_list$name_DIRd[11] := rowSums(across(all_of(paste0(short_name_scale_str, "_", items_dimensions[[11]], questions_per_item[2], "_DIR"))), na.rm = TRUE),
+      !!names_list$name_DIRd[12] := rowSums(across(all_of(paste0(short_name_scale_str, "_", items_dimensions[[12]], questions_per_item[3], "_DIR"))), na.rm = TRUE)
       
       # Reliability Dimensions (see standardized_names(help_names = TRUE) for instructions)
-      # !!names_list$name_RELd[1] := rowMeans(select(., paste0(short_name_scale_str, "_", items_RELd1, "_DIR")), na.rm = TRUE), 
+      # !!names_list$name_RELd[1] := rowMeans(across(all_of(paste0(short_name_scale_str, "_", items_RELd1, "_DIR"))), na.rm = TRUE), 
 
       # Score Scale
-      # !!names_list$name_DIRt := rowSums(select(., matches("_DIR$")), na.rm = TRUE)
+      # !!names_list$name_DIRt := rowSums(across(all_of(matches("_DIR$"))), na.rm = TRUE)
       
     )
   
@@ -180,7 +180,7 @@ prepare_CRQ <- function(DF_clean, short_name_scale_str) {
   check_NAs(DF_wide_RAW_DIR)
   
   # Save files --------------------------------------------------------------
-  save_files(DF_wide_RAW_DIR, short_name_scale = short_name_scale_str, is_scale = TRUE)
+  save_files(DF_wide_RAW_DIR, short_name_scale = short_name_scale_str, is_scale = TRUE, output_formats = output_formats)
   
   # Output of function ---------------------------------------------------------
   return(DF_wide_RAW_DIR) 

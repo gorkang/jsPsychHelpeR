@@ -14,13 +14,11 @@
 ##' @return
 ##' @author gorkang
 ##' @export
-prepare_STAIC <- function(DF_clean, short_name_scale_str) {
+prepare_STAIC <- function(DF_clean, short_name_scale_str, output_formats) {
 
   # DEBUG
   # targets::tar_load_globals()
   # jsPsychHelpeR::debug_function(prepare_STAIC)
-  
-
   
   
   # [ADAPT 1/3]: Items to ignore and reverse, dimensions -----------------------
@@ -31,15 +29,10 @@ prepare_STAIC <- function(DF_clean, short_name_scale_str) {
   items_to_ignore = c("000") # Ignore these items: If nothing to ignore, keep as is
   items_to_reverse = c("000") # Reverse these items: If nothing to reverse, keep as is
   
-  ## NameDimension1, NameDimension2 should be the names of the dimensions
-  ## Inside each c() create a vector of the item numbers for the dimension
-  ## Add lines as needed. If there are no dimensions, keep as is
+  
   items_dimensions = list(
     AnsiedadRasgo = c("001", "002", "003", "004", "005", "006", "007", "008", "009", "010", "011", "012", "013", 
-                      
-                      # CORREGIR UNA VEZ ESTE OK EN MAKER
-                      "014", 
-                      
+                      "014", # 014 was 0014 in an old version
                       "015", "016", "017", "018", "019", "020")
   )
   
@@ -63,10 +56,10 @@ prepare_STAIC <- function(DF_clean, short_name_scale_str) {
   
   # Create long DIR ------------------------------------------------------------
   DF_long_DIR = 
-    DF_long_RAW %>% 
+    DF_long_RAW |> 
     # If using keep_time = TRUE above, use this and add timestamp to the select() call
     # dplyr::mutate(timestamp = as.POSIXlt(datetime, format = "%Y-%m-%dT%H%M%S")) |> 
-    dplyr::select(id, trialid, RAW) %>%
+    dplyr::select(id, trialid, RAW) |>
     
     
     
@@ -85,7 +78,7 @@ prepare_STAIC <- function(DF_clean, short_name_scale_str) {
           trialid %in% paste0(short_name_scale_str, "_", items_to_ignore) ~ NA_real_, # OR NA_character_,
           TRUE ~ 9999 # OR "9999"
         )
-    ) %>% 
+    ) |> 
     
     # Invert items [CAN BE DELETED IF NOT USED or DIR is non-numeric]
     dplyr::mutate(
@@ -103,16 +96,16 @@ prepare_STAIC <- function(DF_clean, short_name_scale_str) {
 
   # Create DF_wide_RAW_DIR -----------------------------------------------------
   DF_wide_RAW =
-    DF_long_DIR %>% 
+    DF_long_DIR |> 
     tidyr::pivot_wider(
       names_from = trialid, 
       values_from = c(RAW, DIR),
-      names_glue = "{trialid}_{.value}") %>% 
+      names_glue = "{trialid}_{.value}") |> 
     
     # NAs for RAW and DIR items
-    dplyr::mutate(!!names_list$name_RAW_NA := rowSums(is.na(select(., -matches(paste0(short_name_scale_str, "_", items_to_ignore, "_RAW")) & matches("_RAW$")))),
-           !!names_list$name_DIR_NA := rowSums(is.na(select(., -matches(paste0(short_name_scale_str, "_", items_to_ignore, "_DIR")) & matches("_DIR$")))))
-
+    dplyr::mutate(!!names_list$name_RAW_NA := rowSums(is.na(across((-matches(paste0(short_name_scale_str, "_", items_to_ignore, "_RAW")) & matches("_RAW$"))))),
+                  !!names_list$name_DIR_NA := rowSums(is.na(across((-matches(paste0(short_name_scale_str, "_", items_to_ignore, "_DIR")) & matches("_DIR$"))))))
+  
 
   
   # [ADAPT 3/3]: Scales and dimensions calculations ----------------------------
@@ -126,16 +119,17 @@ prepare_STAIC <- function(DF_clean, short_name_scale_str) {
   # [USE STANDARD NAMES FOR Scales and dimensions: names_list$name_DIRd[1], names_list$name_DIRt,...] 
   # CHECK with: create_formulas(type = "dimensions_DIR", functions = "sum", names(items_dimensions))
   DF_wide_RAW_DIR =
-    DF_wide_RAW %>% 
+    DF_wide_RAW |> 
     dplyr::mutate(
 
       # [CHECK] Using correct formula? rowMeans() / rowSums()
       
       # Score Dimensions (see standardized_names(help_names = TRUE) for instructions)
-      !!names_list$name_DIRd[1] := rowSums(select(., paste0(short_name_scale_str, "_", items_dimensions[[1]], "_DIR")), na.rm = TRUE), 
+      !!names_list$name_DIRd[1] := rowSums(across(all_of(paste0(short_name_scale_str, "_", items_dimensions[[1]], "_DIR"))), na.rm = TRUE),  
 
       # Score Scale
-      !!names_list$name_DIRt := rowSums(select(., matches("_DIR$")), na.rm = TRUE)
+      !!names_list$name_DIRt := rowSums(across(all_of(matches("_DIR$"))), na.rm = TRUE)
+      
       
     )
     
@@ -147,7 +141,7 @@ prepare_STAIC <- function(DF_clean, short_name_scale_str) {
   check_NAs(DF_wide_RAW_DIR)
   
   # Save files --------------------------------------------------------------
-  save_files(DF_wide_RAW_DIR, short_name_scale = short_name_scale_str, is_scale = TRUE)
+  save_files(DF_wide_RAW_DIR, short_name_scale = short_name_scale_str, is_scale = TRUE, output_formats = output_formats)
   
   # Output of function ---------------------------------------------------------
   return(DF_wide_RAW_DIR) 

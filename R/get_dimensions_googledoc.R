@@ -256,11 +256,11 @@ get_dimensions_googledoc <- function(short_name_text, google_username = "gorkang
                }
                
                # OLD
-               # !!name_DIRd1 := rowMeans(select(., paste0(short_name_scale_str, "_", items_DIRd1, "_DIR")), na.rm = TRUE),
+               # !!name_DIRd1 := rowMeans(across(all_of(paste0(short_name_scale_str, "_", items_dimensions[[1]], "_DIR"))), na.rm = TRUE),
                # paste0('!!name_DIRd', .x, ' := ', string_function, '(select(., paste0(short_name_scale_str, "_", items_DIRd', .x, ', "_DIR")), na.rm = TRUE),\n') %>% cat()
                
                # NEW
-               # !!names_list$name_DIRd[1] := rowMeans(select(., paste0(short_name_scale_str, "_", items_dimensions[[1]], "_DIR")), na.rm = TRUE), 
+               # !!names_list$name_DIRd[1] := rowMeans(across(all_of(paste0(short_name_scale_str, "_", items_dimensions[[1]], "_DIR"))), na.rm = TRUE),  
                tibble::tibble(calculo = paste0('!!names_list$name_DIRd[', .x, '] := ', cli::col_yellow(string_function), '(select(., paste0(short_name_scale_str, "_", items_dimensions[[', .x, ']], "_DIR")), na.rm = TRUE),\n'),
                       error_text = error_text,
                       notas = notas_RAW)

@@ -12,7 +12,8 @@
 read_data <- function(input_files, is_sensitive = FALSE, save_output = TRUE, workers = 1) {
   
   # DEBUG
-  # debug_function(read_data)
+  # targets::tar_load_globals()
+  # jsPsychHelpeR::debug_function(read_data)
   
   # We accept either a single zip file or multiple csv files
   DF_raw_read = read_csv_or_zip(input_files, workers = workers)

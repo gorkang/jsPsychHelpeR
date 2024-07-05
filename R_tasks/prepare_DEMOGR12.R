@@ -14,10 +14,11 @@
 ##' @return
 ##' @author gorkang
 ##' @export
-prepare_DEMOGR12 <- function(DF_clean, short_name_scale_str) {
+prepare_DEMOGR12 <- function(DF_clean, short_name_scale_str, output_formats) {
 
   # DEBUG
-  # debug_function(prepare_DEMOGR12)
+  # targets::tar_load_globals()
+  # jsPsychHelpeR::debug_function(prepare_DEMOGR12)
 
   
   # [ADAPT]: Items to ignore, reverse and dimensions ---------------------------------------
@@ -26,10 +27,11 @@ prepare_DEMOGR12 <- function(DF_clean, short_name_scale_str) {
   items_to_ignore = c("00") # Ignore these items: If nothing to ignore, keep items_to_ignore = c("00")
   items_to_reverse = c("00") # Reverse these items: If nothing to reverse, keep  items_to_reverse = c("00")
   
-  names_dimensions = c("edad", "genero") # If no dimensions, keep names_dimensions = c("")
+  items_dimensions = list(
+    edad = c("01"), 
+    genero = c("02")
+  )
   
-  items_DIRd1 = c("01")
-  items_DIRd2 = c("02")
   
   # [END ADAPT]: ***************************************************************
   # ****************************************************************************
@@ -41,7 +43,7 @@ prepare_DEMOGR12 <- function(DF_clean, short_name_scale_str) {
   
   # Standardized names ------------------------------------------------------
   names_list = standardized_names(short_name_scale = short_name_scale_str, 
-                     dimensions = names_dimensions,
+                     dimensions = names(items_dimensions),
                      help_names = FALSE) # help_names = FALSE once the script is ready
   
   # Create long -------------------------------------------------------------
@@ -51,8 +53,8 @@ prepare_DEMOGR12 <- function(DF_clean, short_name_scale_str) {
   # Create long DIR ------------------------------------------------------------
   
   DF_long_DIR = 
-    DF_long_RAW %>% 
-   dplyr::select(id, trialid, RAW) %>%
+    DF_long_RAW |> 
+   dplyr::select(id, trialid, RAW) |>
     
     # Transformations
     dplyr::mutate(
@@ -68,7 +70,7 @@ prepare_DEMOGR12 <- function(DF_clean, short_name_scale_str) {
           trialid == "DEMOGR12_07" ~ RAW,
           
           is.na(RAW) ~ NA_character_,
-          grepl(items_to_ignore, trialid) ~ NA_character_,
+          trialid %in% paste0(short_name_scale_str, "_", items_to_ignore) ~ NA_real_,
           TRUE ~ "9999"
         )
     )
@@ -80,27 +82,27 @@ prepare_DEMOGR12 <- function(DF_clean, short_name_scale_str) {
     
     # Create DF_wide_RAW_DIR -----------------------------------------------------
     DF_wide_RAW =
-      DF_long_DIR %>% 
+      DF_long_DIR |> 
       tidyr::pivot_wider(
         names_from = trialid, 
         values_from = c(RAW, DIR),
-        names_glue = "{trialid}_{.value}") %>% 
+        names_glue = "{trialid}_{.value}") |> 
       
       # NAs for RAW and DIR items
-      dplyr::mutate(!!names_list$name_RAW_NA := rowSums(is.na(select(., -matches(items_to_ignore) & matches("_RAW")))),
-             !!names_list$name_DIR_NA := rowSums(is.na(select(., -matches(items_to_ignore) & matches("_DIR")))))
+          dplyr::mutate(!!names_list$name_RAW_NA := rowSums(is.na(across((-matches(paste0(short_name_scale_str, "_", items_to_ignore, "_RAW")) & matches("_RAW$"))))),
+                  !!names_list$name_DIR_NA := rowSums(is.na(across((-matches(paste0(short_name_scale_str, "_", items_to_ignore, "_DIR")) & matches("_DIR$"))))))
   
   
   DF_wide_RAW_DIR =
-    DF_wide_RAW %>% 
+    DF_wide_RAW |> 
     
     # Mach a simplified version of the strings (lower case, only standard characters and no extra space at the end)
-    dplyr::mutate(COMUNA = tolower(stringi::stri_trans_general(str = DEMOGR12_06_DIR, id = "Latin-ASCII")) %>% gsub(" $", "", .)) %>% 
-    dplyr::left_join(DF_lookup %>% dplyr::mutate(COMUNA = tolower(stringi::stri_trans_general(str = comuna, id = "Latin-ASCII")) %>% gsub(" $", "", .)), 
-              by = c("COMUNA")) %>% 
-    dplyr::rename(DEMOGR12_comuna_DIRd = DEMOGR_comuna_DIRd) %>% # DEMOGR_comuna_DIRd comes from excel file. DO NOT RENAME
-    dplyr::mutate(DEMOGR12_comuna_DIRd = ifelse(is.na(DEMOGR12_comuna_DIRd), paste0("Not found: ", DEMOGR12_06_DIR), DEMOGR12_comuna_DIRd)) %>%
-   dplyr::select(-COMUNA, -comuna) %>% 
+    dplyr::mutate(COMUNA = tolower(stringi::stri_trans_general(str = DEMOGR12_06_DIR, id = "Latin-ASCII")) |> gsub(" $", "", .)) |> 
+    dplyr::left_join(DF_lookup |> dplyr::mutate(COMUNA = tolower(stringi::stri_trans_general(str = comuna, id = "Latin-ASCII")) |> gsub(" $", "", .)), 
+              by = c("COMUNA")) |> 
+    dplyr::rename(DEMOGR12_comuna_DIRd = DEMOGR_comuna_DIRd) |> # DEMOGR_comuna_DIRd comes from excel file. DO NOT RENAME
+    dplyr::mutate(DEMOGR12_comuna_DIRd = ifelse(is.na(DEMOGR12_comuna_DIRd), paste0("Not found: ", DEMOGR12_06_DIR), DEMOGR12_comuna_DIRd)) |>
+   dplyr::select(-COMUNA, -comuna) |> 
     
     
     # [ADAPT]: Scales and dimensions calculations --------------------------------
@@ -108,8 +110,8 @@ prepare_DEMOGR12 <- function(DF_clean, short_name_scale_str) {
     # [USE STANDARD NAMES FOR Scales and dimensions: name_DIRt, name_DIRd1, etc.] Check with: standardized_names(help_names = TRUE)
     
     dplyr::mutate(
-      !!names_list$name_DIRd[1] := get(paste0(short_name_scale_str, "_", items_DIRd1, "_DIR")), 
-      !!names_list$name_DIRd[2] := get(paste0(short_name_scale_str, "_", items_DIRd2, "_DIR"))
+      !!names_list$name_DIRd[1] := get(paste0(short_name_scale_str, "_", items_dimensions[[1]], "_DIR")), 
+      !!names_list$name_DIRd[2] := get(paste0(short_name_scale_str, "_", items_dimensions[[2]], "_DIR"))
     )
     
     # [END ADAPT]: ***************************************************************
@@ -120,7 +122,7 @@ prepare_DEMOGR12 <- function(DF_clean, short_name_scale_str) {
   check_NAs(DF_wide_RAW_DIR)
   
   # Save files --------------------------------------------------------------
-  save_files(DF_wide_RAW_DIR, short_name_scale = short_name_scale_str, is_scale = TRUE)
+  save_files(DF_wide_RAW_DIR, short_name_scale = short_name_scale_str, is_scale = TRUE, output_formats = output_formats)
   
   # Output of function ---------------------------------------------------------
   return(DF_wide_RAW_DIR) 

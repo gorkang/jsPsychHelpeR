@@ -17,7 +17,8 @@
 prepare_FORM4 <- function(DF_clean_form, short_name_scale_str) {
 
   # DEBUG
-  # debug_function(prepare_FORM4)
+  # targets::tar_load_globals()
+  # jsPsychHelpeR::debug_function(prepare_FORM4)
 
   
   # Standardized names ------------------------------------------------------
@@ -42,8 +43,8 @@ prepare_FORM4 <- function(DF_clean_form, short_name_scale_str) {
   
   
   DF_long_DIR = 
-    DF_long_RAW %>% 
-   dplyr::select(id, trialid, RAW) %>%
+    DF_long_RAW |> 
+   dplyr::select(id, trialid, RAW) |>
     
   
     # [ADAPT]: RAW to DIR for individual items -----------------------------------
@@ -73,7 +74,7 @@ prepare_FORM4 <- function(DF_clean_form, short_name_scale_str) {
           trialid == "FORM4_05" ~ RAW,
 
           is.na(RAW) ~ NA_character_,
-          grepl(items_to_ignore, trialid) ~ NA_character_,
+          trialid %in% paste0(short_name_scale_str, "_", items_to_ignore) ~ NA_real_,
           TRUE ~ "9999"
         )
     )
@@ -85,22 +86,22 @@ prepare_FORM4 <- function(DF_clean_form, short_name_scale_str) {
     
     # Create DF_wide_RAW_DIR -----------------------------------------------------
     DF_wide_RAW_DIR =
-      DF_long_DIR %>% 
+      DF_long_DIR |> 
       tidyr::pivot_wider(
         names_from = trialid, 
         values_from = c(RAW, DIR),
-        names_glue = "{trialid}_{.value}") %>% 
+        names_glue = "{trialid}_{.value}") |> 
       
       # NAs for RAW and DIR items
-      dplyr::mutate(!!names_list$name_RAW_NA := rowSums(is.na(select(., -matches(items_to_ignore) & matches("_RAW")))),
-             !!names_list$name_DIR_NA := rowSums(is.na(select(., -matches(items_to_ignore) & matches("_DIR")))))
+          dplyr::mutate(!!names_list$name_RAW_NA := rowSums(is.na(across((-matches(paste0(short_name_scale_str, "_", items_to_ignore, "_RAW")) & matches("_RAW$"))))),
+                  !!names_list$name_DIR_NA := rowSums(is.na(across((-matches(paste0(short_name_scale_str, "_", items_to_ignore, "_DIR")) & matches("_DIR$"))))))
 
 
   # CHECK NAs -------------------------------------------------------------------
   check_NAs(DF_wide_RAW_DIR)
   
   # Save files --------------------------------------------------------------
-  save_files(DF_wide_RAW_DIR, short_name_scale = short_name_scale_str, is_scale = TRUE)
+  save_files(DF_wide_RAW_DIR, short_name_scale = short_name_scale_str, is_scale = TRUE, output_formats = output_formats)
   
   # Output of function ---------------------------------------------------------
   return(DF_wide_RAW_DIR) 

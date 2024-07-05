@@ -10,7 +10,7 @@ Maybe useful when there are some non-standard elements to the calculations? e.g.
 create_formulas(type, functions = "sum", dimensions = NULL)
 }
 \arguments{
-\item{type}{One of: c("dimensions_DIR", "dimensions_STD", "dimensions_REL", "total_DIR", "total_REL", "total_STD")}
+\item{type}{One of: c("DIRd", "STDd", "RELd", "DIRt", "RELt", "STDt")}
 
 \item{functions}{One of: c("sum"|"mean")}
 
@@ -26,5 +26,5 @@ PROBABLY NOT NEEDED, as we SHOULD do all this automatically in get_dimensions_go
 Maybe useful when there are some non-standard elements to the calculations? e.g. See prepare_CS
 }
 \examples{
- create_formulas(type = "dimensions_DIR", functions = "sum", dimensions = c("ONE"))
+ create_formulas(type = "DIRd", functions = "sum", dimensions = c("ONE"))
 }
