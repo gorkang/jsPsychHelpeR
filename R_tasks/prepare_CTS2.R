@@ -149,10 +149,10 @@ prepare_CTS2 <- function(DF_clean, short_name_scale_str, output_formats) {
 
 
     # Prevalence
-      !!names_list$name_DIRd[6] := rowSums(select(., paste0(short_name_scale_str, "_", items_dimensions[[6]], "_DIR_prev")), na.rm = TRUE),
-      !!names_list$name_DIRd[7] := rowSums(select(., paste0(short_name_scale_str, "_", items_dimensions[[7]], "_DIR_prev")), na.rm = TRUE),
-      !!names_list$name_DIRd[8] := rowSums(select(., paste0(short_name_scale_str, "_", items_dimensions[[8]], "_DIR_prev")), na.rm = TRUE),
-      !!names_list$name_DIRd[9] := rowSums(select(., paste0(short_name_scale_str, "_", items_dimensions[[9]], "_DIR_prev")), na.rm = TRUE)
+      !!names_list$name_DIRd[6] := rowSums(across(all_of(paste0(short_name_scale_str, "_", items_dimensions[[6]], "_DIR_prev"))), na.rm = TRUE),
+      !!names_list$name_DIRd[7] := rowSums(across(all_of(paste0(short_name_scale_str, "_", items_dimensions[[7]], "_DIR_prev"))), na.rm = TRUE),
+      !!names_list$name_DIRd[8] := rowSums(across(all_of(paste0(short_name_scale_str, "_", items_dimensions[[8]], "_DIR_prev"))), na.rm = TRUE),
+      !!names_list$name_DIRd[9] := rowSums(across(all_of(paste0(short_name_scale_str, "_", items_dimensions[[9]], "_DIR_prev"))), na.rm = TRUE)
       
       # CTS2_PsychAggressionPrevalence_DIRd = ifelse(names_list$name_DIRd[2] > 0, 1, 0),
       # CTS2_PhysicalAssaultPrevalence_DIRd = ifelse(names_list$name_DIRd[3] > 0, 1, 0),
