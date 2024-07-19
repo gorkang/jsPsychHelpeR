@@ -15,8 +15,8 @@
 get_dimensions_googledoc <- function(short_name_text, google_username = "gorkang@gmail.com", google_sheet = c("NEW", "All")) {
   
   # DEBUG
-  # short_name_text = "CEL"
-  # short_name_text = "LoB"
+  # short_name_text = "SWBS"
+  # google_sheet = "NEW"
   # google_username = "gorkang@gmail.com"
   
   # Check google_sheet is one of the available options
@@ -154,7 +154,9 @@ get_dimensions_googledoc <- function(short_name_text, google_username = "gorkang
                
                ## Specific numeric conversion
                numeric_conversion = DF_items[.x,"conversion_numerica"] |> dplyr::pull(conversion_numerica)
-               numbers_chunks_all = stringi::stri_extract_all(str = gsub("=| = ", "=", numeric_conversion) %>% gsub("$", "\n", .), regex = ".*\n") %>% unlist() %>% gsub("\n", "", .)
+               # numbers_chunks_all = stringi::stri_extract_all(str = gsub("=| = ", "=", numeric_conversion) %>% gsub("$", "\n", .), regex = ".*\n") %>% unlist() %>% gsub("\n", "", .)
+               numbers_chunks_all = stringi::stri_extract_all(str = gsub("=| = ", "=", numeric_conversion) %>% gsub("$", "\n", .), regex = ".*\n|.*\r\n") %>% unlist() %>% gsub("\n|\r\n", "", .)
+               
                numbers_chunks_destination = stringi::stri_extract_all(str = numbers_chunks_all, regex = ".*=") %>% unlist() %>% gsub("=", "", .)
                numbers_chunks_origin = stringi::stri_extract_all(str = numbers_chunks_all, regex = "=.*") %>% unlist() %>% gsub("=", "", .)
                
@@ -173,7 +175,6 @@ get_dimensions_googledoc <- function(short_name_text, google_username = "gorkang
                    } else {
                      paste0('trialid %in% c("', paste(paste0(short_name , '_', NUMBERS_formatted), collapse = '", "'),'") & RAW == "', numbers_chunks_origin,'" ~ "', numbers_chunks_destination, '",\n') %>% cat()
                    }
-                   # paste0('trialid %in% c("', paste(paste0(short_name , '_', NUMBERS_formatted), collapse = '", "'),'") & RAW == "', numbers_chunks_origin,'" ~ ', numbers_chunks_destination, ',\n') %>% cat()
                  }
                  
                }
@@ -206,9 +207,6 @@ get_dimensions_googledoc <- function(short_name_text, google_username = "gorkang
                   NUMBERS_formatted = create_number_series(numbers_RAW)
                   
                   # Create R vector
-                  # paste0(DF_dimensions[.x,"nombre_dimension"],' = c("', paste(NUMBERS_formatted, collapse = '", "'),
-                  #        ifelse(.x == nrow(DF_dimensions), '")\n', '"),\n')) 
-                  
                   paste0(NAMES_dimensions_CamelCase[.x],' = c("', paste(NUMBERS_formatted, collapse = '", "'),
                          ifelse(.x == nrow(DF_dimensions), '")\n', '"),\n')) 
                   
@@ -251,17 +249,11 @@ get_dimensions_googledoc <- function(short_name_text, google_username = "gorkang
                  string_function = "rowSums"
                } else {
                  error_text = glue::glue("calculo_dimension is '{calculo_dimension_RAW}', but we only know how to work with either 'promedio' or 'suma'")
-                 # cli::cli_alert_danger("calculo_dimension is '{calculo_dimension_RAW}', but we only know how to work with either 'promedio' or 'suma'")
                  string_function = calculo_dimension_RAW
                }
                
-               # OLD
-               # !!name_DIRd1 := rowMeans(across(all_of(paste0(short_name_scale_str, "_", items_dimensions[[1]], "_DIR"))), na.rm = TRUE),
-               # paste0('!!name_DIRd', .x, ' := ', string_function, '(select(., paste0(short_name_scale_str, "_", items_DIRd', .x, ', "_DIR")), na.rm = TRUE),\n') %>% cat()
-               
-               # NEW
-               # !!names_list$name_DIRd[1] := rowMeans(across(all_of(paste0(short_name_scale_str, "_", items_dimensions[[1]], "_DIR"))), na.rm = TRUE),  
-               tibble::tibble(calculo = paste0('!!names_list$name_DIRd[', .x, '] := ', cli::col_yellow(string_function), '(select(., paste0(short_name_scale_str, "_", items_dimensions[[', .x, ']], "_DIR")), na.rm = TRUE),\n'),
+               # Final message
+               tibble::tibble(calculo = paste0('!!names_list$name_DIRd[', .x, '] := ', cli::col_yellow(string_function), '(across(all_of(paste0(short_name_scale_str, "_", items_dimensions[[', .x, ']], "_DIR"))), na.rm = TRUE),\n'),
                       error_text = error_text,
                       notas = notas_RAW)
              })
