@@ -23,15 +23,11 @@ prepare_RMET <- function(DF_clean, short_name_scale_str, output_formats) {
   # [ADAPT]: Items to ignore and reverse ---------------------------------------
   # ****************************************************************************
   
-  items_to_ignore = c("000") # Ignore these items: If nothing to ignore, keep items_to_ignore = c("00")
-  items_to_reverse = c("000") # Reverse these items: If nothing to reverse, keep  items_to_reverse = c("00")
+  items_to_ignore = c("0000") # Ignore these items: If nothing to ignore, keep items_to_ignore = c("00")
+  items_to_reverse = c("0000") # Reverse these items: If nothing to reverse, keep  items_to_reverse = c("00")
   
   items_dimensions = list(
-    PrevalenciaTu = c("01"), 
-    PrevalenciaHogar = c("02"), 
-    PrevalenciaCercano = c("03"), 
-    Gravedad = c("04"), 
-    PensamientoConspirativo = c("05", "06", "07", "08", "09")
+    Dimension = "000"
   )
   
   
@@ -68,42 +64,42 @@ prepare_RMET <- function(DF_clean, short_name_scale_str, output_formats) {
           trialid == "RMET_000" & RAW == toupper("En pánico") ~ 0, # ALWAYS 0 TO AVOID SUMMING IT
           
           # Experiment trials
-          trialid == "RMET_001" & RAW == toupper("Juguetón") ~ 1,
-          trialid == "RMET_002" & RAW == toupper("Molesto") ~ 1,
-          trialid == "RMET_003" & RAW == toupper("Deseo") ~ 1,
-          trialid == "RMET_004" & RAW == toupper("Insistente") ~ 1,
-          trialid == "RMET_005" & RAW == toupper("Preocupado") ~ 1,
-          trialid == "RMET_006" & RAW == toupper("Fantasiosa") ~ 1,
-          trialid == "RMET_007" & RAW == toupper("Intranquilo") ~ 1,
-          trialid == "RMET_008" & RAW == toupper("Abatido") ~ 1,
-          trialid == "RMET_009" & RAW == toupper("Angustiada") ~ 1,
-          trialid == "RMET_010" & RAW == toupper("Prudente") ~ 1,
-          trialid == "RMET_011" & RAW == toupper("Arrepentido") ~ 1,
-          trialid == "RMET_012" & RAW == toupper("Escéptico") ~ 1,
-          trialid == "RMET_013" & RAW == toupper("Expectante") ~ 1,
-          trialid == "RMET_014" & RAW == toupper("Acusante") ~ 1,
-          trialid == "RMET_015" & RAW == toupper("Abstraída") ~ 1,
-          trialid == "RMET_016" & RAW == toupper("Considerado") ~ 1,
-          trialid == "RMET_017" & RAW == toupper("Insegura") ~ 1,
-          trialid == "RMET_018" & RAW == toupper("Decidida") ~ 1,
-          trialid == "RMET_019" & RAW == toupper("Vacilante") ~ 1,
-          trialid == "RMET_020" & RAW == toupper("Amistoso") ~ 1,
-          trialid == "RMET_021" & RAW == toupper("Fantasiosa") ~ 1,
-          trialid == "RMET_022" & RAW == toupper("Angustiada") ~ 1,
-          trialid == "RMET_023" & RAW == toupper("Desafiante") ~ 1,
-          trialid == "RMET_024" & RAW == toupper("Abstraído") ~ 1,
-          trialid == "RMET_025" & RAW == toupper("Interesada") ~ 1,
-          trialid == "RMET_026" & RAW == toupper("Hostil") ~ 1,
-          trialid == "RMET_027" & RAW == toupper("Prudente") ~ 1,
-          trialid == "RMET_028" & RAW == toupper("Interesada") ~ 1,
-          trialid == "RMET_029" & RAW == toupper("Reflexiva") ~ 1,
-          trialid == "RMET_030" & RAW == toupper("Seductora") ~ 1,
-          trialid == "RMET_031" & RAW == toupper("Segura") ~ 1,
-          trialid == "RMET_032" & RAW == toupper("Serio") ~ 1,
-          trialid == "RMET_033" & RAW == toupper("Fantasioso") ~ 1,
-          trialid == "RMET_034" & RAW == toupper("Recelosa") ~ 1,
-          trialid == "RMET_035" & RAW == toupper("Nerviosa") ~ 1,
-          trialid == "RMET_036" & RAW == toupper("Desconfiado") ~ 1,
+          trialid == "RMET_001" & RAW == "JUGUETÓN" ~ 1,
+          trialid == "RMET_002" & RAW == "MOLESTO" ~ 1,
+          trialid == "RMET_003" & RAW == "DESEO" ~ 1,
+          trialid == "RMET_004" & RAW == "INSISTENTE" ~ 1,
+          trialid == "RMET_005" & RAW == "PREOCUPADO" ~ 1,
+          trialid == "RMET_006" & RAW == "FANTASIOSA" ~ 1,
+          trialid == "RMET_007" & RAW == "INTRANQUILO" ~ 1,
+          trialid == "RMET_008" & RAW == "ABATIDO" ~ 1,
+          trialid == "RMET_009" & RAW == "ANGUSTIADA" ~ 1,
+          trialid == "RMET_010" & RAW == "PRUDENTE" ~ 1,
+          trialid == "RMET_011" & RAW == "ARREPENTIDO" ~ 1,
+          trialid == "RMET_012" & RAW == "ESCÉPTICO" ~ 1,
+          trialid == "RMET_013" & RAW == "EXPECTANTE" ~ 1,
+          trialid == "RMET_014" & RAW == "ACUSANTE" ~ 1,
+          trialid == "RMET_015" & RAW == "ABSTRAÍDA" ~ 1,
+          trialid == "RMET_016" & RAW == "CONSIDERADO" ~ 1,
+          trialid == "RMET_017" & RAW == "INSEGURA" ~ 1,
+          trialid == "RMET_018" & RAW == "DECIDIDA" ~ 1,
+          trialid == "RMET_019" & RAW == "VACILANTE" ~ 1,
+          trialid == "RMET_020" & RAW == "AMISTOSO" ~ 1,
+          trialid == "RMET_021" & RAW == "FANTASIOSA" ~ 1,
+          trialid == "RMET_022" & RAW == "ANGUSTIADA" ~ 1,
+          trialid == "RMET_023" & RAW == "DESAFIANTE" ~ 1,
+          trialid == "RMET_024" & RAW == "ABSTRAÍDO" ~ 1,
+          trialid == "RMET_025" & RAW == "INTERESADA" ~ 1,
+          trialid == "RMET_026" & RAW == "HOSTIL" ~ 1,
+          trialid == "RMET_027" & RAW == "PRUDENTE" ~ 1,
+          trialid == "RMET_028" & RAW == "INTERESADA" ~ 1,
+          trialid == "RMET_029" & RAW == "REFLEXIVA" ~ 1,
+          trialid == "RMET_030" & RAW == "SEDUCTORA" ~ 1,
+          trialid == "RMET_031" & RAW == "SEGURA" ~ 1,
+          trialid == "RMET_032" & RAW == "SERIO" ~ 1,
+          trialid == "RMET_033" & RAW == "FANTASIOSO" ~ 1,
+          trialid == "RMET_034" & RAW == "RECELOSA" ~ 1,
+          trialid == "RMET_035" & RAW == "NERVIOSA" ~ 1,
+          trialid == "RMET_036" & RAW == "DESCONFIADO" ~ 1,
           is.na(RAW) ~ NA_real_,
           trialid %in% paste0(short_name_scale_str, "_", items_to_ignore) ~ NA_real_, # OR NA_character_
           TRUE ~ 0
@@ -115,7 +111,7 @@ prepare_RMET <- function(DF_clean, short_name_scale_str, output_formats) {
       DIR = 
        dplyr::case_when(
           DIR == 9999 ~ DIR, # To keep the missing values unchanged
-          trialid %in% paste0(short_name_scale_str, "_", items_to_reverse) ~ (6 - DIR),
+          # trialid %in% paste0(short_name_scale_str, "_", items_to_reverse) ~ (6 - DIR),
           TRUE ~ DIR
         )
     )
@@ -150,16 +146,6 @@ prepare_RMET <- function(DF_clean, short_name_scale_str, output_formats) {
   DF_wide_RAW_DIR =
     DF_wide_RAW |> 
     dplyr::mutate(
-
-      # Make sure to use the correct formula: rowMeans() / rowSums()
-      
-      # Score Dimensions (see standardized_names(help_names = TRUE) for instructions)
-      # !!names_list$name_DIRd[1] := rowMeans(across(all_of(paste0(short_name_scale_str, "_", items_dimensions[[1]], "_DIR"))), na.rm = TRUE), 
-      # !!names_list$name_DIRd[2] := rowMeans(across(all_of(paste0(short_name_scale_str, "_", items_dimensions[[2]], "_DIR"))), na.rm = TRUE),
-      
-      # Reliability Dimensions (see standardized_names(help_names = TRUE) for instructions)
-      # !!names_list$name_RELd[1] := rowMeans(across(all_of(paste0(short_name_scale_str, "_", items_RELd1, "_DIR"))), na.rm = TRUE), 
-
       # Score Scale
       !!names_list$name_DIRt := rowSums(across(all_of(matches("_DIR$"))), na.rm = TRUE)
       
