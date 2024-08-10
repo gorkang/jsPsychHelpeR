@@ -23,7 +23,7 @@ prepare_Consent <- function(DF_clean, short_name_scale_str, output_formats) {
   # [ADAPT]: Items to ignore and reverse ---------------------------------------
   # ****************************************************************************
   
-  items_to_ignore = c("00") # Ignore these items: If nothing to ignore, keep items_to_ignore = c("00")
+  items_to_ignore = c("000", "002") # Ignore these items
   items_to_reverse = c("00") # Reverse these items: If nothing to reverse, keep  items_to_reverse = c("00")
   
   items_dimensions = list(
@@ -59,7 +59,7 @@ prepare_Consent <- function(DF_clean, short_name_scale_str, output_formats) {
     dplyr::mutate(
       DIR =
        dplyr::case_when(
-          RAW %in% c("start", "0") ~ 1, # html consent response is start, js consent is 0
+          RAW %in% c("start", "0", "acepto participar") ~ 1, # html consent response is start, js consent is 0
           is.na(RAW) ~ NA_real_,
           trialid %in% paste0(short_name_scale_str, "_", items_to_ignore) ~ NA_real_, # OR NA_character_
           TRUE ~ 9999

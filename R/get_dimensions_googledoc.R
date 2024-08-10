@@ -166,6 +166,8 @@ get_dimensions_googledoc <- function(short_name_text, google_username = "gorkang
                  # Create final R vector
                  if (number_items == length(NUMBERS_formatted)) {
                    # If all items of test equal, no need to use trialid
+                   cli::cli_alert_info("According to the Resumen tab, the task has {number_items} items, and we found {length(NUMBERS_formatted)} response options in the Puntajes item tab.")
+                   
                    paste0('RAW == "', numbers_chunks_origin,'" ~ ', numbers_chunks_destination, ',\n') %>% cat()
                  } else {
                    
