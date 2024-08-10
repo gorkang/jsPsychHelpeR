@@ -75,34 +75,31 @@ prepare_CTS2 <- function(DF_clean, short_name_scale_str, output_formats) {
     # Transformations
     dplyr::mutate(
       DIR =
-       dplyr::case_when(
-         RAW == "Esto nunca ha ocurrido" ~ 0,
-         RAW == "No en el último año pero si ha ocurrido antes" ~ 0,
-         RAW == "No en el último año, pero si ha ocurrido antes" ~ 0,
-         RAW == "Una vez en el último año" ~ 1,
-         RAW == "Dos veces en el último año" ~ 2,
-         RAW == "3 a 5 veces en el último año pero ha ocurrido antes" ~ 4,
-         RAW == "3 a 5 veces en el último año" ~ 4,
-         RAW == "6 a 10 veces en el último año" ~ 8,
-         RAW == "11 a 20 veces en el último año" ~ 15,
-         RAW == "Más de 20 veces en el último año" ~ 25,
-         is.na(RAW) ~ NA_real_, # OR NA_character_,
-         trialid %in% paste0(short_name_scale_str, "_", items_to_ignore) ~ NA_real_, # OR NA_character_,
-         TRUE ~ 9999 # OR "9999"
+        dplyr::case_when(
+          RAW == "Esto nunca ha ocurrido" ~ 0,
+          RAW == "No en esta relación, pero si ha ocurrido en otra" ~ 0,
+          RAW == "Una vez durante la relación" ~ 1,
+          RAW == "Dos veces durante la relación" ~ 2,
+          RAW == "3 a 5 veces durante la relación" ~ 4,
+          RAW == "6 a 10 veces durante la relación" ~ 8,
+          RAW == "11 a 20 veces durante la relación" ~ 15,
+          RAW == "Más de 20 veces durante la relación" ~ 25,
+          is.na(RAW) ~ NA_real_, # OR NA_character_,
+          trialid %in% paste0(short_name_scale_str, "_", items_to_ignore) ~ NA_real_, # OR NA_character_,
+          TRUE ~ 9999 # OR "9999"
         ),
-      # Needed for prevalence, as the option No en el último año is 0 for the scale, but 1 for prevalence
+      # Needed for prevalence, as the option No durante la relación is 0 for the scale, but 1 for prevalence
       DIR_prev =
         dplyr::case_when(
           RAW == "Esto nunca ha ocurrido" ~ 0,
-          RAW == "No en el último año pero si ha ocurrido antes" ~ 1,
-          RAW == "No en el último año, pero si ha ocurrido antes" ~ 1,
-          RAW == "Una vez en el último año" ~ 1,
-          RAW == "Dos veces en el último año" ~ 1,
-          RAW == "3 a 5 veces en el último año pero ha ocurrido antes" ~ 1,
-          RAW == "3 a 5 veces en el último año" ~ 1,
-          RAW == "6 a 10 veces en el último año" ~ 1,
-          RAW == "11 a 20 veces en el último año" ~ 1,
-          RAW == "Más de 20 veces en el último año" ~ 1,
+          RAW == "No en esta relación, pero si ha ocurrido en otra" ~ 0,
+          RAW == "Una vez durante la relación" ~ 1,
+          RAW == "Dos veces durante la relación" ~ 1,
+          # RAW == "3 a 5 veces durante la relación pero ha ocurrido antes" ~ 1,
+          RAW == "3 a 5 veces durante la relación" ~ 1,
+          RAW == "6 a 10 veces durante la relación" ~ 1,
+          RAW == "11 a 20 veces durante la relación" ~ 1,
+          RAW == "Más de 20 veces durante la relación" ~ 1,
           is.na(RAW) ~ NA_real_, # OR NA_character_,
           trialid %in% paste0(short_name_scale_str, "_", items_to_ignore) ~ NA_real_, # OR NA_character_,
           TRUE ~ 9999 # OR "9999"
