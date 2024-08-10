@@ -15,11 +15,11 @@
 ##' @author gorkang
 ##' @export
 prepare_UCLA <- function(DF_clean, short_name_scale_str, output_formats) {
-
+  
   # DEBUG
   # targets::tar_load_globals()
   # jsPsychHelpeR::debug_function(prepare_UCLA)
-
+  
   
   
   # [ADAPT 1/3]: Items to ignore and reverse, dimensions -----------------------
@@ -28,7 +28,7 @@ prepare_UCLA <- function(DF_clean, short_name_scale_str, output_formats) {
   description_task = "" # Brief description here
   
   items_to_ignore = c("000") # Ignore these items: If nothing to ignore, keep as is
-  items_to_reverse = c("000") # Reverse these items: If nothing to reverse, keep as is
+  items_to_reverse = c("008") # Reverse these items: If nothing to reverse, keep as is
   
   ## NameDimension1, NameDimension2 should be the names of the dimensions
   ## Inside each c() create a vector of the item numbers for the dimension
@@ -58,41 +58,41 @@ prepare_UCLA <- function(DF_clean, short_name_scale_str, output_formats) {
   # Create long DIR ------------------------------------------------------------
   DF_long_DIR = 
     DF_long_RAW |> 
-   dplyr::select(id, trialid, RAW) |>
+    dplyr::select(id, trialid, RAW) |>
     
     
     
-  # [ADAPT 2/3]: RAW to DIR for individual items -------------------------------
+    # [ADAPT 2/3]: RAW to DIR for individual items -------------------------------
   # ****************************************************************************
   
-    # Transformations
-    dplyr::mutate(
-      DIR =
-       dplyr::case_when(
-          RAW == "Nunca" ~ 0,
-          RAW == "Raramente" ~ 1,
-          RAW == "A veces" ~ 2,
-          RAW == "Siempre" ~ 3,
-          is.na(RAW) ~ NA_real_, # OR NA_character_
-          trialid %in% paste0(short_name_scale_str, "_", items_to_ignore) ~ NA_real_, # OR NA_character_ # OR NA_character_
-          TRUE ~ 9999 # OR "9999"
-        )
-    ) |> 
+  # Transformations
+  dplyr::mutate(
+    DIR =
+      dplyr::case_when(
+        RAW == "Nunca" ~ 0,
+        RAW == "Raramente" ~ 1,
+        RAW == "A veces" ~ 2,
+        RAW == "Siempre" ~ 3,
+        is.na(RAW) ~ NA_real_, # OR NA_character_
+        trialid %in% paste0(short_name_scale_str, "_", items_to_ignore) ~ NA_real_, # OR NA_character_ # OR NA_character_
+        TRUE ~ 9999 # OR "9999"
+      )
+  ) |> 
     
     # Invert items [CAN BE DELETED IF NOT USED or DIR is non-numeric]
     dplyr::mutate(
       DIR = 
-       dplyr::case_when(
+        dplyr::case_when(
           DIR == 9999 ~ DIR, # To keep the missing values unchanged
-          trialid %in% paste0(short_name_scale_str, "_", items_to_reverse) ~ (6 - DIR), # REVIEW and replace 6 by MAX + 1
+          trialid %in% paste0(short_name_scale_str, "_", items_to_reverse) ~ (3 - DIR), # REVIEW and replace 6 by MAX + 1
           TRUE ~ DIR
         )
     )
-    
+  
   # [END ADAPT 2/3]: ***********************************************************
   # ****************************************************************************
-    
-
+  
+  
   # Create DF_wide_RAW_DIR -----------------------------------------------------
   DF_wide_RAW =
     DF_long_DIR |> 
@@ -105,7 +105,7 @@ prepare_UCLA <- function(DF_clean, short_name_scale_str, output_formats) {
     dplyr::mutate(!!names_list$name_RAW_NA := rowSums(is.na(across((-matches(paste0(short_name_scale_str, "_", items_to_ignore, "_RAW")) & matches("_RAW$"))))),
                   !!names_list$name_DIR_NA := rowSums(is.na(across((-matches(paste0(short_name_scale_str, "_", items_to_ignore, "_DIR")) & matches("_DIR$"))))))
   
-
+  
   
   # [ADAPT 3/3]: Scales and dimensions calculations ----------------------------
   # ****************************************************************************
@@ -113,14 +113,14 @@ prepare_UCLA <- function(DF_clean, short_name_scale_str, output_formats) {
   # Reliability -------------------------------------------------------------
   # REL1 = auto_reliability(DF_wide_RAW, short_name_scale = short_name_scale_str, items = items_dimensions[[1]])
   # items_RELd1 = REL1$item_selection_string
-    
+  
   
   # [USE STANDARD NAMES FOR Scales and dimensions: names_list$name_DIRd[1], names_list$name_DIRt,...] 
   # CHECK with: create_formulas(type = "dimensions_DIR", functions = "sum", names(items_dimensions))
   DF_wide_RAW_DIR =
     DF_wide_RAW |> 
     dplyr::mutate(
-
+      
       # [CHECK] Using correct formula? rowMeans() / rowSums()
       
       # Score Dimensions (see standardized_names(help_names = TRUE) for instructions)
@@ -129,16 +129,16 @@ prepare_UCLA <- function(DF_clean, short_name_scale_str, output_formats) {
       
       # Reliability Dimensions (see standardized_names(help_names = TRUE) for instructions)
       # !!names_list$name_RELd[1] := rowMeans(across(all_of(paste0(short_name_scale_str, "_", items_RELd1, "_DIR"))), na.rm = TRUE), 
-
+      
       # Score Scale
       !!names_list$name_DIRt := rowSums(across(all_of(matches("_DIR$"))), na.rm = TRUE)
       
     )
-    
+  
   # [END ADAPT 3/3]: ***********************************************************
   # ****************************************************************************
-
-
+  
+  
   # CHECK NAs -------------------------------------------------------------------
   check_NAs(DF_wide_RAW_DIR)
   
@@ -147,5 +147,5 @@ prepare_UCLA <- function(DF_clean, short_name_scale_str, output_formats) {
   
   # Output of function ---------------------------------------------------------
   return(DF_wide_RAW_DIR) 
- 
+  
 }
