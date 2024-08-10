@@ -28,7 +28,7 @@ prepare_SWBQ <- function(DF_clean, short_name_scale_str, output_formats) {
   # ****************************************************************************
   
   items_to_ignore = c("00") # Ignore these items: If nothing to ignore, keep items_to_ignore = c("00")
-  items_to_reverse = c("00") # Reverse these items: If nothing to reverse, keep  items_to_reverse = c("00")
+  items_to_reverse = c("005", "006", "008", "009", "010", "011", "012", "013", "017", "018", "019", "022", "023", "025", "026", "028", "029", "030", "031", "032") # Reverse these items: If nothing to reverse, keep as is
   
   items_dimensions = list(
     PersonalEspiritual = c("05", "09", "14", "16", "18"), 
