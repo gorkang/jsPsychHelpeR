@@ -23,8 +23,8 @@ prepare_SASS <- function(DF_clean, short_name_scale_str, output_formats) {
   # [ADAPT]: Items to ignore, reverse and dimensions ---------------------------------------
   # ****************************************************************************
   
-  items_to_ignore = c("01") # Ignore these items: If nothing to ignore, keep items_to_ignore = c("00")
-  items_to_reverse = c("18", "19", "21") # Reverse these items: If nothing to reverse, keep  items_to_reverse = c("00")
+  items_to_ignore = c("001") # Ignore these items: If nothing to ignore, keep items_to_ignore = c("00")
+  items_to_reverse = c("018", "019", "021") # Reverse these items: If nothing to reverse, keep  items_to_reverse = c("00")
   # [REMEMBER]: REVISAR https://github.com/HeRm4nV/CSCN_Maker/issues/27 
   # REMEMBER ITEMS 2 and 3 both are two instances of the "same" item (work/home)
   
