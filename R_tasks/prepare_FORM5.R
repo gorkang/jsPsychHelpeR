@@ -14,7 +14,7 @@
 ##' @return
 ##' @author gorkang
 ##' @export
-prepare_FORM5 <- function(DF_clean, DF_DICTIONARY_id, short_name_scale_str) {
+prepare_FORM5 <- function(DF_clean, DF_DICTIONARY_id, short_name_scale_str, output_formats) {
 
   # DEBUG
   # targets::tar_load_globals()
@@ -51,17 +51,17 @@ prepare_FORM5 <- function(DF_clean, DF_DICTIONARY_id, short_name_scale_str) {
   
     # Transformations
     dplyr::mutate(
-      DIR = 
-       dplyr::case_when(
-          # RAW == "Nunca" ~ 1,
-          # RAW == "Poco" ~ 2,
-          # RAW == "Medianamente" ~ 3,
-          # RAW == "Bastante" ~ 4,
-          # RAW == "Mucho" ~ 5,
-          is.na(RAW) ~ NA_character_,
-          trialid %in% paste0(short_name_scale_str, "_", items_to_ignore) ~ NA_real_,
-          TRUE ~ RAW
-        )
+      DIR = RAW
+       # dplyr::case_when(
+       #    # RAW == "Nunca" ~ 1,
+       #    # RAW == "Poco" ~ 2,
+       #    # RAW == "Medianamente" ~ 3,
+       #    # RAW == "Bastante" ~ 4,
+       #    # RAW == "Mucho" ~ 5,
+       #    is.na(RAW) ~ NA_real_,
+       #    trialid %in% paste0(short_name_scale_str, "_", items_to_ignore) ~ NA_real_,
+       #    TRUE ~ RAW
+       #  )
     ) |> 
     
     # Invert items
@@ -128,7 +128,7 @@ prepare_FORM5 <- function(DF_clean, DF_DICTIONARY_id, short_name_scale_str) {
   check_NAs(DF_wide_RAW_DIR)
 
   # Save files --------------------------------------------------------------
-  save_files(DF_wide_RAW_DIR, short_name_scale = short_name_scale_str, is_scale = TRUE, is_sensitive = TRUE)
+  save_files(DF_wide_RAW_DIR, short_name_scale = short_name_scale_str, is_scale = TRUE, is_sensitive = TRUE, output_formats = output_formats)
   
   # Output of function ---------------------------------------------------------
   return(DF_wide_RAW_DIR) 

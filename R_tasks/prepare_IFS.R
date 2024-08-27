@@ -175,11 +175,11 @@ prepare_IFS <- function(DF_clean, short_name_scale_str, output_formats) {
       # [CHECK] Using correct formula? rowMeans() / rowSums()
       
       # Score Dimensions (see standardized_names(help_names = TRUE) for instructions)
-      !!names_list$name_DIRd[1] := rowSums(across(all_of(paste0(short_name_scale_str, "_", items_dimensions[[1]], "_DIR"))), na.rm = TRUE),
+      !!names_list$name_DIRd[1] := rowSums(across(any_of(paste0(short_name_scale_str, "_", items_dimensions[[1]], "_DIR"))), na.rm = TRUE),
       !!names_list$name_DIRd[2] := get(paste0(short_name_scale_str, "_", items_dimensions[[2]], "_DIR")),
       !!names_list$name_DIRd[3] := get(paste0(short_name_scale_str, "_", items_dimensions[[3]], "_DIR")),
       !!names_list$name_DIRd[4] := get(paste0(short_name_scale_str, "_", items_dimensions[[4]], "_DIR")),
-      !!names_list$name_DIRd[5] := rowSums(across(all_of(paste0(short_name_scale_str, "_", items_dimensions[[5]], "_DIR"))), na.rm = TRUE),
+      !!names_list$name_DIRd[5] := rowSums(across(any_of(paste0(short_name_scale_str, "_", items_dimensions[[5]], "_DIR"))), na.rm = TRUE),
       !!names_list$name_DIRd[6] := get(paste0(short_name_scale_str, "_", items_dimensions[[6]], "_DIR")),
       !!names_list$name_DIRd[7] := rowSums(across(all_of(paste0(short_name_scale_str, "_", items_dimensions[[7]], "_DIR"))), na.rm = TRUE),
       !!names_list$name_DIRd[8] := rowSums(across(all_of(paste0(short_name_scale_str, "_", items_dimensions[[8]], "_DIR"))), na.rm = TRUE),
