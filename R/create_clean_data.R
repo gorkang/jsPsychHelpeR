@@ -14,6 +14,7 @@ create_clean_data <- function(DF_raw, save_output = TRUE, check_duplicates = TRU
   DF_clean_raw =
     DF_raw %>% 
     janitor::clean_names() %>% 
+    dplyr::filter(!grepl("repeated", id)) %>% # Delete users that have "repeated" in name
     dplyr::filter(trial_type != "fullscreen") %>% # Empty line
     dplyr::filter(!trialid %in% c("Screen_WM", "Instructions")) %>%  # Delete instructions [TODO]: use regexp to clean instrucciones_NOMBRETEST
     dplyr::filter(!grepl("Instructions", trialid, ignore.case = TRUE)) %>% 
