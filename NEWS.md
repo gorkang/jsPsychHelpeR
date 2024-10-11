@@ -1,4 +1,4 @@
-# jsPsychHelpeR 0.3.5.904
+# jsPsychHelpeR 0.3.5.905
 
 Major updates
 
@@ -18,6 +18,7 @@ Minor updates
 * Started replacing %>% by |> elsewhere
 * Add output_formats parameter (closes #33)
 * csv files with 'repeated' in the name will be ignored
+* Improve run.R
 
 
 # jsPsychHelpeR 0.2.7
