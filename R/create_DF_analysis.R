@@ -16,10 +16,18 @@ create_DF_analysis <- function(DF_joined, last_task, save_output = TRUE, DVars =
     
   DF_analysis = 
     DF_joined %>% 
-   dplyr::select(id, dplyr::all_of(all_scales)) %>% 
+    dplyr::select(id, dplyr::all_of(all_scales)) %>% 
     
     # Remove people that did not finish protocol
-   tidyr::drop_na(dplyr::all_of(last_task))
+    tidyr::drop_na(dplyr::all_of(last_task))
+  
+  # Create incomplete DF (participants that did not complete the final task)
+  DF_analysis_incomplete = 
+    DF_joined |> 
+    dplyr::select(id, dplyr::all_of(all_scales)) |> 
+    filter(!id %in% DF_analysis$id)
+  
+  
   
   # Randomize order of DVars & Save as DF_analysis_blinded
   # DVars = c("SRSav_ORA_DIRd", "SBS_DIRt")
@@ -46,11 +54,12 @@ create_DF_analysis <- function(DF_joined, last_task, save_output = TRUE, DVars =
   
   # Save files --------------------------------------------------------------
   if (save_output == TRUE) save_files(DF_analysis, short_name_scale = "analysis", is_scale = FALSE)
-  
+  if (save_output == TRUE) save_files(DF_analysis_incomplete, short_name_scale = "analysis_incomplete", is_scale = FALSE)
   
   
   # Output of function ---------------------------------------------------------
   OUTPUT = list(DF_analysis = DF_analysis,
+                DF_analysis_incomplete = DF_analysis_incomplete,
                 DF_analysis_blinded = DF_analysis_blinded)
   return(OUTPUT)
 
