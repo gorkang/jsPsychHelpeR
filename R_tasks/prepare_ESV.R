@@ -34,11 +34,11 @@ prepare_ESV <- function(DF_clean, short_name_scale_str, output_formats) {
   ## Inside each c() create a vector of the item numbers for the dimension
   ## Add lines as needed. If there are no dimensions, keep as is
   items_dimensions = list(
-    Intensidad = c("01"),
-    Emocion = c("02"),
-    Compasion = c("03"),
-    Angustia = c("04"),
-    Frialdad = c("05")
+    Intensidad = c("001"),
+    Emocion = c("002"),
+    Compasion = c("003"),
+    Angustia = c("004"),
+    Frialdad = c("005")
   )
   
   # [END ADAPT 1/3]: ***********************************************************

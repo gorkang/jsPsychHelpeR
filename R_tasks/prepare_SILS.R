@@ -26,20 +26,20 @@ prepare_SILS <- function(DF_clean, short_name_scale_str, output_formats) {
   
   description_task = "" # Brief description here
   
-  items_to_ignore = c("000") # Ignore these items: If nothing to ignore, keep as is
-  items_to_reverse = c("000") # Reverse these items: If nothing to reverse, keep as is
+  items_to_ignore = c("0000") # Ignore these items: If nothing to ignore, keep as is
+  items_to_reverse = c("0000") # Reverse these items: If nothing to reverse, keep as is
   
   ## NameDimension1, NameDimension2 should be the names of the dimensions
   ## Inside each c() create a vector of the item numbers for the dimension
   ## Add lines as needed. If there are no dimensions, keep as is
   items_dimensions = list(
-    Proactividad = c("01", "02", "03"),
-    Conocimiento = c("04", "05", "06"),
-    Apoyo = c("07", "08", "09"),
-    Perseverancia = c("10", "11", "12"),
-    Comunicacion = c("13", "14", "15"),
-    VisionMision = c("16", "17", "18"),
-    Disponibilidad = c("19", "20", "21")
+    Proactividad = c("001", "002", "003"),
+    Conocimiento = c("004", "005", "006"),
+    Apoyo = c("007", "008", "009"),
+    Perseverancia = c("010", "011", "012"),
+    Comunicacion = c("013", "014", "015"),
+    VisionMision = c("016", "017", "018"),
+    Disponibilidad = c("019", "020", "021")
     )
   
   # [END ADAPT 1/3]: ***********************************************************

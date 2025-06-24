@@ -34,7 +34,7 @@ prepare_DMW <- function(DF_clean, short_name_scale_str, output_formats) {
   ## Inside each c() create a vector of the item numbers for the dimension
   ## Add lines as needed. If there are no dimensions, keep as is
   items_dimensions = list(
-    RUT = c("01"),
+    RUT = c("001"),
     NameDimension2 = c("00")
   )
   
@@ -71,21 +71,21 @@ prepare_DMW <- function(DF_clean, short_name_scale_str, output_formats) {
     dplyr::mutate(
       DIR =
        dplyr::case_when(
-          trialid == "DMW_01" ~ RAW,
-          trialid == "DMW_02" ~ RAW,
+          trialid == "DMW_001" ~ RAW,
+          trialid == "DMW_002" ~ RAW,
           
-          trialid == "DMW_03" & RAW == "Si" ~ "1",
-          trialid == "DMW_03" & RAW == "No" ~ "0",
+          trialid == "DMW_003" & RAW == "Si" ~ "1",
+          trialid == "DMW_003" & RAW == "No" ~ "0",
           
-          trialid == "DMW_04" & grepl("\\(A\\)", RAW) ~ "1",
-          trialid == "DMW_04" & grepl("\\(B\\)", RAW) ~ "2",
-          trialid == "DMW_04" & grepl("\\(C\\)", RAW) ~ "3",
-          trialid == "DMW_04" & grepl("\\(D\\)", RAW) ~ "4",
+          trialid == "DMW_004" & grepl("\\(A\\)", RAW) ~ "1",
+          trialid == "DMW_004" & grepl("\\(B\\)", RAW) ~ "2",
+          trialid == "DMW_004" & grepl("\\(C\\)", RAW) ~ "3",
+          trialid == "DMW_004" & grepl("\\(D\\)", RAW) ~ "4",
           
-          trialid == "DMW_05" & grepl("\\(A\\)", RAW) ~ "1",
-          trialid == "DMW_05" & grepl("\\(B\\)", RAW) ~ "2",
-          trialid == "DMW_05" & grepl("\\(C\\)", RAW) ~ "3",
-          trialid == "DMW_05" & grepl("\\(D\\)", RAW) ~ "4",
+          trialid == "DMW_005" & grepl("\\(A\\)", RAW) ~ "1",
+          trialid == "DMW_005" & grepl("\\(B\\)", RAW) ~ "2",
+          trialid == "DMW_005" & grepl("\\(C\\)", RAW) ~ "3",
+          trialid == "DMW_005" & grepl("\\(D\\)", RAW) ~ "4",
           
           is.na(RAW) ~ NA_character_,
           trialid %in% paste0(short_name_scale_str, "_", items_to_ignore) ~ NA_real_,

@@ -36,7 +36,7 @@ prepare_DEBRIEF <- function(DF_clean, short_name_scale_str, output_formats) {
   
   items_to_ignore = c("00|00") # Ignore the following items: If nothing to ignore, keep "00|00"
   items_to_reverse = c("00|00") # Reverse the following items: If nothing to ignore, keep "00|00"
-  numeric_items = c("DEBRIEF_01")
+  numeric_items = c("DEBRIEF_001")
   
   # [END ADAPT]: ***************************************************************
   # ****************************************************************************
@@ -54,10 +54,10 @@ prepare_DEBRIEF <- function(DF_clean, short_name_scale_str, output_formats) {
     dplyr::mutate(
       DIR =
        dplyr::case_when(
-          trialid == "DEBRIEF_01" & RAW == "casi nada" ~ "1",
-          trialid == "DEBRIEF_01" & RAW == "muy poco" ~ "2",
-          trialid == "DEBRIEF_01" & RAW == "algo" ~ "3",
-          trialid == "DEBRIEF_01" & RAW == "bastante" ~ "4",
+          trialid == "DEBRIEF_001" & RAW == "casi nada" ~ "1",
+          trialid == "DEBRIEF_001" & RAW == "muy poco" ~ "2",
+          trialid == "DEBRIEF_001" & RAW == "algo" ~ "3",
+          trialid == "DEBRIEF_001" & RAW == "bastante" ~ "4",
           is.na(RAW) ~ NA_character_,
           trialid %in% paste0(short_name_scale_str, "_", items_to_ignore) ~ NA_character_,
           TRUE ~ RAW

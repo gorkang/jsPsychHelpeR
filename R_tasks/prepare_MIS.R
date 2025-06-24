@@ -24,8 +24,8 @@ prepare_MIS <- function(DF_clean, short_name_scale_str, output_formats) {
   # [ADAPT]: Items to ignore, reverse and dimensions ---------------------------------------
   # ****************************************************************************
   
-  items_to_ignore = c("00") # Ignore these items: If nothing to ignore, keep items_to_ignore = c("00")
-  items_to_reverse = c("07", "12", "13", "16", "18", "23", "24") # Reverse these items: If nothing to reverse, keep  items_to_reverse = c("00")
+  items_to_ignore = c("000") # Ignore these items: If nothing to ignore, keep items_to_ignore = c("000")
+  items_to_reverse = c("007", "012", "013", "016", "018", "023", "024") # Reverse these items: If nothing to reverse, keep  items_to_reverse = c("000")
   
     items_dimensions = list(
      NameDimension1 = c("000")

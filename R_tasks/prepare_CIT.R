@@ -34,7 +34,7 @@ prepare_CIT <- function(DF_clean, short_name_scale_str, output_formats) {
   ## Inside each c() create a vector of the item numbers for the dimension
   ## Add lines as needed. If there are no dimensions, keep as is
   items_dimensions = list(
-    InferenciaContrafactual = c("01", "02", "03", "04")
+    InferenciaContrafactual = c("001", "002", "003", "004")
   )
   
   # [END ADAPT 1/3]: ***********************************************************
@@ -69,25 +69,25 @@ prepare_CIT <- function(DF_clean, short_name_scale_str, output_formats) {
       DIR =
        dplyr::case_when(
 
-          trialid %in% c("CIT_01") & RAW == "Juana" ~ 1,
-          trialid %in% c("CIT_01") & RAW == "Susana" ~ 0,
-          trialid %in% c("CIT_01") & RAW == "Ambas están igualmente molestas" ~ 0,
-          trialid %in% c("CIT_01") & RAW == "No lo sé" ~ 0,
+          trialid %in% c("CIT_001") & RAW == "Juana" ~ 1,
+          trialid %in% c("CIT_001") & RAW == "Susana" ~ 0,
+          trialid %in% c("CIT_001") & RAW == "Ambas están igualmente molestas" ~ 0,
+          trialid %in% c("CIT_001") & RAW == "No lo sé" ~ 0,
           
-          trialid %in% c("CIT_02") & RAW == "Ana" ~ 0,
-          trialid %in% c("CIT_02") & RAW == "Sara" ~ 1,
-          trialid %in% c("CIT_02") & RAW == "Ambas están igualmente molestas" ~ 0,
-          trialid %in% c("CIT_02") & RAW == "No lo sé" ~ 0,
+          trialid %in% c("CIT_002") & RAW == "Ana" ~ 0,
+          trialid %in% c("CIT_002") & RAW == "Sara" ~ 1,
+          trialid %in% c("CIT_002") & RAW == "Ambas están igualmente molestas" ~ 0,
+          trialid %in% c("CIT_002") & RAW == "No lo sé" ~ 0,
           
-          trialid %in% c("CIT_03") & RAW == "Eduardo" ~ 0,
-          trialid %in% c("CIT_03") & RAW == "Juan" ~ 1,
-          trialid %in% c("CIT_03") & RAW == "Ambas están igualmente molestas" ~ 0,
-          trialid %in% c("CIT_03") & RAW == "No lo sé" ~ 0,
+          trialid %in% c("CIT_003") & RAW == "Eduardo" ~ 0,
+          trialid %in% c("CIT_003") & RAW == "Juan" ~ 1,
+          trialid %in% c("CIT_003") & RAW == "Ambas están igualmente molestas" ~ 0,
+          trialid %in% c("CIT_003") & RAW == "No lo sé" ~ 0,
           
-          trialid %in% c("CIT_04") & RAW == "Carlos" ~ 1,
-          trialid %in% c("CIT_04") & RAW == "Pedro" ~ 0,
-          trialid %in% c("CIT_04") & RAW == "Ambas están igualmente molestas" ~ 0,
-          trialid %in% c("CIT_04") & RAW == "No lo sé" ~ 0,
+          trialid %in% c("CIT_004") & RAW == "Carlos" ~ 1,
+          trialid %in% c("CIT_004") & RAW == "Pedro" ~ 0,
+          trialid %in% c("CIT_004") & RAW == "Ambas están igualmente molestas" ~ 0,
+          trialid %in% c("CIT_004") & RAW == "No lo sé" ~ 0,
           
           
           is.na(RAW) ~ NA_real_, # OR NA_character_

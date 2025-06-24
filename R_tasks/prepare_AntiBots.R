@@ -33,8 +33,8 @@ prepare_AntiBots <- function(DF_clean, short_name_scale_str, output_formats) {
   ## Inside each c() create a vector of the item numbers for the dimension
   ## Add lines as needed. If there are no dimensions, keep as is
   items_dimensions = list(
-    GoodHuman = c("01", "02", "03", "04"),
-    Calculator = c("05")
+    GoodHuman = c("001", "002", "003", "004"),
+    Calculator = c("005")
   )
   
   # [END ADAPT 1/3]: ***********************************************************
@@ -68,20 +68,20 @@ prepare_AntiBots <- function(DF_clean, short_name_scale_str, output_formats) {
     dplyr::mutate(
       DIR =
        dplyr::case_when(
-          trialid == "AntiBots_01" & RAW == "No, never" ~ 1,
-          trialid == "AntiBots_01" & RAW != "No, never" ~ 0,
+          trialid == "AntiBots_001" & RAW == "No, never" ~ 1,
+          trialid == "AntiBots_001" & RAW != "No, never" ~ 0,
           
-          trialid == "AntiBots_02" & RAW == "Toyota; Honda; Chevrolet; Ford; Mercedes-Benz" ~ 1,
-          trialid == "AntiBots_02" & RAW != "Toyota; Honda; Chevrolet; Ford; Mercedes-Benz" ~ 0,
+          trialid == "AntiBots_002" & RAW == "Toyota; Honda; Chevrolet; Ford; Mercedes-Benz" ~ 1,
+          trialid == "AntiBots_002" & RAW != "Toyota; Honda; Chevrolet; Ford; Mercedes-Benz" ~ 0,
           
-          trialid == "AntiBots_03" & !RAW %in% c("Very little", "Almost no") ~ 1,
-          trialid == "AntiBots_03" & RAW %in% c("Very little", "Almost no") ~ 0,
+          trialid == "AntiBots_003" & !RAW %in% c("Very little", "Almost no") ~ 1,
+          trialid == "AntiBots_003" & RAW %in% c("Very little", "Almost no") ~ 0,
           
-          trialid == "AntiBots_04" & RAW == "Yes" ~ 1,
-          trialid == "AntiBots_04" & RAW == "No" ~ 0,
+          trialid == "AntiBots_004" & RAW == "Yes" ~ 1,
+          trialid == "AntiBots_004" & RAW == "No" ~ 0,
           
-          trialid == "AntiBots_05" & RAW == "Yes" ~ 1,
-          trialid == "AntiBots_05" & RAW == "No" ~ 0,
+          trialid == "AntiBots_005" & RAW == "Yes" ~ 1,
+          trialid == "AntiBots_005" & RAW == "No" ~ 0,
           
           is.na(RAW) ~ NA_real_, # OR NA_character_,
           trialid %in% paste0(short_name_scale_str, "_", items_to_ignore) ~ NA_real_, # OR NA_character_,

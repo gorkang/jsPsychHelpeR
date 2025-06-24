@@ -31,9 +31,9 @@ prepare_CEL <- function(DF_clean, short_name_scale_str, output_formats) {
   items_to_reverse = c("000") # Reverse these items: If nothing to reverse, keep as is
   
   items_dimensions = list(
-    Derivativo = c("01", "02", "03", "04", "05", "06"),
-    Democratico = c("01", "02", "03", "04", "05", "06"),
-    Directivo = c("01", "02", "03", "04", "05", "06")
+    Derivativo = c("001", "002", "003", "004", "005", "006"),
+    Democratico = c("001", "002", "003", "004", "005", "006"),
+    Directivo = c("001", "002", "003", "004", "005", "006")
   )
   
   # [END ADAPT 1/3]: ***********************************************************
@@ -67,29 +67,30 @@ prepare_CEL <- function(DF_clean, short_name_scale_str, output_formats) {
     dplyr::mutate(
       DIR =
        dplyr::case_when(
-          trialid %in% c("CEL_01") & RAW == "Espera hasta que estén listos para hablar." ~ "Derivativo",
-          trialid %in% c("CEL_01") & RAW == "Sugiere que el grupo vote qué hacer ahora." ~ "Democratico",
-          trialid %in% c("CEL_01") & RAW == "Asigna tareas específicas a diferentes personas y los ayuda a completar con sus tareas." ~ "Directivo",
+          trialid %in% c("CEL_001") & RAW == "Espera hasta que estén listos para hablar." ~ "Derivativo",
+          trialid %in% c("CEL_001") & RAW == "Sugiere que el grupo vote qué hacer ahora." ~ "Democratico",
+          trialid %in% c("CEL_001") & RAW == "Asigna tareas específicas a diferentes personas y los ayuda a completar con sus tareas." ~ "Directivo",
           
-          trialid %in% c("CEL_02") & RAW == "Reduce su liderazgo. Deja que las personas en el grupo lideren lo más posible." ~ "Derivativo",
-          trialid %in% c("CEL_02") & RAW == "Se asegura que se llegue a un acuerdo en cada punto, antes de proceder." ~ "Democratico",
-          trialid %in% c("CEL_02") & RAW == "Mantiene al grupo bajo firme control, sino el grupo perderá su momentum." ~ "Directivo",
+          trialid %in% c("CEL_002") & RAW == "Reduce su liderazgo. Deja que las personas en el grupo lideren lo más posible." ~ "Derivativo",
+          trialid %in% c("CEL_002") & RAW == "Se asegura que se llegue a un acuerdo en cada punto, antes de proceder." ~ "Democratico",
+          trialid %in% c("CEL_002") & RAW == "Mantiene al grupo bajo firme control, sino el grupo perderá su momentum." ~ "Directivo",
           
-          trialid %in% c("CEL_03") & RAW == "Lo expresaría tal cual. Delinearía los cambios y observaría que éstos se lleven a cabo." ~ "Directivo",
-          trialid %in% c("CEL_03") & RAW == "Propondría los cambios. Explicaría, por qué son necesarios y luego permitiría que el grupo decida qué hacer." ~ "Democratico",
-          trialid %in% c("CEL_03") & RAW == "No haría nada al respecto, esto podría amenazar la productividad del grupo." ~ "Derivativo",
+          trialid %in% c("CEL_003") & RAW == "Lo expresaría tal cual. Delinearía los cambios y observaría que éstos se lleven a cabo." ~ "Directivo",
+          trialid %in% c("CEL_003") & RAW == "Propondría los cambios. Explicaría, por qué son necesarios y luego permitiría que el grupo decida qué hacer." ~ "Democratico",
+          trialid %in% c("CEL_003") & RAW == "No haría nada al respecto, esto podría amenazar la productividad del grupo." ~ "Derivativo",
           
-          trialid %in% c("CEL_04") & RAW == "Deja al grupo solo." ~ "Derivativo",
-          trialid %in% c("CEL_04") & RAW == "Lentamente se inserta para ir dándole al grupo una mayor dirección." ~ "Directivo",
-          trialid %in% c("CEL_04") & RAW == "Le pregunta al grupo si usted debiera proveer y luego cumple con sus deseos." ~ "Democratico",
+          trialid %in% c("CEL_004") & RAW == "Deja al grupo solo." ~ "Derivativo",
+          trialid %in% c("CEL_004") & RAW == "Lentamente se inserta para ir dándole al grupo una mayor dirección." ~ "Directivo",
+          trialid %in% c("CEL_004") & RAW == "Le pregunta al grupo si usted debiera proveer y luego cumple con sus deseos." ~ "Democratico",
+          trialid %in% c("CEL_004") & RAW == "Le pregunta al grupo si usted debiera proveer... y luego cumple con sus deseos." ~ "Democratico",
           
-          trialid %in% c("CEL_05") & RAW == "Deja que todos en el grupo manifiesten su opinión. Sin intervenir." ~ "Derivativo",
-          trialid %in% c("CEL_05") & RAW == "Lleva a votación la sugerencia sobre el receso." ~ "Democratico",
-          trialid %in% c("CEL_05") & RAW == "Propone un nuevo curso de acción para el grupo. Si nadie se opone firmemente, designa tareas y luego observa que estas se lleven a cabo." ~ "Directivo",
+          trialid %in% c("CEL_005") & RAW == "Deja que todos en el grupo manifiesten su opinión. Sin intervenir." ~ "Derivativo",
+          trialid %in% c("CEL_005") & RAW == "Lleva a votación la sugerencia sobre el receso." ~ "Democratico",
+          trialid %in% c("CEL_005") & RAW == "Propone un nuevo curso de acción para el grupo. Si nadie se opone firmemente, designa tareas y luego observa que estas se lleven a cabo." ~ "Directivo",
           
-          trialid %in% c("CEL_06") & RAW == "Sugiere que el grupo avance hacia otro tema. Y si nadie se opone, hace un listado de los posibles temas." ~ "Democratico",
-          trialid %in% c("CEL_06") & RAW == "Elige una actividad para el grupo y asigna tareas." ~ "Directivo",
-          trialid %in% c("CEL_06") & RAW == "Se mantiene en silencio hasta que el grupo tome una decisión." ~ "Derivativo",
+          trialid %in% c("CEL_006") & RAW == "Sugiere que el grupo avance hacia otro tema. Y si nadie se opone, hace un listado de los posibles temas." ~ "Democratico",
+          trialid %in% c("CEL_006") & RAW == "Elige una actividad para el grupo y asigna tareas." ~ "Directivo",
+          trialid %in% c("CEL_006") & RAW == "Se mantiene en silencio hasta que el grupo tome una decisión." ~ "Derivativo",
           is.na(RAW) ~ NA_character_,
           trialid %in% paste0(short_name_scale_str, "_", items_to_ignore) ~ NA_character_,
           TRUE ~ "9999"

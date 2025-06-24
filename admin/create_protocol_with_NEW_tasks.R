@@ -79,9 +79,9 @@ create_protocol_with_missing_in_999 <- function(search_where = "prepare_TASK", d
 # Get last version from SERVER --------------------------------------------
 
   # Download to ../CSCN-server/
-  invisible(lapply(list.files("./R", full.names = TRUE, pattern = ".R$"), source))
-  DF_missing = check_missing_prepare_TASK(sync_protocols = TRUE) 
-  DF_missing
+  # invisible(lapply(list.files("./R", full.names = TRUE, pattern = ".R$"), source))
+  # DF_missing = jsPsychAdmin::check_missing_prepare_TASK(sync_protocols = TRUE) 
+  # DF_missing
   
   
 # COPY a clean protocol and the new tasks to NEW_TASKS --------------------
@@ -89,12 +89,12 @@ create_protocol_with_missing_in_999 <- function(search_where = "prepare_TASK", d
   cli::cli_alert_info("Create new protocol in /CSCN-server/")
   
   ALL_js = 
-    list.files("../CSCN-server/", recursive = TRUE, pattern = "\\.js") %>% tibble::as_tibble() %>% 
+    list.files("../CSCN-server/protocols/", recursive = TRUE, pattern = "\\.js") %>% tibble::as_tibble() %>% 
     dplyr::filter(!grepl("NEW_TASKS", value)) %>% # Do not look into NEW_TASKS to avoid circularity
     dplyr::filter(grepl("*tasks/.*\\.js", value)) %>% 
     dplyr::mutate(task_name = basename(value)) %>% 
-    dplyr::mutate(mtime = file.info(paste0("../CSCN-server/", value))$mtime,
-           size = file.info(paste0("../CSCN-server/", value))$size)
+    dplyr::mutate(mtime = file.info(paste0("../CSCN-server/protocols/", value))$mtime,
+           size = file.info(paste0("../CSCN-server/protocols/", value))$size)
     
   # DT::datatable(ALL_js)
   
@@ -114,7 +114,7 @@ create_protocol_with_missing_in_999 <- function(search_where = "prepare_TASK", d
   cli::cli_alert_info("Deleted {destination_folder}")
   
   # copy_canonical_clean/
-  jsPsychMaker::list_unzip(location = "jsPsychMaker", zip_file = "canonical_protocol_clean.zip",
+  jsPsychMaker::list_unzip(location = "jsPsychMaker", zip_file = "canonical_clean_6.zip",
                            action = "unzip", destination_folder = destination_folder, silent = TRUE)
   
   # Remove non essential tasks from canonical_clean
@@ -123,7 +123,8 @@ create_protocol_with_missing_in_999 <- function(search_where = "prepare_TASK", d
   
   # Copy NEW tasks
   # dir.create(paste0(destination_folder, "tasks/"), recursive = TRUE)
-  file.copy(paste0("../CSCN-server/", PATHS_NEW_TASKS), paste0(destination_folder, "tasks/"), overwrite = TRUE)
+  file.copy(paste0("../CSCN-server/protocols/", PATHS_NEW_TASKS), 
+            paste0(destination_folder, "/tasks/", basename(PATHS_NEW_TASKS)), overwrite = TRUE)
   
   
   # INCLUDE NEW TASKS IN config.js -----------------------------------

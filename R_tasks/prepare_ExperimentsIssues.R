@@ -1,12 +1,12 @@
-##' Prepare CMApre
+##' Prepare ExperimentsIssues
 ##'
 ##' Template for the functions to prepare specific tasks. Most of this file should not be changed
 ##' Things to change: 
-##'   - Name of function: prepare_CMApre -> prepare_[value of short_name_scale_str] 
+##'   - Name of function: prepare_ExperimentsIssues -> prepare_[value of short_name_scale_str] 
 ##'   - dimensions parameter in standardized_names()
 ##'   - 2 [ADAPT] chunks
 ##'
-##' @title prepare_CMApre
+##' @title prepare_ExperimentsIssues
 ##'
 ##' @param short_name_scale_str 
 ##' @param DF_clean
@@ -14,11 +14,11 @@
 ##' @return
 ##' @author gorkang
 ##' @export
-prepare_CMApre <- function(DF_clean, short_name_scale_str, output_formats) {
+prepare_ExperimentsIssues <- function(DF_clean, short_name_scale_str, output_formats) {
 
   # DEBUG
   # targets::tar_load_globals()
-  # debug_function(prepare_CMApre)
+  # debug_function(prepare_ExperimentsIssues)
 
   
   
@@ -34,8 +34,11 @@ prepare_CMApre <- function(DF_clean, short_name_scale_str, output_formats) {
   ## Inside each c() create a vector of the item numbers for the dimension
   ## Add lines as needed. If there are no dimensions, keep as is
   items_dimensions = list(
-    PresentMemory = c("001"),
-    MemoryChange = c("002")
+    IssuesExperiments = c("002", "004"),
+    FrequencyIssues = c("001"),
+    WhoIsGod = c("003"),
+    Experience = c("005")
+    
   )
   
   # [END ADAPT 1/3]: ***********************************************************
@@ -52,13 +55,16 @@ prepare_CMApre <- function(DF_clean, short_name_scale_str, output_formats) {
                                 short_name_scale = short_name_scale_str, 
                                 numeric_responses = FALSE, # [TRUE or FALSE]
                                 is_experiment = FALSE, 
-                                help_prepare = TRUE) # Show n of items, responses,... [CHANGE to FALSE] 
+                                keep_time = FALSE, # Keep timestamp for each response
+                                help_prepare = FALSE) # Show n of items, responses,... [CHANGE to FALSE] 
   
   
   # Create long DIR ------------------------------------------------------------
   DF_long_DIR = 
-    DF_long_RAW |> 
-   dplyr::select(id, trialid, RAW) |>
+    DF_long_RAW %>% 
+    # If using keep_time = TRUE above, use this and add timestamp to the select() call
+    # dplyr::mutate(timestamp = as.POSIXlt(datetime, format = "%Y-%m-%dT%H%M%S")) |> 
+    dplyr::select(id, trialid, RAW) %>%
     
     
     
@@ -66,35 +72,19 @@ prepare_CMApre <- function(DF_clean, short_name_scale_str, output_formats) {
   # ****************************************************************************
   
     # Transformations
-    dplyr::mutate(
-      DIR =
-       dplyr::case_when(
-          trialid == "CMApre_001" & RAW == "Poor" ~ 1,
-          trialid == "CMApre_001" & RAW == "Fair" ~ 2,
-          trialid == "CMApre_001" & RAW == "Good" ~ 3,
-          trialid == "CMApre_001" & RAW == "Very good" ~ 4,
-          trialid == "CMApre_001" & RAW == "Excellent" ~ 5,
-          
-          trialid == "CMApre_002" & RAW == "Worse" ~ -1,
-          trialid == "CMApre_002" & RAW == "Same" ~ 0,
-          trialid == "CMApre_002" & RAW == "Better" ~ 1,
-          
-          is.na(RAW) ~ NA_real_, # OR NA_character_,
-          trialid %in% paste0(short_name_scale_str, "_", items_to_ignore) ~ NA_real_, # OR NA_character_,
-
-          TRUE ~ 9999 # OR "9999"
+    dplyr::mutate(DIR = 
+      dplyr::case_when(
+        trialid == "ExperimentsIssues_003" & RAW == "Of course" ~ "Me",
+        trialid == "ExperimentsIssues_003" & RAW == "No, but my Research assistant is" ~ "My research assistant",
+        trialid == "ExperimentsIssues_005" & RAW == "Student (Master, PhD,...)" ~ "1",
+        trialid == "ExperimentsIssues_005" & RAW == "Postdoc or non-ternure track Academic" ~ "2",
+        trialid == "ExperimentsIssues_005" & RAW == "Early Career Academic" ~ "3",
+        trialid == "ExperimentsIssues_005" & RAW == "Senior academic" ~ "4",
+        TRUE ~ RAW
         )
-    ) |> 
+    ) 
     
-    # Invert items [CAN BE DELETED IF NOT USED or DIR is non-numeric]
-    dplyr::mutate(
-      DIR = 
-       dplyr::case_when(
-          DIR == 9999 ~ DIR, # To keep the missing values unchanged
-          trialid %in% paste0(short_name_scale_str, "_", items_to_reverse) ~ (6 - DIR), # REVIEW and replace 6 by MAX + 1
-          TRUE ~ DIR
-        )
-    )
+  
     
   # [END ADAPT 2/3]: ***********************************************************
   # ****************************************************************************
@@ -102,16 +92,16 @@ prepare_CMApre <- function(DF_clean, short_name_scale_str, output_formats) {
 
   # Create DF_wide_RAW_DIR -----------------------------------------------------
   DF_wide_RAW =
-    DF_long_DIR |> 
+    DF_long_DIR %>% 
     tidyr::pivot_wider(
       names_from = trialid, 
       values_from = c(RAW, DIR),
-      names_glue = "{trialid}_{.value}") |> 
+      names_glue = "{trialid}_{.value}") %>% 
     
     # NAs for RAW and DIR items
-    dplyr::mutate(!!names_list$name_RAW_NA := rowSums(is.na(across((-matches(paste0(short_name_scale_str, "_", items_to_ignore, "_RAW")) & matches("_RAW$"))))),
-                  !!names_list$name_DIR_NA := rowSums(is.na(across((-matches(paste0(short_name_scale_str, "_", items_to_ignore, "_DIR")) & matches("_DIR$"))))))
-  
+    dplyr::mutate(!!names_list$name_RAW_NA := rowSums(is.na(select(., -matches(paste0(short_name_scale_str, "_", items_to_ignore, "_RAW")) & matches("_RAW$")))),
+           !!names_list$name_DIR_NA := rowSums(is.na(select(., -matches(paste0(short_name_scale_str, "_", items_to_ignore, "_DIR")) & matches("_DIR$")))))
+
 
   
   # [ADAPT 3/3]: Scales and dimensions calculations ----------------------------
@@ -124,28 +114,30 @@ prepare_CMApre <- function(DF_clean, short_name_scale_str, output_formats) {
   
   # [USE STANDARD NAMES FOR Scales and dimensions: names_list$name_DIRd[1], names_list$name_DIRt,...] 
   # CHECK with: create_formulas(type = "dimensions_DIR", functions = "sum", names(items_dimensions))
+  
+  # Add if they do not exist
+  cols <- c(ExperimentsIssues_001_DIR = NA_real_, ExperimentsIssues_002_DIR = NA_real_, ExperimentsIssues_003_DIR = NA_real_, ExperimentsIssues_004_DIR = NA_real_)
+  
+  
+  
   DF_wide_RAW_DIR =
-    DF_wide_RAW |> 
+    DF_wide_RAW %>% 
+    
+    # Add missing columns, if any
+    add_column(!!!cols[setdiff(names(cols), names(DF_wide_RAW))]) |> 
+    
+    tidyr::unite(!!names_list$name_DIRd[1], paste0(short_name_scale_str, "_", items_dimensions[[1]], "_DIR"), sep = "; ") |> 
+    
     dplyr::mutate(
-
-      # [CHECK] Using correct formula? rowMeans() / rowSums()
-      
-      # Score Dimensions (see standardized_names(help_names = TRUE) for instructions)
-      !!names_list$name_DIRd[1] := rowSums(across(all_of(paste0(short_name_scale_str, "_", items_dimensions[[1]], "_DIR"))), na.rm = TRUE), 
-      !!names_list$name_DIRd[2] := rowSums(across(all_of(paste0(short_name_scale_str, "_", items_dimensions[[2]], "_DIR"))), na.rm = TRUE),
-      
-      # Reliability Dimensions (see standardized_names(help_names = TRUE) for instructions)
-      # !!names_list$name_RELd[1] := rowMeans(across(all_of(paste0(short_name_scale_str, "_", items_RELd1, "_DIR"))), na.rm = TRUE), 
-
-      # Score Scale
-      !!names_list$name_DIRt := rowSums(across(all_of(matches("_DIR$"))), na.rm = TRUE)
-      
+      !!names_list$name_DIRd[2] := get(paste0(short_name_scale_str, "_", items_dimensions[[2]], "_DIR")),
+      !!names_list$name_DIRd[3] := get(paste0(short_name_scale_str, "_", items_dimensions[[3]], "_DIR")),
+      !!names_list$name_DIRd[4] := get(paste0(short_name_scale_str, "_", items_dimensions[[4]], "_DIR"))
     )
     
   # [END ADAPT 3/3]: ***********************************************************
   # ****************************************************************************
-
-
+  
+  
   # CHECK NAs -------------------------------------------------------------------
   check_NAs(DF_wide_RAW_DIR)
   

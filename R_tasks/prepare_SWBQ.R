@@ -27,14 +27,14 @@ prepare_SWBQ <- function(DF_clean, short_name_scale_str, output_formats) {
   # [ADAPT]: Items to ignore, reverse and dimensions ---------------------------------------
   # ****************************************************************************
   
-  items_to_ignore = c("00") # Ignore these items: If nothing to ignore, keep items_to_ignore = c("00")
+  items_to_ignore = c("000") # Ignore these items: If nothing to ignore, keep items_to_ignore = c("000")
   items_to_reverse = c("005", "006", "008", "009", "010", "011", "012", "013", "017", "018", "019", "022", "023", "025", "026", "028", "029", "030", "031", "032") # Reverse these items: If nothing to reverse, keep as is
   
   items_dimensions = list(
-    PersonalEspiritual = c("05", "09", "14", "16", "18"), 
-    EspiritualComunal = c("01", "08", "19", "21", "26"), 
-    EspiritualEntorno = c("04", "10", "20", "22", "24"), 
-    EspiritualTrascendental = c("02", "06", "11", "13", "15")
+    PersonalEspiritual = c("005", "009", "014", "016", "018"), 
+    EspiritualComunal = c("001", "008", "019", "021", "026"), 
+    EspiritualEntorno = c("004", "010", "020", "022", "024"), 
+    EspiritualTrascendental = c("002", "006", "011", "013", "015")
   )
   
 

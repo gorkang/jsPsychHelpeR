@@ -34,8 +34,8 @@ prepare_SCGT <- function(DF_clean, short_name_scale_str, output_formats) {
   ## Inside each c() create a vector of the item numbers for the dimension
   ## Add lines as needed. If there are no dimensions, keep as is
   items_dimensions = list(
-    Evento = c("01"),
-    Total = c("03")
+    Evento = c("001"),
+    Total = c("003")
   )
   
   # [END ADAPT 1/3]: ***********************************************************
@@ -69,7 +69,7 @@ prepare_SCGT <- function(DF_clean, short_name_scale_str, output_formats) {
     dplyr::mutate(
       DIR =
        dplyr::case_when(
-          trialid == "SCGT_01" ~ RAW,
+          trialid == "SCGT_001" ~ RAW,
           is.na(RAW) ~ NA_character_,
           trialid %in% paste0(short_name_scale_str, "_", items_to_ignore) ~ NA_real_,
           TRUE ~ "9999"

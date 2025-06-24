@@ -61,13 +61,13 @@ prepare_CRT7 <- function(DF_clean, short_name_scale_str, output_formats) {
     dplyr::mutate(
       DIR =
        dplyr::case_when(
-          trialid == "CRT7_01" & RAW == "50" ~ 1,
-          trialid == "CRT7_02" & RAW == "5" ~ 1,
-          trialid == "CRT7_03" & RAW == "47" ~ 1,
-          trialid == "CRT7_04" & RAW == "4" ~ 1,
-          trialid == "CRT7_05" & RAW == "29" ~ 1,
-          trialid == "CRT7_06" & RAW == "20" ~ 1,
-          trialid == "CRT7_07" & RAW == "Ha perdido dinero" ~ 1,
+          trialid == "CRT7_001" & RAW == "50" ~ 1,
+          trialid == "CRT7_002" & RAW == "5" ~ 1,
+          trialid == "CRT7_003" & RAW == "47" ~ 1,
+          trialid == "CRT7_004" & RAW == "4" ~ 1,
+          trialid == "CRT7_005" & RAW == "29" ~ 1,
+          trialid == "CRT7_006" & RAW == "20" ~ 1,
+          trialid == "CRT7_007" & RAW == "Ha perdido dinero" ~ 1,
           TRUE ~ 0
         ))
     

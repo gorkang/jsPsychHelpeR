@@ -24,16 +24,16 @@ prepare_CS <- function(DF_clean, short_name_scale_str, output_formats) {
   # [ADAPT]: Items to ignore and reverse ---------------------------------------
   # ****************************************************************************
   
-  items_to_ignore = c("000") # Ignore these items: If nothing to ignore, keep items_to_ignore = c("00")
+  items_to_ignore = c("000") # Ignore these items: If nothing to ignore, keep items_to_ignore = c("000")
   
   # IMPORTANT: in CS, the items are reversed ONLY for the TOTAL score calculation. SEE COLUMNS CS_[ItemNumber]_total_DIR
-  items_to_reverse = c("03", "07", "11", "15")
+  items_to_reverse = c("003", "007", "011", "015")
   
   items_dimensions = list(
-    Kindness = c("02", "06", "10", "14"),
-    Indiference = c("03", "07", "11", "15"),
-    CommonHumanity = c("04", "08", "12", "16"),
-    Mindfulness = c("01", "05", "09", "13")
+    Kindness = c("002", "006", "010", "014"),
+    Indiference = c("003", "007", "011", "015"),
+    CommonHumanity = c("004", "008", "012", "016"),
+    Mindfulness = c("001", "005", "009", "013")
   )
   
   

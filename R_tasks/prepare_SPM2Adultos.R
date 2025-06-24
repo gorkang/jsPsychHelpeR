@@ -1,12 +1,12 @@
-##' Prepare CRQ
+##' Prepare SPM2Adultos
 ##'
 ##' Template for the functions to prepare specific tasks. Most of this file should not be changed
 ##' Things to change: 
-##'   - Name of function: prepare_CRQ -> prepare_[value of short_name_scale_str] 
+##'   - Name of function: prepare_SPM2Adultos -> prepare_[value of short_name_scale_str] 
 ##'   - dimensions parameter in standardized_names()
-##'   - 2 [ADAPT] chunks
+##'   - 3 [ADAPT] chunks
 ##'
-##' @title prepare_CRQ
+##' @title prepare_SPM2Adultos
 ##'
 ##' @param short_name_scale_str 
 ##' @param DF_clean
@@ -14,11 +14,12 @@
 ##' @return
 ##' @author gorkang
 ##' @export
-prepare_CRQ <- function(DF_clean, short_name_scale_str, output_formats) {
+prepare_SPM2Adultos <- function(DF_clean, short_name_scale_str, output_formats) {
 
   # DEBUG
   # targets::tar_load_globals()
-  # jsPsychHelpeR::debug_function(prepare_CRQ)
+  # jsPsychHelpeR::debug_function(prepare_SPM2Adultos)
+  
   
   
   # [ADAPT 1/3]: Items to ignore and reverse, dimensions -----------------------
@@ -27,38 +28,21 @@ prepare_CRQ <- function(DF_clean, short_name_scale_str, output_formats) {
   description_task = "" # Brief description here
   
   items_to_ignore = c("000") # Ignore these items: If nothing to ignore, keep as is
-  items_to_reverse = c("000") # Reverse these items: If nothing to reverse, keep as is
+  items_to_reverse = c("071", "072", "074", "075", "080")
   
   ## NameDimension1, NameDimension2 should be the names of the dimensions
   ## Inside each c() create a vector of the item numbers for the dimension
   ## Add lines as needed. If there are no dimensions, keep as is
-
   items_dimensions = list(
-    # Demograficos = c("01", "02", "03", "04", "05", "06", "07", "08"), # NO ES UNA DIMENSION
-    JuventudEstimul = c("009", "010", "011", "012"),
-    AdultezEstimul = c("009", "010", "011", "012"),
-    RecienteEstimul = c("009", "010", "011", "012"),
-    
-    JuventudFormacion = c("013", "014", "015", "016"),
-    AdultezFormacion = c("013", "014", "015", "016"),
-    RecienteFormacion = c("013", "014", "015", "016"),
-    
-    JuventudHobbies = c("017", "018", "019", "020", "021", "022", "023", "024", "025", "026", "027", "028", "029"),
-    AdultezHobbies = c("017", "018", "019", "020", "021", "022", "023", "024", "025", "026", "027", "028", "029"),
-    RecienteHobbies = c("017", "018", "019", "020", "021", "022", "023", "024", "025", "026", "027", "028", "029"),
-    
-    JuventudVSocial = c("030", "031", "032"),
-    AdultezVSocial = c("030", "031", "032"),
-    RecienteVSocial = c("030", "031", "032")
+    Vision = c("001", "002", "003", "004", "005", "006", "007", "008", "009", "010"),
+    Oido = c("011", "012", "013", "014", "015", "016", "017", "018", "019", "020"),
+    Tacto = c("021", "022", "023", "024", "025", "026", "027", "028", "029", "030"),
+    GustoOlfato = c("031", "032", "033", "034", "035", "036", "037", "038", "039", "040"),
+    ConcienciaCorporal = c("041", "042", "043", "044", "045", "046", "047", "048", "049", "050"),
+    EquilibrioMovimiento = c("051", "052", "053", "054", "055", "056", "057", "058", "059", "060"),
+    PlanificacionIdeas = c("061", "062", "063", "064", "065", "066", "067", "068", "069", "070"),
+    ParticipacionSocial = c("071", "072", "073", "074", "075", "076", "077", "078", "079", "080")
   )
-  
-  
-  # All items and their questions
-  questions_per_item = c("", "_Q1", "_Q2")
-  all_items = paste0(short_name_scale_str, "_", items_dimensions |> unlist())
-  all_items_questions = paste0(rep(all_items, each = length(questions_per_item)), questions_per_item, sep = "")
-  
-  
   
   # [END ADAPT 1/3]: ***********************************************************
   # ****************************************************************************
@@ -74,12 +58,15 @@ prepare_CRQ <- function(DF_clean, short_name_scale_str, output_formats) {
                                 short_name_scale = short_name_scale_str, 
                                 numeric_responses = FALSE, # [TRUE or FALSE]
                                 is_experiment = FALSE, 
-                                help_prepare = FALSE) # Show n of items, responses,... [CHANGE to FALSE] 
+                                keep_time = FALSE, # Keep time stamp for each response
+                                help_prepare = FALSE) # Show n of items, responses,... [CHANGE to TRUE to debug] 
   
   
   # Create long DIR ------------------------------------------------------------
   DF_long_DIR = 
-    DF_long_RAW |> 
+    DF_long_RAW |>  
+    # If using keep_time = TRUE above, use this and add timestamp to the select() call
+    # dplyr::mutate(timestamp = as.POSIXlt(datetime, format = "%Y-%m-%dT%H%M%S")) |> 
     dplyr::select(id, trialid, RAW) |>
     
     
@@ -91,12 +78,12 @@ prepare_CRQ <- function(DF_clean, short_name_scale_str, output_formats) {
     dplyr::mutate(
       DIR =
        dplyr::case_when(
-          
-          trialid %in% all_items_questions ~ as.numeric(RAW),
-          
+         RAW == "Nunca" ~ 1,
+         RAW == "Ocasionalmente" ~ 2,
+         RAW == "Frecuentemente" ~ 3,
+         RAW == "Siempre" ~ 4,
           is.na(RAW) ~ NA_real_, # OR NA_character_,
           trialid %in% paste0(short_name_scale_str, "_", items_to_ignore) ~ NA_real_, # OR NA_character_,
-
           TRUE ~ 9999 # OR "9999"
         )
     ) |> 
@@ -106,7 +93,7 @@ prepare_CRQ <- function(DF_clean, short_name_scale_str, output_formats) {
       DIR = 
        dplyr::case_when(
           DIR == 9999 ~ DIR, # To keep the missing values unchanged
-          trialid %in% paste0(short_name_scale_str, "_", items_to_reverse) ~ (6 - DIR), # REVIEW and replace 6 by MAX + 1
+          trialid %in% paste0(short_name_scale_str, "_", items_to_reverse) ~ (5 - DIR), # REVIEW and replace 6 by MAX + 1
           TRUE ~ DIR
         )
     )
@@ -140,38 +127,21 @@ prepare_CRQ <- function(DF_clean, short_name_scale_str, output_formats) {
   # [USE STANDARD NAMES FOR Scales and dimensions: names_list$name_DIRd[1], names_list$name_DIRt,...] 
   # CHECK with: create_formulas(type = "dimensions_DIR", functions = "sum", names(items_dimensions))
   DF_wide_RAW_DIR =
-    DF_wide_RAW |> 
+    DF_wide_RAW  |>  
     dplyr::mutate(
-
-      # [CHECK] Using correct formula? rowMeans() / rowSums()
-      
-      # Score Dimensions (see standardized_names(help_names = TRUE) for instructions)
-      !!names_list$name_DIRd[1] := rowSums(across(all_of(paste0(short_name_scale_str, "_", items_dimensions[[1]], questions_per_item[1], "_DIR"))), na.rm = TRUE),
-      !!names_list$name_DIRd[2] := rowSums(across(all_of(paste0(short_name_scale_str, "_", items_dimensions[[2]], questions_per_item[2], "_DIR"))), na.rm = TRUE),
-      !!names_list$name_DIRd[3] := rowSums(across(all_of(paste0(short_name_scale_str, "_", items_dimensions[[3]], questions_per_item[3], "_DIR"))), na.rm = TRUE),
-      
-      !!names_list$name_DIRd[4] := rowSums(across(all_of(paste0(short_name_scale_str, "_", items_dimensions[[4]], questions_per_item[1], "_DIR"))), na.rm = TRUE),
-      !!names_list$name_DIRd[5] := rowSums(across(all_of(paste0(short_name_scale_str, "_", items_dimensions[[5]], questions_per_item[2], "_DIR"))), na.rm = TRUE),
-      !!names_list$name_DIRd[6] := rowSums(across(all_of(paste0(short_name_scale_str, "_", items_dimensions[[6]], questions_per_item[3], "_DIR"))), na.rm = TRUE),
-      
-      !!names_list$name_DIRd[7] := rowSums(across(all_of(paste0(short_name_scale_str, "_", items_dimensions[[7]], questions_per_item[1], "_DIR"))), na.rm = TRUE),
-      !!names_list$name_DIRd[8] := rowSums(across(all_of(paste0(short_name_scale_str, "_", items_dimensions[[8]], questions_per_item[2], "_DIR"))), na.rm = TRUE),
-      !!names_list$name_DIRd[9] := rowSums(across(all_of(paste0(short_name_scale_str, "_", items_dimensions[[9]], questions_per_item[3], "_DIR"))), na.rm = TRUE),
-      
-      !!names_list$name_DIRd[10] := rowSums(across(all_of(paste0(short_name_scale_str, "_", items_dimensions[[10]], questions_per_item[1], "_DIR"))), na.rm = TRUE),
-      !!names_list$name_DIRd[11] := rowSums(across(all_of(paste0(short_name_scale_str, "_", items_dimensions[[11]], questions_per_item[2], "_DIR"))), na.rm = TRUE),
-      !!names_list$name_DIRd[12] := rowSums(across(all_of(paste0(short_name_scale_str, "_", items_dimensions[[12]], questions_per_item[3], "_DIR"))), na.rm = TRUE)
-      
-      # Reliability Dimensions (see standardized_names(help_names = TRUE) for instructions)
-      # !!names_list$name_RELd[1] := rowMeans(across(all_of(paste0(short_name_scale_str, "_", items_RELd1, "_DIR"))), na.rm = TRUE), 
-
+      !!names_list$name_DIRd[1] := rowSums(across(all_of(paste0(short_name_scale_str, "_", items_dimensions[[1]], "_DIR"))), na.rm = TRUE),
+      !!names_list$name_DIRd[2] := rowSums(across(all_of(paste0(short_name_scale_str, "_", items_dimensions[[2]], "_DIR"))), na.rm = TRUE),
+      !!names_list$name_DIRd[3] := rowSums(across(all_of(paste0(short_name_scale_str, "_", items_dimensions[[3]], "_DIR"))), na.rm = TRUE),
+      !!names_list$name_DIRd[4] := rowSums(across(all_of(paste0(short_name_scale_str, "_", items_dimensions[[4]], "_DIR"))), na.rm = TRUE),
+      !!names_list$name_DIRd[5] := rowSums(across(all_of(paste0(short_name_scale_str, "_", items_dimensions[[5]], "_DIR"))), na.rm = TRUE),
+      !!names_list$name_DIRd[6] := rowSums(across(all_of(paste0(short_name_scale_str, "_", items_dimensions[[6]], "_DIR"))), na.rm = TRUE),
+      !!names_list$name_DIRd[7] := rowSums(across(all_of(paste0(short_name_scale_str, "_", items_dimensions[[7]], "_DIR"))), na.rm = TRUE),
+      !!names_list$name_DIRd[8] := rowSums(across(all_of(paste0(short_name_scale_str, "_", items_dimensions[[8]], "_DIR"))), na.rm = TRUE)
       # Score Scale
       # !!names_list$name_DIRt := rowSums(across(all_of(matches("_DIR$"))), na.rm = TRUE)
       
     )
-  
-  
-  
+    
   # [END ADAPT 3/3]: ***********************************************************
   # ****************************************************************************
 

@@ -1,12 +1,15 @@
-# jsPsychHelpeR 0.3.5.905
+# jsPsychHelpeR 0.3.5.908
 
 Major updates
 
 * All prepare_TASK() are using the same format now (closes #4)
 * All prepare_TASK() are using the new pipe (|>) and are a bit faster now
+* Changes in create_raw_long() to improve compatibility with old versions (should convert TASK_99 to TASK_099)
+* Change ALL tasks that still used TASK_00 to TASK_000
 
 Minor updates
 
+* read_data() saves file with specific duplicates to help DEBUG
 * Sync version number with admin, maker, monkeys and manual
 * clean_names_analysis() to go from `TEST_DimensionName_DIRd` to `TEST Dimension Name`. Should be useful for tables, plots, etc.
 * sync_server_local() and run_initial_setup() should work now for development protocols.

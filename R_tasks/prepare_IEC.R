@@ -24,13 +24,13 @@ prepare_IEC <- function(DF_clean, short_name_scale_str, output_formats) {
   # [ADAPT]: Items to ignore, reverse and dimensions ---------------------------------------
   # ****************************************************************************
   
-  items_to_ignore = c("00") # Ignore these items: If nothing to ignore, keep items_to_ignore = c("00")
-  items_to_reverse = c("00") # Reverse these items: If nothing to reverse, keep  items_to_reverse = c("00")
+  items_to_ignore = c("000") # Ignore these items: If nothing to ignore, keep items_to_ignore = c("000")
+  items_to_reverse = c("000") # Reverse these items: If nothing to reverse, keep  items_to_reverse = c("000")
   
   items_dimensions = list(
-    Azar = c("02", "06", "07", "10", "12", "14", "16", "24"), 
-    OtrosPoderosos = c("03", "08", "11", "13", "15", "17", "20", "22"), 
-    Internalidad = c("01", "04", "05", "09", "18", "19", "21", "23")
+    Azar = c("002", "006", "007", "010", "012", "014", "016", "024"), 
+    OtrosPoderosos = c("003", "008", "011", "013", "015", "017", "020", "022"), 
+    Internalidad = c("001", "004", "005", "009", "018", "019", "021", "023")
   )
   
 

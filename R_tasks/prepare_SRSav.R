@@ -24,16 +24,16 @@ prepare_SRSav <- function(DF_clean, short_name_scale_str, output_formats) {
   # [ADAPT]: Items to ignore, reverse and dimensions ---------------------------------------
   # ****************************************************************************
   
-  items_to_ignore = c("00") # Ignore these items: If nothing to ignore, keep items_to_ignore = c("00")
-  items_to_reverse1 = c("01", "02", "04") # Reverse these items: If nothing to reverse, keep  items_to_reverse = c("00")
-  items_to_reverse2 = c("08", "14", "15")
+  items_to_ignore = c("000") # Ignore these items: If nothing to ignore, keep items_to_ignore = c("000")
+  items_to_reverse1 = c("001", "002", "004") # Reverse these items: If nothing to reverse, keep  items_to_reverse = c("000")
+  items_to_reverse2 = c("008", "014", "015")
   
   
   
   items_dimensions = list(
-    ORA = c("01", "02"), 
-    NORA = c("03", "04", "05"), 
-    IR = c("06", "07", "08", "09", "10", "11", "12", "13", "14", "15")
+    ORA = c("001", "002"), 
+    NORA = c("003", "004", "005"), 
+    IR = c("006", "007", "008", "009", "010", "011", "012", "013", "014", "015")
   )
   
   
@@ -66,33 +66,33 @@ prepare_SRSav <- function(DF_clean, short_name_scale_str, output_formats) {
     dplyr::mutate(
       DIR =
        dplyr::case_when(
-          trialid %in% c("SRSav_01", "SRSav_02") & RAW == "Varias veces a la semana" ~ 1,
-          trialid %in% c("SRSav_01", "SRSav_02") & RAW == "Aproximadamente una vez a la semana" ~ 2,
-          trialid %in% c("SRSav_01", "SRSav_02") & RAW == "Varias veces al mes" ~ 3,
-          trialid %in% c("SRSav_01", "SRSav_02") & RAW == "Varias veces al año" ~ 4,
-          trialid %in% c("SRSav_01", "SRSav_02") & RAW == "Raramente" ~ 5,
-          trialid %in% c("SRSav_01", "SRSav_02") & RAW == "Nunca" ~ 6,
+          trialid %in% c("SRSav_001", "SRSav_002") & RAW == "Varias veces a la semana" ~ 1,
+          trialid %in% c("SRSav_001", "SRSav_002") & RAW == "Aproximadamente una vez a la semana" ~ 2,
+          trialid %in% c("SRSav_001", "SRSav_002") & RAW == "Varias veces al mes" ~ 3,
+          trialid %in% c("SRSav_001", "SRSav_002") & RAW == "Varias veces al año" ~ 4,
+          trialid %in% c("SRSav_001", "SRSav_002") & RAW == "Raramente" ~ 5,
+          trialid %in% c("SRSav_001", "SRSav_002") & RAW == "Nunca" ~ 6,
           
-          trialid %in% c("SRSav_03") & RAW == "Nunca" ~ 1,
-          trialid %in% c("SRSav_03") & RAW == "Solo ocasionalmente" ~ 2,
-          trialid %in% c("SRSav_03") & RAW == "Varias veces a la semana" ~ 3,
-          trialid %in% c("SRSav_03") & RAW == "Una vez al día" ~ 4,
-          trialid %in% c("SRSav_03") & RAW == "Dos veces al día" ~ 5,
-          trialid %in% c("SRSav_03") & RAW == "Tres o más veces al día" ~ 6,
+          trialid %in% c("SRSav_003") & RAW == "Nunca" ~ 1,
+          trialid %in% c("SRSav_003") & RAW == "Solo ocasionalmente" ~ 2,
+          trialid %in% c("SRSav_003") & RAW == "Varias veces a la semana" ~ 3,
+          trialid %in% c("SRSav_003") & RAW == "Una vez al día" ~ 4,
+          trialid %in% c("SRSav_003") & RAW == "Dos veces al día" ~ 5,
+          trialid %in% c("SRSav_003") & RAW == "Tres o más veces al día" ~ 6,
           
-          trialid %in% c("SRSav_04") & RAW == "Varias veces al día" ~ 1,
-          trialid %in% c("SRSav_04") & RAW == "Diario" ~ 2,
-          trialid %in% c("SRSav_04") & RAW == "Varias veces a la semana" ~ 3,
-          trialid %in% c("SRSav_04") & RAW == "Varias veces al mes" ~ 4,
-          trialid %in% c("SRSav_04") & RAW == "Solo ocasionalmente" ~ 5,
-          trialid %in% c("SRSav_04") & RAW == "Para nada" ~ 6,
+          trialid %in% c("SRSav_004") & RAW == "Varias veces al día" ~ 1,
+          trialid %in% c("SRSav_004") & RAW == "Diario" ~ 2,
+          trialid %in% c("SRSav_004") & RAW == "Varias veces a la semana" ~ 3,
+          trialid %in% c("SRSav_004") & RAW == "Varias veces al mes" ~ 4,
+          trialid %in% c("SRSav_004") & RAW == "Solo ocasionalmente" ~ 5,
+          trialid %in% c("SRSav_004") & RAW == "Para nada" ~ 6,
           
-          trialid %in% c("SRSav_05") & RAW == "Nunca" ~ 1,
-          trialid %in% c("SRSav_05") & RAW == "Solo ocasionalmente" ~ 2,
-          trialid %in% c("SRSav_05") & RAW == "Varias veces al mes" ~ 3,
-          trialid %in% c("SRSav_05") & RAW == "Varias veces a la semana" ~ 4,
-          trialid %in% c("SRSav_05") & RAW == "Diario" ~ 5,
-          trialid %in% c("SRSav_05") & RAW == "Varias veces al día" ~ 6,
+          trialid %in% c("SRSav_005") & RAW == "Nunca" ~ 1,
+          trialid %in% c("SRSav_005") & RAW == "Solo ocasionalmente" ~ 2,
+          trialid %in% c("SRSav_005") & RAW == "Varias veces al mes" ~ 3,
+          trialid %in% c("SRSav_005") & RAW == "Varias veces a la semana" ~ 4,
+          trialid %in% c("SRSav_005") & RAW == "Diario" ~ 5,
+          trialid %in% c("SRSav_005") & RAW == "Varias veces al día" ~ 6,
           
           # 06|07|08|09|10|11|12
           RAW == "Definitivamente no es cierto para mí" ~ 1,

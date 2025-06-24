@@ -61,17 +61,17 @@ prepare_FORM4 <- function(DF_clean_form, short_name_scale_str) {
     dplyr::mutate(
       DIR =
        dplyr::case_when(
-          trialid == "FORM4_01" ~ RAW,
+          trialid == "FORM4_001" ~ RAW,
           
-          trialid == "FORM4_02" & RAW == "Masculino" ~ "0",
-          trialid == "FORM4_02" & RAW == "Femenino" ~ "1",
-          trialid == "FORM4_02" & RAW == "No binario" ~ "0",
+          trialid == "FORM4_002" & RAW == "Masculino" ~ "0",
+          trialid == "FORM4_002" & RAW == "Femenino" ~ "1",
+          trialid == "FORM4_002" & RAW == "No binario" ~ "0",
           
-          trialid == "FORM4_03" ~ RAW,
+          trialid == "FORM4_003" ~ RAW,
           
-          trialid == "FORM4_04" ~ RAW,
+          trialid == "FORM4_004" ~ RAW,
           
-          trialid == "FORM4_05" ~ RAW,
+          trialid == "FORM4_005" ~ RAW,
 
           is.na(RAW) ~ NA_character_,
           trialid %in% paste0(short_name_scale_str, "_", items_to_ignore) ~ NA_real_,

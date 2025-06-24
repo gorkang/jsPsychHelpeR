@@ -35,7 +35,7 @@ prepare_EAR <- function(DF_clean, short_name_scale_str, output_formats) {
   # ****************************************************************************
   
   items_to_ignore = c("00|00") # Ignore the following items: If nothing to ignore, keep "00|00"
-  items_to_reverse = c("03|05|08|09|10") # Reverse the following items: If nothing to ignore, keep "00|00"
+  items_to_reverse = c("003|005|008|009|010") # Reverse the following items: If nothing to ignore, keep "00|00"
   
   # [END ADAPT]: ***************************************************************
   # ****************************************************************************

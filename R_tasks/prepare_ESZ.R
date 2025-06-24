@@ -67,12 +67,12 @@ prepare_ESZ <- function(DF_clean, short_name_scale_str, output_formats) {
     dplyr::mutate(
       DIR =
        dplyr::case_when(
-          trialid %in% c("ESZ_01", "ESZ_02", "ESZ_03", "ESZ_04", "ESZ_05", "ESZ_06") & RAW == "Nunca" ~ "1",
-          trialid %in% c("ESZ_01", "ESZ_02", "ESZ_03", "ESZ_04", "ESZ_05", "ESZ_06") & RAW == "Rara Vez" ~ "2",
-          trialid %in% c("ESZ_01", "ESZ_02", "ESZ_03", "ESZ_04", "ESZ_05", "ESZ_06") & RAW == "Algunas veces" ~ "3",
-          trialid %in% c("ESZ_01", "ESZ_02", "ESZ_03", "ESZ_04", "ESZ_05", "ESZ_06") & RAW == "Casi siempre" ~ "4",
-          trialid %in% c("ESZ_01", "ESZ_02", "ESZ_03", "ESZ_04", "ESZ_05", "ESZ_06") & RAW == "Siempre" ~ "5",
-          trialid %in% c("ESZ_07") ~ RAW,
+          trialid %in% c("ESZ_001", "ESZ_002", "ESZ_003", "ESZ_004", "ESZ_005", "ESZ_006") & RAW == "Nunca" ~ "1",
+          trialid %in% c("ESZ_001", "ESZ_002", "ESZ_003", "ESZ_004", "ESZ_005", "ESZ_006") & RAW == "Rara Vez" ~ "2",
+          trialid %in% c("ESZ_001", "ESZ_002", "ESZ_003", "ESZ_004", "ESZ_005", "ESZ_006") & RAW == "Algunas veces" ~ "3",
+          trialid %in% c("ESZ_001", "ESZ_002", "ESZ_003", "ESZ_004", "ESZ_005", "ESZ_006") & RAW == "Casi siempre" ~ "4",
+          trialid %in% c("ESZ_001", "ESZ_002", "ESZ_003", "ESZ_004", "ESZ_005", "ESZ_006") & RAW == "Siempre" ~ "5",
+          trialid %in% c("ESZ_007") ~ RAW,
           is.na(RAW) ~ NA_character_,
           trialid %in% paste0(short_name_scale_str, "_", items_to_ignore) ~ NA_character_,
           TRUE ~ "9999"

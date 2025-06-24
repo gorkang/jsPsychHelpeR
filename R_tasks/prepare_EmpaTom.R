@@ -27,9 +27,9 @@ prepare_EmpaTom <- function(DF_clean, short_name_scale_str, output_formats) {
   items_to_reverse = c("00") # Reverse these items: If nothing to reverse, keep  items_to_reverse = c("00")
   
   items_dimensions = list(
-    empatia = c("02"), 
-    compasion = c("03"), 
-    tom = c("04")
+    empatia = c("002"), 
+    compasion = c("003"), 
+    tom = c("004")
   )
   
   
@@ -60,12 +60,12 @@ prepare_EmpaTom <- function(DF_clean, short_name_scale_str, output_formats) {
     dplyr::mutate(
       DIR =
        dplyr::case_when(
-          trialid == "EmpaTom_01" ~ as.numeric(RAW),
-          trialid == "EmpaTom_02" ~ as.numeric(RAW),
-          trialid == "EmpaTom_03" ~ as.numeric(RAW),
-          trialid == "EmpaTom_04" & RAW == "que es muy probable que olvide a su esposa producto del alzheimer" ~ 0,
-          trialid == "EmpaTom_04" & RAW == "que lo que menos desea es olvidarse de su esposa producto del alzheimer" ~ 1,
-          trialid == "EmpaTom_04" & RAW == "que se dará por vencido y olvidará a su esposa producto del alzheimer" ~ 0,
+          trialid == "EmpaTom_001" ~ as.numeric(RAW),
+          trialid == "EmpaTom_002" ~ as.numeric(RAW),
+          trialid == "EmpaTom_003" ~ as.numeric(RAW),
+          trialid == "EmpaTom_004" & RAW == "que es muy probable que olvide a su esposa producto del alzheimer" ~ 0,
+          trialid == "EmpaTom_004" & RAW == "que lo que menos desea es olvidarse de su esposa producto del alzheimer" ~ 1,
+          trialid == "EmpaTom_004" & RAW == "que se dará por vencido y olvidará a su esposa producto del alzheimer" ~ 0,
           is.na(RAW) ~ NA_real_,
           trialid %in% paste0(short_name_scale_str, "_", items_to_ignore) ~ NA_real_, # OR NA_character_
           TRUE ~ 9999

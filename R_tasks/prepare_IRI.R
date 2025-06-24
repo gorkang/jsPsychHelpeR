@@ -50,8 +50,7 @@ prepare_IRI <- function(DF_clean, short_name_scale_str, output_formats) {
   
   # Create long -------------------------------------------------------------
   DF_long_RAW = create_raw_long(DF_clean, short_name_scale = short_name_scale_str, numeric_responses = TRUE, help_prepare = FALSE)
-  
-  
+
   # Create long DIR ------------------------------------------------------------
   DF_long_DIR = 
     DF_long_RAW |> 

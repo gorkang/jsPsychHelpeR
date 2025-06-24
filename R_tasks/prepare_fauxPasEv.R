@@ -31,11 +31,11 @@ prepare_fauxPasEv <- function(DF_clean, short_name_scale_str, output_formats) {
   items_to_reverse = c("000") # Reverse these items: If nothing to reverse, keep  items_to_reverse = c("00")
   
   items_dimensions = list(
-    PrevalenciaTu = c("01"), 
-    PrevalenciaHogar = c("02"), 
-    PrevalenciaCercano = c("03"), 
-    Gravedad = c("04"), 
-    PensamientoConspirativo = c("05", "06", "07", "08", "09")
+    PrevalenciaTu = c("001"), 
+    PrevalenciaHogar = c("002"), 
+    PrevalenciaCercano = c("003"), 
+    Gravedad = c("004"), 
+    PensamientoConspirativo = c("005", "006", "007", "008", "009")
   )
   
   
@@ -452,7 +452,7 @@ prepare_fauxPasEv <- function(DF_clean, short_name_scale_str, output_formats) {
   # DF with participants whose final score is > 0
   DF_points_final_non_0 = 
     DF_points_Q8Q9 |> 
-    dplyr::full_join(DF_points_Q2Q7, by = "id") |> 
+    dplyr::full_join(DF_points_Q2Q7, by = "id") %>% 
     dplyr::mutate(!!names_list$name_DIRt := rowSums(select(., dplyr::starts_with("Q")), na.rm = TRUE)) |> 
     dplyr::select(id, !!names_list$name_DIRt)
   

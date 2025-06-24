@@ -30,7 +30,7 @@ prepare_BNT <- function(DF_clean, short_name_scale_str, output_formats) {
     
     # In BNT we have exit conditions. Add "BNT_03","BNT_04" to make we have all the columns we need to complete the correction
       # short_name_scale_str can be BNT or BNTen
-    dplyr::bind_rows(tibble(trialid = c(paste0(short_name_scale_str, "_03"),paste0(short_name_scale_str, "_04")))) |> 
+    dplyr::bind_rows(tibble(trialid = c(paste0(short_name_scale_str, "_003"),paste0(short_name_scale_str, "_004")))) |> 
     tidyr::complete(trialid, nesting(id, experiment)) |> 
     tidyr::drop_na(id) 
   
@@ -60,11 +60,11 @@ prepare_BNT <- function(DF_clean, short_name_scale_str, output_formats) {
       DIR =
        dplyr::case_when(
           # trialid == "BNTen_01" & as.numeric(RAW) >= 400 & as.numeric(RAW) <= 600 ~ 1,
-          trialid %in% c("BNT_02", "BNTen_02") & RAW != 30 ~ 1,
-          trialid %in% c("BNT_02", "BNTen_02") & RAW == 30 ~ 2,
-          trialid %in% c("BNT_03", "BNTen_03") & RAW == 20 ~ 4,
-          trialid %in% c("BNT_04", "BNTen_04") & RAW == 50 ~ 4,
-          trialid %in% c("BNT_04", "BNTen_04") & RAW != 50 ~ 3,
+          trialid %in% c("BNT_002", "BNTen_002") & RAW != 30 ~ 1,
+          trialid %in% c("BNT_002", "BNTen_002") & RAW == 30 ~ 2,
+          trialid %in% c("BNT_003", "BNTen_003") & RAW == 20 ~ 4,
+          trialid %in% c("BNT_004", "BNTen_004") & RAW == 50 ~ 4,
+          trialid %in% c("BNT_004", "BNTen_004") & RAW != 50 ~ 3,
           is.na(RAW) ~ NA_real_,
           trialid %in% paste0(short_name_scale_str, "_", items_to_ignore) ~ NA_real_, # OR NA_character_
           TRUE ~ 0

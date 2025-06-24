@@ -28,8 +28,8 @@ prepare_bRCOPE <- function(DF_clean, short_name_scale_str, output_formats) {
   items_to_reverse = c("00") # Reverse the following items: If nothing to reverse, keep "00"
   
   items_dimensions = list(
-    AfrontamientoReligiosoPositivo = c("02", "04", "05", "06", "07", "10", "14"),
-    AfrontamientoReligiosoNegativo = c("01", "03", "08", "09", "11", "12", "13")
+    AfrontamientoReligiosoPositivo = c("002", "004", "005", "006", "007", "010", "014"),
+    AfrontamientoReligiosoNegativo = c("001", "003", "008", "009", "011", "012", "013")
   )
   
   

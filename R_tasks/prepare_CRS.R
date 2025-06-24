@@ -33,11 +33,11 @@ prepare_CRS <- function(DF_clean, short_name_scale_str, output_formats) {
   ## Inside each c() create a vector of the item numbers for the dimension
   ## Add lines as needed. If there are no dimensions, keep as is
   items_dimensions = list(
-    Intelectual = c("01", "08", "15"),
-    Ideologica = c("02", "09", "16"),
-    PracticaPublica = c("03", "10", "17"),
-    PracticaPrivada = c("04", "05", "11", "12", "18", "19"),
-    ExperienciaReligiosa = c("06", "07", "13", "14", "20")
+    Intelectual = c("001", "008", "015"),
+    Ideologica = c("002", "009", "016"),
+    PracticaPublica = c("003", "010", "017"),
+    PracticaPrivada = c("004", "005", "011", "012", "018", "019"),
+    ExperienciaReligiosa = c("006", "007", "013", "014", "020")
   )
   
   # [END ADAPT 1/3]: ***********************************************************

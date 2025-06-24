@@ -34,9 +34,9 @@ prepare_PSC <- function(DF_clean, short_name_scale_str, output_formats) {
   ## Inside each c() create a vector of the item numbers for the dimension
   ## Add lines as needed. If there are no dimensions, keep as is
   items_dimensions = list(
-    ConductaEgoista = c("01_Q1"),
-    InGroup = c("01_Q2"),
-    OutGroup = c("01_Q3")
+    ConductaEgoista = c("001_Q1"),
+    InGroup = c("001_Q2"),
+    OutGroup = c("001_Q3")
   )
   
   
@@ -71,7 +71,7 @@ prepare_PSC <- function(DF_clean, short_name_scale_str, output_formats) {
     dplyr::mutate(
       DIR =
        dplyr::case_when(
-          trialid %in% c("PSC_01", "PSC_01_Q1", "PSC_01_Q2", "PSC_01_Q3") ~ RAW,
+          trialid %in% c("PSC_001", "PSC_001_Q1", "PSC_001_Q2", "PSC_001_Q3") ~ RAW,
           is.na(RAW) ~ NA_real_, # OR NA_character_,
           trialid %in% paste0(short_name_scale_str, "_", items_to_ignore) ~ NA_real_, # OR NA_character_,
 
@@ -124,9 +124,9 @@ prepare_PSC <- function(DF_clean, short_name_scale_str, output_formats) {
       # [CHECK] Using correct formula? rowMeans() / rowSums()
       
       # Score Dimensions (see standardized_names(help_names = TRUE) for instructions)
-      !!names_list$name_DIRd[1] := get(paste0(short_name_scale_str, "_", items_dimensions[[1]], "_DIR"))/get("PSC_01_DIR"), 
-      !!names_list$name_DIRd[2] := get(paste0(short_name_scale_str, "_", items_dimensions[[2]], "_DIR"))/get("PSC_01_DIR"),
-      !!names_list$name_DIRd[3] := get(paste0(short_name_scale_str, "_", items_dimensions[[3]], "_DIR"))/get("PSC_01_DIR")
+      !!names_list$name_DIRd[1] := get(paste0(short_name_scale_str, "_", items_dimensions[[1]], "_DIR"))/get("PSC_001_DIR"), 
+      !!names_list$name_DIRd[2] := get(paste0(short_name_scale_str, "_", items_dimensions[[2]], "_DIR"))/get("PSC_001_DIR"),
+      !!names_list$name_DIRd[3] := get(paste0(short_name_scale_str, "_", items_dimensions[[3]], "_DIR"))/get("PSC_001_DIR")
       
       # Reliability Dimensions (see standardized_names(help_names = TRUE) for instructions)
       # !!names_list$name_RELd[1] := rowMeans(across(all_of(paste0(short_name_scale_str, "_", items_RELd1, "_DIR"))), na.rm = TRUE), 

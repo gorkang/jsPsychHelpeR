@@ -4,7 +4,13 @@
 \alias{read_data}
 \title{read_data}
 \usage{
-read_data(input_files, is_sensitive = FALSE, save_output = TRUE, workers = 1)
+read_data(
+  input_files,
+  is_sensitive = FALSE,
+  save_output = TRUE,
+  workers = 1,
+  location_duplicates = NULL
+)
 }
 \arguments{
 \item{input_files}{A character vector of files to read}
@@ -14,6 +20,8 @@ read_data(input_files, is_sensitive = FALSE, save_output = TRUE, workers = 1)
 \item{save_output}{TRUE / FALSE}
 
 \item{workers}{number of threads for data.table::fread}
+
+\item{location_duplicates}{If there are duplicate trialid's, a csv with details will be saved here}
 }
 \value{
 A DF

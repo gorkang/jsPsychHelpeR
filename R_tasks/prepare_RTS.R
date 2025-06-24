@@ -23,11 +23,11 @@ prepare_RTS <- function(DF_clean, short_name_scale_str, output_formats) {
   # [ADAPT]: Items to ignore, reverse and dimensions ---------------------------------------
   # ****************************************************************************
   
-  items_to_ignore = c("01", "06", "07", "10", "11", "14", "15", "17", "23", "24", "27", "28") # Ignore these items: If nothing to ignore, keep items_to_ignore = c("00")
-  items_to_reverse = c("00") # Reverse these items: If nothing to reverse, keep  items_to_reverse = c("00")
+  items_to_ignore = c("001", "006", "007", "010", "011", "014", "015", "017", "023", "024", "027", "028") # Ignore these items: If nothing to ignore, keep items_to_ignore = c("000")
+  items_to_reverse = c("000") # Reverse these items: If nothing to reverse, keep  items_to_reverse = c("000")
   
   items_dimensions = list(
-    NameDimension1 = c("000")
+    NameDimension1 = c("0000")
   )
   
   
@@ -58,8 +58,8 @@ prepare_RTS <- function(DF_clean, short_name_scale_str, output_formats) {
     dplyr::mutate(
       DIR =
        dplyr::case_when(
-          grepl("02|03|04|05|08|09|12|13|16|18|19|20|21|22|25|26|29", trialid) & RAW == "Verdadero" ~ 1,
-          grepl("02|03|04|05|08|09|12|13|16|18|19|20|21|22|25|26|29", trialid) & RAW == "Falso" ~ 0,
+          grepl("002|003|004|005|008|009|012|013|016|018|019|020|021|022|025|026|029", trialid) & RAW == "Verdadero" ~ 1,
+          grepl("002|003|004|005|008|009|012|013|016|018|019|020|021|022|025|026|029", trialid) & RAW == "Falso" ~ 0,
           is.na(RAW) ~ NA_real_,
           trialid %in% paste0(short_name_scale_str, "_", items_to_ignore) ~ NA_real_,
           TRUE ~ 9999

@@ -53,8 +53,8 @@ prepare_PRFBM <- function(DF_clean, short_name_scale_str, output_formats) {
     dplyr::mutate(
       DIR =
        dplyr::case_when(
-          trialid == "PRFBM_01" & RAW == "Parto por cesárea (extracción del bebé por medio de una cirugía con anestesia. Se realiza una incisión abdominal y una incisión para abrir el útero)" ~ 0,
-          trialid == "PRFBM_01" & RAW == "Parto vaginal (extracción del bebé por el canal vaginal en forma espontánea, con o sin intervenciones como anestesia)" ~ 1,
+          trialid == "PRFBM_001" & RAW == "Parto por cesárea (extracción del bebé por medio de una cirugía con anestesia. Se realiza una incisión abdominal y una incisión para abrir el útero)" ~ 0,
+          trialid == "PRFBM_001" & RAW == "Parto vaginal (extracción del bebé por el canal vaginal en forma espontánea, con o sin intervenciones como anestesia)" ~ 1,
           
           # Si han elegido cesarea, la escala podria ir de 0 a -100
           # trialid == "PRFBM_02" ~ as.numeric(RAW),
@@ -111,12 +111,12 @@ prepare_PRFBM <- function(DF_clean, short_name_scale_str, output_formats) {
     dplyr::mutate(
 
       # Score Dimensions (see standardized_names(help_names = TRUE) for instructions)
-      !!names_list$name_DIRd[1] := rowMeans(select(., matches("01") & matches("_DIR$")), na.rm = TRUE), 
-      !!names_list$name_DIRd[2] := rowMeans(select(., matches("02|03") & matches("_DIR$")), na.rm = TRUE), 
-      !!names_list$name_DIRd[3] := rowMeans(select(., matches("04_beneficio|06_beneficio") & matches("_DIR$")), na.rm = TRUE), 
-      !!names_list$name_DIRd[4] := rowMeans(select(., matches("05_beneficio|07_beneficio") & matches("_DIR$")), na.rm = TRUE),
-      !!names_list$name_DIRd[5] := rowMeans(select(., matches("04_daño|06_daño") & matches("_DIR$")), na.rm = TRUE), 
-      !!names_list$name_DIRd[6] := rowMeans(select(., matches("05_daño|07_daño") & matches("_DIR$")), na.rm = TRUE)
+      !!names_list$name_DIRd[1] := rowMeans(select(., matches("001") & matches("_DIR$")), na.rm = TRUE), 
+      !!names_list$name_DIRd[2] := rowMeans(select(., matches("002|003") & matches("_DIR$")), na.rm = TRUE), 
+      !!names_list$name_DIRd[3] := rowMeans(select(., matches("004_beneficio|006_beneficio") & matches("_DIR$")), na.rm = TRUE), 
+      !!names_list$name_DIRd[4] := rowMeans(select(., matches("005_beneficio|007_beneficio") & matches("_DIR$")), na.rm = TRUE),
+      !!names_list$name_DIRd[5] := rowMeans(select(., matches("004_daño|006_daño") & matches("_DIR$")), na.rm = TRUE), 
+      !!names_list$name_DIRd[6] := rowMeans(select(., matches("005_daño|007_daño") & matches("_DIR$")), na.rm = TRUE)
       
       # Score Scale
       # !!names_list$name_DIRt := rowSums(across(all_of(matches("_DIR$"))), na.rm = TRUE)

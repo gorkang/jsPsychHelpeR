@@ -62,24 +62,24 @@ prepare_CRTv <- function(DF_clean, short_name_scale_str, output_formats) {
     dplyr::mutate(
       DIR =
        dplyr::case_when(
-          grepl("01", trialid) & grepl("mar[i-í]a", RAW, ignore.case = T) ~ 1,
-          grepl("02", trialid) & (grepl("segundo", RAW, ignore.case = T) | grepl("2", RAW, ignore.case = T) | grepl("dos", RAW, ignore.case = T)) ~ 1,
+          grepl("001", trialid) & grepl("mar[i-í]a", RAW, ignore.case = T) ~ 1,
+          grepl("002", trialid) & (grepl("segundo", RAW, ignore.case = T) | grepl("2", RAW, ignore.case = T) | grepl("dos", RAW, ignore.case = T)) ~ 1,
           ##No captura alguna: "Se verá cuando mueran"
-          grepl("03", trialid) & ((grepl("ningun", RAW, ignore.case = T) & !grepl("muerto", RAW, ignore.case = T)) |
+          grepl("003", trialid) & ((grepl("ningun", RAW, ignore.case = T) & !grepl("muerto", RAW, ignore.case = T)) |
                                     grepl("breviv", RAW, ignore.case = T) | grepl("vivo", RAW, ignore.case = T)  | grepl("no est[aá]n", RAW, ignore.case = T)) ~ 1,
-          grepl("04", trialid) & ((!grepl("p.jaro", RAW) & !grepl("ardilla", RAW, ignore.case = T) & !grepl("mono", RAW, ignore.case = T))) ~ 1,
-          grepl("05", trialid) & grepl("no", RAW, ignore.case = T) ~ 1,
+          grepl("004", trialid) & ((!grepl("p.jaro", RAW) & !grepl("ardilla", RAW, ignore.case = T) & !grepl("mono", RAW, ignore.case = T))) ~ 1,
+          grepl("005", trialid) & grepl("no", RAW, ignore.case = T) ~ 1,
           # No captura: Suponiendo que existió Moises y dicha arca, a lo menos 2
-          grepl("06", trialid) &  ((grepl("no", RAW, ignore.case = T) | grepl("ninguno", RAW, ignore.case = T) | (grepl("no[ée]", RAW, ignore.case = T))) |
+          grepl("006", trialid) &  ((grepl("no", RAW, ignore.case = T) | grepl("ninguno", RAW, ignore.case = T) | (grepl("no[ée]", RAW, ignore.case = T))) |
             (!grepl("no se", RAW) & !grepl("", RAW) & !grepl(" ", RAW) & !grepl("[12]", RAW, ignore.case = T) & !grepl("[unodos]", RAW, ignore.case = T)))  ~ 1,
-          grepl("07", trialid) & ((grepl("humo", RAW, ignore.case = T) | grepl("el[e-é]ctrico", RAW, ignore.case = T))) ~ 1,
-          grepl("08", trialid) & grepl("f[o-ó][so]foro", RAW, ignore.case = T) ~ 1,
-          grepl("09", trialid) & (!grepl("sí", RAW, ignore.case = T) & (!grepl("por qu[eé] no", RAW, ignore.case = T)) &
+          grepl("007", trialid) & ((grepl("humo", RAW, ignore.case = T) | grepl("el[e-é]ctrico", RAW, ignore.case = T))) ~ 1,
+          grepl("008", trialid) & grepl("f[o-ó][so]foro", RAW, ignore.case = T) ~ 1,
+          grepl("009", trialid) & (!grepl("sí", RAW, ignore.case = T) & (!grepl("por qu[eé] no", RAW, ignore.case = T)) &
                                     (grepl("muerto", RAW, ignore.case = T) | grepl("muri[oó]", RAW, ignore.case = T) |
                                        grepl("imposible", RAW, ignore.case = T) |
                                        (grepl("no", RAW, ignore.case = T) & !grepl("cuñada", RAW, ignore.case = T))))  ~ 1,
           
-          grepl("10", trialid) & ((grepl("ninguna", RAW, ignore.case = T) | grepl("amarilla", RAW, ignore.case = T))) ~ 1,
+          grepl("010", trialid) & ((grepl("ninguna", RAW, ignore.case = T) | grepl("amarilla", RAW, ignore.case = T))) ~ 1,
           TRUE ~ 0
         )
       ) 

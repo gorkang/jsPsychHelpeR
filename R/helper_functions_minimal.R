@@ -223,7 +223,9 @@ create_raw_long <- function(DF_clean, short_name_scale, numeric_responses = FALS
                   ) %>%
     tidyr::drop_na(trialid) %>%
     dplyr::rename(RAW = response) %>%
-    dplyr::arrange(trialid, id)
+    dplyr::arrange(trialid, id) |> 
+    # Compatibility with old versions (should convert TASK_99 to TASK_099)
+    mutate(trialid = gsub(paste0("(", short_name_scale, "_)([0-9][0-9][_]|[0-9][0-9]$)"), "\\10\\2", trialid))  
   
     # If is experiment, make sure condition_within is fine
     if (is_experiment == TRUE) {

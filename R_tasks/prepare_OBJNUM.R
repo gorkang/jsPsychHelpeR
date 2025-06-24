@@ -53,15 +53,15 @@ prepare_OBJNUM <- function(DF_clean, short_name_scale_str, output_formats) {
     dplyr::mutate(
       DIR =
        dplyr::case_when(
-          trialid == "OBJNUM_01" & as.numeric(RAW) >= 400 & as.numeric(RAW) <= 600 ~ 1,
-          trialid == "OBJNUM_02" & as.numeric(RAW) == 10 ~ 1,
-          trialid == "OBJNUM_03" & as.numeric(RAW) == 0.1 ~ 1,
-          trialid == "OBJNUM_04" & as.numeric(RAW) >= 400 & as.numeric(RAW) <= 600 ~ 1,
-          trialid == "OBJNUM_05" & RAW == "1 de 10" ~ 1,
-          trialid == "OBJNUM_06" & RAW == "10%" ~ 1,
-          trialid == "OBJNUM_07" & as.numeric(RAW) == 100 ~ 1,
-          trialid == "OBJNUM_08" & as.numeric(RAW) == 20 ~ 1,
-          trialid == "OBJNUM_09" & as.numeric(RAW) %in% c(2) ~ 1, # SHOULD ACCEPT 0.02 ? #RAW %in% c("2% en 10 años", "2 de cada 100 en 10 años", "1% en 5 años", "1 de 100 en 5 años") ~ 1,
+          trialid == "OBJNUM_001" & as.numeric(RAW) >= 400 & as.numeric(RAW) <= 600 ~ 1,
+          trialid == "OBJNUM_002" & as.numeric(RAW) == 10 ~ 1,
+          trialid == "OBJNUM_003" & as.numeric(RAW) == 0.1 ~ 1,
+          trialid == "OBJNUM_004" & as.numeric(RAW) >= 400 & as.numeric(RAW) <= 600 ~ 1,
+          trialid == "OBJNUM_005" & RAW == "1 de 10" ~ 1,
+          trialid == "OBJNUM_006" & RAW == "10%" ~ 1,
+          trialid == "OBJNUM_007" & as.numeric(RAW) == 100 ~ 1,
+          trialid == "OBJNUM_008" & as.numeric(RAW) == 20 ~ 1,
+          trialid == "OBJNUM_009" & as.numeric(RAW) %in% c(2) ~ 1, # SHOULD ACCEPT 0.02 ? #RAW %in% c("2% en 10 años", "2 de cada 100 en 10 años", "1% en 5 años", "1 de 100 en 5 años") ~ 1,
           RAW == "Poco" ~ 2,
           is.na(RAW) ~ NA_real_,
           trialid %in% paste0(short_name_scale_str, "_", items_to_ignore) ~ NA_real_, # OR NA_character_

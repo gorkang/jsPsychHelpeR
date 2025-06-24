@@ -26,16 +26,16 @@ prepare_HRPVB <- function(DF_clean, short_name_scale_str, output_formats) {
   
   description_task = "HRPVB description"
   
-  items_to_ignore = c("00") # Ignore these items
-  items_to_reverse = c("00") # Reverse these items
+  items_to_ignore = c("000") # Ignore these items
+  items_to_reverse = c("000") # Reverse these items
 
   items_dimensions = list(
-    Cesarean = c("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11") |> paste0("_01"),
-    Vaginal = c("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11") |> paste0("_02"),
-    CesareanMother = c("05", "06", "07", "08", "09", "10", "11") |> paste0("_01"),
-    CesareanBaby = c("01", "02", "03", "04") |> paste0("_01"),
-    VaginalMother = c("05", "06", "07", "08", "09", "10", "11") |> paste0("_02"),
-    VaginalBaby = c("01", "02", "03", "04") |> paste0("_02")
+    Cesarean = c("001", "002", "003", "004", "005", "006", "007", "008", "009", "010", "011") |> paste0("_01"),
+    Vaginal = c("001", "002", "003", "004", "005", "006", "007", "008", "009", "010", "011") |> paste0("_02"),
+    CesareanMother = c("005", "006", "007", "008", "009", "010", "011") |> paste0("_01"),
+    CesareanBaby = c("001", "002", "003", "004") |> paste0("_01"),
+    VaginalMother = c("005", "006", "007", "008", "009", "010", "011") |> paste0("_02"),
+    VaginalBaby = c("001", "002", "003", "004") |> paste0("_02")
   )
   
   

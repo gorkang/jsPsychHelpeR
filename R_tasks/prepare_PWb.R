@@ -24,16 +24,16 @@ prepare_PWb <- function(DF_clean, short_name_scale_str, output_formats) {
   # [ADAPT]: Items to ignore, reverse and dimensions ---------------------------------------
   # ****************************************************************************
   
-  items_to_ignore = c("00") # Ignore these items: If nothing to ignore, keep items_to_ignore = c("00")
-  items_to_reverse = c("02", "04", "05", "08", "09", "13", "15", "20", "22", "25", "26", "27", "29", "30", "33", "34", "36") # Reverse these items: If nothing to reverse, keep  items_to_reverse = c("00")
+  items_to_ignore = c("000") # Ignore these items: If nothing to ignore, keep items_to_ignore = c("000")
+  items_to_reverse = c("002", "004", "005", "008", "009", "013", "015", "020", "022", "025", "026", "027", "029", "030", "033", "034", "036") # Reverse these items: If nothing to reverse, keep  items_to_reverse = c("000")
   
   items_dimensions = list(
-    Autoaceptacion = c("01", "07", "13", "19", "25", "31"), 
-    RelacionesPositivas = c("02", "08", "14", "20", "26", "32"), 
-    Autonomia = c("03", "04", "09", "10", "15", "21", "27", "33"), 
-    DominioEntorno = c("05", "11", "16", "22", "28", "39"), 
-    CrecimientoPersonal = c("24", "30", "34", "35", "36", "37", "38"), 
-    PropositoVida = c("06", "12", "17", "18", "23", "29")
+    Autoaceptacion = c("001", "007", "013", "019", "025", "031"), 
+    RelacionesPositivas = c("002", "008", "014", "020", "026", "032"), 
+    Autonomia = c("003", "004", "009", "010", "015", "021", "027", "033"), 
+    DominioEntorno = c("005", "011", "016", "022", "028", "039"), 
+    CrecimientoPersonal = c("024", "030", "034", "035", "036", "037", "038"), 
+    PropositoVida = c("006", "012", "017", "018", "023", "029")
   )
   
   

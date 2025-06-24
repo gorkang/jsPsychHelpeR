@@ -50,7 +50,6 @@ prepare_ERQ <- function(DF_clean, short_name_scale_str, output_formats) {
     help_prepare = FALSE
   )
 
-
   # Create long DIR ------------------------------------------------------------
   DF_long_DIR =
     DF_long_RAW |>

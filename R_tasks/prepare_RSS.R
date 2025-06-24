@@ -24,7 +24,7 @@ prepare_RSS <- function(DF_clean, short_name_scale_str, output_formats) {
   # ****************************************************************************
   
   items_to_ignore = c("00") # Ignore these items: If nothing to ignore, keep items_to_ignore = c("00")
-  items_to_reverse = c("03", "05", "08", "09", "10") # Reverse these items: If nothing to reverse, keep  items_to_reverse = c("00")
+  items_to_reverse = c("003", "005", "008", "009", "010") # Reverse these items: If nothing to reverse, keep  items_to_reverse = c("00")
   
   items_dimensions = list(
     NameDimension1 = c("000")

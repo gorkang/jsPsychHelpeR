@@ -25,7 +25,7 @@ targets <- list(
   tar_target(DF_clean, create_clean_data(DF_raw)),
   
   # Dictionary of tasks
-  tar_target(DICTIONARY_tasks, create_dictionary_tasks(DF_clean), priority = 1),
+  tar_target(DICTIONARY_tasks, create_dictionary_tasks(DF_clean)),
 
   
   ## Prepare tasks -----------------------------------------------------------

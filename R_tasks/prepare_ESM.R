@@ -27,11 +27,11 @@ prepare_ESM <- function(DF_clean, short_name_scale_str, output_formats) {
   items_to_reverse = c("00") # Reverse these items: If nothing to reverse, keep  items_to_reverse = c("00")
   
   items_dimensions = list(
-    PrevalenciaTu = c("01"), 
-    PrevalenciaHogar = c("02"), 
-    PrevalenciaCercano = c("03"), 
-    Gravedad = c("04"), 
-    PensamientoConspirativo = c("05", "06", "07", "08", "09")
+    PrevalenciaTu = c("001"), 
+    PrevalenciaHogar = c("002"), 
+    PrevalenciaCercano = c("003"), 
+    Gravedad = c("004"), 
+    PensamientoConspirativo = c("005", "006", "007", "008", "009")
   )
   
   
@@ -62,17 +62,17 @@ prepare_ESM <- function(DF_clean, short_name_scale_str, output_formats) {
     dplyr::mutate(
       DIR =
        dplyr::case_when(
-          trialid == "ESM_01" & RAW == "Mejor" ~ -1,
-          trialid == "ESM_01" & RAW == "Igual" ~ 0,
-          trialid == "ESM_01" & RAW == "Peor" ~ 1,
-          trialid %in% c("ESM_02", "ESM_04", "ESM_05", "ESM_06", "ESM_08", "ESM_09", "ESM_10", "ESM_11") & RAW == "Si" ~ 1,
-          trialid %in% c("ESM_02", "ESM_04", "ESM_05", "ESM_06", "ESM_08", "ESM_09", "ESM_10", "ESM_11") & RAW == "No" ~ -1,
-          trialid %in% c("ESM_02", "ESM_04", "ESM_05", "ESM_06", "ESM_08", "ESM_09", "ESM_10", "ESM_11") & RAW == "No se" ~ 0,
+          trialid == "ESM_001" & RAW == "Mejor" ~ -1,
+          trialid == "ESM_001" & RAW == "Igual" ~ 0,
+          trialid == "ESM_001" & RAW == "Peor" ~ 1,
+          trialid %in% c("ESM_002", "ESM_004", "ESM_005", "ESM_006", "ESM_008", "ESM_009", "ESM_010", "ESM_011") & RAW == "Si" ~ 1,
+          trialid %in% c("ESM_002", "ESM_004", "ESM_005", "ESM_006", "ESM_008", "ESM_009", "ESM_010", "ESM_011") & RAW == "No" ~ -1,
+          trialid %in% c("ESM_002", "ESM_004", "ESM_005", "ESM_006", "ESM_008", "ESM_009", "ESM_010", "ESM_011") & RAW == "No se" ~ 0,
           
-          trialid %in% c("ESM_03", "ESM_07") & RAW == "Muy Buena" ~ -2,
-          trialid %in% c("ESM_03", "ESM_07") & RAW == "Buena" ~ -1,
-          trialid %in% c("ESM_03", "ESM_07") & RAW == "Mala" ~ 1,
-          trialid %in% c("ESM_03", "ESM_07") & RAW == "Muy Mala" ~ 2,
+          trialid %in% c("ESM_003", "ESM_007") & RAW == "Muy Buena" ~ -2,
+          trialid %in% c("ESM_003", "ESM_007") & RAW == "Buena" ~ -1,
+          trialid %in% c("ESM_003", "ESM_007") & RAW == "Mala" ~ 1,
+          trialid %in% c("ESM_003", "ESM_007") & RAW == "Muy Mala" ~ 2,
           
           is.na(RAW) ~ NA_real_,
           trialid %in% paste0(short_name_scale_str, "_", items_to_ignore) ~ NA_real_, # OR NA_character_

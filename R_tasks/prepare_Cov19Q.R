@@ -24,15 +24,15 @@ prepare_Cov19Q <- function(DF_clean, short_name_scale_str, output_formats) {
   # [ADAPT]: Items to ignore, reverse and dimensions ---------------------------------------
   # ****************************************************************************
   
-  items_to_ignore = c("00", "01") # Ignore these items: If nothing to ignore, keep items_to_ignore = c("00")
+  items_to_ignore = c("00", "001") # Ignore these items: If nothing to ignore, keep items_to_ignore = c("00")
   items_to_reverse = c("00") # Reverse these items: If nothing to reverse, keep  items_to_reverse = c("00")
   
   items_dimensions = list(
-    PrevalenciaTu = c("01"), 
-    PrevalenciaHogar = c("02"), 
-    PrevalenciaCercano = c("03"), 
-    Gravedad = c("04"), 
-    PensamientoConspirativo = c("05", "06", "07", "08", "09")
+    PrevalenciaTu = c("001"), 
+    PrevalenciaHogar = c("002"), 
+    PrevalenciaCercano = c("003"), 
+    Gravedad = c("004"), 
+    PensamientoConspirativo = c("005", "006", "007", "008", "009")
   )
   
   

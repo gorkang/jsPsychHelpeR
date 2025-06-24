@@ -34,10 +34,10 @@ prepare_MDDF <- function(DF_clean, short_name_scale_str, output_formats) {
   ## Inside each c() create a vector of the item numbers for the dimension
   ## Add lines as needed. If there are no dimensions, keep as is
   items_dimensions = list(
-    DisgustoMoralDumbfounding = c("01", "02", "03", "04", "05", "06"),
-    DisgustoMoralSinDumbfounding = c("07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21"),
-    DisgustoNoMoral = c("22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41"),
-    SituacionesControl = c("42", "43", "44", "45", "46", "47", "48", "49", "50", "51", "52", "53", "54", "55", "56", "57", "58", "59", "60", "61", "62", "63")
+    DisgustoMoralDumbfounding = c("001", "002", "003", "004", "005", "006"),
+    DisgustoMoralSinDumbfounding = c("007", "008", "009", "010", "011", "012", "013", "014", "015", "016", "017", "018", "019", "020", "021"),
+    DisgustoNoMoral = c("022", "023", "024", "025", "026", "027", "028", "029", "030", "031", "032", "033", "034", "035", "036", "037", "038", "039", "040", "041"),
+    SituacionesControl = c("042", "043", "044", "045", "046", "047", "048", "049", "050", "051", "052", "053", "054", "055", "056", "057", "058", "059", "060", "061", "062", "063")
   )
   
   # [END ADAPT 1/3]: ***********************************************************

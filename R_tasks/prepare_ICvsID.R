@@ -27,19 +27,19 @@ prepare_ICvsID <- function(DF_clean, short_name_scale_str, output_formats) {
   
   description_task = "" # Brief description here
   
-  items_to_ignore = c("000") # Ignore these items: If nothing to ignore, keep as is
-  items_to_reverse = c("000") # Reverse these items: If nothing to reverse, keep as is
+  items_to_ignore = c("0000") # Ignore these items: If nothing to ignore, keep as is
+  items_to_reverse = c("0000") # Reverse these items: If nothing to reverse, keep as is
   
   ## NameDimension1, NameDimension2 should be the names of the dimensions
   ## Inside each c() create a vector of the item numbers for the dimension
   ## Add lines as needed. If there are no dimensions, keep as is
   items_dimensions = list(
-    DanoInstrumentalAccionAdecuada = c("01", "04", "07", "13"),
-    DanoInstrumentalRealizarMismaAccion = c("02", "05", "08", "14"),
-    DanoInstrumentalNivelDano = c("03", "06", "09", "15"),
-    BeneficenciaImparcialAccionAdecuada = c("10", "16", "19", "22"),
-    BeneficienciaImparcialRealizarMismaAccion = c("11", "17", "20", "23"),
-    BeneficenciaImparcialNivelDano = c("12", "18", "21", "24")
+    DanoInstrumentalAccionAdecuada = c("001", "004", "007", "013"),
+    DanoInstrumentalRealizarMismaAccion = c("002", "005", "008", "014"),
+    DanoInstrumentalNivelDano = c("003", "006", "009", "015"),
+    BeneficenciaImparcialAccionAdecuada = c("010", "016", "019", "022"),
+    BeneficienciaImparcialRealizarMismaAccion = c("011", "017", "020", "023"),
+    BeneficenciaImparcialNivelDano = c("012", "018", "021", "024")
   )
   
   # [END ADAPT 1/3]: ***********************************************************

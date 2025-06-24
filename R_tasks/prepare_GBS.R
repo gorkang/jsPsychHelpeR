@@ -30,8 +30,8 @@ prepare_GBS <- function(DF_clean, short_name_scale_str, output_formats) {
   items_to_reverse = c("000") # Reverse these items: If nothing to reverse, keep as is
   
   items_dimensions = list(
-    promedio = c("01", "02", "03"), 
-    clasificacion = c("04")
+    promedio = c("001", "002", "003"), 
+    clasificacion = c("004")
   )
   
   

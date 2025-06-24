@@ -35,8 +35,8 @@ prepare_CTT <- function(DF_clean, short_name_scale_str, output_formats) {
   ## Inside each c() create a vector of the item numbers for the dimension
   ## Add lines as needed. If there are no dimensions, keep as is
   items_dimensions = list(
-    AciertoError = c("01"),
-    DecisionCorrecta = c("02")
+    AciertoError = c("001"),
+    DecisionCorrecta = c("002")
   )
   
   # [END ADAPT 1/3]: ***********************************************************
@@ -70,16 +70,16 @@ prepare_CTT <- function(DF_clean, short_name_scale_str, output_formats) {
     dplyr::mutate(
       DIR =
        dplyr::case_when(
-          trialid %in% c("CTT_01") & condition_between == 1 & RAW == "Iría a la entrevista" ~ "1",
-          trialid %in% c("CTT_01") & condition_between == 1 & RAW == "se devolvería a revisar la puerta del carro (auto)" ~ "1",
+          trialid %in% c("CTT_001") & condition_between == 1 & RAW == "Iría a la entrevista" ~ "1",
+          trialid %in% c("CTT_001") & condition_between == 1 & RAW == "se devolvería a revisar la puerta del carro (auto)" ~ "1",
           
-          trialid %in% c("CTT_01") & condition_between == 2 & RAW == "Iría a la entrevista" ~ "0",
-          trialid %in% c("CTT_01") & condition_between == 2 & RAW == "se devolvería a revisar la puerta del carro (auto)" ~ "1",
+          trialid %in% c("CTT_001") & condition_between == 2 & RAW == "Iría a la entrevista" ~ "0",
+          trialid %in% c("CTT_001") & condition_between == 2 & RAW == "se devolvería a revisar la puerta del carro (auto)" ~ "1",
           
-          trialid %in% c("CTT_01") & condition_between == 3 & RAW == "Iría a la entrevista" ~ "1",
-          trialid %in% c("CTT_01") & condition_between == 3 & RAW == "se devolvería a revisar la puerta del carro (auto)" ~ "0",
+          trialid %in% c("CTT_001") & condition_between == 3 & RAW == "Iría a la entrevista" ~ "1",
+          trialid %in% c("CTT_001") & condition_between == 3 & RAW == "se devolvería a revisar la puerta del carro (auto)" ~ "0",
           
-          trialid %in% c("CTT_02") ~ RAW,
+          trialid %in% c("CTT_002") ~ RAW,
           
           is.na(RAW) ~ NA_character_, # OR NA_character_,
           trialid %in% paste0(short_name_scale_str, "_", items_to_ignore) ~ NA_real_, # OR NA_character_,

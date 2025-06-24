@@ -23,12 +23,12 @@ prepare_STAI <- function(DF_clean, short_name_scale_str, output_formats) {
   # [ADAPT]: Items to ignore and reverse ---------------------------------------
   # ****************************************************************************
   
-  items_to_ignore = c("00") # Ignore these items: If nothing to ignore, keep items_to_ignore = c("00")
-  items_to_reverse = c("01", "02", "05", "08", "10", "11", "15", "16", "19", "20", "21", "23", "26", "27", "30", "33", "34", "36", "39") # Reverse these items: If nothing to reverse, keep  items_to_reverse = c("00")
+  items_to_ignore = c("000") # Ignore these items: If nothing to ignore, keep items_to_ignore = c("000")
+  items_to_reverse = c("001", "002", "005", "008", "010", "011", "015", "016", "019", "020", "021", "023", "026", "027", "030", "033", "034", "036", "039") # Reverse these items: If nothing to reverse, keep  items_to_reverse = c("000")
   
   items_dimensions = list(
-    estado = c("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20"), 
-    rasgo = c("21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40")
+    estado = c("001", "002", "003", "004", "005", "006", "007", "008", "009", "010", "011", "012", "013", "014", "015", "016", "017", "018", "019", "020"), 
+    rasgo = c("021", "022", "023", "024", "025", "026", "027", "028", "029", "030", "031", "032", "033", "034", "035", "036", "037", "038", "039", "040")
   )
 
   

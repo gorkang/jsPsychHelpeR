@@ -23,10 +23,10 @@ prepare_FDMQ <- function(DF_clean, short_name_scale_str, output_formats) {
   items_to_reverse = c("00") # Reverse these items: If nothing to reverse, keep  items_to_reverse = c("00")
   
   items_dimensions = list(
-    Vigilancia = c("01", "02", "03", "04", "05", "06"), 
-    Hipervigilancia = c("07", "08", "09", "10", "11"), 
-    Transferencia = c("12", "13", "14", "15", "16", "17"), 
-    Procastinacion = c("18", "19", "20", "21", "22")
+    Vigilancia = c("001", "002", "003", "004", "005", "006"), 
+    Hipervigilancia = c("007", "008", "009", "010", "011"), 
+    Transferencia = c("012", "013", "014", "015", "016", "017"), 
+    Procastinacion = c("018", "019", "020", "021", "022")
   )
   
   

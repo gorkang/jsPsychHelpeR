@@ -31,15 +31,15 @@ prepare_PERMA <- function(DF_clean, short_name_scale_str, output_formats) {
   items_to_reverse = c("000") # Reverse these items: If nothing to reverse, keep as is
   
   items_dimensions = list(
-    PositiveEmotion = c("03", "13", "22"),
-    Engagement = c("02", "10", "17"),
-    Relationship = c("08", "19", "21"),
-    Meaning = c("07", "09", "20"),
-    Accomplishment = c("01", "05", "15"),
-    Health = c("06", "12", "18"),
-    Loneliness = c("11"),
-    NegativeEmotion = c("04", "14", "16"),
-    Happiness = c("23")
+    PositiveEmotion = c("003", "013", "022"),
+    Engagement = c("002", "010", "017"),
+    Relationship = c("008", "019", "021"),
+    Meaning = c("007", "009", "020"),
+    Accomplishment = c("001", "005", "015"),
+    Health = c("006", "012", "018"),
+    Loneliness = c("011"),
+    NegativeEmotion = c("004", "014", "016"),
+    Happiness = c("023")
   )
   
   

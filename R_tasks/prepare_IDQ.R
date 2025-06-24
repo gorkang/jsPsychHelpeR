@@ -28,8 +28,8 @@ prepare_IDQ <- function(DF_clean, short_name_scale_str, output_formats) {
   items_to_reverse = c("00") # Reverse these items: If nothing to reverse, keep  items_to_reverse = c("00")
   
   items_dimensions = list(
-    edad = c("02"), 
-    genero = c("04")
+    edad = c("002"), 
+    genero = c("004")
   )
   
   
@@ -67,8 +67,8 @@ prepare_IDQ <- function(DF_clean, short_name_scale_str, output_formats) {
           RAW == "No" ~ "0",
           RAW == "Si" ~ "1",
           
-          trialid %in% c("IDQ_01", "IDQ_02", "IDQ_04", "IDQ_05", "IDQ_06", "IDQ_07", "IDQ_09", "IDQ_10", "IDQ_11", "IDQ_12", "IDQ_13", 
-                         "IDQ_03", "IDQ_08", "IDQ_14" # Were not originally coded [RUT, Direccion, Droga]
+          trialid %in% c("IDQ_001", "IDQ_002", "IDQ_004", "IDQ_005", "IDQ_006", "IDQ_007", "IDQ_009", "IDQ_010", "IDQ_011", "IDQ_012", "IDQ_013", 
+                         "IDQ_003", "IDQ_008", "IDQ_014" # Were not originally coded [RUT, Direccion, Droga]
                          ) ~ RAW,
           
           is.na(RAW) ~ NA_character_,
